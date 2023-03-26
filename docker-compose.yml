@@ -7,7 +7,7 @@ services:
       - 3000:3000
     volumes:
       - ./frontend:/workdir
-    command: sleep infinity
+    command: /bin/bash -c "npm install && exec npm run dev"
 
   backend:
     build: backend
