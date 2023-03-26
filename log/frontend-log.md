@@ -41,3 +41,5 @@ npm install --save-dev prettier eslint-config-prettier
 
 - [GitHub - jsx-eslint/eslint-plugin-react: React-specific linting rules for ESLint](https://github.com/jsx-eslint/eslint-plugin-react#configuration)
 - [React v17 create-react-app で作ったアプリで ESLint に怒られまくった - かもメモ](https://chaika.hatenablog.com/entry/2020/12/04/083000)
+- mv extends prettier to last
+  - [GitHub - prettier/eslint-config-prettier: Turns off all rules that are unnecessary or might conflict with Prettier.](https://github.com/prettier/eslint-config-prettier)
