@@ -1,0 +1,19 @@
+version: '3'
+services:
+  frontend:
+    build: frontend
+    container_name: frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/workdir
+    command: sleep infinity
+
+  backend:
+    build: backend
+    container_name: backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/workdir
+    command: sleep infinity
