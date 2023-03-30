@@ -1,3 +1,4 @@
+import { Counter } from "./Counter";
 import { Canvas } from "./Canvas";
 
 function App() {
@@ -5,6 +6,7 @@ function App() {
         <>
             <h1>Header</h1>
             <hr />
+            <Counter />
             <Canvas />
         </>
     );
