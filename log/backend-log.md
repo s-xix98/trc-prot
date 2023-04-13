@@ -8,3 +8,9 @@ nest new . --strict
 ```
 
 - [Documentation | NestJS - A progressive Node.js framework](https://docs.nestjs.com/)
+
+### gateway
+
+```shell
+npx nest g gateway Events
+```
