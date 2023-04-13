@@ -16,4 +16,4 @@ services:
       - 8000:8000
     volumes:
       - ./backend:/workdir
-    command: /bin/bash -c "npm install && exec npm run start"
+    command: /bin/bash -c "npm install && exec npm run start:dev"
