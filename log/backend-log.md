@@ -13,4 +13,5 @@ nest new . --strict
 
 ```shell
 npx nest g gateway Events
+npm i --save @nestjs/websockets @nestjs/platform-socket.io
 ```
