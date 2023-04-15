@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
-      - name: npm install
-        run: cd backend && npm install
-      - name: backend make fmt-ck
-        run: timeout 300 make -C backend fmt-ck
+      - name: frontend fmt-ck
+        run: cd frontend && npm install && make fmt-ck
+      - name: backend fmt-ck
+        run: cd backend && npm install && make fmt-ck
