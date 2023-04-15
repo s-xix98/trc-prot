@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
-      - name: npm install
-        run: cd backend && npm install
-      - name: backend make lint
-        run: timeout 300 make -C backend lint
+      - name: frontend lint
+        run: cd frontend && npm install && timeout 300 make lint
+      - name: backend lint
+        run: cd backend  && npm install && timeout 300 make lint
