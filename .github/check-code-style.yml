@@ -1,0 +1,12 @@
+# This is a github action to check if the code style is correct.
+
+name: check-code-style
+on: [pull_request, workflow_dispatch]
+jobs:
+  make-fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+      - name: backend make fmt-ck
+        run: timeout 300 make -C backend fmt-ck
