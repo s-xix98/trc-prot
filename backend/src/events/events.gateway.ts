@@ -6,16 +6,16 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
   },
 })
 export class EventsGateway {
-  handleConnection(client: any) {
+  handleConnection(_client: any) {
     console.log('handleConnection');
   }
 
-  handleDisconnect(client: any) {
+  handleDisconnect(_client: any) {
     console.log('handleDisconnect');
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
+  handleMessage(_client: any, _payload: any): string {
     return 'Hello world!';
   }
 }
