@@ -7,11 +7,11 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 })
 export class EventsGateway {
   handleConnection(client: any) {
-    console.log('handleConnection', client);
+    console.log('handleConnection');
   }
 
   handleDisconnect(client: any) {
-    console.log('handleDisconnect', client);
+    console.log('handleDisconnect');
   }
 
   @SubscribeMessage('message')
