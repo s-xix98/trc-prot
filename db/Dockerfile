@@ -1,0 +1,1 @@
+FROM postgre:latest
