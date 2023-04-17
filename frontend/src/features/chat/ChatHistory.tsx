@@ -1,5 +1,7 @@
 import { useLayoutEffect } from "react";
 
+import { Container } from "../../components/Layout/Container";
+
 export const ChatHistory = ({
     chatHist,
     isNeedScroll,
@@ -16,30 +18,12 @@ export const ChatHistory = ({
     }, [chatHist]);
 
     return (
-        <>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                    overflow: "scroll",
-                }}
-            >
+        <Container>
+            <div style={{ flex: "1", overflowY: "scroll" }}>
                 {chatHist.map((msg, idx) => (
-                    <div key={idx} style={{ display: "flex" }}>
-                        <p
-                            style={{
-                                margin: "5px",
-                                padding: "3px",
-                                backgroundColor: "gray",
-                            }}
-                        >
-                            {msg}
-                        </p>
-                    </div>
+                    <p>{msg}</p>
                 ))}
-                <div ref={scrollBottomRef} />
             </div>
-        </>
+        </Container>
     );
 };

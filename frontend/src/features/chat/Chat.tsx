@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 
 import { socket } from "../../socket";
 
+import { Container } from "../../components/Layout/Container";
+
 import { ChatHistory } from "./ChatHistory";
 import { ChatInput } from "./ChatInput";
 
@@ -77,22 +79,18 @@ export const Chat = () => {
     }, []);
 
     return (
-        <div style={{ height: "100%" }}>
-            <h3>ChatArea</h3>
-            <div style={{ height: "90%" }}>
-                <ChatHistory
-                    chatHist={rcvMsg}
-                    isNeedScroll={isNeedScroll}
-                    scrollBottomRef={scrollBottomRef}
-                />
-            </div>
-            <div style={{ height: "10%" }}>
-                <ChatInput
-                    msg={msg}
-                    sendBtnAct={sendBtnAct}
-                    onChangeAct={onChangeAct}
-                />
-            </div>
-        </div>
+        <Container>
+            <h2>ChatArea</h2>
+            <ChatHistory
+                chatHist={rcvMsg}
+                isNeedScroll={isNeedScroll}
+                scrollBottomRef={scrollBottomRef}
+            />
+            <ChatInput
+                msg={msg}
+                onChangeAct={onChangeAct}
+                sendBtnAct={sendBtnAct}
+            />
+        </Container>
     );
 };
