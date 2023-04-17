@@ -21,7 +21,7 @@ export const ChatHistory = ({
         <Container>
             <div style={{ flex: "1", overflowY: "scroll" }}>
                 {chatHist.map((msg, idx) => (
-                    <p>{msg}</p>
+                    <p key={idx}>{msg}</p>
                 ))}
             </div>
         </Container>
