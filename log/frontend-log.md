@@ -52,3 +52,12 @@ npm install socket.io-client
 
 - [Client Installation | Socket.IO](https://socket.io/docs/v4/client-installation/)
 - [How to use with React | Socket.IO](https://socket.io/how-to/use-with-react)
+
+## MUI
+
+```shell
+npm install @mui/material @emotion/react @emotion/styled
+```
+
+- [MUI: The React component library you always wanted](https://mui.com/)
+- [Installation - Material UI](https://mui.com/material-ui/getting-started/installation/)
