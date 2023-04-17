@@ -4,9 +4,9 @@ export const ContainerRow = ({ children }: { children: ReactNode }) => {
     return (
         <div
             style={{
+                flex: "1",
                 display: "flex",
                 flexDirection: "row",
-                flex: "1",
                 overflow: "hidden",
             }}
         >
