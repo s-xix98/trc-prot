@@ -41,7 +41,7 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
 
 export const Chat = () => {
     const [msg, setMsg] = useState("");
-    const [rcvMsg, setRcvMsg] = useState<string[]>([]);
+    const [chatHistMsgs, setchatHistMsgs] = useState<string[]>([]);
 
     const scrollBottomRef = useRef<HTMLDivElement>(null);
     const [isNeedScroll, setIsNeedScroll] = useState(false);
@@ -66,7 +66,7 @@ export const Chat = () => {
     const onMessage = (data: string) => {
         const needScroll = isScrollBottom(scrollBottomRef);
         setIsNeedScroll(() => needScroll);
-        setRcvMsg((rcvMsg) => [...rcvMsg, data]);
+        setchatHistMsgs((chatHistMsgs) => [...chatHistMsgs, data]);
         console.log("needScroll", needScroll);
     };
 
@@ -82,7 +82,7 @@ export const Chat = () => {
         <Container>
             <h2>ChatArea</h2>
             <ChatHistory
-                chatHist={rcvMsg}
+                chatHist={chatHistMsgs}
                 isNeedScroll={isNeedScroll}
                 scrollBottomRef={scrollBottomRef}
             />
