@@ -20,6 +20,9 @@ PHONY	+=	fmt-ck
 fmt-ck:
 	npm run fmt-ck
 
+PHONY += sb
+sb:
+	npm run storybook
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
