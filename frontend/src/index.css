@@ -11,6 +11,7 @@ body,
 }
 
 :root {
+    font-family: "Courier New";
     color: white;
     background-color: dimgray;
 }
