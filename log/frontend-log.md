@@ -62,3 +62,12 @@ npm install @mui/icons-material
 
 - [MUI: The React component library you always wanted](https://mui.com/)
 - [Installation - Material UI](https://mui.com/material-ui/getting-started/installation/)
+
+## storybook
+```shell
+npx storybook@latest init
+npm run storybook
+```
+
+- [install strybook](https://storybook.js.org/docs/react/get-started/install)
+
