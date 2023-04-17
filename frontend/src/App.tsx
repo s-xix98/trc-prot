@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 
 import { socket } from "./socket";
-import { Counter } from "./Counter";
-import { Canvas } from "./Canvas";
+import { Chat } from "./features/chat/Chat";
 
 const onConnect = () => {
     console.log("socket connect");
@@ -25,10 +24,17 @@ function App() {
 
     return (
         <>
-            <h1>Header</h1>
-            <hr />
-            <Counter />
-            <Canvas />
+            <div style={{ height: "5%" }}>
+                <h1>Header</h1>
+                <hr />
+            </div>
+            <div style={{ height: "90%" }}>
+                <Chat />
+            </div>
+            <div style={{ height: "5%" }}>
+                <hr />
+                <h3>footer</h3>
+            </div>
         </>
     );
 }
