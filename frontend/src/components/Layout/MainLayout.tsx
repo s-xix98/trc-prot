@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
 
-import { Container } from "./Container";
+import { ContainerCol } from "./ContainerCol";
 
 export const MainLayout = ({ children }: { children: ReactNode }) => {
     return (
-        <Container>
+        <ContainerCol>
             <div>
                 <h1>Header</h1>
                 <hr />
@@ -14,6 +14,6 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
                 <hr />
                 <h1>Footer</h1>
             </div>
-        </Container>
+        </ContainerCol>
     );
 };

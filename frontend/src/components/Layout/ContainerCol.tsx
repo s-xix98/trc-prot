@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export const Container = ({ children }: { children: ReactNode }) => {
+export const ContainerCol = ({ children }: { children: ReactNode }) => {
     return (
         <div
             style={{

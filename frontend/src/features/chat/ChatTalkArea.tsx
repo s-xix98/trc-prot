@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { socket } from "../../socket";
 
-import { Container } from "../../components/Layout/Container";
+import { ContainerCol } from "../../components/Layout/ContainerCol";
 
 import { ChatHistory } from "./ChatHistory";
 import { ChatInput } from "./ChatInput";
@@ -79,7 +79,7 @@ export const ChatToakArea = () => {
     }, []);
 
     return (
-        <Container>
+        <ContainerCol>
             <h2>ChatToakArea</h2>
             <hr />
             <ChatHistory
@@ -92,6 +92,6 @@ export const ChatToakArea = () => {
                 onChangeAct={onChangeAct}
                 sendBtnAct={sendBtnAct}
             />
-        </Container>
+        </ContainerCol>
     );
 };

@@ -1,4 +1,4 @@
-import { Container } from "../../components/Layout/Container";
+import { ContainerCol } from "../../components/Layout/ContainerCol";
 
 export const ChatChannelArea = () => {
     const channels: string[] = [];
@@ -7,16 +7,16 @@ export const ChatChannelArea = () => {
     }
 
     return (
-        <Container>
+        <ContainerCol>
             <h2>ChaChannelArea</h2>
             <hr />
-            <Container>
+            <ContainerCol>
                 <div style={{ flex: "1", overflowY: "scroll" }}>
                     {channels.map((channel, idx) => (
                         <p key={idx}>{channel}</p>
                     ))}
                 </div>
-            </Container>
-        </Container>
+            </ContainerCol>
+        </ContainerCol>
     );
 };
