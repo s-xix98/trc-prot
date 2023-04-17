@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { socket } from "./socket";
+import { Counter } from "./Counter";
 import { Canvas } from "./Canvas";
 
 const onConnect = () => {
@@ -26,6 +27,7 @@ function App() {
         <>
             <h1>Header</h1>
             <hr />
+            <Counter />
             <Canvas />
         </>
     );
