@@ -16,6 +16,10 @@ fmt:
 	docker exec -t frontend make fmt
 	docker exec -t backend make fmt
 
+fmt-ck:
+	docker exec -t frontend make fmt-ck
+	docker exec -t backend make fmt-ck
+
 lint:
 	docker exec -t frontend make lint
 	docker exec -t backend make lint
