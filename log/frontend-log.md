@@ -57,6 +57,7 @@ npm install socket.io-client
 
 ```shell
 npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/icons-material
 ```
 
 - [MUI: The React component library you always wanted](https://mui.com/)
