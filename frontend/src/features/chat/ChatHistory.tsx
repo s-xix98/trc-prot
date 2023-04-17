@@ -3,11 +3,11 @@ import { useLayoutEffect } from "react";
 import { Container } from "../../components/Layout/Container";
 
 export const ChatHistory = ({
-    chatHist,
+    chatHistMsgs,
     isNeedScroll,
     scrollBottomRef,
 }: {
-    chatHist: string[];
+    chatHistMsgs: string[];
     isNeedScroll: boolean;
     scrollBottomRef: React.RefObject<HTMLDivElement>;
 }) => {
@@ -15,12 +15,12 @@ export const ChatHistory = ({
         if (isNeedScroll === true) {
             scrollBottomRef?.current?.scrollIntoView();
         }
-    }, [chatHist]);
+    }, [chatHistMsgs]);
 
     return (
         <Container>
             <div style={{ flex: "1", overflowY: "scroll" }}>
-                {chatHist.map((msg, idx) => (
+                {chatHistMsgs.map((msg, idx) => (
                     <p key={idx}>{msg}</p>
                 ))}
                 <div ref={scrollBottomRef}></div>

@@ -82,7 +82,7 @@ export const Chat = () => {
         <Container>
             <h2>ChatArea</h2>
             <ChatHistory
-                chatHist={chatHistMsgs}
+                chatHistMsgs={chatHistMsgs}
                 isNeedScroll={isNeedScroll}
                 scrollBottomRef={scrollBottomRef}
             />
