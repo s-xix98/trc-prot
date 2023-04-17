@@ -13,10 +13,12 @@ backend-it:
 	docker exec -it backend bash
 
 fmt:
-	docker exec -t frontend npm run fmt
+	docker exec -t frontend make fmt
+	docker exec -t backend make fmt
 
 lint:
-	docker exec -t frontend npm run lint
+	docker exec -t frontend make lint
+	docker exec -t backend make lint
 
 lint-fix:
 	docker exec -t frontend npm run lint-fix
