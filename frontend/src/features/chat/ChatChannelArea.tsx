@@ -8,7 +8,7 @@ export const ChatChannelArea = () => {
 
     return (
         <ContainerCol>
-            <h2>ChaChannelArea</h2>
+            <h2>ChatChannelArea</h2>
             <hr />
             <ContainerCol>
                 <div style={{ flex: "1", overflowY: "scroll" }}>
