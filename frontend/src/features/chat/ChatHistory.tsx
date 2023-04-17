@@ -23,6 +23,7 @@ export const ChatHistory = ({
                 {chatHist.map((msg, idx) => (
                     <p key={idx}>{msg}</p>
                 ))}
+                <div ref={scrollBottomRef}></div>
             </div>
         </Container>
     );
