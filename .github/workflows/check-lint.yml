@@ -1,0 +1,14 @@
+# This is a github action to check for errors in linter.
+
+name: check-lint
+on: [pull_request, workflow_dispatch]
+jobs:
+  make-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+      - name: frontend lint
+        run: cd frontend && npm install && timeout 300 make lint
+      - name: backend lint
+        run: cd backend  && npm install && timeout 300 make lint
