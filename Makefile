@@ -45,4 +45,4 @@ lint-fix:
 
 # etc...
 # ------------------------------------------------------------------------------------------
-.PHONY: all down re frontend-it backend-it fmt lint lint-fix
+.PHONY: $(PHONY)
