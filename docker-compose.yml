@@ -17,3 +17,15 @@ services:
     volumes:
       - ./backend:/workdir
     command: /bin/bash -c "npm install && exec npm run start:dev"
+
+  db:
+    build: db
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+        POSTGRES_USER: test
+        POSTGRES_PASSWORD: test
+        POSTGRES_DB: test
+    restart: always
+
