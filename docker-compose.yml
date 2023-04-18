@@ -5,9 +5,10 @@ services:
     container_name: frontend
     ports:
       - 3000:3000
+      - 6006:6006
     volumes:
       - ./frontend:/workdir
-    command: /bin/bash -c "npm install && exec npm run dev"
+    command: /bin/bash -c "npm install && exec npm run concurrent"
 
   backend:
     build: backend
