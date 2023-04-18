@@ -32,7 +32,7 @@ model User {
 // User 関係するテーブル
 // fields: 参照元のカラム　
 // reference: 参照先のカラム
-// ondelete:cascade Userテーブルのレコードが削除されると自動的に関連するメッセージを削除
+// onDelete: Cascade Userテーブルのレコードが削除されると自動的に関連するメッセージを削除
 model Message {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
