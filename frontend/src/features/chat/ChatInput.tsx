@@ -3,6 +3,8 @@ import { ChangeEvent } from "react";
 import { Input } from "../../components/Elements/Input/Input";
 import { SendButton } from "../../components/Elements/Button/SendButton";
 
+import { ContainerRow } from "../../components/Layout/ContainerRow";
+
 export const ChatInput = ({
     msg,
     onChangeAct,
@@ -14,9 +16,11 @@ export const ChatInput = ({
 }) => {
     return (
         <>
-            <div style={{ display: "flex" }}>
-                <Input msg={msg} onChangeAct={onChangeAct} />
-                <SendButton sendBtnAct={sendBtnAct} />
+            <div>
+                <ContainerRow>
+                    <Input msg={msg} onChangeAct={onChangeAct} />
+                    <SendButton sendBtnAct={sendBtnAct} />
+                </ContainerRow>
             </div>
         </>
     );
