@@ -13,11 +13,14 @@ services:
   backend:
     build: backend
     container_name: backend
+    depends_on:
+      - db
     ports:
       - 8000:8000
+      - 5555:5555
     volumes:
       - ./backend:/workdir
-    command: /bin/bash -c "npm install && exec npm run start:dev"
+    command: /bin/bash -c "npm install && npx prisma db push --preview-feature && npx prisma studio & exec npm run start:dev"
 
   db:
     build: db
