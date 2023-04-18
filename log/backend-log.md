@@ -15,3 +15,10 @@ nest new . --strict
 npx nest g gateway Events
 npm i --save @nestjs/websockets @nestjs/platform-socket.io
 ```
+
+### prisma
+```shell
+npm install prisma --save-dev
+npx prisma init
+```
+-[prisma install](https://docs.nestjs.com/recipes/prisma)
