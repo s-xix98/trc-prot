@@ -1,6 +1,7 @@
 import { useLayoutEffect } from "react";
 
 import { ContainerCol } from "../../components/Layout/ContainerCol";
+import { ContainerScrollItem } from "../../components/Layout/ContainerScrollItem";
 
 export const ChatHistory = ({
     chatHistMsgs,
@@ -19,12 +20,12 @@ export const ChatHistory = ({
 
     return (
         <ContainerCol>
-            <div style={{ flex: "1", overflowY: "scroll" }}>
+            <ContainerScrollItem>
                 {chatHistMsgs.map((msg, idx) => (
                     <p key={idx}>{msg}</p>
                 ))}
                 <div ref={scrollBottomRef}></div>
-            </div>
+            </ContainerScrollItem>
         </ContainerCol>
     );
 };
