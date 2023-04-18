@@ -2,16 +2,17 @@ import { ChatChannelArea } from "./ChatChannelArea";
 import { ChatToakArea } from "./ChatTalkArea";
 
 import { ContainerRow } from "../../components/Layout/ContainerRow";
+import { ContainerItem } from "../../components/Layout/ContainerItem";
 
 export const Chat = () => {
     return (
         <ContainerRow>
-            <div style={{ borderRight: "solid", flex: "1", display: "flex" }}>
+            <ContainerItem flexRatio={1}>
                 <ChatChannelArea />
-            </div>
-            <div style={{ borderRight: "solid", flex: "4", display: "flex" }}>
+            </ContainerItem>
+            <ContainerItem flexRatio={4}>
                 <ChatToakArea />
-            </div>
+            </ContainerItem>
         </ContainerRow>
     );
 };
