@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+// @id primay key
+// @default(autoincrement()) レコード作成時に自動的にインクリメントしてくれる
+// messageの配列
+// @unique 一意のデータ
+
+model User {
+  id        Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String @unique
+  nickname  String @unique
+  hashedPassword String
+
+  messages Message[]
+}
+
+// author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
+// User 関係するテーブル
+// fields: 参照元のカラム　
+// reference: 参照先のカラム
+// onDelete: Cascade  Userテーブルのレコードが削除されると自動的に関連するメッセージを削除
+model Message {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content String
+  authorId Int
+  author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
+}
