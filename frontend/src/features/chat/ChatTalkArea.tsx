@@ -39,7 +39,7 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
     return isBtm;
 };
 
-export const ChatToakArea = () => {
+export const ChatTalkArea = () => {
     const [msg, setMsg] = useState("");
     const [chatHistMsgs, setchatHistMsgs] = useState<string[]>([]);
 
@@ -80,7 +80,7 @@ export const ChatToakArea = () => {
 
     return (
         <ContainerCol>
-            <h2>ChatToakArea</h2>
+            <h2>ChatTalkArea</h2>
             <hr />
             <ChatHistory
                 chatHistMsgs={chatHistMsgs}

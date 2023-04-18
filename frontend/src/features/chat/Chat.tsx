@@ -1,5 +1,5 @@
 import { ChatChannelArea } from "./ChatChannelArea";
-import { ChatToakArea } from "./ChatTalkArea";
+import { ChatTalkArea } from "./ChatTalkArea";
 
 import { ContainerRow } from "../../components/Layout/ContainerRow";
 import { ContainerItem } from "../../components/Layout/ContainerItem";
@@ -11,7 +11,7 @@ export const Chat = () => {
                 <ChatChannelArea />
             </ContainerItem>
             <ContainerItem flexRatio={4}>
-                <ChatToakArea />
+                <ChatTalkArea />
             </ContainerItem>
         </ContainerRow>
     );
