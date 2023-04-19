@@ -20,7 +20,7 @@ services:
       - 5555:5555
     volumes:
       - ./backend:/workdir
-    command: /bin/bash -c "npm install && npx prisma db push --preview-feature && npx prisma studio & exec npm run start:dev"
+    command: /bin/bash -c "npm install && npx prisma db push --preview-feature && npx prisma generate && npx prisma studio & exec npm run start:dev"
 
   db:
     build: db
