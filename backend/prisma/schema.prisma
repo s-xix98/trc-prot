@@ -25,7 +25,7 @@ model User {
   nickname  String @unique
   hashedPassword String
 
-  messages Message[]
+//  messages Message[]
 }
 
 // author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
@@ -39,5 +39,5 @@ model Message {
   updatedAt DateTime @updatedAt
   content String
   authorId Int
-  author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
+//  author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
 }
