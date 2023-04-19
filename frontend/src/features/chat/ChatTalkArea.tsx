@@ -17,24 +17,24 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
     }
     const scrollHeight = scrollParentElement.scrollHeight;
     const scrollTop = scrollParentElement.scrollTop;
-    const offsetHeight = scrollParentElement.offsetHeight;
+    const clientHeight = scrollParentElement.clientHeight;
 
     // debug
     // console.log("scrollHeight", scrollHeight);
     // console.log("scrollTop", scrollTop);
-    // console.log("offsetHeight", offsetHeight);
-    // console.log(scrollTop + offsetHeight);
+    // console.log("clientHeight", clientHeight);
+    // console.log(scrollTop + clientHeight);
 
     // TODO : is it ok to return false?
     if (
         scrollHeight === undefined ||
         scrollTop === undefined ||
-        offsetHeight === undefined
+        clientHeight === undefined
     ) {
         return false;
     }
 
-    const isBtm = Math.abs(scrollHeight - (scrollTop + offsetHeight)) <= 1;
+    const isBtm = Math.abs(scrollHeight - (scrollTop + clientHeight)) <= 1;
 
     return isBtm;
 };
