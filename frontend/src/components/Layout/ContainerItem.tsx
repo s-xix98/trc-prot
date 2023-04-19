@@ -9,7 +9,11 @@ export const ContainerItem = ({
 }) => {
     return (
         <>
-            <div style={{ flex: flexRatio, display: "flex" }}>{children}</div>
+            <div
+                style={{ flex: flexRatio, display: "flex", overflow: "hidden" }}
+            >
+                {children}
+            </div>
         </>
     );
 };
