@@ -40,6 +40,7 @@ npx prisma studio
 npm install class-validator --save
 ```
 -[class validator](https://github.com/typestack/class-validator)
+-[NestJs Validation](https://docs.nestjs.com/techniques/validation)
 
 ### config
 ```
