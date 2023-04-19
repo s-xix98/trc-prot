@@ -16,6 +16,14 @@ npx nest g gateway Events
 npm i --save @nestjs/websockets @nestjs/platform-socket.io
 ```
 
+
+### Swagger
+
+```shell
+npm install --save @nestjs/swagger
+```
+- [install swagger](https://docs.nestjs.com/openapi/introduction)
+
 ### prisma
 ```shell
 npm install prisma --save-dev
