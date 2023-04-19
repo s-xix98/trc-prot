@@ -1,4 +1,4 @@
-import { Counter } from "../Counter";
+import { Counter } from "../features/sample/Counter";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Counter> = {
