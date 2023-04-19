@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
 import { Container } from "./Container";
+import { ContainerItem } from "./ContainerItem";
 
 export const MainLayout = ({ children }: { children: ReactNode }) => {
     return (
@@ -9,7 +10,7 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
                 <h1>Header</h1>
                 <hr />
             </div>
-            {children}
+            <ContainerItem>{children}</ContainerItem>
             <div>
                 <hr />
                 <h1>Footer</h1>
