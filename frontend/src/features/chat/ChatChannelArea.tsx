@@ -1,5 +1,5 @@
 import { Container } from "../../components/Layout/Container";
-import { ContainerScrollItem } from "../../components/Layout/ContainerScrollItem";
+import { ContainerItem } from "../../components/Layout/ContainerItem";
 
 export const ChatChannelArea = () => {
     const channels: string[] = [];
@@ -12,11 +12,11 @@ export const ChatChannelArea = () => {
             <h2>ChatChannelArea</h2>
             <hr />
             <Container isColumn={true}>
-                <ContainerScrollItem>
+                <ContainerItem overflowY={"scroll"}>
                     {channels.map((channel, idx) => (
                         <p key={idx}>{channel}</p>
                     ))}
-                </ContainerScrollItem>
+                </ContainerItem>
             </Container>
         </Container>
     );

@@ -7,10 +7,10 @@ import { ContainerItem } from "../../components/Layout/ContainerItem";
 export const Chat = () => {
     return (
         <Container>
-            <ContainerItem flexRatio={1}>
+            <ContainerItem flex={"flex"} flexRatio={1}>
                 <ChatChannelArea />
             </ContainerItem>
-            <ContainerItem flexRatio={4}>
+            <ContainerItem flex={"flex"} flexRatio={4}>
                 <ChatTalkArea />
             </ContainerItem>
         </Container>
