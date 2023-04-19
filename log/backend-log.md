@@ -33,3 +33,9 @@ npx prisma db push --preview-feature
 npx prisma studio
 ```
 -[prisma install](https://docs.nestjs.com/recipes/prisma)
+
+### config
+```
+npm i --save @nestjs/config
+```
+-[config](https://docs.nestjs.com/techniques/configuration)
