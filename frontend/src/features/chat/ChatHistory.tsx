@@ -22,7 +22,9 @@ export const ChatHistory = ({
         <ContainerCol>
             <ContainerScrollItem>
                 {chatHistMsgs.map((msg, idx) => (
-                    <p key={idx}>{msg}</p>
+                    <p key={idx} style={{ overflowWrap: "break-word" }}>
+                        {msg}
+                    </p>
                 ))}
                 <div ref={scrollBottomRef}></div>
             </ContainerScrollItem>
