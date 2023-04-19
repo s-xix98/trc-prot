@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 
 import { socket } from "./socket";
-import { Counter } from "./Counter";
-import { Canvas } from "./Canvas";
+import { Chat } from "./features/chat/Chat";
+
+import { MainLayout } from "./components/Layout/MainLayout";
 
 const onConnect = () => {
     console.log("socket connect");
@@ -24,12 +25,9 @@ function App() {
     }, []);
 
     return (
-        <>
-            <h1>Header</h1>
-            <hr />
-            <Counter />
-            <Canvas />
-        </>
+        <MainLayout>
+            <Chat />
+        </MainLayout>
     );
 }
 
