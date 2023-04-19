@@ -5,6 +5,9 @@
 ```shell
 npm i -g @nestjs/cli
 nest new . --strict
+nest g module  <name>
+nest g service <name>
+nest g controller <name>
 ```
 
 - [Documentation | NestJS - A progressive Node.js framework](https://docs.nestjs.com/)
