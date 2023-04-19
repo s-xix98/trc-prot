@@ -33,3 +33,10 @@ npx prisma db push --preview-feature
 npx prisma studio
 ```
 -[prisma install](https://docs.nestjs.com/recipes/prisma)
+
+
+### class-validator
+```shell
+npm install class-validator --save
+```
+-[class validator](https://github.com/typestack/class-validator)
