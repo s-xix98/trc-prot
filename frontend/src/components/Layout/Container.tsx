@@ -1,12 +1,20 @@
 import { ReactNode } from "react";
 
-export const ContainerCol = ({ children }: { children: ReactNode }) => {
+export const Container = ({
+    children,
+    isColumn = false,
+}: {
+    children: ReactNode;
+    isColumn?: boolean;
+}) => {
+    const flexDirection = isColumn ? "column" : "row";
+
     return (
         <div
             style={{
                 flex: "1",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: flexDirection,
                 overflow: "hidden",
             }}
         >

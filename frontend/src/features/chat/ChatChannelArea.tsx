@@ -1,4 +1,4 @@
-import { ContainerCol } from "../../components/Layout/ContainerCol";
+import { Container } from "../../components/Layout/Container";
 import { ContainerScrollItem } from "../../components/Layout/ContainerScrollItem";
 
 export const ChatChannelArea = () => {
@@ -8,16 +8,16 @@ export const ChatChannelArea = () => {
     }
 
     return (
-        <ContainerCol>
+        <Container isColumn={true}>
             <h2>ChatChannelArea</h2>
             <hr />
-            <ContainerCol>
+            <Container isColumn={true}>
                 <ContainerScrollItem>
                     {channels.map((channel, idx) => (
                         <p key={idx}>{channel}</p>
                     ))}
                 </ContainerScrollItem>
-            </ContainerCol>
-        </ContainerCol>
+            </Container>
+        </Container>
     );
 };
