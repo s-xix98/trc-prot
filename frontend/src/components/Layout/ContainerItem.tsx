@@ -1,16 +1,27 @@
 import { ReactNode } from "react";
 
 export const ContainerItem = ({
-    flexRatio,
     children,
+    display = "auto",
+    flexRatio = 1,
+    overflowX = "hidden",
+    overflowY = "hidden",
 }: {
-    flexRatio: number;
     children: ReactNode;
+    display?: "auto" | "flex";
+    flexRatio?: number;
+    overflowX?: "hidden" | "scroll";
+    overflowY?: "hidden" | "scroll";
 }) => {
     return (
         <>
             <div
-                style={{ flex: flexRatio, display: "flex", overflow: "hidden" }}
+                style={{
+                    display: display,
+                    flex: flexRatio,
+                    overflowX: overflowX,
+                    overflowY: overflowY,
+                }}
             >
                 {children}
             </div>
