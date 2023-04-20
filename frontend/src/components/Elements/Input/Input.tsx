@@ -1,23 +1,23 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent } from 'react';
 
-import TextField from "@mui/material/TextField";
+import TextField from '@mui/material/TextField';
 
 export const Input = ({
-    msg,
-    onChangeAct,
+  msg,
+  onChangeAct,
 }: {
-    msg: string;
-    onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
+  msg: string;
+  onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
-    return (
-        <>
-            <TextField
-                id="outlined-multiline-static"
-                multiline
-                value={msg}
-                onChange={onChangeAct}
-                style={{ height: "100%", width: "100%" }}
-            />
-        </>
-    );
+  return (
+    <>
+      <TextField
+        id="outlined-multiline-static"
+        multiline
+        value={msg}
+        onChange={onChangeAct}
+        style={{ height: '100%', width: '100%' }}
+      />
+    </>
+  );
 };

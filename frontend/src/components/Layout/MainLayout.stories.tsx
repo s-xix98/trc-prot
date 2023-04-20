@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { MainLayout } from "./MainLayout";
+import { MainLayout } from './MainLayout';
 
 const meta = {
-    component: MainLayout,
-    tags: ["autodocs"],
+  component: MainLayout,
+  tags: ['autodocs'],
 } satisfies Meta<typeof MainLayout>;
 
 export default meta;
@@ -12,7 +12,7 @@ export default meta;
 type Story = StoryObj<typeof MainLayout>;
 
 export const Basic: Story = {
-    args: {
-        children: <h1>hoge</h1>,
-    },
+  args: {
+    children: <h1>hoge</h1>,
+  },
 };
