@@ -39,3 +39,9 @@ npx prisma studio
 npm i --save @nestjs/config
 ```
 -[config](https://docs.nestjs.com/techniques/configuration)
+
+### prismaを操作するクラスの生成
+```shell
+nest g service prisma
+nest g module prisma
+```
