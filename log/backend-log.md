@@ -45,3 +45,8 @@ npm i --save @nestjs/config
 nest g service prisma
 nest g module prisma
 ```
+
+### prisma seed
+```shell
+npx prisma seed
+```[seeding your database](https://www.prisma.io/docs/guides/migrate/seed-database)
