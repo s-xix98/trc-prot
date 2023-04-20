@@ -14,7 +14,7 @@ type Story = StoryObj<typeof Container>;
 
 export const Basic: Story = {
     args: {
-        isColumn: true,
+        flexDirection: "row",
         children: (
             <>
                 <ContainerItem>
