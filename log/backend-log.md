@@ -48,5 +48,5 @@ nest g module prisma
 
 ### prisma seed
 ```shell
-npx prisma seed
+npx prisma db seed
 ```[seeding your database](https://www.prisma.io/docs/guides/migrate/seed-database)
