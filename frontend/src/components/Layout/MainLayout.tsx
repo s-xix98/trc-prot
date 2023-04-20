@@ -5,7 +5,7 @@ import { ContainerItem } from "./ContainerItem";
 
 export const MainLayout = ({ children }: { children: ReactNode }) => {
     return (
-        <Container isColumn={true}>
+        <Container flexDirection={"column"}>
             <div>
                 <h1>Header</h1>
                 <hr />
