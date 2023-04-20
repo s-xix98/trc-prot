@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { ChatHistory } from "./ChatHistory";
+import { ChatHistory } from './ChatHistory';
 
 const meta = {
-    component: ChatHistory,
-    tags: ["autodocs"],
+  component: ChatHistory,
+  tags: ['autodocs'],
 } satisfies Meta<typeof ChatHistory>;
 
 export default meta;
@@ -13,11 +13,11 @@ type Story = StoryObj<typeof ChatHistory>;
 
 const items: string[] = [];
 for (let n = 0; n < 100; n++) {
-    items.push(`hoge ${n}`);
+  items.push(`hoge ${n}`);
 }
 
 export const Basic: Story = {
-    args: {
-        chatHistMsgs: items,
-    },
+  args: {
+    chatHistMsgs: items,
+  },
 };
