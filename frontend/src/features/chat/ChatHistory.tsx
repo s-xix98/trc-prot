@@ -19,7 +19,7 @@ export const ChatHistory = ({
     }, [chatHistMsgs]);
 
     return (
-        <Container isColumn={true}>
+        <Container flexDirection={"column"}>
             <ContainerItem overflowY={"scroll"}>
                 {chatHistMsgs.map((msg, idx) => (
                     <p key={idx} style={{ overflowWrap: "break-word" }}>

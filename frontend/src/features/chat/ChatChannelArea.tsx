@@ -8,10 +8,10 @@ export const ChatChannelArea = () => {
     }
 
     return (
-        <Container isColumn={true}>
+        <Container flexDirection={"column"}>
             <h2>ChatChannelArea</h2>
             <hr />
-            <Container isColumn={true}>
+            <Container flexDirection={"column"}>
                 <ContainerItem overflowY={"scroll"}>
                     {channels.map((channel, idx) => (
                         <p key={idx}>{channel}</p>

@@ -2,13 +2,11 @@ import { ReactNode } from "react";
 
 export const Container = ({
     children,
-    isColumn = false,
+    flexDirection = "row",
 }: {
     children: ReactNode;
-    isColumn?: boolean;
+    flexDirection?: "row" | "column";
 }) => {
-    const flexDirection = isColumn ? "column" : "row";
-
     return (
         <div
             style={{

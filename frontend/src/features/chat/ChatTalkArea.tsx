@@ -79,7 +79,7 @@ export const ChatTalkArea = () => {
     }, []);
 
     return (
-        <Container isColumn={true}>
+        <Container flexDirection={"column"}>
             <h2>ChatTalkArea</h2>
             <hr />
             <ChatHistory
