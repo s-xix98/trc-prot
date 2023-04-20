@@ -8,6 +8,8 @@ import { Container } from '../../components/Layout/Container';
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
 
+import { postMessage } from './api/postMessage';
+
 const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
   const scrollParentElement = scrollBottomRef?.current?.parentElement;
 
@@ -59,6 +61,10 @@ export const ChatTalkArea = () => {
   };
 
   const sendBtnAct = () => {
+    postMessage(msg);
+    // バックエンドで post の方に クライアントに 送信したもの返す実装が現状ないので
+    // socket の方も残したまま (送信したものが表示されないため)
+    // 送信したもの送り返すかどうかも、そもそも検討 (そのまま chatHistMsgs に追加するなど )
     socket.emit('message', msg);
     setMsg('');
   };
