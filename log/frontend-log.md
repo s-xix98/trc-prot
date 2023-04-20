@@ -75,3 +75,6 @@ npm run storybook
 ```shell
 npm i -D vite-plugin-checker
 ```
+
+- noEmit
+  - [特徴 | Vite](https://ja.vitejs.dev/guide/features.html)
