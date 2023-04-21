@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import { useState, useEffect, useRef } from 'react';
 
 import { socket } from '../../socket';
@@ -40,28 +39,10 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
 };
 
 export const ChatTalkArea = () => {
-  const [msg, setMsg] = useState('');
   const [chatHistMsgs, setchatHistMsgs] = useState<string[]>([]);
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [isNeedScroll, setIsNeedScroll] = useState(false);
-
-  const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
-    // TODO : Shift + Enter で 改行を入れられるようにとかしたい
-    if (e.target.value.slice(-1) === '\n') {
-      if (e.target.value.length === 1) {
-        return;
-      }
-      sendBtnAct();
-      return;
-    }
-    setMsg(e.target.value);
-  };
-
-  const sendBtnAct = () => {
-    socket.emit('message', msg);
-    setMsg('');
-  };
 
   const onMessage = (data: string) => {
     const needScroll = isScrollBottom(scrollBottomRef);
@@ -87,7 +68,7 @@ export const ChatTalkArea = () => {
         isNeedScroll={isNeedScroll}
         scrollBottomRef={scrollBottomRef}
       />
-      <ChatInput msg={msg} onChangeAct={onChangeAct} sendBtnAct={sendBtnAct} />
+      <ChatInput />
     </Container>
   );
 };
