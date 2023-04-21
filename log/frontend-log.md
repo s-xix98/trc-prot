@@ -51,6 +51,7 @@ npm install --save-dev eslint-plugin-import
 ```
 
 - [GitHub - import-js/eslint-plugin-import: ESLint plugin with rules that help validate proper imports.](https://github.com/import-js/eslint-plugin-import)
+- [eslint-plugin-import/order.md at main · import-js/eslint-plugin-import · GitHub](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
 
 ## socket.io-client
 
