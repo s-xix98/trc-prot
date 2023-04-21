@@ -41,7 +41,8 @@ lint:
 
 PHONY	+=	lint-fix
 lint-fix:
-	docker exec -t frontend npm run lint-fix
+	docker exec -t frontend make lint-fix
+	docker exec -t backend make lint-fix
 
 # etc...
 # ------------------------------------------------------------------------------------------
