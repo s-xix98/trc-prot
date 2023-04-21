@@ -44,6 +44,14 @@ npm install --save-dev prettier eslint-config-prettier
 - mv extends prettier to last
   - [GitHub - prettier/eslint-config-prettier: Turns off all rules that are unnecessary or might conflict with Prettier.](https://github.com/prettier/eslint-config-prettier)
 
+### eslint-plugin-import
+
+```shell
+npm install --save-dev eslint-plugin-import
+```
+
+- [GitHub - import-js/eslint-plugin-import: ESLint plugin with rules that help validate proper imports.](https://github.com/import-js/eslint-plugin-import)
+
 ## socket.io-client
 
 ```shell
