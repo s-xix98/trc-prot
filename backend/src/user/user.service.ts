@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { signUpDto } from './dto/user.dto';
+import { loginDto, signUpDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -25,4 +25,5 @@ export class UserService {
         console.log(e);
       });
   }
+  async login(dto: loginDto) {}
 }
