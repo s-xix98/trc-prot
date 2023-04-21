@@ -80,6 +80,14 @@ npm run storybook
 
 - [install strybook](https://storybook.js.org/docs/react/get-started/install)
 
+### Interaction tests
+
+```shell
+npm install --save-dev @storybook/test-runner
+```
+
+- [Test runner Addon | Storybook: Frontend workshop for UI development](https://storybook.js.org/addons/@storybook/test-runner)
+
 ## [vite-plugin-checker](https://vite-plugin-checker.netlify.app/)
 ```shell
 npm i -D vite-plugin-checker
