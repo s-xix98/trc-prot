@@ -3,3 +3,8 @@ export class signUpDto {
   nickname: string;
   hashedPassword: string;
 }
+
+export class loginDto {
+  email: string;
+  hashedPassword: string;
+}
