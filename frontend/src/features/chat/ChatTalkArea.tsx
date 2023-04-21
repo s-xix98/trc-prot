@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import { useState, useEffect, useRef } from 'react';
 
 import { socket } from '../../socket';
