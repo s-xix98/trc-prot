@@ -1,5 +1,4 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-
 import { Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -31,5 +30,20 @@ export class EventsGateway {
       c.emit('message', `${client.id.substring(0, 4)} > ${payload}`);
     }
     return 'Hello world!';
+  }
+
+  @SubscribeMessage('getPastMessages')
+  async handleGetPastMessages(client: Socket, authorId: number) {
+    console.log('getPastMessages');
+    // Userテーブルのidでそのuserのmsgデータを全て取得
+    const pastMessages = await this.prisma.message.findMany({
+      where: {
+        authorId,
+      },
+    });
+    client.emit(
+      'getPastMessages',
+      pastMessages.map((msg) => msg.content),
+    );
   }
 }
