@@ -49,4 +49,12 @@ nest g module prisma
 ### prisma seed
 ```shell
 npx prisma db seed
-```[seeding your database](https://www.prisma.io/docs/guides/migrate/seed-database)
+```
+-[seeding your database](https://www.prisma.io/docs/guides/migrate/seed-database)
+
+### userの処理に関するクラス
+```shell
+nest g module user
+nest g service user
+nest g controller user
+```
