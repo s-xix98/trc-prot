@@ -84,9 +84,11 @@ npm run storybook
 
 ```shell
 npm install --save-dev @storybook/test-runner
+npm install --save-dev jest-image-snapshot
 ```
 
 - [Test runner Addon | Storybook: Frontend workshop for UI development](https://storybook.js.org/addons/@storybook/test-runner)
+- [GitHub - americanexpress/jest-image-snapshot: ✨ Jest matcher for image comparisons. Most commonly used for visual regression testing.](https://github.com/americanexpress/jest-image-snapshot)
 
 ## [vite-plugin-checker](https://vite-plugin-checker.netlify.app/)
 ```shell
