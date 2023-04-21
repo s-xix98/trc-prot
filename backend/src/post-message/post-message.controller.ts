@@ -13,6 +13,7 @@ export class PostMessageController {
   // }
   @Post()
   createMessage(@Body() dto: MessageDto): Promise<Message> {
+    console.log('post-message :', dto);
     return this.postMessageService.postMessage(dto);
   }
 }

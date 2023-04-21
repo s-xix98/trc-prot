@@ -87,3 +87,11 @@ npm i -D vite-plugin-checker
 
 - noEmit
   - [特徴 | Vite](https://ja.vitejs.dev/guide/features.html)
+
+## axios
+
+```shell
+npm install axios
+```
+
+- [GitHub - axios/axios: Promise based HTTP client for the browser and node.js](https://github.com/axios/axios)
