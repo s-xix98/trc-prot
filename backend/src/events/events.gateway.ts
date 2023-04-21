@@ -1,6 +1,7 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 
 import { Socket } from 'socket.io';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @WebSocketGateway({
   cors: {
@@ -8,6 +9,8 @@ import { Socket } from 'socket.io';
   },
 })
 export class EventsGateway {
+  constructor(private prisma: PrismaService) {}
+
   wsClients = new Map<string, Socket>();
 
   handleConnection(client: Socket) {
