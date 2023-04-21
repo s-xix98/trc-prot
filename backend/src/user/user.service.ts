@@ -25,5 +25,20 @@ export class UserService {
         console.log(e);
       });
   }
-  async login(dto: loginDto) {}
+
+  async login(dto: loginDto) {
+    console.log(dto);
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (!user) {
+      console.log('emailが間違っている');
+    } else if (user.hashedPassword != dto.hashedPassword) {
+      console.log('passwordが間違っている');
+    } else {
+      console.log('OK');
+    }
+  }
 }
