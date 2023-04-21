@@ -13,6 +13,10 @@ lint:
 	npm run lint
 	npm run noEmit
 
+PHONY	+=	lint-fix
+lint-fix:
+	npm run lint-fix
+
 PHONY	+=	fmt
 fmt:
 	npm run fmt
