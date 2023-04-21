@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react';
 import { useState, useEffect, useRef } from 'react';
 
 import { socket } from '../../socket';
@@ -7,8 +6,6 @@ import { Container } from '../../components/Layout/Container';
 
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
-
-import { postMessage } from './api/postMessage';
 
 const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
   const scrollParentElement = scrollBottomRef?.current?.parentElement;
@@ -42,32 +39,10 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
 };
 
 export const ChatTalkArea = () => {
-  const [msg, setMsg] = useState('');
   const [chatHistMsgs, setchatHistMsgs] = useState<string[]>([]);
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [isNeedScroll, setIsNeedScroll] = useState(false);
-
-  const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
-    // TODO : Shift + Enter で 改行を入れられるようにとかしたい
-    if (e.target.value.slice(-1) === '\n') {
-      if (e.target.value.length === 1) {
-        return;
-      }
-      sendBtnAct();
-      return;
-    }
-    setMsg(e.target.value);
-  };
-
-  const sendBtnAct = () => {
-    postMessage(msg);
-    // バックエンドで post の方に クライアントに 送信したもの返す実装が現状ないので
-    // socket の方も残したまま (送信したものが表示されないため)
-    // 送信したもの送り返すかどうかも、そもそも検討 (そのまま chatHistMsgs に追加するなど )
-    socket.emit('message', msg);
-    setMsg('');
-  };
 
   const onMessage = (data: string) => {
     const needScroll = isScrollBottom(scrollBottomRef);
@@ -93,7 +68,7 @@ export const ChatTalkArea = () => {
         isNeedScroll={isNeedScroll}
         scrollBottomRef={scrollBottomRef}
       />
-      <ChatInput msg={msg} onChangeAct={onChangeAct} sendBtnAct={sendBtnAct} />
+      <ChatInput />
     </Container>
   );
 };
