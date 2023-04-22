@@ -48,6 +48,10 @@ PHONY += sb-test
 sb-test:
 	docker exec -t frontend make sb-test
 
+PHONY += sb-update
+sb-update:
+	docker exec -t frontend make sb-update
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
