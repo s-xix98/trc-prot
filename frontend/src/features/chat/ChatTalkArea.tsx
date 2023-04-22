@@ -51,11 +51,18 @@ export const ChatTalkArea = () => {
     console.log('needScroll', needScroll);
   };
 
+  const onGetChatLog = (chatlog: string[]) => {
+    console.log('onGetChatLog', chatlog);
+    setchatHistMsgs(chatlog);
+  };
+
   useEffect(() => {
     socket.on('message', onMessage);
+    socket.on('getPastMessages', onGetChatLog);
 
     return () => {
       socket.off('message', onMessage);
+      socket.off('getPastMessages', onGetChatLog);
     };
   }, []);
 
