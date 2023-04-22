@@ -1,0 +1,21 @@
+# storybook test
+
+name: storybook-test
+on: [pull_request, workflow_dispatch]
+jobs:
+  storybook-test:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+      - name: install playwright
+        run: npx playwright install && npx playwright install-deps
+      - name: run storybook test
+        run: cd frontend && npm install && npm run storybook-test-ci
