@@ -1,6 +1,6 @@
-import { Container } from "../../components/Layout/Container";
-import { socket } from "../../socket";
-import { BasicButton } from "../../components/Elements/Button/BasicButton";
+import { Container } from '../../components/Layout/Container';
+import { socket } from '../../socket';
+import { BasicButton } from '../../components/Elements/Button/BasicButton';
 
 const onGetChatLogAct = () => {
   console.log('OnGetChatLogButton');

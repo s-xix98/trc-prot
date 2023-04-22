@@ -8,5 +8,9 @@ export const BasicButton = ({
   btnAct: () => void;
   children: ReactNode;
 }) => {
-  return <Button size={"small"} onClick={btnAct}>{children}</Button>;
+  return (
+    <Button size={'small'} onClick={btnAct}>
+      {children}
+    </Button>
+  );
 };
