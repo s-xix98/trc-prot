@@ -14,6 +14,7 @@
     "noEmit": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "storybook-test": "test-storybook",
+    "storybook-test-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-test\"",
     "storybook-update-snapshot": "test-storybook --updateSnapshot",
     "build-storybook": "storybook build",
     "concurrent": "concurrently \"npm run dev\" \"npm run storybook\""
