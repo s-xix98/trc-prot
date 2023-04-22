@@ -8,12 +8,6 @@ jobs:
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
       - name: frontend fmt-ck
         run: cd frontend && npm install && make fmt-ck
       - name: backend fmt-ck
