@@ -21,7 +21,7 @@ export class UserService {
         console.log(e);
       })
       .catch((e) => {
-        // 失敗時には'P2002'が帰ってくる
+        // emailが被った時のエラーは'P2002'が帰ってくる
         console.log(e);
       });
   }
