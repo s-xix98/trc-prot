@@ -20,6 +20,6 @@ jobs:
       - name: frontend npm install
         run: cd frontend && npm install
       - name: install playwright
-        run: cd frontend && npx playwright install && npx playwright install-deps
+        run: cd frontend && npx playwright install --with-deps
       - name: run storybook test
         run: cd frontend && npm run storybook-test-ci
