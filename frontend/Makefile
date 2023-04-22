@@ -33,6 +33,10 @@ PHONY += sb-test
 sb-test:
 	npm run storybook-test
 
+PHONY += sb-update
+sb-update:
+	npm run storybook-update-snapshot
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
