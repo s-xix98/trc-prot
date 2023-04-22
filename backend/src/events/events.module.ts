@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { EventsGateway } from './events.gateway';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { EventsGateway } from './events.gateway';
 
 @Module({
   imports: [PrismaModule],

@@ -58,3 +58,9 @@ nest g module user
 nest g service user
 nest g controller user
 ```
+
+## eslint
+
+```shell
+npm install --save-dev eslint-plugin-import
+```
