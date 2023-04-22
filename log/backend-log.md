@@ -64,3 +64,8 @@ nest g controller user
 ```shell
 npm install --save-dev eslint-plugin-import
 ```
+
+### backendのテスト（jest）
+-[nestjs test](https://docs.nestjs.com/fundamentals/testing)
+-[jest mock-fnc](https://jestjs.io/docs/mock-function-api)
+-[nestjs testのサンプル](https://github.com/jmcdo29/testing-nestjs/tree/master)
