@@ -21,20 +21,34 @@ const mockPrismaService = {
   message: {
     // PrismaService.createをmockMsgを返すだけの関数にした
     create: jest.fn().mockReturnValue(mockMsg),
-  }
+  },
 };
+
 describe('PostMessageService', () => {
   let service: PostMessageService;
-
+  // テスト前の処理をする関数初期化
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PostMessageService],
+      // テスト対象のサービスとその依存してる奴ら
+      providers: [
+        PostMessageService,
+        {
+          // provideをuseValueでmockした
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
+      ],
     }).compile();
-
     service = module.get<PostMessageService>(PostMessageService);
   });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  describe('post-message', () => {
+    it('should successfully insert a message', () => {
+      expect(
+        service.postMessage({
+          authorId: mockMsg.authorId,
+          content: mockMsg.content,
+        }),
+      ).resolves.toEqual(mockMsg);
+    });
   });
 });
