@@ -9,8 +9,6 @@ jobs:
       - name: checkout git repository
         uses: actions/checkout@v3
       - name: npm install
-        run: echo install
-        run: cd frontend && npm install
+        run: echo install && cd frontend && npm install
       - name: fmt-ck
-        run: echo fmt-ck
         run: cd frontend && make fmt-ck
