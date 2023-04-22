@@ -13,9 +13,6 @@ const onDisconnect = () => {
   console.log('socket disconnect');
 };
 
-
-
-
 function App() {
   useEffect(() => {
     socket.on('connect', onConnect);
