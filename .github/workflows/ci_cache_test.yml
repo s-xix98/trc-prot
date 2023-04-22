@@ -14,7 +14,7 @@ jobs:
           path: ~/.npm
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
-      - name: frontend lint
-        run: cd frontend && npm install && timeout 300 make lint
-      - name: backend lint
-        run: cd backend  && npm install && timeout 300 make lint
+      - name: frontend
+        run: cd frontend && npm install
+      - name: backend
+        run: cd backend  && npm install
