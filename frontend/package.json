@@ -13,7 +13,9 @@
     "lint-fix": "eslint --fix src",
     "noEmit": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "storybook-test": "test-storybook --updateSnapshot",
+    "storybook-test": "test-storybook",
+    "storybook-test-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-test\"",
+    "storybook-update-snapshot": "test-storybook --updateSnapshot",
     "build-storybook": "storybook build",
     "concurrent": "concurrently \"npm run dev\" \"npm run storybook\""
   },
@@ -53,6 +55,7 @@
     "storybook": "^7.0.5",
     "typescript": "^4.9.3",
     "vite": "^4.2.0",
-    "vite-plugin-checker": "^0.5.6"
+    "vite-plugin-checker": "^0.5.6",
+    "wait-on": "^7.0.1"
   }
 }
