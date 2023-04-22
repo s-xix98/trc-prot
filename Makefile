@@ -44,6 +44,10 @@ lint-fix:
 	docker exec -t frontend make lint-fix
 	docker exec -t backend make lint-fix
 
+PHONY += sb-test
+sb-test:
+	docker exec -t frontend make sb-test
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
