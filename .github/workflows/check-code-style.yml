@@ -23,7 +23,12 @@ jobs:
           path: backend/node_modules
           key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
 
+      - name: frontend npm install
+        run: cd frontend && npm install
       - name: frontend fmt-ck
-        run: cd frontend && npm install && make fmt-ck
+        run: cd frontend && timeout 300 make fmt-ck
+
+      - name: backend npm install
+        run: cd backend && npm install
       - name: backend fmt-ck
-        run: cd backend && npm install && make fmt-ck
+        run: cd backend && timeout 300 make fmt-ck
