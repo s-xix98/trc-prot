@@ -13,7 +13,8 @@
     "lint-fix": "eslint --fix src",
     "noEmit": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "storybook-test": "test-storybook --updateSnapshot",
+    "storybook-test": "test-storybook",
+    "storybook-update-snapshot": "test-storybook --updateSnapshot",
     "build-storybook": "storybook build",
     "concurrent": "concurrently \"npm run dev\" \"npm run storybook\""
   },
