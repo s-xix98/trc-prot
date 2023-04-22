@@ -8,6 +8,21 @@ jobs:
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
+
+      - name: cache frontend node-modules
+        id: cache-frontend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
       - name: frontend lint
         run: cd frontend && npm install && timeout 300 make lint
       - name: backend lint
