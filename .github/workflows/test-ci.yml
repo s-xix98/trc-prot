@@ -1,0 +1,16 @@
+# test-ci
+
+name: test-ci
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  test-ic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+      - name: npm install
+        run: echo install
+        run: cd frontend && npm install
+      - name: fmt-ck
+        run: echo fmt-ck
+        run: cd frontend && make fmt-ck
