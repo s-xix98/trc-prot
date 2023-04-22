@@ -6,6 +6,7 @@ import { Container } from '../../components/Layout/Container';
 
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
+import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
 
 const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
   const scrollParentElement = scrollBottomRef?.current?.parentElement;
@@ -51,18 +52,24 @@ export const ChatTalkArea = () => {
     console.log('needScroll', needScroll);
   };
 
+  const onGetChatLog = (chatlog: string[]) => {
+    console.log('onGetChatLog', chatlog);
+    setchatHistMsgs(chatlog);
+  };
+
   useEffect(() => {
     socket.on('message', onMessage);
+    socket.on('getPastMessages', onGetChatLog);
 
     return () => {
       socket.off('message', onMessage);
+      socket.off('getPastMessages', onGetChatLog);
     };
   }, []);
 
   return (
     <Container flexDirection={'column'}>
-      <h2>ChatTalkArea</h2>
-      <hr />
+      <ChatTalkAreaHeader />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         isNeedScroll={isNeedScroll}

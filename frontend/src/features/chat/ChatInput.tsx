@@ -24,7 +24,7 @@ export const ChatInput = () => {
   };
 
   const sendBtnAct = () => {
-    postMessage(msg);
+    postMessage(`${socket.id.substring(0, 4)} > ${msg}`);
     // バックエンドで post の方に クライアントに 送信したもの返す実装が現状ないので
     // socket の方も残したまま (送信したものが表示されないため)
     // 送信したもの送り返すかどうかも、そもそも検討 (そのまま chatHistMsgs に追加するなど )
