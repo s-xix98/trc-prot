@@ -28,6 +28,11 @@ fmt-ck:
 PHONY += sb
 sb:
 	npm run storybook
+
+PHONY += sb-test
+sb-test:
+	npm run storybook-test
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
