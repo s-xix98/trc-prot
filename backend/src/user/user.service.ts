@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { signUpDto } from './dto/signUp.dto';
+import { loginDto, signUpDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -24,5 +24,21 @@ export class UserService {
         // emailが被った時のエラーは'P2002'が帰ってくる
         console.log(e);
       });
+  }
+
+  async login(dto: loginDto) {
+    console.log(dto);
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (!user) {
+      console.log('emailが間違っている');
+    } else if (user.hashedPassword != dto.hashedPassword) {
+      console.log('passwordが間違っている');
+    } else {
+      console.log('OK');
+    }
   }
 }
