@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 
-import { postMessage } from './api/postMessage';
+import { postMessage } from '../api/postMessage';
 import { socket } from '@/socket';
 import { Input } from '@/components/Elements/Input/Input';
 import { SendButton } from '@/components/Elements/Button/SendButton';
