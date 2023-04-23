@@ -33,7 +33,7 @@ describe('PostMessageService', () => {
       providers: [
         PostMessageService,
         {
-          // provideをuseValueでmockした
+          // PostMessageServiceのコンストラクターでuseValueのmockPrismaService使う
           provide: PrismaService,
           useValue: mockPrismaService,
         },
