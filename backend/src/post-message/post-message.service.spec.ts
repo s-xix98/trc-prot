@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostMessageService } from './post-message.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { PostMessageService } from './post-message.service';
 
 type Message = {
   id: number;
