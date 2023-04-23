@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 
-import { socket } from '../../socket';
-
-import { Input } from '../../components/Elements/Input/Input';
-import { SendButton } from '../../components/Elements/Button/SendButton';
-
-import { Container } from '../../components/Layout/Container';
 import { postMessage } from './api/postMessage';
+import { socket } from '@/socket';
+import { Input } from '@/components/Elements/Input/Input';
+import { SendButton } from '@/components/Elements/Button/SendButton';
+import { Container } from '@/components/Layout/Container';
 
 export const ChatInput = () => {
   const [msg, setMsg] = useState('');

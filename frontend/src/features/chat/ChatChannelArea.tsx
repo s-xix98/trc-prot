@@ -1,5 +1,5 @@
-import { Container } from '../../components/Layout/Container';
-import { ContainerItem } from '../../components/Layout/ContainerItem';
+import { Container } from '@/components/Layout/Container';
+import { ContainerItem } from '@/components/Layout/ContainerItem';
 
 export const ChatChannelArea = () => {
   const channels: string[] = [];

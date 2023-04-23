@@ -14,4 +14,7 @@ export default defineConfig({
       typescript: true,
     }),
   ],
+  resolve: {
+    alias: [{ find: '@', replacement: '/src' }],
+  },
 });
