@@ -21,3 +21,14 @@ vite 設定ファイル : [/frontend/vite.config.ts](/frontend/vite.config.ts)
 - import alias
   - [共通オプション | Vite](https://ja.vitejs.dev/config/shared-options.html)
   - [Vite+React+TypeScript+EsLint で、Import パスにエイリアスを使うためにハマったこと](https://zenn.dev/longbridge/articles/5e33ff1a625158)
+- [型 チェック 用の プラグイン の 導入](#vite-plugin-checker)
+  - [特徴 | Vite](https://ja.vitejs.dev/guide/features.html)
+  - > Vite は .ts ファイルのトランスパイルを行うだけで、型チェックは行わないことに注意してください。型チェックは IDE やビルドプロセスで行われることを想定しています。
+  - `tsc --noEmit`
+    - TypeScript のコンパイルエラーのみをチェック
+
+### [vite-plugin-checker](https://vite-plugin-checker.netlify.app/)
+
+```shell
+npm i -D vite-plugin-checker
+```
