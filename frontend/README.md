@@ -1,5 +1,11 @@
 # frontend
 
+## coding-style
+
+- prettier, eslit を使用
+- make lint && make fmt で prettier, eslit の実行
+- coding-style doc : [/frontend/doc/coding-style.md](/frontend/doc/coding-style.md)
+
 ## 使用しているライブラリなど
 
 - dependencies
