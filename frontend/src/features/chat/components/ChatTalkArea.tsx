@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
+import { Container } from '@/components/Layout/Container';
+import { socket } from '@/socket';
+
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
 import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
-import { Container } from '@/components/Layout/Container';
-import { socket } from '@/socket';
 
 const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
   const scrollParentElement = scrollBottomRef?.current?.parentElement;
