@@ -1,4 +1,8 @@
-## storybook
+# storybook
+
+## init
+
+init pr : [storybook 使うます](https://github.com/s-xix98/trc-prot/pull/40)
 
 ```shell
 npx storybook@latest init
@@ -7,7 +11,9 @@ npm run storybook
 
 - [install strybook](https://storybook.js.org/docs/react/get-started/install)
 
-### Interaction tests
+## Interaction tests
+
+pr : [88 storybook を 使って UI テスト](https://github.com/s-xix98/trc-prot/pull/89)
 
 ```shell
 npm install --save-dev @storybook/test-runner
@@ -20,7 +26,9 @@ npm install --save-dev jest-image-snapshot
 - [Storybook 単体でインタラクションテストを実施する](https://zenn.dev/azukiazusa/articles/storybook-interaction-testing)
 - [GitHub - americanexpress/jest-image-snapshot: ✨ Jest matcher for image comparisons. Most commonly used for visual regression testing.](https://github.com/americanexpress/jest-image-snapshot)
 
-### ci test
+## ci test
+
+pr : [98 storybook の スナップショットテストを ci で 走らせる](https://github.com/s-xix98/trc-prot/pull/99)
 
 ```shell
 npm install --save-dev wait-on
