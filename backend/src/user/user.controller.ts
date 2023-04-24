@@ -8,8 +8,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('signup')
-  signUp(@Body() dto: signUpDto) {
-    this.userService.signUp(dto);
+  async signUp(@Body() dto: signUpDto): Promise<User> {
+    return this.userService.signUp(dto);
   }
 
   @HttpCode(HttpStatus.OK)
