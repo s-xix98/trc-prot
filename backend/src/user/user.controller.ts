@@ -1,8 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
 import { loginDto, signUpDto } from './dto/user.dto';
 import { UserService } from './user.service';
-
+import { User } from '@prisma/client';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -11,8 +11,10 @@ export class UserController {
   signUp(@Body() dto: signUpDto) {
     this.userService.signUp(dto);
   }
+
+  @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() dto: loginDto) {
-    this.userService.login(dto);
+  async login(@Body() dto: loginDto): Promise<User> {
+    return this.userService.login(dto);
   }
 }

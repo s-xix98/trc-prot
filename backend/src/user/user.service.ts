@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { User } from '@prisma/client';
 import { loginDto, signUpDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
@@ -27,7 +27,7 @@ export class UserService {
       });
   }
 
-  async login(dto: loginDto) {
+  async login(dto: loginDto): Promise<User> {
     console.log(dto);
     const user = await this.prisma.user.findUnique({
       where: {
@@ -36,10 +36,13 @@ export class UserService {
     });
     if (!user) {
       console.log('emailが間違っている');
+      throw new ForbiddenException('Email incorrect');
     } else if (user.hashedPassword != dto.hashedPassword) {
       console.log('passwordが間違っている');
+      throw new ForbiddenException('Password incorrect');
     } else {
       console.log('OK');
     }
+    return user;
   }
 }
