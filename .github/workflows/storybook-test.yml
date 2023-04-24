@@ -1,5 +1,16 @@
 # storybook test
 
+# cache-playwright の key が `frontend/package-lock.json` になっているが
+# playwright の version とかで 見た方がいいかもだが、
+# 現状 プルリクごとに playwright の install が走るので とりあえずこれで 問題なしとする。
+# 下記記事だと `package-lock.json` の 依存バージョン を 拾ってきているが この辺でもいいのか？
+# - https://playwrightsolutions.com/playwright-github-action-to-cache-the-browser-binaries/
+#
+# ref
+# - https://github.com/microsoft/playwright-github-action
+# - `~/.cache/ms-playwright`
+#   - https://playwright.dev/docs/ci
+
 name: storybook-test
 on: [pull_request, workflow_dispatch]
 jobs:
@@ -17,7 +28,17 @@ jobs:
           path: frontend/node_modules
           key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
 
-      - name: install playwright
-        run: npx playwright install && npx playwright install-deps
+      - name: cache playwright
+        id: cache-playwright
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: frontend npm install
+        run: cd frontend && npm install
+      - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
+        name: install playwright
+        run: cd frontend && npx playwright install --with-deps
       - name: run storybook test
-        run: cd frontend && npm install && npm run storybook-test-ci
+        run: cd frontend && npm run storybook-test-ci
