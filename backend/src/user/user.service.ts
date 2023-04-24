@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { loginDto, signUpDto } from './dto/user.dto';
+import { Prisma } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -20,6 +21,12 @@ export class UserService {
       return user;
     } catch (e) {
       console.log(e);
+      // email,nicknameが被った時のエラーは'P2002'が帰ってくる
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          throw new ForbiddenException('Email or nickname is already taken');
+        }
+      }
       // 500 internal server err
       throw e;
     }
