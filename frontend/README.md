@@ -13,3 +13,7 @@
     - ui ライブラリ, ブラウザで、button の ui などに使用
   - emotion
     - mui が 依存している ライブラリ？
+- devDependencies
+  - storybook
+    - コンポーネント の 各コンポーネントの 見た目 表示, test で使用
+    - storybook doc : [/frontend/doc/storybook.md](/frontend/doc/storybook.md)
