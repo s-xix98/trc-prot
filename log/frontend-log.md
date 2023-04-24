@@ -45,16 +45,6 @@ npm install --save-dev eslint-plugin-import
 - [eslint-plugin-import/order.md at main · import-js/eslint-plugin-import · GitHub](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
 
 
-## MUI
-
-```shell
-npm install @mui/material @emotion/react @emotion/styled
-npm install @mui/icons-material
-```
-
-- [MUI: The React component library you always wanted](https://mui.com/)
-- [Installation - Material UI](https://mui.com/material-ui/getting-started/installation/)
-
 ## storybook
 
 ```shell
