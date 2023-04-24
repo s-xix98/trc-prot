@@ -24,6 +24,9 @@ PHONY	+=	fmt-ck
 fmt-ck:
 	npm run format-ck
 
+PHONY += test
+test:
+	npm run test
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
