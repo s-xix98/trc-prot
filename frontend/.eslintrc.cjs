@@ -25,6 +25,9 @@ module.exports = {
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
+    // '@/features' からの import 禁止
+    // 相対パスで 無理やり import すれば import できてしまう、、
+    'no-restricted-imports': ['error', { patterns: ['@/features/*/*'] }],
     // import の 順番指定
     'import/order': [
       'error',

@@ -47,6 +47,7 @@ npm install --save-dev prettier eslint-config-prettier
 - mv extends prettier to last
   - [GitHub - prettier/eslint-config-prettier: Turns off all rules that are unnecessary or might conflict with Prettier.](https://github.com/prettier/eslint-config-prettier)
 - [bulletproof-react/.eslintrc.js at master · alan2207/bulletproof-react · GitHub](https://github.com/alan2207/bulletproof-react/blob/master/.eslintrc.js)
+- [React ベストプラクティスの宝庫！「bulletproof-react」が勉強になりすぎる件](https://zenn.dev/manalink_dev/articles/bulletproof-react-is-best-architecture?redirected=1)
 
 ### eslint-plugin-import
 
