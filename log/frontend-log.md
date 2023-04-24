@@ -44,14 +44,6 @@ npm install --save-dev eslint-plugin-import
 - [GitHub - import-js/eslint-plugin-import: ESLint plugin with rules that help validate proper imports.](https://github.com/import-js/eslint-plugin-import)
 - [eslint-plugin-import/order.md at main · import-js/eslint-plugin-import · GitHub](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
 
-## socket.io-client
-
-```shell
-npm install socket.io-client
-```
-
-- [Client Installation | Socket.IO](https://socket.io/docs/v4/client-installation/)
-- [How to use with React | Socket.IO](https://socket.io/how-to/use-with-react)
 
 ## MUI
 
@@ -102,11 +94,3 @@ npm i -D vite-plugin-checker
 
 - noEmit
   - [特徴 | Vite](https://ja.vitejs.dev/guide/features.html)
-
-## axios
-
-```shell
-npm install axios
-```
-
-- [GitHub - axios/axios: Promise based HTTP client for the browser and node.js](https://github.com/axios/axios)
