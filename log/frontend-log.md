@@ -1,17 +1,5 @@
 # frontend log
 
-## vite
-
-```shell
-npm create vite@latest . -- --template react-ts
-```
-
-- config
-  - [サーバオプション | Vite](https://ja.vitejs.dev/config/server-options.html)
-- import alias
-  - [共通オプション | Vite](https://ja.vitejs.dev/config/shared-options.html)
-  - [Vite+React+TypeScript+EsLint で、Import パスにエイリアスを使うためにハマったこと](https://zenn.dev/longbridge/articles/5e33ff1a625158)
-
 ## prettier, eslint
 
 ```shell
@@ -76,6 +64,7 @@ npm install @mui/icons-material
 - [Installation - Material UI](https://mui.com/material-ui/getting-started/installation/)
 
 ## storybook
+
 ```shell
 npx storybook@latest init
 npm run storybook
@@ -106,6 +95,7 @@ npm install --save-dev wait-on
 - [GitHub - jeffbski/wait-on: wait-on is a cross-platform command line utility and Node.js API which will wait for files, ports, sockets, and http(s) resources to become available](https://github.com/jeffbski/wait-on)
 
 ## [vite-plugin-checker](https://vite-plugin-checker.netlify.app/)
+
 ```shell
 npm i -D vite-plugin-checker
 ```

@@ -5,6 +5,7 @@
 - dependencies
   - react
     - vite を ビルドツールとして使用
+    - vite doc : [/frontend/doc/vite.md](/frontend/doc/vite.md)
   - axios, socket.io-client
     - バックエンドと 通信するために 使用
   - mui : material-ui
