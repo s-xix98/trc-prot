@@ -29,6 +29,8 @@ vite 設定ファイル : [/frontend/vite.config.ts](/frontend/vite.config.ts)
 
 ### [vite-plugin-checker](https://vite-plugin-checker.netlify.app/)
 
+pr : [41 vite がコンパイルエラー握り潰すけことがあるっぽいから vite plugin checker を入れる](https://github.com/s-xix98/trc-prot/pull/43)
+
 ```shell
 npm i -D vite-plugin-checker
 ```
