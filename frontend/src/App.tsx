@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import { socket } from './socket';
 import { Chat } from './features/chat/components/Chat';
-
 import { MainLayout } from './components/Layout/MainLayout';
 
 const onConnect = () => {
