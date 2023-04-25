@@ -1,0 +1,6 @@
+{
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "backend",
+  "workspaceFolder": "/workdir",
+  "shutdownAction": "none"
+}
