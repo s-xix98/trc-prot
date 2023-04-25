@@ -43,12 +43,12 @@ export class UserService {
     if (!user) {
       console.log('emailが間違っている');
       throw new ForbiddenException('Email incorrect');
-    } else if (user.hashedPassword != dto.hashedPassword) {
+    }
+    if (user.hashedPassword != dto.hashedPassword) {
       console.log('passwordが間違っている');
       throw new ForbiddenException('Password incorrect');
-    } else {
-      console.log('OK');
     }
+    console.log('OK');
     return user;
   }
 }
