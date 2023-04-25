@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class signUpDto {
-  @ApiProperty({ example: 'a@a.com', description: 'test' })
+  @ApiProperty({ example: 'hoge@example.com', description: 'test' })
   email: string;
   @ApiProperty({ example: 'nori', description: 'test' })
   nickname: string;
-  @ApiProperty({ example: 'abc', description: 'test' })
+  @ApiProperty({ example: 'password', description: 'test' })
   hashedPassword: string;
 }
 
 export class loginDto {
-  @ApiProperty({ example: 'a@a.com', description: 'test' })
+  @ApiProperty({ example: 'hoge@example.com', description: 'test' })
   email: string;
-  @ApiProperty({ example: 'abc', description: 'test' })
+  @ApiProperty({ example: 'password', description: 'test' })
   hashedPassword: string;
 }
