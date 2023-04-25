@@ -6,6 +6,10 @@
 PHONY	:=	all
 all:
 
+PHONY	+=	build
+build:
+	npm run build
+
 # LINTER, FORMATTER
 # ------------------------------------------------------------------------------------------
 PHONY	+=	lint
