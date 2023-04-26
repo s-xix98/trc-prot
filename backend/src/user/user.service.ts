@@ -45,6 +45,7 @@ export class UserService {
       throw new ForbiddenException('Email incorrect');
     }
     if (user.hashedPassword != dto.hashedPassword) {
+      console.log(user.hashedPassword, dto.hashedPassword);
       console.log('passwordが間違っている');
       throw new ForbiddenException('Password incorrect');
     }
