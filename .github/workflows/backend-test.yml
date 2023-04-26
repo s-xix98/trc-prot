@@ -1,0 +1,29 @@
+name: backend-test
+on: [pull_request, workflow_dispatch]
+jobs:
+  make-backend-test:
+    runs-on: ubuntu-latest
+      services:
+        db:
+          image: postgres:latest
+          env:
+            POSTGRES_USER: test
+            POSTGRES_PASSWORD: test
+            POSTGRES_DB: test
+          ports:
+            - 5432:5432
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: backend npm install
+        run: cd backend && npm install
+      - name: backend test
+        run: cd backend && timeout 300 make test
