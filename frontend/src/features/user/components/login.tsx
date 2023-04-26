@@ -1,12 +1,13 @@
 import { FormEventHandler } from 'react';
 
+import { userLogin } from '../api/userLogin';
 export const Login = () => {
   const handleLogin: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log('loginButton');
     const email = (event.target as HTMLFormElement).email.value;
     const password = (event.target as HTMLFormElement).password.value;
-    console.log(email, password);
+    userLogin(email, password);
   };
 
   return (
