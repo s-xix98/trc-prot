@@ -26,14 +26,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: frontend/node_modules
-          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+          key: ${{ runner.os }}-cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
 
       - name: cache playwright
         id: cache-playwright
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
-          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          key: ${{ runner.os }}-cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
 
       - name: frontend npm install
         run: cd frontend && npm install

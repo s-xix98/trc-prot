@@ -14,14 +14,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: frontend/node_modules
-          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+          key: ${{ runner.os }}-cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
 
       - name: cache backend node-modules
         id: cache-backend-node-modules
         uses: actions/cache@v3
         with:
           path: backend/node_modules
-          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+          key: ${{ runner.os }}-cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
 
       - name: frontend npm install
         run: cd frontend && npm install
