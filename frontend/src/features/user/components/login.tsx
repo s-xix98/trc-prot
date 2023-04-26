@@ -1,13 +1,19 @@
 import { FormEventHandler } from 'react';
 
 import { userLogin } from '../api/userLogin';
-export const Login = () => {
+import { UserInfo } from '../types/UserDto';
+
+export const Login = ({
+  setUserInfo,
+}: {
+  setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>;
+}) => {
   const handleLogin: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log('loginButton');
     const email = (event.target as HTMLFormElement).email.value;
     const password = (event.target as HTMLFormElement).password.value;
-    userLogin(email, password);
+    userLogin(email, password, setUserInfo);
   };
 
   return (
@@ -28,4 +34,3 @@ export const Login = () => {
     </form>
   );
 };
-
