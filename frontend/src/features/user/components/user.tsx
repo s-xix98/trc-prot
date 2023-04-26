@@ -15,7 +15,12 @@ export const User = ({ children }: { children: ReactNode }) => {
         <Container flexDirection="row">
           <h1>UserArea</h1>
           <div style={{ margin: 'auto 10px auto auto' }}>
-            <Login setUserInfo={setUserInfo} />
+            {userInfo && (
+              <p>
+                id : {userInfo?.id}, name : {userInfo?.nickname}
+              </p>
+            )}
+            {!userInfo && <Login setUserInfo={setUserInfo} />}
           </div>
         </Container>
       </div>
