@@ -3,7 +3,7 @@ import { FormEventHandler } from 'react';
 import { userLogin } from '../api/userLogin';
 import { UserInfo } from '../types/UserDto';
 
-export const Login = ({
+export const LoginForm = ({
   setUserInfo,
 }: {
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>;
