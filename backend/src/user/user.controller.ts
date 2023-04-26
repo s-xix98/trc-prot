@@ -16,6 +16,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() dto: loginDto): Promise<User> {
+    console.log('on /user/login');
     return this.userService.login(dto);
   }
 }
