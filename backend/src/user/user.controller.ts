@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { loginDto, signUpDto } from './dto/user.dto';
@@ -11,12 +12,14 @@ export class UserController {
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
-  signUp(@Body() dto: signUpDto) {
-    this.userService.signUp(dto);
+  async signUp(@Body() dto: signUpDto): Promise<User> {
+    return this.userService.signUp(dto);
   }
+
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'login nori' })
-  login(@Body() dto: loginDto) {
-    this.userService.login(dto);
+  async login(@Body() dto: loginDto): Promise<User> {
+    return this.userService.login(dto);
   }
 }
