@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { socket } from './socket';
+import { User } from './features/user/components/user';
 import { Chat } from './features/chat/components/Chat';
 import { MainLayout } from './components/Layout/MainLayout';
 
@@ -25,7 +26,9 @@ function App() {
 
   return (
     <MainLayout>
-      <Chat />
+      <User>
+        <Chat />
+      </User>
     </MainLayout>
   );
 }
