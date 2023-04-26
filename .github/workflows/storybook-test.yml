@@ -35,7 +35,9 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
+            ${{ runner.os }}-cache-playwright-
 
       - name: frontend npm install
         run: cd frontend && npm install
