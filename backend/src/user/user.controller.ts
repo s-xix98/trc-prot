@@ -13,6 +13,7 @@ export class UserController {
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
   async signUp(@Body() dto: signUpDto): Promise<User> {
+    console.log('on /user/signup');
     return this.userService.signUp(dto);
   }
 
