@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { atom } from 'jotai';
 
 import { socket } from './socket';
-import { User } from './features/user/components/user';
+import { User } from './features/user/components/User';
 import { Chat } from './features/chat/components/Chat';
 import { UserInfo } from './features/user/types/UserDto';
 import { MainLayout } from './components/Layout/MainLayout';

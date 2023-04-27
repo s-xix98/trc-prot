@@ -4,8 +4,8 @@ import { useAtom } from 'jotai';
 import { Container } from '@/components/Layout/Container';
 import { userInfoAtom } from '@/App';
 
-import { LoginForm } from './login';
-import { SignUpForm } from './SignUp';
+import { LoginForm } from './LoginForm';
+import { SignUpForm } from './SignUpForm';
 
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
