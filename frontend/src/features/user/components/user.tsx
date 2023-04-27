@@ -5,6 +5,7 @@ import { Container } from '@/components/Layout/Container';
 import { UserInfo } from '../types/UserDto';
 
 import { LoginForm } from './login';
+import { SignUpForm } from './SignUp';
 
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useState<UserInfo>();
@@ -17,7 +18,12 @@ export const User = ({ children }: { children: ReactNode }) => {
         </p>
       );
     } else {
-      return <LoginForm setUserInfo={setUserInfo} />;
+      return (
+        <>
+          <SignUpForm setUserInfo={(v) => setUserInfo(v)} />
+          <LoginForm setUserInfo={(v) => setUserInfo(v)} />
+        </>
+      );
     }
   };
 
