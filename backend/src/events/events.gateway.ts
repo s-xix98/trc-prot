@@ -44,9 +44,21 @@ export class EventsGateway {
         authorId,
       },
     });
+    console.log('mid', authorId);
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: authorId,
+      },
+    });
+    console.log(user);
     client.emit(
       'getPastMessages',
-      pastMessages.map((msg) => msg.content),
+      pastMessages.map((m) => {
+        return {
+          nickname: user?.nickname,
+          msg: m.content,
+        };
+      }),
     );
   }
 }

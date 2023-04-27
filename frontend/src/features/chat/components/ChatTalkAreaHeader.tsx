@@ -1,13 +1,15 @@
 import { Container } from '@/components/Layout/Container';
 import { socket } from '@/socket';
 import { BasicButton } from '@/components/Elements/Button/BasicButton';
-
-const onGetChatLogAct = () => {
-  console.log('OnGetChatLogButton');
-  socket.emit('getPastMessages', 1);
-};
+import { useAtomValue } from 'jotai';
+import { userInfoAtom } from '@/App';
 
 export const ChatTalkAreaHeader = () => {
+  const userInfo = useAtomValue(userInfoAtom);
+  const onGetChatLogAct = () => {
+    console.log('OnGetChatLogButton');
+    socket.emit('getPastMessages', userInfo?.id);
+  };
   return (
     <>
       <div>
