@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/Layout/Container';
 import { socket } from '@/socket';
 
-import { MessageDto, handleMessageDto } from '../types/MessageDto';
+import { handleMessageDto } from '../types/MessageDto';
 
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';

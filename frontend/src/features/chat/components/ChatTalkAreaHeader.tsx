@@ -1,7 +1,8 @@
+import { useAtomValue } from 'jotai';
+
 import { Container } from '@/components/Layout/Container';
 import { socket } from '@/socket';
 import { BasicButton } from '@/components/Elements/Button/BasicButton';
-import { useAtomValue } from 'jotai';
 import { userInfoAtom } from '@/App';
 
 export const ChatTalkAreaHeader = () => {
