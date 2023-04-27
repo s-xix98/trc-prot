@@ -4,3 +4,8 @@ export type MessageDto = {
   content: string;
   authorId: number;
 };
+
+export type handleMessageDto = {
+  nickname: string;
+  msg: string;
+};
