@@ -1,13 +1,13 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
+import { useAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
-
-import { UserInfo } from '../types/UserDto';
+import { userInfoAtom } from '@/App';
 
 import { LoginForm } from './login';
 
 export const User = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
   return (
     <Container flexDirection="column">
