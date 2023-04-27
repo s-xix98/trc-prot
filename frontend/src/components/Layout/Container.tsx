@@ -15,6 +15,7 @@ export const Container = ({
         flexDirection: flexDirection,
         overflow: 'hidden',
         height: '100%',
+        justifyContent: 'center',
       }}
     >
       {children}
