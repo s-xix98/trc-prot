@@ -3,9 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import { Container } from '@/components/Layout/Container';
 import { socket } from '@/socket';
 
+import { handleMessageDto } from '../types/MessageDto';
+
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
 import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
+
 
 const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
   const scrollParentElement = scrollBottomRef?.current?.parentElement;
@@ -39,12 +42,12 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
 };
 
 export const ChatTalkArea = () => {
-  const [chatHistMsgs, setchatHistMsgs] = useState<string[]>([]);
+  const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [isNeedScroll, setIsNeedScroll] = useState(false);
 
-  const onMessage = (data: string) => {
+  const onMessage = (data: handleMessageDto) => {
     const needScroll = isScrollBottom(scrollBottomRef);
     setIsNeedScroll(() => needScroll);
     setchatHistMsgs((chatHistMsgs) => [...chatHistMsgs, data]);
@@ -53,7 +56,7 @@ export const ChatTalkArea = () => {
 
   const onGetChatLog = (chatlog: string[]) => {
     console.log('onGetChatLog', chatlog);
-    setchatHistMsgs(chatlog);
+    // setchatHistMsgs(chatlog);
   };
 
   useEffect(() => {

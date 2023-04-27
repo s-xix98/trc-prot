@@ -9,6 +9,7 @@ import { Container } from '@/components/Layout/Container';
 import { userInfoAtom } from '@/App';
 
 import { postMessage } from '../api/postMessage';
+import { handleMessageDto } from '../types/MessageDto';
 
 export const ChatInput = () => {
   const [msg, setMsg] = useState('');
@@ -35,7 +36,8 @@ export const ChatInput = () => {
     // バックエンドで post の方に クライアントに 送信したもの返す実装が現状ないので
     // socket の方も残したまま (送信したものが表示されないため)
     // 送信したもの送り返すかどうかも、そもそも検討 (そのまま chatHistMsgs に追加するなど )
-    socket.emit('message', msg);
+    const sendMsg: handleMessageDto = { nickname: userInfo.nickname, msg };
+    socket.emit('message', sendMsg);
     setMsg('');
   };
 
