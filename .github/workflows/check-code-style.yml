@@ -1,7 +1,14 @@
 # This is a github action to check if the code style is correct.
 
 name: check-code-style
-on: [pull_request, workflow_dispatch]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   make-fmt:
     runs-on: ubuntu-latest

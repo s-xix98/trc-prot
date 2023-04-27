@@ -12,7 +12,14 @@
 #   - https://playwright.dev/docs/ci
 
 name: storybook-test
-on: [pull_request, workflow_dispatch]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   storybook-test:
     timeout-minutes: 5

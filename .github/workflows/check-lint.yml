@@ -1,7 +1,14 @@
 # This is a github action to check for errors in linter.
 
 name: check-lint
-on: [pull_request, workflow_dispatch]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   make-lint:
     runs-on: ubuntu-latest
