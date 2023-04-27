@@ -32,15 +32,9 @@ export const User = ({ children }: { children: ReactNode }) => {
     <Container flexDirection="column">
       <div>
         <Container flexDirection="row">
-          <h1
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            UserArea
-          </h1>
+          <Container flexDirection={'column'}>
+            <h1>UserArea</h1>
+          </Container>
           <div style={{ margin: 'auto 10px auto auto' }}>
             <UserInputArea />
           </div>
