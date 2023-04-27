@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { handleMessageDto } from '../types/MessageDto';
+
 import { ChatHistory } from './ChatHistory';
 
 const meta = {
@@ -11,9 +13,9 @@ export default meta;
 
 type Story = StoryObj<typeof ChatHistory>;
 
-const items: string[] = [];
+const items: handleMessageDto[] = [];
 for (let n = 0; n < 100; n++) {
-  items.push(`hoge ${n}`);
+  items.push({ nickname: 'hoge', msg: `hoge${n}` });
 }
 
 export const Basic: Story = {

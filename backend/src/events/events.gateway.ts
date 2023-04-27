@@ -3,6 +3,8 @@ import { Socket } from 'socket.io';
 
 import { PrismaService } from '../prisma/prisma.service';
 
+import { handleMessageDto } from './dto/event.dto';
+
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -25,10 +27,10 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: string): string {
+  handleMessage(client: Socket, payload: handleMessageDto): string {
     console.log('message', payload);
     for (const c of this.wsClients.values()) {
-      c.emit('message', `${client.id.substring(0, 4)} > ${payload}`);
+      c.emit('message', payload);
     }
     return 'Hello world!';
   }
@@ -42,9 +44,21 @@ export class EventsGateway {
         authorId,
       },
     });
+    console.log('mid', authorId);
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: authorId,
+      },
+    });
+    console.log(user);
     client.emit(
       'getPastMessages',
-      pastMessages.map((msg) => msg.content),
+      pastMessages.map((m) => {
+        return {
+          nickname: user?.nickname,
+          msg: m.content,
+        };
+      }),
     );
   }
 }
