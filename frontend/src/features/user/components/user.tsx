@@ -19,10 +19,11 @@ export const User = ({ children }: { children: ReactNode }) => {
       );
     } else {
       return (
-        <>
+        <div style={{ margin: '10px auto 10px auto' }}>
           <SignUpForm setUserInfo={(v) => setUserInfo(v)} />
+          <div style={{ margin: '5px' }} />
           <LoginForm setUserInfo={(v) => setUserInfo(v)} />
-        </>
+        </div>
       );
     }
   };
