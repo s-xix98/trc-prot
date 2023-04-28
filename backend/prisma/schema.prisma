@@ -10,34 +10,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-// @id primay key
-// @default(autoincrement()) レコード作成時に自動的にインクリメントしてくれる
-// messageの配列
-// @unique 一意のデータ
-
 model User {
-  id        Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  nickname  String @unique
-  email     String @unique
-  hashedPassword String
-
-  messages Message[]
+  id              Int @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  username        String @unique
+  email           String @unique
+  hashedPassword  String
+  messages        Message[]
+  roomMembers     RoomMember[]
+  chatRoomBan     UserBannedInChatRoom[]
+  chatRoomMute    UserMutedInChatRoom[]
 }
 
-// author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
-// User 関係するテーブル
-// fields: 参照元のカラム　
-// reference: 参照先のカラム
-// onDelete: Cascade  Userテーブルのレコードが削除されると自動的に関連するメッセージを削除
+model ChatRoom {
+  id            Int @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  roomName      String @unique
+  password      String?
+  isPrivate     Boolean @default(false)
+  isDM          Boolean @default(false)
+  messages      Message[]
+  roomMembers   RoomMember[]
+  chatRoomBan   UserBannedInChatRoom[]
+  chatRoomMute  UserMutedInChatRoom[]
+}
+model UserBannedInChatRoom {
+  @@id([chatRoomId, userId])
+  chatRoomId    Int
+  userId        Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  timeLimitedAt DateTime
+  user          User @relation(fields: [userId],references: [id])
+  chatRoom      ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+model UserMutedInChatRoom {
+  @@id([chatRoomId, userId])
+  chatRoomId    Int
+  userId        Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  timeLimitedAt DateTime
+  user          User @relation(fields: [userId],references: [id])
+  chatRoom      ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+model RoomMember {
+  @@id([userId, chatRoomId])
+  joinedAt    DateTime @default(now())
+  isOwner     Boolean @default(false)
+  userId      Int
+  chatRoomId  Int
+  user        User @relation(fields: [userId],references: [id])
+  chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+
 model Message {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  content String
-  authorId Int
-  author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
+  id          Int @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  content     String
+  userId      Int
+  chatRoomId  Int
+  user        User @relation(fields: [userId],references: [id])
+  chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
