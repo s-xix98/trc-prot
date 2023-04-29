@@ -1,17 +1,27 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+
 import { loginDto, signUpDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
+@ApiTags('/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('signup')
-  signUp(@Body() dto: signUpDto) {
-    this.userService.signUp(dto);
+  @ApiOperation({ summary: 'signUp nori' })
+  async signUp(@Body() dto: signUpDto): Promise<User> {
+    console.log('on /user/signup');
+    return this.userService.signUp(dto);
   }
+
+  @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Body() dto: loginDto) {
-    this.userService.login(dto);
+  @ApiOperation({ summary: 'login nori' })
+  async login(@Body() dto: loginDto): Promise<User> {
+    console.log('on /user/login');
+    return this.userService.login(dto);
   }
 }

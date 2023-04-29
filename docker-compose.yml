@@ -1,4 +1,9 @@
 version: '3'
+
+volumes:
+  frontend_node_modules:
+  backend_node_modules:
+
 services:
   frontend:
     build: frontend
@@ -8,6 +13,7 @@ services:
       - 6006:6006
     volumes:
       - ./frontend:/workdir
+      - frontend_node_modules:/workdir/node_modules
     command: /bin/bash -c "npm install && exec npm run concurrent"
 
   backend:
@@ -20,6 +26,9 @@ services:
       - 5555:5555
     volumes:
       - ./backend:/workdir
+      - backend_node_modules:/workdir/node_modules
+    environment:
+      - DATABASE_URL=postgresql://test:test@db:5432/test?schema=public
     command: /bin/bash -c "npm install && (npx prisma db push --preview-feature && npx prisma generate && npx prisma db seed && npx prisma studio &) && exec npm run start:dev"
 
   db:

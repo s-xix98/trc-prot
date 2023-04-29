@@ -1,0 +1,41 @@
+# This is a github action to check if a build can be done.
+
+name: check-build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  make-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+
+      - name: cache frontend node-modules
+        id: cache-frontend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: frontend npm install
+        run: cd frontend && npm install
+      - name: frontend build
+        run: cd frontend && timeout 300 make build
+
+      - name: backend npm install
+        run: cd backend && npm install
+      - name: backend build
+        run: cd backend && timeout 300 make build

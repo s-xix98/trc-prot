@@ -1,13 +1,16 @@
 import { useLayoutEffect } from 'react';
+
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
+
+import { handleMessageDto } from '../types/MessageDto';
 
 export const ChatHistory = ({
   chatHistMsgs,
   isNeedScroll,
   scrollBottomRef,
 }: {
-  chatHistMsgs: string[];
+  chatHistMsgs: handleMessageDto[];
   isNeedScroll: boolean;
   scrollBottomRef: React.RefObject<HTMLDivElement>;
 }) => {
@@ -20,9 +23,9 @@ export const ChatHistory = ({
   return (
     <Container flexDirection={'column'}>
       <ContainerItem overflowY={'scroll'}>
-        {chatHistMsgs.map((msg, idx) => (
+        {chatHistMsgs.map((msgDto, idx) => (
           <p key={idx} style={{ overflowWrap: 'break-word' }}>
-            {msg}
+            {`${msgDto.nickname}> ${msgDto.msg}`}
           </p>
         ))}
         <div ref={scrollBottomRef}></div>

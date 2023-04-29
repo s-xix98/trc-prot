@@ -6,6 +6,10 @@
 PHONY	:=	all
 all:
 
+PHONY	+=	build
+build:
+	npm run build
+
 # LINTER, FORMATTER
 # ------------------------------------------------------------------------------------------
 PHONY	+=	lint
@@ -28,6 +32,14 @@ fmt-ck:
 PHONY += sb
 sb:
 	npm run storybook
+
+PHONY += sb-ck-file
+sb-ck-file:
+	bash scripts/check_storybook_file.sh
+
+PHONY += sb-create-file
+sb-create-file:
+	bash scripts/create_storybook_file.sh
 
 PHONY += sb-test
 sb-test:

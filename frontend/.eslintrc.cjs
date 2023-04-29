@@ -25,6 +25,42 @@ module.exports = {
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
-    'import/order': ['error'],
+    // '@/features' からの import 禁止
+    // 相対パスで 無理やり import すれば import できてしまう、、
+    'no-restricted-imports': ['error', { patterns: ['@/features/*/*'] }],
+    // import の 順番指定
+    'import/order': [
+      'error',
+      {
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+          'object',
+        ],
+        pathGroups: [
+          {
+            pattern: '@/**',
+            position: 'before',
+            group: 'internal',
+          },
+          {
+            pattern: '../**',
+            position: 'before',
+            group: 'internal',
+          },
+          {
+            pattern: './**',
+            position: 'before',
+            group: 'internal',
+          },
+        ],
+        // グループごとに改行を入れる
+        'newlines-between': 'always',
+      },
+    ],
   },
 };
