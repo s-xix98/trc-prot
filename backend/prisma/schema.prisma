@@ -69,7 +69,7 @@ model UserMutedInChatRoom {
 model RoomMember {
   @@id([userId, chatRoomId])
   joinedAt    DateTime @default(now())
-  isOwner     Boolean @default(false)
+  role        UesrRole @default(USER)
   userId      Int
   chatRoomId  Int
   user        User @relation(fields: [userId],references: [id])
@@ -85,4 +85,10 @@ model Message {
   chatRoomId  Int
   user        User @relation(fields: [userId],references: [id])
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+
+enum UesrRole {
+  OWNER
+  ADMIN
+  USER
 }
