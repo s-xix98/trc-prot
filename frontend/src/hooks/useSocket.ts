@@ -11,5 +11,5 @@ export const useSocket = (ev: string, listener: (...args: any[]) => void) => {
     return () => {
       socket.off(ev, listener);
     };
-  }, []);
+  }, [ev, listener]);
 };
