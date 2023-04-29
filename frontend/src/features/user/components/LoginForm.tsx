@@ -16,21 +16,31 @@ export const LoginForm = ({
     userLogin(email, password, setUserInfo);
   };
 
+  // TODO : 消す
+  const loginAsHuga = () => {
+    userLogin('huga@example.com', 'hugahuga', setUserInfo);
+  };
+
   return (
-    <form onSubmit={handleLogin}>
-      <input
-        type="text"
-        name="email"
-        placeholder="email"
-        style={{ marginRight: '5px' }}
-      />
-      <input
-        type="text"
-        name="password"
-        placeholder="password"
-        style={{ marginRight: '10px' }}
-      />
-      <input type="submit" value="Login" />
-    </form>
+    <>
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          name="email"
+          placeholder="email"
+          style={{ marginRight: '5px' }}
+        />
+        <input
+          type="text"
+          name="password"
+          placeholder="password"
+          style={{ marginRight: '10px' }}
+        />
+        <input type="submit" value="Login" />
+      </form>
+      <div style={{ padding: '3px' }}>
+        <button onClick={loginAsHuga}>login as fuga</button>
+      </div>
+    </>
   );
 };
