@@ -47,6 +47,7 @@ sb-test:
 
 PHONY += sb-update
 sb-update:
+	rm -rf $(shell find src/ -type d -name '__image_snapshots__')
 	npm run storybook-update-snapshot
 
 # etc...
