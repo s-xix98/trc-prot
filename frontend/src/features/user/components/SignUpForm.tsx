@@ -1,23 +1,30 @@
 import { FormEventHandler } from 'react';
 
-import { userLogin } from '../api/userLogin';
 import { UserInfo } from '../types/UserDto';
+import { userSignUp } from '../api/userSignUp';
 
-export const LoginForm = ({
+export const SignUpForm = ({
   setUserInfo,
 }: {
-  setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>;
+  setUserInfo: (v: UserInfo) => void;
 }) => {
-  const handleLogin: FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSignUp: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    console.log('loginButton');
+    console.log('signUpButton');
+    const nickname = (event.target as HTMLFormElement).nickname.value;
     const email = (event.target as HTMLFormElement).email.value;
     const password = (event.target as HTMLFormElement).password.value;
-    userLogin(email, password, setUserInfo);
+    userSignUp(nickname, email, password, setUserInfo);
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleSignUp}>
+      <input
+        type="text"
+        name="nickname"
+        placeholder="nickname"
+        style={{ marginRight: '5px' }}
+      />
       <input
         type="text"
         name="email"
@@ -30,7 +37,7 @@ export const LoginForm = ({
         placeholder="password"
         style={{ marginRight: '10px' }}
       />
-      <input type="submit" value="Login" />
+      <input type="submit" value="SignUp" />
     </form>
   );
 };

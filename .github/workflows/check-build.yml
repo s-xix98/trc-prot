@@ -1,7 +1,14 @@
 # This is a github action to check if a build can be done.
 
 name: check-build
-on: [pull_request, workflow_dispatch]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   make-build:
     runs-on: ubuntu-latest

@@ -33,12 +33,21 @@ PHONY += sb
 sb:
 	npm run storybook
 
+PHONY += sb-ck-file
+sb-ck-file:
+	bash scripts/check_storybook_file.sh
+
+PHONY += sb-create-file
+sb-create-file:
+	bash scripts/create_storybook_file.sh
+
 PHONY += sb-test
 sb-test:
 	npm run storybook-test
 
 PHONY += sb-update
 sb-update:
+	rm -rf $(shell find src/ -type d -name '__image_snapshots__')
 	npm run storybook-update-snapshot
 
 # etc...
