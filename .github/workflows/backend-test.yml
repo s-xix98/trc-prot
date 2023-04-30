@@ -3,6 +3,16 @@ on: [pull_request, workflow_dispatch]
 jobs:
   make-backend-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
@@ -14,30 +24,9 @@ jobs:
           path: backend/node_modules
           key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
 
-
-      - name: cache db docker container
-        id: cache-db-docker-container
-        uses: actions/cache@v3
-        with:
-          path: /tmp/docker-image-cache
-          key: cache-db-docker-image-${{ hashFiles('docker-compose.yml') }}
-
-      - name: docker load image
-        run: |
-          mkdir -p /tmp/docker-images-cache
-          find /tmp/docker-images-cache -type f -name "db.tar" -exec docker load -i {} \;
-
-      - name: docker-compose db up
-        run:  docker-compose up -d db
-
       - name: backend npm install
         run: cd backend && npm install
-      - name: prisma db push
-        run: cd backend && npx prisma db push --preview-feature
+      - name: set up prisma
+        run: cd backend && npx prisma db push --preview-feature && npx prisma generate
       - name: backend test
         run: cd backend && timeout 300 make test
-
-      - name: docker save image
-        run: |
-          mkdir -p /tmp/docker-images-cache
-          docker save trc-prot-db > /tmp/docker-images-cache/db.tar
