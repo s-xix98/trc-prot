@@ -6,9 +6,10 @@ import { userInfoAtom } from '@/App';
 
 import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';
-
+import { useState } from 'react';
 export const Chat = () => {
   const userInfo = useAtomValue(userInfoAtom);
+  const [selectedChannel, setSelectedChannel] = useState<string>('');
 
   if (userInfo === undefined) {
     return (
@@ -17,14 +18,13 @@ export const Chat = () => {
       </div>
     );
   }
-
   return (
     <Container>
       <ContainerItem display={'flex'} flexRatio={1}>
-        <ChatChannelArea />
+        <ChatChannelArea setSelectedChannel={setSelectedChannel}/>
       </ContainerItem>
       <ContainerItem display={'flex'} flexRatio={4}>
-        <ChatTalkArea />
+        <ChatTalkArea selectedChannel={selectedChannel}/>
       </ContainerItem>
     </Container>
   );

@@ -40,12 +40,12 @@ const isScrollBottom = (scrollBottomRef: React.RefObject<HTMLDivElement>) => {
   return isBtm;
 };
 
-export const ChatTalkArea = () => {
+export const ChatTalkArea = ({selectedChannel}:{selectedChannel:string}) => {
   const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [isNeedScroll, setIsNeedScroll] = useState(false);
-
+  console.log(selectedChannel);
   const onMessage = (data: handleMessageDto) => {
     const needScroll = isScrollBottom(scrollBottomRef);
     setIsNeedScroll(() => needScroll);
