@@ -5,7 +5,7 @@ import { socket } from '@/socket';
 import { BasicButton } from '@/components/Elements/Button/BasicButton';
 import { userInfoAtom } from '@/App';
 
-export const ChatTalkAreaHeader = ({roomName}:{roomName:string}) => {
+export const ChatTalkAreaHeader = ({ roomName }: { roomName: string }) => {
   const userInfo = useAtomValue(userInfoAtom);
   const onGetChatLogAct = () => {
     console.log('OnGetChatLogButton');
