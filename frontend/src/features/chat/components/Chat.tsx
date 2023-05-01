@@ -24,7 +24,13 @@ export const Chat = () => {
         <ChatChannelArea setSelectedChannel={setSelectedChannel}/>
       </ContainerItem>
       <ContainerItem display={'flex'} flexRatio={4}>
+      {selectedChannel === '' ?
+        <div style={{ margin: 'auto' }}>
+          <h1>部屋を選べ</h1>
+        </div>
+        :
         <ChatTalkArea selectedChannel={selectedChannel}/>
+      }
       </ContainerItem>
     </Container>
   );
