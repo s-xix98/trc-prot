@@ -45,7 +45,7 @@ export const ChatTalkArea = ({selectedChannel}:{selectedChannel:string}) => {
 
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const [isNeedScroll, setIsNeedScroll] = useState(false);
-  console.log(selectedChannel);
+
   const onMessage = (data: handleMessageDto) => {
     const needScroll = isScrollBottom(scrollBottomRef);
     setIsNeedScroll(() => needScroll);
@@ -70,7 +70,7 @@ export const ChatTalkArea = ({selectedChannel}:{selectedChannel:string}) => {
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader />
+      <ChatTalkAreaHeader roomName={selectedChannel} />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         isNeedScroll={isNeedScroll}
