@@ -17,7 +17,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'import'],
+  plugins: ['react', 'react-hooks', '@typescript-eslint', 'import'],
   settings: {
     react: {
       version: 'detect',
@@ -25,6 +25,8 @@ module.exports = {
   },
   rules: {
     'react/react-in-jsx-scope': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     // '@/features' からの import 禁止
     // 相対パスで 無理やり import すれば import できてしまう、、
     'no-restricted-imports': ['error', { patterns: ['@/features/*/*'] }],

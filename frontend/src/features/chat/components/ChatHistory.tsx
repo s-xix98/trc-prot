@@ -18,7 +18,7 @@ export const ChatHistory = ({
     if (isNeedScroll === true) {
       scrollBottomRef?.current?.scrollIntoView();
     }
-  }, [chatHistMsgs]);
+  }, [chatHistMsgs, isNeedScroll, scrollBottomRef]);
 
   return (
     <Container flexDirection={'column'}>
