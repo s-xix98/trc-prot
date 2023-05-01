@@ -61,6 +61,30 @@ describe('UserService', () => {
     });
   });
 
-    expect(service).toBeDefined();
+  describe('login', () => {
+
+    it('should be login successfully', async () => {
+      const user = await userService.login({
+        email: dto.email,
+        hashedPassword: dto.hashedPassword,
+      });
+      expect(user.email).toEqual(dto.email);
+      expect(user.nickname).toEqual(dto.nickname);
+      expect(user.hashedPassword).toEqual(dto.hashedPassword);
+    });
+
+    it('should be throw ForbiddenException when email is incorrect', async () => {
+      await expect(userService.login({
+        email:'fail@email.com',
+        hashedPassword: dto.hashedPassword
+      })).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should be throw ForbiddenException when password is incorrect', async () => {
+      await expect(userService.login({
+        email: dto.email,
+        hashedPassword: 'failPassword'
+      })).rejects.toThrow(ForbiddenException);
+    });
   });
 });
