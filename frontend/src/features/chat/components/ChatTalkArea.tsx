@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Container } from '@/components/Layout/Container';
-import { socket } from '@/socket';
+import { useSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
 
 import { handleMessageDto } from '../types/MessageDto';
@@ -25,15 +25,8 @@ export const ChatTalkArea = () => {
     setchatHistMsgs(chatlog);
   };
 
-  useEffect(() => {
-    socket.on('message', onMessage);
-    socket.on('getPastMessages', onGetChatLog);
-
-    return () => {
-      socket.off('message', onMessage);
-      socket.off('getPastMessages', onGetChatLog);
-    };
-  }, []);
+  useSocket('message', onMessage);
+  useSocket('getPastMessages', onGetChatLog);
 
   return (
     <Container flexDirection={'column'}>
