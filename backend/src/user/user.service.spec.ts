@@ -14,8 +14,8 @@ const dto: signUpDto = {
 describe('UserService', () => {
   let userService: UserService;
   let prismaService: PrismaService;
-  // it前に実行される
-  beforeEach(async () => {
+  // 初期化
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule],
       providers: [UserService],
@@ -24,15 +24,7 @@ describe('UserService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
-  // it後に実行される
-  // disconnect()しないとエラーが出る
-  // A worker process has failed to exit gracefully and has been force exited.
-  // This is likely caused by tests leaking due to improper teardown.
-  // Try running with --detectOpenHandles to find leaks. Active timers can also cause this,
-  // ensure that .unref() was called on them.
-  afterEach(async () => {
-    prismaService.$disconnect();
-  });
+
   // 全部のテストが終わった後に実行される
   afterAll(async () => {
     await prismaService.user.delete({
@@ -40,6 +32,7 @@ describe('UserService', () => {
         email: 'signUp@example.com',
       },
     });
+    await prismaService.$disconnect();
   });
 
   it('should be defined', () => {
