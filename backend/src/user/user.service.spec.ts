@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ForbiddenException } from '@nestjs/common';
 
 import { TestModule } from '../test/test.module';
+import { PrismaService } from '../prisma/prisma.service';
 
 import { UserService } from './user.service';
-import { PrismaService } from '../prisma/prisma.service';
 import { signUpDto } from './dto/user.dto';
-import { ForbiddenException } from '@nestjs/common';
 const dto: signUpDto = {
   email: 'signUp@example.com',
   nickname: 'signUp',
@@ -24,7 +24,6 @@ describe('UserService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
-
   // 全部のテストが終わった後に実行される
   afterAll(async () => {
     await prismaService.user.delete({
@@ -39,8 +38,7 @@ describe('UserService', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('signUp',() => {
-
+  describe('signUp', () => {
     it('should be create user successfully', async () => {
       // await prismaService.user.delete({where: {email: 'signUp@example.com'}});
       const user = await userService.signUp(dto);
@@ -55,7 +53,6 @@ describe('UserService', () => {
   });
 
   describe('login', () => {
-
     it('should be login successfully', async () => {
       const user = await userService.login({
         email: dto.email,
@@ -67,17 +64,21 @@ describe('UserService', () => {
     });
 
     it('should be throw ForbiddenException when email is incorrect', async () => {
-      await expect(userService.login({
-        email:'fail@email.com',
-        hashedPassword: dto.hashedPassword
-      })).rejects.toThrow(ForbiddenException);
+      await expect(
+        userService.login({
+          email: 'fail@email.com',
+          hashedPassword: dto.hashedPassword,
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should be throw ForbiddenException when password is incorrect', async () => {
-      await expect(userService.login({
-        email: dto.email,
-        hashedPassword: 'failPassword'
-      })).rejects.toThrow(ForbiddenException);
+      await expect(
+        userService.login({
+          email: dto.email,
+          hashedPassword: 'failPassword',
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 });
