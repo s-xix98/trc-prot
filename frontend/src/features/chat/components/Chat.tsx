@@ -9,7 +9,7 @@ import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';
 export const Chat = () => {
   const userInfo = useAtomValue(userInfoAtom);
-  const [selectedChannel, setSelectedChannel] = useState<string>('');
+  const [selectedChannel, setSelectedChannel] = useState<string>();
 
   if (userInfo === undefined) {
     return (
@@ -24,7 +24,7 @@ export const Chat = () => {
         <ChatChannelArea setSelectedChannel={setSelectedChannel} />
       </ContainerItem>
       <ContainerItem display={'flex'} flexRatio={4}>
-        {selectedChannel === '' ? (
+        {selectedChannel === undefined ? (
           <div style={{ margin: 'auto' }}>
             <h1>部屋を選べ</h1>
           </div>

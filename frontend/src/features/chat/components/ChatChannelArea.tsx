@@ -4,7 +4,7 @@ import { ContainerItem } from '@/components/Layout/ContainerItem';
 export const ChatChannelArea = ({
   setSelectedChannel,
 }: {
-  setSelectedChannel: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedChannel: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
   const channels: string[] = [];
   for (let n = 0; n < 100; n++) {
