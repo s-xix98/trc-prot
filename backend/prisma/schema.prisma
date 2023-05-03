@@ -58,7 +58,7 @@ model UserChatState {
 model RoomMember {
   @@id([userId, chatRoomId])
   joinedAt    DateTime @default(now())
-  role        UesrRole @default(USER)
+  role        UserRole @default(USER)
   userId      Int
   chatRoomId  Int
   user        User @relation(fields: [userId],references: [id])
@@ -76,7 +76,7 @@ model Message {
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
 
-enum UesrRole {
+enum UserRole {
   OWNER
   ADMIN
   USER
