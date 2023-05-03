@@ -19,8 +19,7 @@ model User {
   hashedPassword  String
   messages        Message[]
   roomMembers     RoomMember[]
-  chatRoomBan     UserBannedInChatRoom[]
-  chatRoomMute    UserMutedInChatRoom[]
+  userChatState   UserChatState[]
 }
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
@@ -33,33 +32,23 @@ model ChatRoom {
   isDM          Boolean @default(false)
   messages      Message[]
   roomMembers   RoomMember[]
-  chatRoomBan   UserBannedInChatRoom[]
-  chatRoomMute  UserMutedInChatRoom[]
+  userChatState UserChatState[]
 }
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
 // ルームに入る際やチャットを送信するときに
 // このテーブルを都度チェックしてbanされてなかったらchatroomに入れる的な使い方
 // timeLimitedAtに終了時間を渡す感じで使う予定
-model UserBannedInChatRoom {
-  @@id([chatRoomId, userId])
-  chatRoomId    Int
-  userId        Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  timeLimitedAt DateTime
-  user          User @relation(fields: [userId],references: [id])
-  chatRoom      ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
-}
-//　↑と一緒
-model UserMutedInChatRoom {
-  @@id([chatRoomId, userId])
-  chatRoomId    Int
-  userId        Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  timeLimitedAt DateTime
-  user          User @relation(fields: [userId],references: [id])
-  chatRoom      ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+
+model UserChatState {
+  @@id([chatRoomId, userId, userState])
+  chatRoomId      Int
+  userId          Int
+  userState       UserChatStateCode
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  endedAt         DateTime
+  user            User @relation(fields: [userId],references: [id])
+  chatRoom        ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
 // chatRoomに参加するときはこのテーブルに追加する
 // 抜けたときは削除する
@@ -91,4 +80,9 @@ enum UesrRole {
   OWNER
   ADMIN
   USER
+}
+
+enum UserChatStateCode {
+  BANNED
+  MUTED
 }
