@@ -1,5 +1,11 @@
 name: backend-test
-on: [pull_request, workflow_dispatch]
+on:
+    push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
 jobs:
   make-backend-test:
     runs-on: ubuntu-latest
