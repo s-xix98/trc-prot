@@ -1,6 +1,6 @@
 name: backend-test
 on:
-    push:
+  push:
     branches:
       - main
   pull_request:
