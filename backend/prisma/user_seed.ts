@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-
+import { UserRole } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -10,7 +10,7 @@ async function main() {
     update: {},
     create: {
       email: 'huga@example.com',
-      nickname: 'huga',
+      username: 'huga',
       hashedPassword: 'hugahuga',
     },
   });
@@ -21,11 +21,48 @@ async function main() {
     update: {},
     create: {
       email: 'piyo@example.com',
-      nickname: 'piyo',
+      username: 'piyo',
       hashedPassword: 'piyopiyo',
     },
   });
+  const room = await prisma.chatRoom.upsert({
+    where: {
+      roomName: 'hogeRoom',
+    },
+    update: {},
+    create: {
+      roomName: 'hogeRoom',
+    },
+  });
+  const roomMember1 = await prisma.roomMember.upsert({
+    where: {
+      userId_chatRoomId: {
+        userId: 1,
+        chatRoomId: 1,
+      },
+    },
+    update: {},
+    create: {
+      userId: 1,
+      chatRoomId: 1,
+      role: UserRole.OWNER,
+    },
+  });
+  const roomMember2 = await prisma.roomMember.upsert({
+    where: {
+      userId_chatRoomId: {
+        userId: 2,
+        chatRoomId: 1,
+      },
+    },
+    update: {},
+    create: {
+      userId: 2,
+      chatRoomId: 1,
+    },
+  });
   console.log(user1, user2);
+  console.log(room, roomMember1, roomMember2);
 }
 
 main()
