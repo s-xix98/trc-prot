@@ -22,7 +22,7 @@ export const ChatChannelArea = ({
         <ContainerItem overflowY={'scroll'}>
           {channels.map((channel, idx) => (
             <p key={idx} onClick={handleClick} style={{ cursor: 'pointer' }}>
-              {channel}{' '}
+              {channel}
             </p>
           ))}
         </ContainerItem>
