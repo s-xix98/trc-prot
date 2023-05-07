@@ -44,8 +44,11 @@
     "@storybook/blocks": "^7.0.9",
     "@storybook/nextjs": "^7.0.9",
     "@storybook/react": "^7.0.9",
+    "@storybook/test-runner": "^0.10.0",
     "@storybook/testing-library": "^0.0.14-next.2",
     "eslint-plugin-storybook": "^0.6.12",
-    "storybook": "^7.0.9"
+    "jest-image-snapshot": "^6.1.0",
+    "storybook": "^7.0.9",
+    "wait-on": "^7.0.1"
   }
 }
