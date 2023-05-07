@@ -46,6 +46,7 @@
     "@storybook/react": "^7.0.9",
     "@storybook/test-runner": "^0.10.0",
     "@storybook/testing-library": "^0.0.14-next.2",
+    "concurrently": "^8.0.1",
     "eslint-plugin-storybook": "^0.6.12",
     "jest-image-snapshot": "^6.1.0",
     "storybook": "^7.0.9",
