@@ -10,7 +10,11 @@ import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
 import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
 
-export const ChatTalkArea = () => {
+export const ChatTalkArea = ({
+  selectedChannel,
+}: {
+  selectedChannel: string;
+}) => {
   const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
@@ -30,7 +34,7 @@ export const ChatTalkArea = () => {
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader />
+      <ChatTalkAreaHeader roomName={selectedChannel} />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}

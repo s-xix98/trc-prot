@@ -5,7 +5,7 @@ import { socket } from '@/socket';
 import { BasicButton } from '@/components/Elements/Button/BasicButton';
 import { userInfoAtom } from '@/App';
 
-export const ChatTalkAreaHeader = () => {
+export const ChatTalkAreaHeader = ({ roomName }: { roomName: string }) => {
   const userInfo = useAtomValue(userInfoAtom);
   const onGetChatLogAct = () => {
     console.log('OnGetChatLogButton');
@@ -15,7 +15,7 @@ export const ChatTalkAreaHeader = () => {
     <>
       <div>
         <Container flexDirection="row">
-          <h2>ChatTalkArea</h2>
+          <h2>ChatTalkArea {roomName}</h2>
           <div style={{ margin: '0px 10px 0px auto' }}>
             <BasicButton btnAct={onGetChatLogAct}>Get History</BasicButton>
           </div>
