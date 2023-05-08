@@ -9,7 +9,7 @@
     "next-lint": "next lint",
     "fmt": "prettier --write src .",
     "fmt-ck": "prettier --check src .",
-    "lint": "eslint --max-warnings=0 src",
+    "lint": "npm run next-lint && eslint --max-warnings=0 src",
     "lint-fix": "eslint --fix src",
     "noEmit": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
