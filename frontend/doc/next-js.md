@@ -12,3 +12,9 @@
 # Creating a new Next.js app in /workdir/next.
 npx create-next-app@latest
 ```
+
+## React Strict
+
+next js で Strict モードを 有効化
+
+- [next.config.js: React Strict モード | Next.js](https://nextjs-ja-translation-docs.vercel.app/docs/api-reference/next.config.js/react-strict-mode)
