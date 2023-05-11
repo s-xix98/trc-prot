@@ -5,7 +5,8 @@ on:
       - main
   pull_request:
   workflow_dispatch:
-
+env:
+  DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
 jobs:
   make-backend-test:
     runs-on: ubuntu-latest
