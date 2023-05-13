@@ -1,4 +1,31 @@
 import NextAuth from "next-auth";
-const handler = NextAuth({});
+import GoogleProvider from "next-auth/providers/google";
+import FortyTwoProvider from "next-auth/providers/42-school";
+import CredentialsProvider from "next-auth/providers/credentials";
+const handler = NextAuth({ providers: [
+  GoogleProvider({
+    clientId: process.env.GOOGLE_CLIENT_ID || "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+  }),
+  FortyTwoProvider({
+    clientId: process.env.FORTY_TWO_CLIENT_ID || "",
+    clientSecret: process.env.FORTY_TWO_CLIENT_SECRET || "",
+  }),
+  CredentialsProvider({
+    credentials: {
+      email: { label: "Email", type: "email", placeholder:"exaple@example.com" },
+      password: { label: "Password", type: "password" }
+    },
+    async authorize(credentials, req) {
+      // backendにリクエストを送る
+      const user = { id: "1", name: "hoge", email: "exaple@example.com" }
+      if (user) {
+        return user
+      }
+      return null
+    }
+  })
+],
+});
 
 export { handler as GET, handler as POST }
