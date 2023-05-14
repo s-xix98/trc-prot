@@ -14,12 +14,12 @@ const handler = NextAuth({ providers: [
   CredentialsProvider({
     name: "Email",
     credentials: {
-      email: { label: "Email", type: "email", placeholder:"exaple@example.com" },
+      email: { label: "Email", type: "email", placeholder:"example@example.com" },
       password: { label: "Password", type: "password" }
     },
     async authorize(credentials, req) {
       // backendにリクエストを送る
-      const user = { id: "1", name: "hoge", email: "exaple@example.com" }
+      const user = { id: "1", name: "hoge", email: "example@example.com" }
       if (user) {
         return user
       }
