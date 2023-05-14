@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import { useAtom } from 'jotai';
+import { signIn } from 'next-auth/react';
 
 import { Container } from '@/components/Layout/Container';
 import { userInfoAtom } from '@/App';
-import {signIn } from 'next-auth/react';
 
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
@@ -30,11 +30,8 @@ export const User = ({ children }: { children: ReactNode }) => {
     }
   };
   const AuthLoginButton = () => {
-    return (
-      <button  onClick={()=> signIn()}>authlogin</button>
-    );
+    return <button onClick={() => signIn()}>authlogin</button>;
   };
-
 
   return (
     <Container flexDirection="column">
@@ -47,7 +44,7 @@ export const User = ({ children }: { children: ReactNode }) => {
             <UserInputArea />
           </div>
           <div>
-            <AuthLoginButton/>
+            <AuthLoginButton />
           </div>
         </Container>
       </div>
