@@ -25,7 +25,17 @@ const handler = NextAuth({ providers: [
       return null
     }
   })
-],
+  ],
+  callbacks: {
+    async signIn({user, account, profile, email, credentials}) {
+      console.log(user);
+      console.log(account);
+      console.log(profile);
+      console.log(email);
+      console.log(credentials);
+      return true;
+    },
+  },
 });
 
 export { handler as GET, handler as POST }
