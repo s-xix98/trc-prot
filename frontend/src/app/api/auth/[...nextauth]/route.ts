@@ -12,6 +12,7 @@ const handler = NextAuth({ providers: [
     clientSecret: process.env.FORTY_TWO_CLIENT_SECRET || "",
   }),
   CredentialsProvider({
+    name: "Email",
     credentials: {
       email: { label: "Email", type: "email", placeholder:"exaple@example.com" },
       password: { label: "Password", type: "password" }
