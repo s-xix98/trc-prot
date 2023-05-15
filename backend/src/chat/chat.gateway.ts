@@ -2,6 +2,7 @@ import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/web
 import { Socket,Server } from 'socket.io';
 import { PrismaService } from '../prisma/prisma.service';
 import { MessageDto } from './dto/message.dto';
+import { JoinChannelDto } from './dto/Channel.dto';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -18,11 +19,11 @@ export class ChatGateway {
     console.log('chat Disconnection');
   }
   @SubscribeMessage('joinChannel')
-  async joinChannel(client: Socket){
+  async joinChannel(client: Socket, joinChannelDto: JoinChannelDto) {
     await this.prisma.roomMember.create({
       data: {
-        userId: 1,
-        chatRoomId: 1,
+        userId: joinChannelDto.userId,
+        chatRoomId: joinChannelDto.chatRoomId,
       },
     });
   }
