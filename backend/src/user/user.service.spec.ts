@@ -43,7 +43,7 @@ describe('UserService', () => {
       // await prismaService.user.delete({where: {email: 'signUp@example.com'}});
       const user = await userService.signUp(dto);
       expect(user.email).toEqual(dto.email);
-      expect(user.nickname).toEqual(dto.nickname);
+      expect(user.username).toEqual(dto.nickname);
       expect(user.hashedPassword).toEqual(dto.hashedPassword);
     });
 
@@ -59,7 +59,7 @@ describe('UserService', () => {
         hashedPassword: dto.hashedPassword,
       });
       expect(user.email).toEqual(dto.email);
-      expect(user.nickname).toEqual(dto.nickname);
+      expect(user.username).toEqual(dto.nickname);
       expect(user.hashedPassword).toEqual(dto.hashedPassword);
     });
 
