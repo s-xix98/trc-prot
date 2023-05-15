@@ -1,9 +1,17 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
 export class ChatGateway {
-  @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+
+  handleConnection(client: Socket) {
+    console.log('chat Connection');
+  }
+  handleDisconnect(client: Socket) {
+    console.log('chat Disconnection');
   }
 }
