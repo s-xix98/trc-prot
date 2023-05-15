@@ -1,5 +1,5 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Socket,Server } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { PrismaService } from '../prisma/prisma.service';
 import { MessageDto } from './dto/message.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
@@ -13,6 +13,7 @@ export class ChatGateway {
   server: Server;
   constructor(private prisma: PrismaService) {}
   handleConnection(client: Socket) {
+    // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
     console.log('chat Connection');
   }
   handleDisconnect(client: Socket) {
@@ -20,12 +21,13 @@ export class ChatGateway {
   }
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, joinChannelDto: JoinChannelDto) {
-    await this.prisma.roomMember.create({
+    const addedUser = await this.prisma.roomMember.create({
       data: {
         userId: joinChannelDto.userId,
         chatRoomId: joinChannelDto.chatRoomId,
       },
     });
+    client.join(addedUser.chatRoomId.toString());
   }
 
   @SubscribeMessage('sendMessage')
@@ -37,6 +39,6 @@ export class ChatGateway {
         chatRoomId: messageDto.chatRoomId,
       },
     });
-    this.server.emit('sendMessage', msg);
+    this.server.to(msg.chatRoomId.toString()).emit('sendMessage', msg);
   }
 }
