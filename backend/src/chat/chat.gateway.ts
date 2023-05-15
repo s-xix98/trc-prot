@@ -21,11 +21,18 @@ export class ChatGateway {
   }
   @SubscribeMessage('createChannel')
   async createChannel(client:Socket, createChannelDto: CreateChannelDto){
-    await this.prisma.chatRoom.create({
+    const createdRoom = await this.prisma.chatRoom.create({
       data: {
         roomName: createChannelDto.roomName,
       },
     });
+    await this.prisma.roomMember.create({
+      data: {
+        userId: createChannelDto.userId,
+        chatRoomId: createdRoom.id,
+      },
+    });
+    client.join(createdRoom.id.toString());
   }
 
   @SubscribeMessage('joinChannel')
