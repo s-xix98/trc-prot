@@ -1,3 +1,5 @@
+'use client';
+
 import { atom } from 'jotai';
 
 import { User } from './features/user/components/User';
