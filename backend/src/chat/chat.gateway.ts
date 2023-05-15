@@ -19,6 +19,15 @@ export class ChatGateway {
   handleDisconnect(client: Socket) {
     console.log('chat Disconnection');
   }
+  @SubscribeMessage('createChannel')
+  async createChannel(client:Socket){
+    await this.prisma.chatRoom.create({
+      data: {
+        roomName: 'hogeroom',
+      },
+    });
+  }
+
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, joinChannelDto: JoinChannelDto) {
     const addedUser = await this.prisma.roomMember.create({
