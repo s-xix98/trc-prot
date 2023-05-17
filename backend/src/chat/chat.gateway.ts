@@ -33,6 +33,7 @@ export class ChatGateway {
       },
     });
     client.join(createdRoom.id.toString());
+    this.server.to(createdRoom.id.toString()).emit('createChannel', createdRoom);
   }
 
   @SubscribeMessage('joinChannel')
@@ -44,6 +45,7 @@ export class ChatGateway {
       },
     });
     client.join(addedUser.chatRoomId.toString());
+    this.server.to(addedUser.chatRoomId.toString()).emit('joinChannel', addedUser);
   }
 
   @SubscribeMessage('sendMessage')
