@@ -37,7 +37,7 @@ model ChatRoom {
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
 // ルームに入る際やチャットを送信するときに
 // このテーブルを都度チェックしてbanされてなかったらchatroomに入れる的な使い方
-// timeLimitedAtに終了時間を渡す感じで使う予定
+// endedAtに終了時間を渡す感じで使う予定
 
 model UserChatState {
   @@id([chatRoomId, userId, userState])
