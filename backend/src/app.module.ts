@@ -10,7 +10,13 @@ import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [PrismaModule, PostMessageModule, ConfigModule, UserModule, ChatModule],
+  imports: [
+    PrismaModule,
+    PostMessageModule,
+    ConfigModule,
+    UserModule,
+    ChatModule,
+  ],
   controllers: [AppController],
   providers: [AppService, EventsGateway],
 })
