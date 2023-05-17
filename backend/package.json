@@ -31,7 +31,8 @@
     "@nestjs/websockets": "^9.4.0",
     "@prisma/client": "^4.12.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
