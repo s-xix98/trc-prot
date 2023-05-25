@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
@@ -6,16 +6,27 @@ import { userInfoAtom } from '@/App';
 
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
+import Modal from 'react-modal';
 
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const UserInputArea = () => {
     if (userInfo) {
       return (
+        <div>
+          <button onClick={()=>{setModalIsOpen(true)}}> botton </button>
         <p>
           id : {userInfo?.id}, name : {userInfo?.nickname}
         </p>
+        {modalIsOpen && (<Modal
+        isOpen={modalIsOpen}
+        >
+          <h1>aaa</h1>
+        </Modal>
+          )}
+        </div>
       );
     } else {
       return (
