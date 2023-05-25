@@ -11,7 +11,10 @@ import Modal from 'react-modal';
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-
+  const closeModal = () => {
+    console.log('closeModal');
+    setModalIsOpen(false);
+  }
   const UserInputArea = () => {
     if (userInfo) {
       return (
@@ -22,6 +25,7 @@ export const User = ({ children }: { children: ReactNode }) => {
         </p>
         {modalIsOpen && (<Modal
         isOpen={modalIsOpen}
+        onRequestClose={closeModal}
         >
           <h1>aaa</h1>
         </Modal>
