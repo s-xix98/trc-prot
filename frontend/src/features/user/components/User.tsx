@@ -14,12 +14,26 @@ export const User = ({ children }: { children: ReactNode }) => {
   const closeModal = () => {
     console.log('closeModal');
     setModalIsOpen(false);
-  }
+  };
   const UserInputArea = () => {
     if (userInfo) {
       return (
         <div>
-          <UserDetailsModal userInfo={userInfo} modalIsOpen={modalIsOpen} closeModal={closeModal} />
+          <button
+            onClick={() => {
+              setModalIsOpen(true);
+            }}
+          >
+            botton
+          </button>
+          <p>
+            id : {userInfo?.id}, name : {userInfo?.nickname}
+          </p>
+          <UserDetailsModal
+            userInfo={userInfo}
+            modalIsOpen={modalIsOpen}
+            closeModal={closeModal}
+          />
         </div>
       );
     } else {
