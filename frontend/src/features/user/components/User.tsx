@@ -24,13 +24,12 @@ export const User = ({ children }: { children: ReactNode }) => {
         <p>
           id : {userInfo?.id}, name : {userInfo?.nickname}
         </p>
-        {modalIsOpen && (<Modal
+        <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         >
           <h1>aaa</h1>
         </Modal>
-          )}
         </div>
       );
     } else {
