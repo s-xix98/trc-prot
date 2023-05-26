@@ -12,8 +12,9 @@ export class PostMessageService {
   async postMessage(dto: MessageDto): Promise<Message> {
     const msg = await this.prisma.message.create({
       data: {
-        authorId: dto.authorId,
+        userId: dto.authorId,
         content: dto.content,
+        chatRoomId: 1,
       },
     });
     return msg;
