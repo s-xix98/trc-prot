@@ -15,6 +15,7 @@ export const User = ({ children }: { children: ReactNode }) => {
     console.log('closeModal');
     setModalIsOpen(false);
   };
+
   const UserInputArea = () => {
     if (userInfo) {
       return (
