@@ -1,4 +1,3 @@
-'use client';
 import { ReactNode, useState } from 'react';
 import { useAtom } from 'jotai';
 
@@ -7,8 +6,8 @@ import { userInfoAtom } from '@/App';
 
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
-import Modal from 'react-modal';
-Modal.setAppElement('body');
+import { UserDetailsModal } from './UserDetailsModal';
+
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -20,18 +19,7 @@ export const User = ({ children }: { children: ReactNode }) => {
     if (userInfo) {
       return (
         <div>
-          <button onClick={()=>{setModalIsOpen(true)}}> botton </button>
-        <p>
-          id : {userInfo?.id}, name : {userInfo?.nickname}
-        </p>
-        <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        >
-          <p>
-          id : {userInfo?.id}, name : {userInfo?.nickname}
-          </p>
-        </Modal>
+          <UserDetailsModal userInfo={userInfo} modalIsOpen={modalIsOpen} closeModal={closeModal} />
         </div>
       );
     } else {
