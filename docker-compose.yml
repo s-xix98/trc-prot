@@ -29,7 +29,7 @@ services:
       - backend_node_modules:/workdir/node_modules
     environment:
       - DATABASE_URL=postgresql://test:test@db:5432/test?schema=public
-    command: /bin/bash -c "npm install && npx prisma db push && npx prisma generate && npx prisma db seed && (npx prisma studio &) && exec npm run start:dev"
+    command: /bin/bash -c "npm install && npx prisma db push --force-reset && npx prisma generate && npx prisma db seed && (npx prisma studio &) && exec npm run start:dev"
 
   db:
     build: db
