@@ -1,3 +1,4 @@
+'use client';
 import { ReactNode, useState } from 'react';
 import { useAtom } from 'jotai';
 
@@ -7,7 +8,7 @@ import { userInfoAtom } from '@/App';
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 import Modal from 'react-modal';
-
+Modal.setAppElement('body');
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
   const [modalIsOpen, setModalIsOpen] = useState(false);
