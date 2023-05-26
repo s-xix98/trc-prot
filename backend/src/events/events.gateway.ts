@@ -41,7 +41,7 @@ export class EventsGateway {
     // Userテーブルのidでそのuserのmsgデータを全て取得
     const pastMessages = await this.prisma.message.findMany({
       where: {
-        authorId,
+        userId: 1,
       },
     });
     console.log('mid', authorId);
@@ -55,7 +55,7 @@ export class EventsGateway {
       'getPastMessages',
       pastMessages.map((m) => {
         return {
-          nickname: user?.nickname,
+          nickname: user?.username,
           msg: m.content,
         };
       }),
