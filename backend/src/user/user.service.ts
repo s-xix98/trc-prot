@@ -15,7 +15,7 @@ export class UserService {
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
-          nickname: dto.nickname,
+          username: dto.nickname,
           // 今後ハッシュ化
           hashedPassword: dto.hashedPassword,
         },

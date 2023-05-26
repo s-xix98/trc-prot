@@ -9,35 +9,80 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-
-
-// @id primay key
-// @default(autoincrement()) レコード作成時に自動的にインクリメントしてくれる
-// messageの配列
-// @unique 一意のデータ
-
+// userの情報
 model User {
-  id        Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  nickname  String @unique
-  email     String @unique
-  hashedPassword String
+  id              Int @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  username        String @unique
+  email           String @unique
+  hashedPassword  String
+  messages        Message[]
+  roomMembers     RoomMember[]
+  userChatState   UserChatState[]
+}
+// userが所属しているchatRoomの集合を取得
+model ChatRoom {
+  id            Int @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  roomName      String @unique
+  password      String?
+  isPrivate     Boolean @default(false)
+  isDM          Boolean @default(false)
+  messages      Message[]
+  roomMembers   RoomMember[]
+  userChatState UserChatState[]
+}
+// チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
+// ルームに入る際やチャットを送信するときに
+// このテーブルを都度チェックしてbanされてなかったらchatroomに入れる的な使い方
+// endedAtに終了時間を渡す感じで使う予定
 
-  messages Message[]
+model UserChatState {
+  @@id([chatRoomId, userId, userState])
+  chatRoomId      Int
+  userId          Int
+  userState       UserChatStateCode
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  endedAt         DateTime
+  user            User @relation(fields: [userId],references: [id])
+  chatRoom        ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+// chatRoomに参加するときはこのテーブルに追加する
+// 抜けたときは削除する
+// UserMutedInChatRoom,UserBannedInChatRoomの情報をこのテーブルに持たせれば良くねって思ってるそこのあなた
+// このテーブルにban,muteの情報を持たせると、部屋から抜けた際に
+// その情報を持っているレコードが削除されてしまってもう一度入るみたいなことができてしまう
+model RoomMember {
+  @@id([userId, chatRoomId])
+  joinedAt    DateTime @default(now())
+  role        UserRole @default(USER)
+  userId      Int
+  chatRoomId  Int
+  user        User @relation(fields: [userId],references: [id])
+  chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+// chatRoomIdからそのchatRoomのmsg集合を取得したりする
+model Message {
+  id          Int @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  content     String
+  userId      Int
+  chatRoomId  Int
+  user        User @relation(fields: [userId],references: [id])
+  chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
 
-// author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
-// User 関係するテーブル
-// fields: 参照元のカラム　
-// reference: 参照先のカラム
-// onDelete: Cascade  Userテーブルのレコードが削除されると自動的に関連するメッセージを削除
-model Message {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  content String
-  authorId Int
-  author User @relation(fields: [authorId],references: [id], onDelete: Cascade)
+enum UserRole {
+  OWNER
+  ADMIN
+  USER
+}
+
+enum UserChatStateCode {
+  BANNED
+  MUTED
 }
