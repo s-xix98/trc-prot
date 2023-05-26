@@ -28,7 +28,9 @@ export const User = ({ children }: { children: ReactNode }) => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         >
-          <h1>aaa</h1>
+          <p>
+          id : {userInfo?.id}, name : {userInfo?.nickname}
+          </p>
         </Modal>
         </div>
       );
