@@ -23,7 +23,7 @@ export const Login: Story = {
 
     const loginBtn = canvas.getByText('login as fuga');
     await userEvent.click(loginBtn);
-    await sleep(3000);
+    await sleep(1000);
     expect(canvas.getByText('ChatChannelArea'));
   },
 };
@@ -34,7 +34,7 @@ export const SelectChannel: Story = {
 
     const loginBtn = canvas.getByText('login as fuga');
     await userEvent.click(loginBtn);
-    await sleep(3000);
+    await sleep(1000);
 
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
@@ -47,7 +47,7 @@ export const SendMsg: Story = {
 
     const loginBtn = canvas.getByText('login as fuga');
     await userEvent.click(loginBtn);
-    await sleep(3000);
+    await sleep(1000);
 
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
@@ -72,7 +72,7 @@ export const SendSomeMsg: Story = {
 
     const loginBtn = canvas.getByText('login as fuga');
     await userEvent.click(loginBtn);
-    await sleep(3000);
+    await sleep(1000);
 
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
