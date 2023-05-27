@@ -26,7 +26,7 @@ const mockPrismaService = {
   },
   chatRoom: {
     findUnique: jest.fn().mockReturnValue({ id: '1' }),
-  }
+  },
 };
 
 describe('PostMessageService', () => {
