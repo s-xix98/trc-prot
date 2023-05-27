@@ -20,10 +20,23 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+
 jobs:
   storybook-test:
     timeout-minutes: 5
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
@@ -41,6 +54,20 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: backend npm install
+        run: cd backend && npm install
+      - name: set up prisma
+        run: cd backend && npx prisma db push --preview-feature && npx prisma generate && npx prisma db seed
+      - name: run backend
+        run: cd backend && npm run start:dev &
 
       - name: frontend npm install
         run: cd frontend && npm install
