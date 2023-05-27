@@ -11,7 +11,7 @@ datasource db {
 }
 // userの情報
 model User {
-  id              Int @id @default(autoincrement())
+  id              String @id @default(uuid())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   username        String @unique
@@ -23,7 +23,7 @@ model User {
 }
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
-  id            Int @id @default(autoincrement())
+  id            String @id @default(uuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   roomName      String @unique
@@ -41,8 +41,8 @@ model ChatRoom {
 
 model UserChatState {
   @@id([chatRoomId, userId, userState])
-  chatRoomId      Int
-  userId          Int
+  chatRoomId    String
+  userId        String
   userState       UserChatStateCode
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -59,19 +59,19 @@ model RoomMember {
   @@id([userId, chatRoomId])
   joinedAt    DateTime @default(now())
   role        UserRole @default(USER)
-  userId      Int
-  chatRoomId  Int
+  userId     String
+  chatRoomId String
   user        User @relation(fields: [userId],references: [id])
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
 // chatRoomIdからそのchatRoomのmsg集合を取得したりする
 model Message {
-  id          Int @id @default(autoincrement())
+  id          String @id @default(uuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   content     String
-  userId      Int
-  chatRoomId  Int
+  userId      String
+  chatRoomId  String
   user        User @relation(fields: [userId],references: [id])
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }

@@ -5,5 +5,5 @@ export class MessageDto {
   @ApiProperty({ example: 'test Message', description: 'test' })
   content: string;
   @ApiProperty({ example: 1, description: 'test' })
-  authorId: number;
+  authorId: string;
 }

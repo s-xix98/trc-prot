@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { MessageDto } from '../types/MessageDto';
 
-export const postMessage = (authorId: number, msg: string) => {
+export const postMessage = (authorId: string, msg: string) => {
   const url = 'http://localhost:8000/post-message';
 
   const msgDto: MessageDto = { content: msg, authorId: authorId };
