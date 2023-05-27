@@ -5,18 +5,18 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PostMessageService } from './post-message.service';
 
 type Message = {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
   content: string;
-  authorId: number;
+  authorId: string;
 };
 const mockMsg: Message = {
-  id: 12,
+  id: '1',
   createdAt: new Date(),
   updatedAt: new Date(),
   content: 'nori',
-  authorId: 1,
+  authorId: '2',
 };
 
 const mockPrismaService = {
@@ -24,6 +24,9 @@ const mockPrismaService = {
     // PrismaService.createをmockMsgを返すだけの関数にした
     create: jest.fn().mockReturnValue(mockMsg),
   },
+  chatRoom: {
+    findUnique: jest.fn().mockReturnValue({ id: '1' }),
+  }
 };
 
 describe('PostMessageService', () => {
