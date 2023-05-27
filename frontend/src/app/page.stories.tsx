@@ -34,6 +34,8 @@ export const SelectChannel: Story = {
 
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
+
+    await sleep(1000);
   },
 };
 
@@ -52,9 +54,12 @@ export const SendMsg: Story = {
     }
     await userEvent.type(inputElem, 'This is test msg');
     await userEvent.click(canvas.getByText('Send'));
+
     // SEND ボタンに アニメーションがあり、スクショのタイミングによって
     // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
     await userEvent.click(canvas.getByText('Footer'));
+
+    await sleep(1000);
   },
 };
 
@@ -75,8 +80,11 @@ export const SendSomeMsg: Story = {
       await userEvent.type(inputElem, `This is test msg ${i}`);
       await userEvent.click(canvas.getByText('Send'));
     }
+
     // SEND ボタンに アニメーションがあり、スクショのタイミングによって
     // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
     await userEvent.click(canvas.getByText('Footer'));
+
+    await sleep(1000);
   },
 };
