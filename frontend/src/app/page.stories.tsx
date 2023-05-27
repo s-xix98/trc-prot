@@ -20,12 +20,10 @@ export const Basic: Story = {};
 export const Login: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+
     const loginBtn = canvas.getByText('login as fuga');
-
     await userEvent.click(loginBtn);
-
     await sleep(3000);
-
     expect(canvas.getByText('ChatChannelArea'));
   },
 };
