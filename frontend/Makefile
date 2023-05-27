@@ -43,12 +43,12 @@ sb-create-file:
 
 PHONY += sb-test
 sb-test:
-	npm run storybook-test
+	npm run storybook-test-ci
 
 PHONY += sb-update
 sb-update:
 	rm -rf $(shell find src/ -type d -name '__image_snapshots__')
-	npm run storybook-update-snapshot
+	npm run storybook-update-snapshot-ci
 
 # etc...
 # ------------------------------------------------------------------------------------------
