@@ -32,10 +32,6 @@ export const SelectChannel: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const loginBtn = canvas.getByText('login as fuga');
-    await userEvent.click(loginBtn);
-    await sleep(1000);
-
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
   },
@@ -44,10 +40,6 @@ export const SelectChannel: Story = {
 export const SendMsg: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-
-    const loginBtn = canvas.getByText('login as fuga');
-    await userEvent.click(loginBtn);
-    await sleep(1000);
 
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
@@ -69,10 +61,6 @@ export const SendMsg: Story = {
 export const SendSomeMsg: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-
-    const loginBtn = canvas.getByText('login as fuga');
-    await userEvent.click(loginBtn);
-    await sleep(1000);
 
     const hoge0 = canvas.getByText('hoge 0');
     await userEvent.click(hoge0);
