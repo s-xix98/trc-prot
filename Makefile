@@ -3,9 +3,16 @@
 
 # MAKE
 # ------------------------------------------------------------------------------------------
+DOCKER_FILES		:=	frontend/Dockerfile backend/Dockerfile db/Dockerfile
+DOCKER_BUILD_TXT	:=	.docker_build
+
 PHONY	:=	all
-all:
-	docker compose up --build
+all: $(DOCKER_BUILD_TXT)
+	docker compose up
+
+$(DOCKER_BUILD_TXT): $(DOCKER_FILES)
+	date > $(DOCKER_BUILD_TXT)
+	docker compose build
 
 PHONY	+=	down
 down:
