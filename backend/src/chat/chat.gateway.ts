@@ -43,7 +43,6 @@ export class ChatGateway {
     });
     client.join(createdRoom.id.toString());
     this.server
-      .to(createdRoom.id.toString())
       .emit('createChannel', createdRoom);
   }
 
