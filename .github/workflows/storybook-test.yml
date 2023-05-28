@@ -65,7 +65,7 @@ jobs:
       - name: backend npm install
         run: cd backend && npm install
       - name: set up prisma
-        run: cd backend && npx prisma db push --preview-feature && npx prisma generate && npx prisma db seed
+        run: cd backend && npx prisma db push && npx prisma generate && npx prisma db seed
       - name: run backend
         run: cd backend && npm run start:dev &
 
