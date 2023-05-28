@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { io, Socket } from 'socket.io-client';
-import { ChatRoom, Message, RoomMember, User } from '@prisma/client';
+import { ChatRoom, Message, Prisma, PrismaClient, RoomMember, User } from '@prisma/client';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { INestApplication } from '@nestjs/common';
 
@@ -10,62 +10,103 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
-
+type testUser = {
+  user: User;
+  socket: Socket;
+}
 const USERNUM = 10;
+
+const createTestUsers = async (prismaService: PrismaService) => {
+  const testUsers: testUser[] = [];
+  for (let i = 0; i < USERNUM; i++) {
+
+    const sock: Socket = io('http://localhost:8001');
+
+    const user:User = await prismaService.user.upsert({
+      where: {
+        email: `chatTestUser${i}@test.com`,
+      },
+      update: {},
+      create: {
+        email: `chatTestUser${i}@test.com`,
+        username: `chatTestUser${i}`,
+        hashedPassword: `chatTestUser${i}`,
+      },
+    });
+
+    testUsers.push({ user, socket: sock });
+  }
+  return testUsers;
+};
+
+const cleanupDatabase = async (prisma:PrismaService): Promise<void> => {
+
+  const modelNames = Prisma.dmmf.datamodel.models.map((model) => model.name);
+  console.log(modelNames);
+  await Promise.all(
+    // @ts-ignore
+    // prisma. user prisma.chatroom 的なのになる
+    modelNames.map((modelName) => prisma[modelName.toLowerCase()].deleteMany())
+  );
+
+  prisma.$disconnect();
+};
+
+const emitAndWaitForEvent = async <T>(eventName:string, socket:Socket, dto:T) => {
+  return new Promise((resolve) => {
+    socket.on(eventName, async () => resolve(null));
+    socket.emit(eventName, dto);
+  });
+}
+
+
+
 describe('ChatGateway', () => {
   let gateway: ChatGateway;
   let prismaService: PrismaService;
-  let clientSocket: Socket[];
-  let users: User[];
+  let testUsers: testUser[];
   let room: ChatRoom | null;
   let app: INestApplication;
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule],
       providers: [ChatGateway, PrismaService],
     }).compile();
+
     gateway = module.get<ChatGateway>(ChatGateway);
     prismaService = module.get<PrismaService>(PrismaService);
+
     app = module.createNestApplication();
     app.useWebSocketAdapter(new IoAdapter(app));
     await app.listen(8001);
-    clientSocket = [];
-    users = [];
-    for (let i = 0; i < USERNUM; i++) {
-      const sock: Socket = io('http://localhost:8001');
-      clientSocket.push(sock);
-    }
-    for (let i = 0; i < USERNUM; i++) {
-      const user = await prismaService.user.upsert({
-        where: {
-          email: `chatTestUser${i}@test.com`,
-        },
-        update: {},
-        create: {
-          email: `chatTestUser${i}@test.com`,
-          username: `chatTestUser${i}`,
-          hashedPassword: `chatTestUser${i}`,
-        },
+
+    testUsers = [];
+    testUsers = await createTestUsers(prismaService);
+
+    testUsers.map((testUser) => {
+      testUser.socket.on('connect', () => {
+        console.log(`connected ${testUser.user.username}`);
       });
-      users.push(user);
-    }
-    for (let i = 0; i < USERNUM; i++) {
-      clientSocket[i].on('connect', () => {
-        console.log(`connected ${i}`);
-      });
-    }
+    });
+
   });
   afterAll(async () => {
-    for (let i = 0; i < USERNUM; i++) {
-      clientSocket[i].off('connect', () => {
-        console.log(`dissconnected ${i}`);
+    testUsers.map((testUser) => {
+      testUser.socket.off('connect', () => {
+        console.log(`dissconnected ${testUser.user.username}`);
       });
-    }
+    });
+
+    testUsers.map((testUser) => {
+      testUser.socket.disconnect();
+    });
+
     await app.close();
-    for (let i = 0; i < USERNUM; i++) {
-      clientSocket[i].disconnect();
-    }
-    await prismaService.chatRoom.delete({
+    // await cleanupDatabase(prismaService);
+
+
+    await prismaService.chatRoom.deleteMany({
       where: {
         roomName: room?.roomName || 'testroom',
       },
@@ -73,36 +114,38 @@ describe('ChatGateway', () => {
     for (let i = 0; i < USERNUM; i++) {
       await prismaService.user.delete({
         where: {
-          id: users[i].id,
+          id: testUsers[i].user.id,
         },
       });
     }
   });
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(gateway).toBeDefined();
   });
+
   describe('create Channel', () => {
-    //users[0]が部屋を作成
-    it('should be create Channel successfully', (done) => {
+
+    test('users[0]が部屋を作成', async () => {
+      const user: testUser = testUsers[0];
       const createChannelDto: CreateChannelDto = {
         roomName: 'testroom',
-        userId: users[0].id,
+        userId: user.user.id,
       };
-      clientSocket[0].on('createChannel', async () => {
-        room = await prismaService.chatRoom.findFirst({
-          where: {
-            roomName: 'testroom',
-          },
-        });
-        expect(room?.roomName).toEqual(createChannelDto.roomName);
-        done();
+      await emitAndWaitForEvent<CreateChannelDto>('createChannel', user.socket, createChannelDto);
+
+      room = await prismaService.chatRoom.findFirst({
+        where: {
+          roomName: 'testroom',
+        },
       });
-      clientSocket[0].emit('createChannel', createChannelDto);
+
+      expect(room?.roomName).toEqual(createChannelDto.roomName);
     });
   });
 
   describe('join Channel', () => {
+
     let roomId: number;
     beforeEach(() => {
       if (!room) {
@@ -110,80 +153,87 @@ describe('ChatGateway', () => {
       }
       roomId = room.id;
     });
-    // users[1]~users[9]が部屋に参加
-    it('should be join room successfully', async () => {
-      const promise = [];
-      let roomMemberList: RoomMember[] = [];
-      for (let i = 1; i < USERNUM; i++) {
-        const joinChannel: JoinChannelDto = {
-          userId: users[i].id,
+
+    test('users[1]~users[9]が部屋に参加', async () => {
+      const promises:Promise<unknown>[] = [];
+
+        testUsers.slice(1).map((testUser) => {
+          const joinChannel: JoinChannelDto = {
+            userId: testUser.user.id,
+            chatRoomId: roomId,
+          };
+          const joinPromise = emitAndWaitForEvent<JoinChannelDto>('joinChannel', testUser.socket, joinChannel);
+          promises.push(joinPromise);
+        });
+
+        await Promise.all(promises).then( async () => {
+          const MemberList = await prismaService.roomMember.findMany({
+            where: {
+              chatRoomId: roomId,
+            },
+          });
+          expect(MemberList.length).toEqual(USERNUM);
+        });
+      });
+  });
+
+  describe('sendMessage', () => {
+
+    let roomId: number;
+    beforeEach(() => {
+      if (!room) {
+        throw Error('room is not created');
+      }
+      roomId = room.id;
+    });
+
+    test('users[0]が送信したメッセージがDBに保存されるか', async () => {
+      const user: testUser = testUsers[0];
+      const messageDto: MessageDto = {
+        content: 'test message',
+        userId: user.user.id,
+        chatRoomId: roomId,
+      };
+
+      await emitAndWaitForEvent<MessageDto>('sendMessage', user.socket, messageDto);
+      const dbMsg = await prismaService.message.findFirst({
+        where: {
           chatRoomId: roomId,
-        };
+        },
+      });
+
+      expect(dbMsg?.content).toEqual(messageDto.content);
+    });
+
+
+    test('users[0]が送信したメッセージが全員に送信されるか', async () => {
+      const user = testUsers[0];
+      const messageDto: MessageDto = {
+        content: 'test message',
+        userId: user.user.id,
+        chatRoomId: roomId,
+      };
+      const promises:Promise<unknown>[] = []
+
+      let receivedCount = 0;
+
+      testUsers.map((user) => {
         const joinPromise = new Promise((resolve) => {
-          clientSocket[i].on('joinChannel', async () => {
-            const newRoomMemberList = await prismaService.roomMember.findMany({
-              where: {
-                chatRoomId: roomId,
-              },
-            });
-            roomMemberList =
-              roomMemberList.length < newRoomMemberList.length
-                ? newRoomMemberList
-                : roomMemberList;
+          user.socket.on('sendMessage', async () =>{
+            receivedCount++;
+            console.log(receivedCount);
             resolve(null);
           });
-          clientSocket[i].emit('joinChannel', joinChannel);
         });
-        promise.push(joinPromise);
-      }
-      await Promise.all(promise);
-      expect(roomMemberList.length).toEqual(USERNUM);
-    });
-  });
-  describe('sendMessage', () => {
-    let roomId: number;
-    beforeEach(() => {
-      if (!room) {
-        throw Error('room is not created');
-      }
-      roomId = room.id;
-    });
-    // users[0]が送信したメッセージがDBに保存されるか
-    it('stores user message in db successfully', (done) => {
-      const messageDto: MessageDto = {
-        content: 'test message',
-        userId: users[0].id,
-        chatRoomId: roomId,
-      };
-      clientSocket[0].on('sendMessage', async () => {
-        const dbMsg = await prismaService.message.findFirst({
-          where: {
-            chatRoomId: roomId,
-          },
-        });
-        expect(dbMsg?.content).toEqual(messageDto.content);
-        done();
+
+        promises.push(joinPromise);
       });
-      clientSocket[0].emit('sendMessage', messageDto);
-    });
-    // users[0]が送信したメッセージが全員に送信されるか
-    it('sends user message to all 1 in the room', (done) => {
-      const messageDto: MessageDto = {
-        content: 'test message',
-        userId: users[0].id,
-        chatRoomId: roomId,
-      };
-      let receivedCount = 0;
-      for (let i = 0; i < USERNUM; i++) {
-        clientSocket[i].on('sendMessage', (emitMsg: Message) => {
-          expect(emitMsg.content).toEqual(messageDto.content);
-          receivedCount++;
-          if (receivedCount === USERNUM) {
-            done();
-          }
-        });
-      }
-      clientSocket[0].emit('sendMessage', messageDto);
+
+      user.socket.emit('sendMessage', messageDto);
+
+      Promise.all(promises).then(() => {
+        expect(receivedCount).toEqual(USERNUM);
+      });
     });
   });
 });
