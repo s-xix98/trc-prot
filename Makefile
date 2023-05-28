@@ -5,7 +5,13 @@
 # ------------------------------------------------------------------------------------------
 PHONY	:=	all
 all:
+	$(MAKE) local-npm-i
 	docker compose up --build
+
+PHONY	+=	local-npm-i
+local-npm-i:
+	cd frontend && npm i
+	cd backend && npm i
 
 PHONY	+=	down
 down:
