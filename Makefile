@@ -3,10 +3,17 @@
 
 # MAKE
 # ------------------------------------------------------------------------------------------
+DOCKER_FILES		:=	frontend/Dockerfile backend/Dockerfile db/Dockerfile
+DOCKER_BUILD_TXT	:=	.docker_build
+
 PHONY	:=	all
 all:
 	$(MAKE) local-npm-i
-	docker compose up --build
+	docker compose up
+
+$(DOCKER_BUILD_TXT): $(DOCKER_FILES)
+	date > $(DOCKER_BUILD_TXT)
+	docker compose build
 
 PHONY	+=	local-npm-i
 local-npm-i:
