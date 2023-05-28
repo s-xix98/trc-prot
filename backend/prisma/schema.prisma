@@ -12,7 +12,7 @@ datasource db {
 
 // userの情報
 model User {
-  id              String @id @default(uuid())
+  id              String @id @default(cuid())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   username        String @unique
@@ -25,7 +25,7 @@ model User {
 
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
-  id            String @id @default(uuid())
+  id            String @id @default(cuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   roomName      String @unique
@@ -70,7 +70,7 @@ model RoomMember {
 
 // chatRoomIdからそのchatRoomのmsg集合を取得したりする
 model Message {
-  id          String @id @default(uuid())
+  id          String @id @default(cuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   content     String
