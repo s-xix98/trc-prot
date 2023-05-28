@@ -26,7 +26,7 @@ model ChatRoom {
   id            Int @id @default(autoincrement())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  roomName      String @unique
+  roomName      String
   password      String?
   isPrivate     Boolean @default(false)
   isDM          Boolean @default(false)

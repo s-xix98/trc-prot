@@ -25,12 +25,8 @@ async function main() {
       hashedPassword: 'piyopiyo',
     },
   });
-  const room = await prisma.chatRoom.upsert({
-    where: {
-      roomName: 'hogeRoom',
-    },
-    update: {},
-    create: {
+  const room = await prisma.chatRoom.create({
+    data: {
       roomName: 'hogeRoom',
     },
   });
