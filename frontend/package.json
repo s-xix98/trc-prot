@@ -16,6 +16,7 @@
     "storybook-test": "test-storybook",
     "storybook-test-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-test\"",
     "storybook-update-snapshot": "test-storybook --updateSnapshot",
+    "storybook-update-snapshot-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-update-snapshot\"",
     "build-storybook": "storybook build",
     "concurrent": "concurrently \"npm run dev\" \"npm run storybook\""
   },
