@@ -52,11 +52,11 @@ lint-fix:
 
 PHONY += sb-test
 sb-test:
-	docker exec -t frontend make sb-test
+	docker compose run --rm frontend make sb-test
 
 PHONY += sb-update
 sb-update:
-	docker exec -t frontend make sb-update
+	docker compose run --rm frontend make sb-update
 
 # etc...
 # ------------------------------------------------------------------------------------------

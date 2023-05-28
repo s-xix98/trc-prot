@@ -2,6 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 
 import { SignUpDto, UserInfo } from '../types/UserDto';
 
+import { BACKEND } from '../../../constants';
+
 export const userSignUp = async (
   nickname: string,
   email: string,
@@ -9,7 +11,7 @@ export const userSignUp = async (
   setUserInfo: (v: UserInfo) => void,
 ) => {
   console.log('post /user/signup');
-  const url = 'http://localhost:8000/user/signup';
+  const url = BACKEND + '/user/signup';
 
   // TODO validation フロントとバックどっちの責任？
   const signUpDto: SignUpDto = {
