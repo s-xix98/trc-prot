@@ -7,12 +7,18 @@ DOCKER_FILES		:=	frontend/Dockerfile backend/Dockerfile db/Dockerfile
 DOCKER_BUILD_TXT	:=	.docker_build
 
 PHONY	:=	all
-all: $(DOCKER_BUILD_TXT)
+all:
+	$(MAKE) local-npm-i
 	docker compose up
 
 $(DOCKER_BUILD_TXT): $(DOCKER_FILES)
 	date > $(DOCKER_BUILD_TXT)
 	docker compose build
+
+PHONY	+=	local-npm-i
+local-npm-i:
+	cd frontend && npm i
+	cd backend && npm i
 
 PHONY	+=	down
 down:
