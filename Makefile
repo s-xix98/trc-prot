@@ -3,7 +3,7 @@
 
 # MAKE
 # ------------------------------------------------------------------------------------------
-DOCKER_FILES		:=	frontend/Dockerfile backend/Dockerfile
+DOCKER_FILES		:=	frontend/Dockerfile backend/Dockerfile db/Dockerfile
 DOCKER_BUILD_TXT	:=	.docker_build
 
 PHONY	:=	all
