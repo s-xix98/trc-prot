@@ -16,6 +16,7 @@
     "storybook-test": "test-storybook",
     "storybook-test-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-test\"",
     "storybook-update-snapshot": "test-storybook --updateSnapshot",
+    "storybook-update-snapshot-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-update-snapshot\"",
     "build-storybook": "storybook build",
     "concurrent": "concurrently \"npm run dev\" \"npm run storybook\""
   },
@@ -43,6 +44,7 @@
     "@storybook/addon-interactions": "^7.0.9",
     "@storybook/addon-links": "^7.0.9",
     "@storybook/blocks": "^7.0.9",
+    "@storybook/jest": "^0.1.0",
     "@storybook/nextjs": "^7.0.9",
     "@storybook/react": "^7.0.9",
     "@storybook/test-runner": "^0.10.0",

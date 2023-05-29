@@ -17,6 +17,7 @@ pr : [88 storybook を 使って UI テスト](https://github.com/s-xix98/trc-pr
 
 ```shell
 npm install --save-dev @storybook/test-runner
+npm install --save-dev @storybook/jest
 npm install --save-dev jest-image-snapshot
 ```
 
