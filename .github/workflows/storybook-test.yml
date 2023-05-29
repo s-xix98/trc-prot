@@ -58,6 +58,9 @@ jobs:
           path: ~/.cache/ms-playwright
           key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('playwright-version.txt') }}
 
+      - name: show hashFiles
+        run: echo hash is ${{ hashFiles('playwright-version.txt') }}
+
       - name: cache backend node-modules
         id: cache-backend-node-modules
         uses: actions/cache@v3
