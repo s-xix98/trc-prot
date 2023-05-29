@@ -21,6 +21,8 @@ model User {
   messages        Message[]
   roomMembers     RoomMember[]
   userChatState   UserChatState[]
+  friendship1      Friendship[]@relation("src")
+  friendship2      Friendship[]@relation("dest")
 }
 
 // userが所属しているchatRoomの集合を取得
@@ -78,6 +80,23 @@ model Message {
   chatRoomId  String
   user        User @relation(fields: [userId],references: [id])
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+}
+
+model Friendship {
+  @@id([srcUserId, destUserId])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  srcUserId   String
+  destUserId  String
+  status      FriendshipStatus
+  user1       User @relation("src", fields: [srcUserId], references: [id])
+  user2       User @relation("dest", fields: [destUserId], references: [id])
+}
+
+enum FriendshipStatus {
+  Requested
+  Accepted
+  Blocked
 }
 
 enum UserRole {
