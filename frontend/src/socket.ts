@@ -1,3 +1,5 @@
 import { io } from 'socket.io-client';
 
-export const socket = io('http://localhost:8000');
+import { BACKEND } from './constants';
+
+export const socket = io(BACKEND);
