@@ -68,6 +68,11 @@ export class ChatGateway {
         chatRoomId: messageDto.chatRoomId,
       },
     });
-    this.server.to(msg.chatRoomId.toString()).emit('sendMessage', msg);
+    const roomMsgs = await this.prisma.message.findMany({
+      where: {
+        chatRoomId: messageDto.chatRoomId,
+      },
+    });
+    this.server.to(msg.chatRoomId.toString()).emit('sendMessage', roomMsgs);
   }
 }
