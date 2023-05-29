@@ -12,28 +12,28 @@ datasource db {
 
 // userの情報
 model User {
-  id              String @id @default(cuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  username        String @unique
-  email           String @unique
-  hashedPassword  String
-  messages        Message[]
-  roomMembers     RoomMember[]
-  userChatState   UserChatState[]
-  friendship1      Friendship[]@relation("src")
-  friendship2      Friendship[]@relation("dest")
+  id             String          @id @default(cuid())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  username       String          @unique
+  email          String          @unique
+  hashedPassword String
+  messages       Message[]
+  roomMembers    RoomMember[]
+  userChatState  UserChatState[]
+  friendship1    Friendship[]    @relation("src")
+  friendship2    Friendship[]    @relation("dest")
 }
 
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
-  id            String @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  roomName      String @unique
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  roomName      String          @unique
   password      String?
-  isPrivate     Boolean @default(false)
-  isDM          Boolean @default(false)
+  isPrivate     Boolean         @default(false)
+  isDM          Boolean         @default(false)
   messages      Message[]
   roomMembers   RoomMember[]
   userChatState UserChatState[]
@@ -44,15 +44,16 @@ model ChatRoom {
 // このテーブルを都度チェックしてbanされてなかったらchatroomに入れる的な使い方
 // endedAtに終了時間を渡す感じで使う予定
 model UserChatState {
+  chatRoomId String
+  userId     String
+  userState  UserChatStateCode
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  endedAt    DateTime
+  user       User              @relation(fields: [userId], references: [id])
+  chatRoom   ChatRoom          @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
   @@id([chatRoomId, userId, userState])
-  chatRoomId      String
-  userId          String
-  userState       UserChatStateCode
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  endedAt         DateTime
-  user            User @relation(fields: [userId],references: [id])
-  chatRoom        ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
 
 // chatRoomに参加するときはこのテーブルに追加する
@@ -61,36 +62,38 @@ model UserChatState {
 // このテーブルにban,muteの情報を持たせると、部屋から抜けた際に
 // その情報を持っているレコードが削除されてしまってもう一度入るみたいなことができてしまう
 model RoomMember {
+  joinedAt   DateTime @default(now())
+  role       UserRole @default(USER)
+  userId     String
+  chatRoomId String
+  user       User     @relation(fields: [userId], references: [id])
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
   @@id([userId, chatRoomId])
-  joinedAt    DateTime @default(now())
-  role        UserRole @default(USER)
-  userId      String
-  chatRoomId  String
-  user        User @relation(fields: [userId],references: [id])
-  chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
 
 // chatRoomIdからそのchatRoomのmsg集合を取得したりする
 model Message {
-  id          String @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  content     String
-  userId      String
-  chatRoomId  String
-  user        User @relation(fields: [userId],references: [id])
-  chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  content    String
+  userId     String
+  chatRoomId String
+  user       User     @relation(fields: [userId], references: [id])
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
 }
 
 model Friendship {
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  srcUserId  String
+  destUserId String
+  status     FriendshipStatus
+  user1      User             @relation("src", fields: [srcUserId], references: [id])
+  user2      User             @relation("dest", fields: [destUserId], references: [id])
+
   @@id([srcUserId, destUserId])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  srcUserId   String
-  destUserId  String
-  status      FriendshipStatus
-  user1       User @relation("src", fields: [srcUserId], references: [id])
-  user2       User @relation("dest", fields: [destUserId], references: [id])
 }
 
 enum FriendshipStatus {
