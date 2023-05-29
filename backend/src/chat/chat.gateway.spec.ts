@@ -15,6 +15,7 @@ type testUser = {
   user: User;
   socket: Socket;
 };
+
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
@@ -45,12 +46,10 @@ const cleanupDatabase = async (
   prisma: PrismaService,
 ): Promise<void> => {
   console.log(modelNames);
-  await Promise.all(
-    // prisma.user prisma.chatroom 的なのになる
-    modelNames.map(
-      async (modelName) => await (prisma as any)[modelName].deleteMany({}),
-    ),
-  );
+  // prisma.user prisma.chatroom 的なのになる
+  for (const name of modelNames) {
+    await (prisma as any)[name].deleteMany({});
+  }
 };
 
 const emitAndWaitForEvent = async <T>(
