@@ -12,6 +12,7 @@ export const Input = ({
     <>
       <TextField
         id="outlined-multiline-static"
+        data-testid="input-test-id"
         multiline
         value={msg}
         onChange={onChangeAct}
