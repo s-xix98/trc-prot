@@ -13,4 +13,10 @@ export class UserGateway {
   handleDisconnect(client: Socket) {
     console.log('handleDisconnect', client.id);
   }
+
+  @SubscribeMessage('searchUser')
+  searchUser(client: Socket) {
+    console.log('searchUser', client.id);
+
+  }
 }
