@@ -13,11 +13,7 @@ export const User = ({ children }: { children: ReactNode }) => {
 
   const UserInputArea = () => {
     if (userInfo) {
-      return (
-        <p>
-          id : {userInfo?.id}, name : {userInfo?.nickname}
-        </p>
-      );
+      return <p>name : {userInfo?.nickname}</p>;
     } else {
       return (
         <div style={{ margin: '10px auto 10px auto' }}>
