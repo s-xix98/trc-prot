@@ -15,10 +15,21 @@ export class UserGateway {
   handleDisconnect(client: Socket) {
     console.log('handleDisconnect', client.id);
   }
-
+  // TODO　エラー処理はしていない
   @SubscribeMessage('searchUser')
-  searchUser(client: Socket) {
+  async searchUser(client: Socket) {
     console.log('searchUser', client.id);
-
+    const mockData = {
+      searchWord: 'mockWord',
+    };
+    const partialMatchUsers = await this.prisma.user.findMany({
+      where: {
+        username: {
+          contains: mockData.searchWord,
+          mode: 'insensitive',
+        },
+      },
+    });
+    console.log(partialMatchUsers);
   }
 }
