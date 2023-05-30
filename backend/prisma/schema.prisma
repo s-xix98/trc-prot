@@ -9,9 +9,10 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 // userの情報
 model User {
-  id              Int @id @default(autoincrement())
+  id              String @id @default(cuid())
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   username        String @unique
@@ -21,9 +22,10 @@ model User {
   roomMembers     RoomMember[]
   userChatState   UserChatState[]
 }
+
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
-  id            Int @id @default(autoincrement())
+  id            String @id @default(cuid())
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   roomName      String @unique
@@ -34,15 +36,15 @@ model ChatRoom {
   roomMembers   RoomMember[]
   userChatState UserChatState[]
 }
+
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
 // ルームに入る際やチャットを送信するときに
 // このテーブルを都度チェックしてbanされてなかったらchatroomに入れる的な使い方
 // endedAtに終了時間を渡す感じで使う予定
-
 model UserChatState {
   @@id([chatRoomId, userId, userState])
-  chatRoomId      Int
-  userId          Int
+  chatRoomId      String
+  userId          String
   userState       UserChatStateCode
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -50,6 +52,7 @@ model UserChatState {
   user            User @relation(fields: [userId],references: [id])
   chatRoom        ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
+
 // chatRoomに参加するときはこのテーブルに追加する
 // 抜けたときは削除する
 // UserMutedInChatRoom,UserBannedInChatRoomの情報をこのテーブルに持たせれば良くねって思ってるそこのあなた
@@ -59,19 +62,20 @@ model RoomMember {
   @@id([userId, chatRoomId])
   joinedAt    DateTime @default(now())
   role        UserRole @default(USER)
-  userId      Int
-  chatRoomId  Int
+  userId      String
+  chatRoomId  String
   user        User @relation(fields: [userId],references: [id])
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }
+
 // chatRoomIdからそのchatRoomのmsg集合を取得したりする
 model Message {
-  id          Int @id @default(autoincrement())
+  id          String @id @default(cuid())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   content     String
-  userId      Int
-  chatRoomId  Int
+  userId      String
+  chatRoomId  String
   user        User @relation(fields: [userId],references: [id])
   chatRoom    ChatRoom @relation(fields: [chatRoomId],references: [id], onDelete: Cascade)
 }

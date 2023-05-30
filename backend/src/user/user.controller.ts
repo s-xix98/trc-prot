@@ -5,7 +5,7 @@ import { loginDto, signUpDto } from './dto/user.dto';
 import { UserService } from './user.service';
 // TODO front直したら消す
 type User = {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
   email: string;
