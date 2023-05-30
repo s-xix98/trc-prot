@@ -2,7 +2,7 @@
 
 export type MessageDto = {
   content: string;
-  authorId: number;
+  authorId: string;
 };
 
 export type handleMessageDto = {
