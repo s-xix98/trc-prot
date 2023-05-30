@@ -70,7 +70,9 @@ jobs:
         run: cd frontend && npm install
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
-        run: cd frontend && npx playwright install --with-deps
+        run: cd frontend && npx playwright install
+      - name: install playwright deps
+        run: cd frontend && npx playwright install-deps
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: run storybook test

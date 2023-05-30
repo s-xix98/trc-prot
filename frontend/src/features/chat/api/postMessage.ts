@@ -4,7 +4,7 @@ import { MessageDto } from '../types/MessageDto';
 
 import { BACKEND } from '../../../constants';
 
-export const postMessage = (authorId: number, msg: string) => {
+export const postMessage = (authorId: string, msg: string) => {
   const url = BACKEND + '/post-message';
 
   const msgDto: MessageDto = { content: msg, authorId: authorId };

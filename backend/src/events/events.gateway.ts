@@ -36,12 +36,12 @@ export class EventsGateway {
   }
 
   @SubscribeMessage('getPastMessages')
-  async handleGetPastMessages(client: Socket, authorId: number) {
+  async handleGetPastMessages(client: Socket, authorId: string) {
     console.log('getPastMessages');
     // Userテーブルのidでそのuserのmsgデータを全て取得
     const pastMessages = await this.prisma.message.findMany({
       where: {
-        userId: 1,
+        userId: authorId,
       },
     });
     console.log('mid', authorId);
