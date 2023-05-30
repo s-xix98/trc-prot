@@ -28,9 +28,7 @@ export const User = ({ children }: { children: ReactNode }) => {
           >
             botton
           </button>
-          <p>
-            id : {userInfo?.id}, name : {userInfo?.nickname}
-          </p>
+          <p>name : {userInfo?.nickname}</p>
           <UserDetailsModal
             userInfo={userInfo}
             modalIsOpen={modalIsOpen}

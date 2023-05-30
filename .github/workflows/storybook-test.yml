@@ -1,11 +1,5 @@
 # storybook test
 
-# cache-playwright の key が `frontend/package-lock.json` になっているが
-# playwright の version とかで 見た方がいいかもだが、
-# 現状 プルリクごとに playwright の install が走るので とりあえずこれで 問題なしとする。
-# 下記記事だと `package-lock.json` の 依存バージョン を 拾ってきているが この辺でもいいのか？
-# - https://playwrightsolutions.com/playwright-github-action-to-cache-the-browser-binaries/
-#
 # ref
 # - https://github.com/microsoft/playwright-github-action
 # - `~/.cache/ms-playwright`
@@ -20,10 +14,23 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+
 jobs:
   storybook-test:
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+
     steps:
       - name: checkout git repository
         uses: actions/checkout@v3
@@ -35,18 +42,37 @@ jobs:
           path: frontend/node_modules
           key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
 
+      - name: playwright version
+        run: npx playwright -V > playwright-version.txt && cat playwright-version.txt
+
       - name: cache playwright
         id: cache-playwright
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
-          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}
+          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('playwright-version.txt') }}
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: backend npm install
+        run: cd backend && npm install
+      - name: set up prisma
+        run: cd backend && npx prisma db push && npx prisma generate && npx prisma db seed
+      - name: run backend
+        run: cd backend && npm run start:dev &
 
       - name: frontend npm install
         run: cd frontend && npm install
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
-        run: cd frontend && npx playwright install --with-deps
+        run: cd frontend && npx playwright install
+      - name: install playwright deps
+        run: cd frontend && npx playwright install-deps
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: run storybook test
