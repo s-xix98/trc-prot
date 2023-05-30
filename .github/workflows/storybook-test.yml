@@ -1,11 +1,5 @@
 # storybook test
 
-# cache-playwright の key が `frontend/package-lock.json` になっているが
-# playwright の version とかで 見た方がいいかもだが、
-# 現状 プルリクごとに playwright の install が走るので とりあえずこれで 問題なしとする。
-# 下記記事だと `package-lock.json` の 依存バージョン を 拾ってきているが この辺でもいいのか？
-# - https://playwrightsolutions.com/playwright-github-action-to-cache-the-browser-binaries/
-#
 # ref
 # - https://github.com/microsoft/playwright-github-action
 # - `~/.cache/ms-playwright`
@@ -25,7 +19,7 @@ env:
 
 jobs:
   storybook-test:
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     services:
       postgres:
