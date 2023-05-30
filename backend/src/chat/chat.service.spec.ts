@@ -13,7 +13,7 @@ describe('ChatService', () => {
     service = module.get<ChatService>(ChatService);
   });
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(service).toBeDefined();
   });
 });

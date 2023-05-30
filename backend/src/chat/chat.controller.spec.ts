@@ -13,7 +13,7 @@ describe('ChatController', () => {
     controller = module.get<ChatController>(ChatController);
   });
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(controller).toBeDefined();
   });
 });
