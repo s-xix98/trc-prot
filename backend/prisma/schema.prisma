@@ -21,6 +21,15 @@ model User {
   roomMembers     RoomMember[]
   userChatState   UserChatState[]
 }
+
+// 今のところ画像のみ
+model UserProfile {
+  userId    Int   @id
+  // TODO デフォのバイナリを入れたいけどサイズやデフォ画像が決まってないので？をつけた
+  image     Bytes?
+  user      User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
   id            Int @id @default(autoincrement())
