@@ -4,6 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class MessageDto {
   @ApiProperty({ example: 'test Message', description: 'test' })
   content: string;
-  @ApiProperty({ example: 1, description: 'test' })
-  authorId: number;
+  @ApiProperty({ example: 'id', description: 'test' })
+  authorId: string;
 }

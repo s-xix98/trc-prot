@@ -10,6 +10,6 @@ export type LoginDto = {
 };
 
 export type UserInfo = {
-  id: number;
+  id: string;
   nickname: string;
 };
