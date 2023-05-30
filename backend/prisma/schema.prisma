@@ -22,6 +22,8 @@ model User {
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
   userProfile    UserProfile?
+  friendship1    Friendship[]    @relation("src")
+  friendship2    Friendship[]    @relation("dest")
 }
 
 // 今のところ画像のみ
@@ -89,6 +91,24 @@ model Message {
   chatRoomId String
   user       User     @relation(fields: [userId], references: [id])
   chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+}
+
+model Friendship {
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  srcUserId  String
+  destUserId String
+  status     FriendshipStatus
+  user1      User             @relation("src", fields: [srcUserId], references: [id])
+  user2      User             @relation("dest", fields: [destUserId], references: [id])
+
+  @@id([srcUserId, destUserId])
+}
+
+enum FriendshipStatus {
+  Requested
+  Accepted
+  Blocked
 }
 
 enum UserRole {
