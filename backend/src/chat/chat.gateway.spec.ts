@@ -135,7 +135,7 @@ describe('ChatGateway', () => {
   });
 
   describe('join Channel', () => {
-    let roomId: number;
+    let roomId: string;
     beforeEach(() => {
       if (!room) {
         throw Error('room is not created');
@@ -171,7 +171,7 @@ describe('ChatGateway', () => {
   });
 
   describe('sendMessage', () => {
-    let roomId: number;
+    let roomId: string;
     beforeEach(() => {
       if (!room) {
         throw Error('room is not created');

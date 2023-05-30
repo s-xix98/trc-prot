@@ -1,8 +1,8 @@
 export class JoinChannelDto {
-  chatRoomId: number;
-  userId: number;
+  chatRoomId: string;
+  userId: string;
 }
 export class CreateChannelDto {
   roomName: string;
-  userId: number;
+  userId: string;
 }
