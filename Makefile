@@ -7,7 +7,7 @@ DOCKER_FILES		:=	frontend/Dockerfile backend/Dockerfile db/Dockerfile
 DOCKER_BUILD_TXT	:=	.docker_build
 
 PHONY	:=	all
-all:
+all: $(DOCKER_BUILD_TXT)
 	$(MAKE) local-npm-i
 	docker compose up
 
