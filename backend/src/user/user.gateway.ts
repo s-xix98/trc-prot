@@ -29,5 +29,6 @@ export class UserGateway {
       },
     });
     console.log(partialMatchUsers);
+    client.emit('searchUser', partialMatchUsers);
   }
 }
