@@ -48,16 +48,6 @@ jobs:
           path: frontend/node_modules
           key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
 
-      - name: playwright version
-        run: cd frontend && npx playwright -V > playwright-version.txt && cat playwright-version.txt
-
-      - name: cache playwright
-        id: cache-playwright
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('frontend/playwright-version.txt') }}
-
       - name: cache backend node-modules
         id: cache-backend-node-modules
         uses: actions/cache@v3
@@ -74,9 +64,21 @@ jobs:
 
       - name: frontend npm install
         run: cd frontend && npm install
+
+      - name: playwright version
+        run: cd frontend && npx playwright -V > playwright-version.txt && cat playwright-version.txt
+
+      - name: cache playwright
+        id: cache-playwright
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('frontend/playwright-version.txt') }}
+
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
         run: cd frontend && npx playwright install --with-deps
+
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: run storybook test
