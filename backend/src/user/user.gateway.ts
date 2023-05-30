@@ -1,6 +1,7 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { PrismaService } from '../prisma/prisma.service';
+import { searchUserDto } from './dto/user.dto';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -17,15 +18,12 @@ export class UserGateway {
   }
   // TODO　エラー処理はしていない
   @SubscribeMessage('searchUser')
-  async searchUser(client: Socket) {
+  async searchUser(client: Socket, dto: searchUserDto) {
     console.log('searchUser', client.id);
-    const mockData = {
-      searchWord: 'mockWord',
-    };
     const partialMatchUsers = await this.prisma.user.findMany({
       where: {
         username: {
-          contains: mockData.searchWord,
+          contains: dto.searchWord,
           mode: 'insensitive',
         },
       },

@@ -15,3 +15,7 @@ export class loginDto {
   @ApiProperty({ example: 'norinori', description: 'test' })
   hashedPassword: string;
 }
+
+export class searchUserDto {
+  searchWord: string;
+}
