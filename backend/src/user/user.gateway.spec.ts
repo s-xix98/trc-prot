@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserGateway } from './user.gateway';
+
 import { TestModule } from '../test/test.module';
+
+import { UserGateway } from './user.gateway';
 
 describe('UserGateway', () => {
   let gateway: UserGateway;

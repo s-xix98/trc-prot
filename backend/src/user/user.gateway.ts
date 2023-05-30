@@ -1,6 +1,8 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+
 import { PrismaService } from '../prisma/prisma.service';
+
 import { searchUserDto } from './dto/user.dto';
 @WebSocketGateway({
   cors: {
