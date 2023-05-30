@@ -33,28 +33,28 @@ async function main() {
   const roomMember1 = await prisma.roomMember.upsert({
     where: {
       userId_chatRoomId: {
-        userId: 1,
-        chatRoomId: 1,
+        userId: user1.id,
+        chatRoomId: room.id,
       },
     },
     update: {},
     create: {
-      userId: 1,
-      chatRoomId: 1,
+      userId: user1.id,
+      chatRoomId: room.id,
       role: UserRole.OWNER,
     },
   });
   const roomMember2 = await prisma.roomMember.upsert({
     where: {
       userId_chatRoomId: {
-        userId: 2,
-        chatRoomId: 1,
+        userId: user2.id,
+        chatRoomId: room.id,
       },
     },
     update: {},
     create: {
-      userId: 2,
-      chatRoomId: 1,
+      userId: user2.id,
+      chatRoomId: room.id,
     },
   });
   console.log(user1, user2);
