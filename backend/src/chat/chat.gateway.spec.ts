@@ -1,17 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { io, Socket } from 'socket.io-client';
-import { ChatRoom, User } from '@prisma/client';
+import { ChatRoom } from '@prisma/client';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { INestApplication } from '@nestjs/common';
 
 import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
+import { testUser } from '../test/types/test.types';
+import { TestService } from '../test/test.service';
 
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
-import { testUser } from '../test/types/test.types';
-import { TestService } from '../test/test.service';
 
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;

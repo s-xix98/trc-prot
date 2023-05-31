@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { testUser } from './types/test.types';
 import { User } from '@prisma/client';
-import { io ,Socket } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+
+import { PrismaService } from '../prisma/prisma.service';
+
+import { testUser } from './types/test.types';
 
 @Injectable()
 export class TestService {
