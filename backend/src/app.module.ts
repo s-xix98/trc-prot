@@ -7,9 +7,10 @@ import { EventsGateway } from './events/events.gateway';
 import { PostMessageModule } from './post-message/post-message.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, PostMessageModule, ConfigModule, UserModule],
+  imports: [PrismaModule, PostMessageModule, ConfigModule, UserModule, AuthModule],
   controllers: [AppController],
   providers: [AppService, EventsGateway],
 })
