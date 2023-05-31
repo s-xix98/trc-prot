@@ -11,31 +11,10 @@ import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { testUser } from '../test/types/test.types';
+import { TestService } from '../test/test.service';
 
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
-
-const createTestUsers = async (prismaService: PrismaService) => {
-  const testUsers: testUser[] = [];
-  for (let i = 0; i < USERNUM; i++) {
-    const sock: Socket = io('http://localhost:8001');
-
-    const user: User = await prismaService.user.upsert({
-      where: {
-        email: `chatTestUser${i}@test.com`,
-      },
-      update: {},
-      create: {
-        email: `chatTestUser${i}@test.com`,
-        username: `chatTestUser${i}`,
-        hashedPassword: `chatTestUser${i}`,
-      },
-    });
-
-    testUsers.push({ user, socket: sock });
-  }
-  return testUsers;
-};
 
 const cleanupDatabase = async (
   modelNames: string[],
@@ -65,6 +44,7 @@ describe('ChatGateway', () => {
   let testUsers: testUser[];
   let room: ChatRoom | null;
   let app: INestApplication;
+  let testService: TestService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -74,13 +54,14 @@ describe('ChatGateway', () => {
 
     gateway = module.get<ChatGateway>(ChatGateway);
     prismaService = module.get<PrismaService>(PrismaService);
+    testService = module.get<TestService>(TestService);
 
     app = module.createNestApplication();
     app.useWebSocketAdapter(new IoAdapter(app));
     await app.listen(8001);
 
     testUsers = [];
-    testUsers = await createTestUsers(prismaService);
+    testUsers = await testService.createTestUsersWithSockets(USERNUM);
 
     testUsers.map((testUser) => {
       testUser.socket.on('connect', () => {
