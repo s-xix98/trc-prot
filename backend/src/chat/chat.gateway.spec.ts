@@ -16,17 +16,6 @@ import { TestService } from '../test/test.service';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
-const emitAndWaitForEvent = async <T>(
-  eventName: string,
-  socket: Socket,
-  dto: T,
-) => {
-  return new Promise((resolve) => {
-    socket.on(eventName, async () => resolve(null));
-    socket.emit(eventName, dto);
-  });
-};
-
 describe('ChatGateway', () => {
   let gateway: ChatGateway;
   let prismaService: PrismaService;
@@ -85,7 +74,7 @@ describe('ChatGateway', () => {
         roomName: 'testroom',
         userId: user.user.id,
       };
-      await emitAndWaitForEvent<CreateChannelDto>(
+      await testService.emitAndWaitForEvent<CreateChannelDto>(
         'createChannel',
         user.socket,
         createChannelDto,
@@ -118,7 +107,7 @@ describe('ChatGateway', () => {
           userId: testUser.user.id,
           chatRoomId: roomId,
         };
-        const joinPromise = emitAndWaitForEvent<JoinChannelDto>(
+        const joinPromise = testService.emitAndWaitForEvent<JoinChannelDto>(
           'joinChannel',
           testUser.socket,
           joinChannel,
@@ -154,7 +143,7 @@ describe('ChatGateway', () => {
         chatRoomId: roomId,
       };
 
-      await emitAndWaitForEvent<MessageDto>(
+      await testService.emitAndWaitForEvent<MessageDto>(
         'sendMessage',
         user.socket,
         messageDto,

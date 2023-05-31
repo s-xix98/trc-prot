@@ -38,3 +38,14 @@ export class TestService {
     }
   }
 
+  async emitAndWaitForEvent<T>(
+    eventName: string,
+    socket: Socket,
+    dto: T,
+  ): Promise<unknown> {
+    return new Promise((resolve) => {
+      socket.on(eventName, async () => resolve(null));
+      socket.emit(eventName, dto);
+    });
+  }
+}
