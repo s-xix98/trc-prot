@@ -16,17 +16,6 @@ import { TestService } from '../test/test.service';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
-const cleanupDatabase = async (
-  modelNames: string[],
-  prisma: PrismaService,
-): Promise<void> => {
-  console.log(modelNames);
-  // prisma.user prisma.chatroom 的なのになる
-  for (const name of modelNames) {
-    await (prisma as any)[name].deleteMany({});
-  }
-};
-
 const emitAndWaitForEvent = async <T>(
   eventName: string,
   socket: Socket,
@@ -81,7 +70,8 @@ describe('ChatGateway', () => {
     });
 
     await app.close();
-    await cleanupDatabase(modelNames, prismaService);
+
+    await testService.cleanupDatabase(modelNames);
   });
 
   test('should be defined', () => {

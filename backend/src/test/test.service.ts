@@ -30,3 +30,11 @@ export class TestService {
     return testUsers;
   }
 
+  async cleanupDatabase(modelNames: string[]): Promise<void> {
+    console.log(modelNames);
+    // prisma.user prisma.chatroom 的なのになる
+    for (const name of modelNames) {
+      await (this.prismaService as any)[name].deleteMany({});
+    }
+  }
+
