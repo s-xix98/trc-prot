@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useAtom } from 'jotai';
 import { signIn } from 'next-auth/react';
 
@@ -7,13 +7,35 @@ import { userInfoAtom } from '@/App';
 
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
+import { UserDetailsModal } from './UserDetailsModal';
 
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const closeModal = () => {
+    console.log('closeModal');
+    setModalIsOpen(false);
+  };
 
   const UserInputArea = () => {
     if (userInfo) {
-      return <p>name : {userInfo?.nickname}</p>;
+      return (
+        <div>
+          <button
+            onClick={() => {
+              setModalIsOpen(true);
+            }}
+          >
+            botton
+          </button>
+          <p>name : {userInfo?.nickname}</p>
+          <UserDetailsModal
+            userInfo={userInfo}
+            modalIsOpen={modalIsOpen}
+            closeModal={closeModal}
+          />
+        </div>
+      );
     } else {
       return (
         <div style={{ margin: '10px auto 10px auto' }}>
