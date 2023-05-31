@@ -1,24 +1,10 @@
-import { ReactNode } from 'react';
+import styled from 'styled-components';
 
-export const Container = ({
-  children,
-  flexDirection = 'row',
-}: {
-  children: ReactNode;
-  flexDirection?: 'row' | 'column';
-}) => {
-  return (
-    <div
-      style={{
-        flex: '1',
-        display: 'flex',
-        flexDirection: flexDirection,
-        overflow: 'hidden',
-        height: '100%',
-        justifyContent: 'center',
-      }}
-    >
-      {children}
-    </div>
-  );
-};
+export const Container = styled.div<{ flexDirection?: 'row' | 'column' }>`
+  flex: 1;
+  display: flex;
+  flex-direction: ${({ flexDirection }) => flexDirection};
+  overflow: hidden;
+  height: 100%;
+  justify-content: center;
+`;
