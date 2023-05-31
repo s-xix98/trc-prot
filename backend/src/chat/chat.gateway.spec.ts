@@ -10,11 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
-
-type testUser = {
-  user: User;
-  socket: Socket;
-};
+import { testUser } from '../test/types/test.types';
 
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
