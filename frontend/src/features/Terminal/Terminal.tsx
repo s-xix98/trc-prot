@@ -32,6 +32,12 @@ export const Terminal = () => {
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
 
+  const commandElemMap = new Map<string, JSX.Element>();
+
+  commandElemMap.set('a', <h1>A</h1>);
+  commandElemMap.set('b', <h2>B</h2>);
+  commandElemMap.set('c', <h3>c</h3>);
+
   const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value === '\n') {
       return;
@@ -42,7 +48,16 @@ export const Terminal = () => {
     }
 
     const inputElem = <p>&gt;&nbsp;{input}</p>;
-    setOutputArr([...outputArr, inputElem]);
+
+    const commandElem = commandElemMap.get(input);
+
+    if (commandElem) {
+      setOutputArr([...outputArr, inputElem, commandElem]);
+    } else {
+      const notFoundElem = <p>NotFound</p>;
+      setOutputArr([...outputArr, inputElem, notFoundElem]);
+    }
+
     setInput('');
   };
 
