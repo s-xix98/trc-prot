@@ -20,6 +20,14 @@ const onDisconnect = () => {
   console.log('socket disconnect');
 };
 
+export const PrevApp = () => {
+  return (
+    <User>
+      <Chat />
+    </User>
+  );
+};
+
 function App() {
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
@@ -31,6 +39,7 @@ function App() {
   commandElemMap.set('a', <h1>A</h1>);
   commandElemMap.set('b', <h2>B</h2>);
   commandElemMap.set('c', <h3>c</h3>);
+  commandElemMap.set('p', <PrevApp />);
 
   return (
     <MainLayout>
