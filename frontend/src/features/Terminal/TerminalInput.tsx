@@ -11,6 +11,7 @@ export const TerminalInput = ({
     <div style={{ display: 'flex' }}>
       <p>&gt;&nbsp;</p>
       <textarea
+        data-testid="terminal-input-test-id"
         style={{
           resize: 'none',
           border: 'none',
