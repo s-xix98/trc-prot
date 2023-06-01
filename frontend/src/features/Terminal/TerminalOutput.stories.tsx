@@ -13,6 +13,6 @@ type Story = StoryObj<typeof TerminalOutput>;
 
 export const Basic: Story = {
   args: {
-    outputArr: [<h1>hoge</h1>],
+    outputArr: [],
   },
 };
