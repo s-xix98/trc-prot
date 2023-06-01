@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
+import { useScroll } from '@/hooks/useScroll';
 
 const TerminalInput = ({
   input,
@@ -30,11 +31,20 @@ const TerminalInput = ({
   );
 };
 
-const TerminalOutput = ({ outputArr }: { outputArr: JSX.Element[] }) => {
+const TerminalOutput = ({
+  outputArr,
+  scrollBottomRef,
+}: {
+  outputArr: JSX.Element[];
+  scrollBottomRef: React.RefObject<HTMLDivElement>;
+}) => {
   return (
-    <ContainerItem overflowY="scroll">
-      {outputArr.map((output) => output)}
-    </ContainerItem>
+    <Container flexDirection={'column'}>
+      <ContainerItem overflowY="scroll">
+        {outputArr.map((output) => output)}
+        <div ref={scrollBottomRef} />
+      </ContainerItem>
+    </Container>
   );
 };
 
@@ -45,6 +55,7 @@ export const Terminal = ({
 }) => {
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
+  const { scrollBottomRef, handleScroll } = useScroll(outputArr);
 
   const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value === '\n') {
@@ -59,6 +70,8 @@ export const Terminal = ({
 
     const commandElem = commandElemMap.get(input);
 
+    handleScroll();
+
     if (commandElem) {
       setOutputArr([...outputArr, inputElem, commandElem]);
     } else {
@@ -72,7 +85,7 @@ export const Terminal = ({
   return (
     <Container flexDirection="column">
       <h1>Terminal</h1>
-      <TerminalOutput outputArr={outputArr} />
+      <TerminalOutput outputArr={outputArr} scrollBottomRef={scrollBottomRef} />
       <TerminalInput input={input} onChangeAct={onChangeAct} />
     </Container>
   );
