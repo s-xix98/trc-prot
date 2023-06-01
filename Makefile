@@ -44,11 +44,13 @@ backend-it:
 # ------------------------------------------------------------------------------------------
 PHONY	+=	fmt
 fmt:
+	npx prettier --write docker-compose.yml
 	docker exec -t frontend make fmt
 	docker exec -t backend make fmt
 
 PHONY	+=	fmt-ck
 fmt-ck:
+	npx prettier --check docker-compose.yml
 	docker exec -t frontend make fmt-ck
 	docker exec -t backend make fmt-ck
 
