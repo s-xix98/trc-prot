@@ -30,6 +30,14 @@ const TerminalInput = ({
   );
 };
 
+const TerminalOutput = ({ outputArr }: { outputArr: JSX.Element[] }) => {
+  return (
+    <ContainerItem overflowY="scroll">
+      {outputArr.map((output) => output)}
+    </ContainerItem>
+  );
+};
+
 export const Terminal = ({
   commandElemMap,
 }: {
@@ -64,9 +72,7 @@ export const Terminal = ({
   return (
     <Container flexDirection="column">
       <h1>Terminal</h1>
-      <ContainerItem overflowY="scroll">
-        {outputArr.map((output) => output)}
-      </ContainerItem>
+      <TerminalOutput outputArr={outputArr} />
       <TerminalInput input={input} onChangeAct={onChangeAct} />
     </Container>
   );
