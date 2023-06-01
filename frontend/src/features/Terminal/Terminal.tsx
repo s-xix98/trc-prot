@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
+import { Container } from '@/components/Layout/Container';
+import { ContainerItem } from '@/components/Layout/ContainerItem';
 
 const TerminalInput = ({
   input,
@@ -60,10 +62,12 @@ export const Terminal = ({
   };
 
   return (
-    <div>
+    <Container flexDirection="column">
       <h1>Terminal</h1>
-      {outputArr.map((output) => output)}
+      <ContainerItem overflowY="scroll">
+        {outputArr.map((output) => output)}
+      </ContainerItem>
       <TerminalInput input={input} onChangeAct={onChangeAct} />
-    </div>
+    </Container>
   );
 };
