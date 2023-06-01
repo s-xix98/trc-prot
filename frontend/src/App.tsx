@@ -26,9 +26,15 @@ function App() {
 
   // useSocket()
 
+  const commandElemMap = new Map<string, JSX.Element>();
+
+  commandElemMap.set('a', <h1>A</h1>);
+  commandElemMap.set('b', <h2>B</h2>);
+  commandElemMap.set('c', <h3>c</h3>);
+
   return (
     <MainLayout>
-      <Terminal />
+      <Terminal commandElemMap={commandElemMap} />
     </MainLayout>
   );
 }

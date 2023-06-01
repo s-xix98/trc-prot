@@ -28,15 +28,13 @@ const TerminalInput = ({
   );
 };
 
-export const Terminal = () => {
+export const Terminal = ({
+  commandElemMap,
+}: {
+  commandElemMap: Map<string, JSX.Element>;
+}) => {
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
-
-  const commandElemMap = new Map<string, JSX.Element>();
-
-  commandElemMap.set('a', <h1>A</h1>);
-  commandElemMap.set('b', <h2>B</h2>);
-  commandElemMap.set('c', <h3>c</h3>);
 
   const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value === '\n') {
