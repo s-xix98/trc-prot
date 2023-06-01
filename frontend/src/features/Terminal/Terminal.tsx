@@ -1,52 +1,11 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
+
 import { Container } from '@/components/Layout/Container';
-import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useScroll } from '@/hooks/useScroll';
 
-const TerminalInput = ({
-  input,
-  onChangeAct,
-}: {
-  input: string;
-  onChangeAct: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-}) => {
-  return (
-    <div style={{ display: 'flex' }}>
-      <p>&gt;&nbsp;</p>
-      <textarea
-        style={{
-          resize: 'none',
-          border: 'none',
-          outline: 'none',
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-        }}
-        rows={1}
-        autoFocus={true}
-        onChange={onChangeAct}
-        value={input}
-      />
-    </div>
-  );
-};
-
-const TerminalOutput = ({
-  outputArr,
-  scrollBottomRef,
-}: {
-  outputArr: JSX.Element[];
-  scrollBottomRef: React.RefObject<HTMLDivElement>;
-}) => {
-  return (
-    <Container flexDirection={'column'}>
-      <ContainerItem overflowY="scroll">
-        {outputArr.map((output) => output)}
-        <div ref={scrollBottomRef} />
-      </ContainerItem>
-    </Container>
-  );
-};
+import { TerminalInput } from './TerminalInput';
+import { TerminalOutput } from './TerminalOutput';
 
 export const Terminal = ({
   commandElemMap,
