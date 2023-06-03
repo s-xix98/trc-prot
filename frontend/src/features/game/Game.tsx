@@ -20,7 +20,7 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
-const Game = () => {
+export const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
@@ -60,5 +60,3 @@ const Game = () => {
 
   return <canvas width={width} height={height} id={canvasId}></canvas>;
 };
-
-export default Game;
