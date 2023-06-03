@@ -8,6 +8,7 @@ npm install --save-dev concurrently
 npm install --save-dev @storybook/test-runner
 npm install --save-dev @storybook/jest
 npm install --save-dev jest-image-snapshot
+npm install --save-dev @storybook/addon-coverage
 
 # wait-on
 npm install --save-dev wait-on

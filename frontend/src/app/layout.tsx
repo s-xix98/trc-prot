@@ -1,8 +1,11 @@
 import './globals.css';
-import { Inter } from 'next/font/google';
+// TODO : Inter なんなのか調べる
+// storybook addon-coverage を入れたら、test でエラーが出るようになった。
+// Inter コメントアウトしても、特に影響がなかったので一旦コメントアウト
+// import { Inter } from 'next/font/google';
 
 import StyledComponentsRegistry from '../lib/registry';
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'Create Next App',
@@ -16,7 +19,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      {/* <body className={inter.className}> */}
+      <body>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
     </html>

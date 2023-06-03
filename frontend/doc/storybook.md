@@ -19,6 +19,7 @@ pr : [88 storybook を 使って UI テスト](https://github.com/s-xix98/trc-pr
 npm install --save-dev @storybook/test-runner
 npm install --save-dev @storybook/jest
 npm install --save-dev jest-image-snapshot
+npm install --save-dev @storybook/addon-coverage
 ```
 
 - [Interaction tests](https://storybook.js.org/docs/react/writing-tests/interaction-testing)
@@ -26,6 +27,7 @@ npm install --save-dev jest-image-snapshot
 - [Test runner Addon | Storybook: Frontend workshop for UI development](https://storybook.js.org/addons/@storybook/test-runner)
 - [Storybook 単体でインタラクションテストを実施する](https://zenn.dev/azukiazusa/articles/storybook-interaction-testing)
 - [GitHub - americanexpress/jest-image-snapshot: ✨ Jest matcher for image comparisons. Most commonly used for visual regression testing.](https://github.com/americanexpress/jest-image-snapshot)
+- [Test coverage](https://storybook.js.org/docs/react/writing-tests/test-coverage)
 
 ## ci test
 
