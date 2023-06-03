@@ -16,12 +16,18 @@ const DrawBall = (
   ctx.closePath();
 };
 
+const IsInRange = (pos: number, start: number, end: number) => {
+  return start < pos && pos < end;
+};
+
 const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
   let ballX = width / 2;
   let ballY = height / 2;
+  let dx = 2;
+  let dy = 0.5;
 
   const [ctx, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
@@ -39,8 +45,14 @@ const Game = () => {
     }
     ctx.clearRect(0, 0, width, height);
     DrawBall(ctx, ballX, ballY, 10);
-    ballX += 1;
-    ballY += 1;
+    if (!IsInRange(ballX + dx, 0, width)) {
+      dx = -dx;
+    }
+    if (!IsInRange(ballY + dy, 0, height)) {
+      dy = -dy;
+    }
+    ballX += dx;
+    ballY += dy;
   }, 10);
 
   return <canvas width={width} height={height} id={canvasId}></canvas>;
