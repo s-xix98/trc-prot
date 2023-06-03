@@ -15,10 +15,13 @@ const DrawBall = (
 };
 
 const Game = () => {
+  const width = 400;
+  const height = 400;
+  const canvasId = 'canvas';
   const [ctx, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
   useEffect(() => {
-    const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     canvas.style.border = '4px solid';
     canvas.style.color = 'black';
     const canvasContext = canvas.getContext('2d');
@@ -29,10 +32,10 @@ const Game = () => {
     if (ctx === null) {
       return;
     }
-    DrawBall(ctx, 400 / 2, 400 / 2, 10);
+    DrawBall(ctx, width / 2, height / 2, 10);
   });
 
-  return <canvas width={400} height={400} id={'canvas'}></canvas>;
+  return <canvas width={width} height={height} id={canvasId}></canvas>;
 };
 
 export default Game;
