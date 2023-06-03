@@ -3,14 +3,11 @@ import { useEffect, useState } from 'react';
 
 import { useInterval } from '@/hooks/useInterval';
 
-const DrawBall = (
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  radius: number,
-) => {
+import { Ball } from './Types';
+
+const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
-  ctx.arc(x, y, radius, 0, Math.PI * 2);
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
   ctx.fill();
   ctx.closePath();
@@ -24,12 +21,13 @@ export const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
-  // TODO ballClass
-  const ballRadius = 10;
-  let ballX = width / 2;
-  let ballY = height / 2;
-  let dx = 2;
-  let dy = 0.5;
+  const ball: Ball = {
+    x: width / 2,
+    y: height / 2,
+    radius: 10,
+    dx: 2,
+    dy: 0.5,
+  };
 
   const [ctx, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
@@ -47,15 +45,15 @@ export const Game = () => {
       return;
     }
     ctx.clearRect(0, 0, width, height);
-    DrawBall(ctx, ballX, ballY, 10);
-    if (!IsInRange(ballX + dx, ballRadius, width - ballRadius)) {
-      dx = -dx;
+    DrawBall(ctx, ball);
+    if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
+      ball.dx = -ball.dx;
     }
-    if (!IsInRange(ballY + dy, ballRadius, height - ballRadius)) {
-      dy = -dy;
+    if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
+      ball.dy = -ball.dy;
     }
-    ballX += dx;
-    ballY += dy;
+    ball.x += ball.dx;
+    ball.y += ball.dy;
   }, 10);
 
   return <canvas width={width} height={height} id={canvasId}></canvas>;
