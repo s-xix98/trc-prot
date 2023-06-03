@@ -11,7 +11,4 @@ export default meta;
 
 type Story = StoryObj<typeof RootLayout>;
 
-// TODO : storybook addon-coverage を入れたら、エラーが出るようになった
-// 重要でないので一旦コメントアウト
-// `layout.txt` で Inter をうまく読み込めてない？
-// export const Basic: Story = {};
+export const Basic: Story = {};
