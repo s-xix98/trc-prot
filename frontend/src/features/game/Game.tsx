@@ -24,6 +24,7 @@ const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
+  const ballRadius = 10;
   let ballX = width / 2;
   let ballY = height / 2;
   let dx = 2;
@@ -45,10 +46,10 @@ const Game = () => {
     }
     ctx.clearRect(0, 0, width, height);
     DrawBall(ctx, ballX, ballY, 10);
-    if (!IsInRange(ballX + dx, 0, width)) {
+    if (!IsInRange(ballX + dx, ballRadius, width - ballRadius)) {
       dx = -dx;
     }
-    if (!IsInRange(ballY + dy, 0, height)) {
+    if (!IsInRange(ballY + dy, ballRadius, height - ballRadius)) {
       dy = -dy;
     }
     ballX += dx;
