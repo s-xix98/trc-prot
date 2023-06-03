@@ -24,6 +24,7 @@ const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
+  // TODO ballClass
   const ballRadius = 10;
   let ballX = width / 2;
   let ballY = height / 2;
@@ -40,6 +41,7 @@ const Game = () => {
     setContext(canvasContext);
   }, []);
 
+  // TODO vectorで書き換え
   useInterval(() => {
     if (ctx === null) {
       return;
