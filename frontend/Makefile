@@ -43,12 +43,12 @@ sb-create-file:
 
 PHONY += sb-test
 sb-test:
-	export STORYBOOK_BACKEND="http://backend:8000" && npm run storybook-test-ci
+	export STORYBOOK_BACKEND="http://backend:8000" && npm i && npm run storybook-test-ci
 
 PHONY += sb-update
 sb-update:
 	rm -rf $(shell find src/ -type d -name '__image_snapshots__')
-	export STORYBOOK_BACKEND="http://backend:8000" && npm run storybook-update-snapshot-ci
+	export STORYBOOK_BACKEND="http://backend:8000" && npm i && npm run storybook-update-snapshot-ci
 
 # etc...
 # ------------------------------------------------------------------------------------------
