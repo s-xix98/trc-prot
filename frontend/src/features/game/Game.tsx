@@ -37,6 +37,7 @@ const Game = () => {
     if (ctx === null) {
       return;
     }
+    ctx.clearRect(0, 0, width, height);
     DrawBall(ctx, ballX, ballY, 10);
     ballX += 1;
     ballY += 1;
