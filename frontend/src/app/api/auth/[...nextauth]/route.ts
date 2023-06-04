@@ -36,7 +36,7 @@ const handler = NextAuth({
   ],
 
   // jwtでsessionを管理する場合設定する
-  session: {strategy: 'jwt'},
+  session: { strategy: 'jwt' },
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
@@ -54,7 +54,7 @@ const handler = NextAuth({
       console.log(user?.accessToken);
       console.log(token?.accessToken);
 
-      if (user?.accessToken){
+      if (user?.accessToken) {
         token.accessToken = user.accessToken;
       }
       return token;
