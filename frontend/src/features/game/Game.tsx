@@ -1,7 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useInterval } from '@/hooks/useInterval';
+import { useCanvas } from '@/hooks/useCanvas';
 
 import { Ball } from './Types';
 
@@ -21,6 +22,7 @@ export const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
+
   const ball: Ball = {
     x: width / 2,
     y: height / 2,
@@ -29,22 +31,22 @@ export const Game = () => {
     dy: 0.5,
   };
 
-  const [ctx, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  const { canvas, ctx } = useCanvas(canvasId);
 
   useEffect(() => {
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    if (canvas === null) {
+      return;
+    }
     canvas.style.border = '4px solid';
     canvas.style.color = 'black';
-    const canvasContext = canvas.getContext('2d');
-    setContext(canvasContext);
-  }, []);
+  }, [canvas]);
 
   // TODO vectorで書き換え
   useInterval(() => {
-    if (ctx === null) {
+    if (ctx === null || canvas == null) {
       return;
     }
-    ctx.clearRect(0, 0, width, height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawBall(ctx, ball);
     if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
       ball.dx = -ball.dx;
