@@ -4,6 +4,7 @@ import { atom } from 'jotai';
 
 import { User } from './features/user/components/User';
 import { Chat } from './features/chat/components/Chat';
+import { Game } from './features/game/Game';
 import { UserInfo } from './features/user/types/UserDto';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
@@ -40,6 +41,7 @@ function App() {
   commandElemMap.set('b', <h2>B</h2>);
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('p', <PrevApp />);
+  commandElemMap.set('g', <Game />);
 
   return (
     <MainLayout>
