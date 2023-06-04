@@ -18,6 +18,17 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+const UpdateBallPosition = (ball: Ball, width: number, height: number) => {
+  if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
+    ball.dx = -ball.dx;
+  }
+  if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
+    ball.dy = -ball.dy;
+  }
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+};
+
 export const Game = () => {
   const width = 400;
   const height = 400;
@@ -48,14 +59,7 @@ export const Game = () => {
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawBall(ctx, ball);
-    if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
-      ball.dx = -ball.dx;
-    }
-    if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
-      ball.dy = -ball.dy;
-    }
-    ball.x += ball.dx;
-    ball.y += ball.dy;
+    UpdateBallPosition(ball, canvas.width, canvas.height);
   }, 10);
 
   return <canvas width={width} height={height} id={canvasId}></canvas>;
