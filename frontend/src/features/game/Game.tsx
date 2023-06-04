@@ -14,6 +14,14 @@ const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.closePath();
 };
 
+const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
+  ctx.beginPath();
+  ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+  ctx.fillStyle = 'black';
+  ctx.fill();
+  ctx.closePath();
+};
+
 const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
@@ -42,6 +50,22 @@ export const Game = () => {
     dy: 0.5,
   };
 
+  const leftPaddle: Paddle = {
+    x: 0,
+    y: 0,
+    width: 10,
+    height: 100,
+    speed: 10,
+  };
+
+  const rightPaddle: Paddle = {
+    x: width - 10,
+    y: 0,
+    width: 10,
+    height: 100,
+    speed: 10,
+  };
+
   const { canvas, ctx } = useCanvas(canvasId);
 
   useEffect(() => {
@@ -58,6 +82,8 @@ export const Game = () => {
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawPaddle(ctx, leftPaddle);
+    DrawPaddle(ctx, rightPaddle);
     DrawBall(ctx, ball);
     UpdateBallPosition(ball, canvas.width, canvas.height);
   }, 10);
