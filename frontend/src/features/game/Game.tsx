@@ -132,7 +132,16 @@ export const Game = () => {
   };
 
   // TODO 何処に置くべきか分からん
-  document.addEventListener('keydown', keyDownHandler, false);
-  document.addEventListener('keyup', keyUpHandler, false);
+  useEffect(() => {
+    document.addEventListener('keydown', keyDownHandler, false);
+    document.addEventListener('keyup', keyUpHandler, false);
+
+    return () => {
+      document.removeEventListener('keydown', keyDownHandler, false);
+      document.removeEventListener('keyup', keyUpHandler, false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return <canvas width={width} height={height} id={canvasId}></canvas>;
 };
