@@ -34,6 +34,10 @@ const handler = NextAuth({
       },
     }),
   ],
+
+  // jwtでsessionを管理する場合設定する
+  session: { strategy: 'jwt' },
+
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       console.log(user);
@@ -41,7 +45,29 @@ const handler = NextAuth({
       console.log(profile);
       console.log(email);
       console.log(credentials);
+      user.accessToken = 'mock access token';
       return true;
+    },
+
+    async jwt({ token, user }) {
+      console.log('next-auth --jwt--');
+      console.log(user?.accessToken);
+      console.log(token?.accessToken);
+
+      if (user?.accessToken) {
+        token.accessToken = user.accessToken;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
+      console.log('next-auth --session--');
+      console.log(token?.accessToken);
+
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken;
+      }
+      return session;
     },
   },
 });
