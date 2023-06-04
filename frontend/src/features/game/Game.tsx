@@ -68,13 +68,22 @@ export const Game = () => {
 
   // 一旦どっちも動かす
   const UpKeyAction = new KeyAction(() => {
-    leftPaddle.y -= 5;
-    rightPaddle.y -= 5;
+    leftPaddle.y = Math.max(leftPaddle.y - 5, 0);
+    rightPaddle.y = Math.max(rightPaddle.y - 5, 0);
   });
 
   const DownKeyAction = new KeyAction(() => {
-    leftPaddle.y += 5;
-    rightPaddle.y += 5;
+    if (canvas === null) {
+      return;
+    }
+    leftPaddle.y = Math.min(
+      leftPaddle.y + 5,
+      canvas.height - leftPaddle.height,
+    );
+    rightPaddle.y = Math.min(
+      rightPaddle.y + 5,
+      canvas.height - rightPaddle.height,
+    );
   });
 
   const { canvas, ctx } = useCanvas(canvasId);
