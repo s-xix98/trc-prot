@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useInterval } from '@/hooks/useInterval';
 import { useCanvas } from '@/hooks/useCanvas';
 
-import { Ball } from './Types';
+import { Ball, Paddle, KeyAction } from './Types';
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
@@ -66,6 +66,17 @@ export const Game = () => {
     speed: 10,
   };
 
+  // 一旦どっちも動かす
+  const UpKeyAction = new KeyAction(() => {
+    leftPaddle.y -= 5;
+    rightPaddle.y -= 5;
+  });
+
+  const DownKeyAction = new KeyAction(() => {
+    leftPaddle.y += 5;
+    rightPaddle.y += 5;
+  });
+
   const { canvas, ctx } = useCanvas(canvasId);
 
   useEffect(() => {
@@ -82,11 +93,37 @@ export const Game = () => {
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    UpKeyAction.Run();
+    DownKeyAction.Run();
     DrawPaddle(ctx, leftPaddle);
     DrawPaddle(ctx, rightPaddle);
     DrawBall(ctx, ball);
     UpdateBallPosition(ball, canvas.width, canvas.height);
   }, 10);
 
+  // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
+  const keyDownHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Up' || e.key === 'ArrowUp') {
+      console.log('press u');
+      UpKeyAction.SetOn();
+    } else if (e.key === 'Down' || e.key === 'ArrowDown') {
+      console.log('press d');
+      DownKeyAction.SetOn();
+    }
+  };
+
+  const keyUpHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Up' || e.key === 'ArrowUp') {
+      console.log('release u');
+      UpKeyAction.SetOff();
+    } else if (e.key === 'Down' || e.key === 'ArrowDown') {
+      console.log('release d');
+      DownKeyAction.SetOff();
+    }
+  };
+
+  // TODO 何処に置くべきか分からん
+  document.addEventListener('keydown', keyDownHandler, false);
+  document.addEventListener('keyup', keyUpHandler, false);
   return <canvas width={width} height={height} id={canvasId}></canvas>;
 };
