@@ -141,7 +141,7 @@ export const Game = () => {
       document.removeEventListener('keyup', keyUpHandler, false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
 
   return <canvas width={width} height={height} id={canvasId}></canvas>;
 };
