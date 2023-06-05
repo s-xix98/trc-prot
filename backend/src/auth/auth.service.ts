@@ -1,26 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { accessToken } from './types/auth.types';
 import { JwtService } from '@nestjs/jwt';
+
 import { PrismaService } from '../prisma/prisma.service';
+
+import { authLoginDto } from './dto/auth.dto';
+
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService, private readonly prismaService:PrismaService) {}
 
-  async ftLogin(): Promise<accessToken> {
-
-    const mockAuthLoginDto = {
-      email: 'mockEmail@example.com',
-      mockHashedPassword: 'mockHashedPassword',
-      providerId: 'mockSub',
-      providerName: '42',
-    };
-
+  async ftLogin(dto: authLoginDto): Promise<accessToken> {
     const authUser = await this.prismaService.auth.findUnique({
       include: { user: true },
       where: {
         providerName_providerId: {
-          providerId: mockAuthLoginDto.providerId,
-          providerName: mockAuthLoginDto.providerName,
+          providerId: dto.providerId,
+          providerName: dto.providerName,
         },
       },
     });
@@ -32,13 +28,13 @@ export class AuthService {
     const createdUser = await this.prismaService.user.create({
       include: { auth: true },
       data: {
-        email: mockAuthLoginDto.email,
+        email: dto.email,
         // TODO hashedPassword? にしたら消す
-        hashedPassword: mockAuthLoginDto.mockHashedPassword,
+        hashedPassword: 'mockHashedPassword',
         auth: {
           create: {
-            providerId: mockAuthLoginDto.providerId,
-            providerName: mockAuthLoginDto.providerName,
+            providerId: dto.providerId,
+            providerName: dto.providerName,
           },
         },
       },
