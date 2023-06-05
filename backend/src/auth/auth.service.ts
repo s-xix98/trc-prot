@@ -10,7 +10,6 @@ export class AuthService {
 
     const mockAuthLoginDto = {
       email: 'mockEmail@example.com',
-      mockUsername: 'mockUsername',
       mockHashedPassword: 'mockHashedPassword',
       providerId: 'mockSub',
       providerName: '42',
@@ -34,7 +33,6 @@ export class AuthService {
       include: { auth: true },
       data: {
         email: mockAuthLoginDto.email,
-        username: mockAuthLoginDto.mockUsername,
         // TODO hashedPassword? にしたら消す
         hashedPassword: mockAuthLoginDto.mockHashedPassword,
         auth: {
