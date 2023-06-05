@@ -16,6 +16,20 @@ export class AuthService {
       providerName: '42',
     };
 
+    const authUser = await this.prismaService.auth.findUnique({
+      include: { user: true },
+      where: {
+        providerName_providerId: {
+          providerId: mockAuthLoginDto.providerId,
+          providerName: mockAuthLoginDto.providerName,
+        },
+      },
+    });
+
+    if (authUser) {
+      return { jwt: await this.generateJwt(authUser.userId, authUser.user.username)};
+    }
+
     const createdUser = await this.prismaService.user.create({
       include: { auth: true },
       data: {
