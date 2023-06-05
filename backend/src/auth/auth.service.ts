@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-
+import { accessToken } from './types/auth.types';
 @Injectable()
 export class AuthService {
-  ftLogin() {
+  ftLogin(): accessToken {
     const mockJwt = 'mockJwt';
-    return mockJwt;
+    return { jwt: mockJwt };
   }
 }
