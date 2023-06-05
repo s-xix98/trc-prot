@@ -4,12 +4,20 @@ import { useEffect } from 'react';
 import { useInterval } from '@/hooks/useInterval';
 import { useCanvas } from '@/hooks/useCanvas';
 
-import { Ball } from './Types';
+import { Ball, Paddle, KeyAction } from './Types';
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
+  ctx.fill();
+  ctx.closePath();
+};
+
+const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
+  ctx.beginPath();
+  ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+  ctx.fillStyle = 'black';
   ctx.fill();
   ctx.closePath();
 };
@@ -42,6 +50,42 @@ export const Game = () => {
     dy: 0.5,
   };
 
+  const leftPaddle: Paddle = {
+    x: 0,
+    y: 0,
+    width: 10,
+    height: 100,
+    speed: 10,
+  };
+
+  const rightPaddle: Paddle = {
+    x: width - 10,
+    y: 0,
+    width: 10,
+    height: 100,
+    speed: 10,
+  };
+
+  // 一旦どっちも動かす
+  const UpKeyAction = new KeyAction(() => {
+    leftPaddle.y = Math.max(leftPaddle.y - 5, 0);
+    rightPaddle.y = Math.max(rightPaddle.y - 5, 0);
+  });
+
+  const DownKeyAction = new KeyAction(() => {
+    if (canvas === null) {
+      return;
+    }
+    leftPaddle.y = Math.min(
+      leftPaddle.y + 5,
+      canvas.height - leftPaddle.height,
+    );
+    rightPaddle.y = Math.min(
+      rightPaddle.y + 5,
+      canvas.height - rightPaddle.height,
+    );
+  });
+
   const { canvas, ctx } = useCanvas(canvasId);
 
   useEffect(() => {
@@ -58,9 +102,46 @@ export const Game = () => {
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    UpKeyAction.Run();
+    DownKeyAction.Run();
+    DrawPaddle(ctx, leftPaddle);
+    DrawPaddle(ctx, rightPaddle);
     DrawBall(ctx, ball);
     UpdateBallPosition(ball, canvas.width, canvas.height);
   }, 10);
+
+  // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
+  const keyDownHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Up' || e.key === 'ArrowUp') {
+      console.log('press u');
+      UpKeyAction.SetOn();
+    } else if (e.key === 'Down' || e.key === 'ArrowDown') {
+      console.log('press d');
+      DownKeyAction.SetOn();
+    }
+  };
+
+  const keyUpHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Up' || e.key === 'ArrowUp') {
+      console.log('release u');
+      UpKeyAction.SetOff();
+    } else if (e.key === 'Down' || e.key === 'ArrowDown') {
+      console.log('release d');
+      DownKeyAction.SetOff();
+    }
+  };
+
+  // TODO 何処に置くべきか分からん
+  useEffect(() => {
+    document.addEventListener('keydown', keyDownHandler, false);
+    document.addEventListener('keyup', keyUpHandler, false);
+
+    return () => {
+      document.removeEventListener('keydown', keyDownHandler, false);
+      document.removeEventListener('keyup', keyUpHandler, false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
 
   return <canvas width={width} height={height} id={canvasId}></canvas>;
 };
