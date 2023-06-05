@@ -6,9 +6,11 @@ export const useCanvas = (canvasId: string) => {
 
   useEffect(() => {
     const cnvs = document.getElementById(canvasId) as HTMLCanvasElement;
-    const canvasContext = cnvs.getContext('2d');
     setCanvas(cnvs);
-    setContext(canvasContext);
+    if (cnvs) {
+      const canvasContext = cnvs.getContext('2d');
+      setContext(canvasContext);
+    }
   }, [canvasId]);
   return { canvas, ctx };
 };
