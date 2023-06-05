@@ -19,6 +19,6 @@ export class AuthService {
       id,
       username,
     };
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.signAsync(payload, { expiresIn: '1h' });
   }
 }
