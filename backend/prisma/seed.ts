@@ -3,6 +3,15 @@ import { UserRole } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  const authProvider = await prisma.authProvider.upsert({
+    where: {
+      name: '42',
+    },
+    update: {},
+    create: {
+      name: '42',
+    },
+  });
   const user1 = await prisma.user.upsert({
     where: {
       email: 'huga@example.com',
@@ -57,6 +66,8 @@ async function main() {
       chatRoomId: room.id,
     },
   });
+
+  console.log(authProvider);
   console.log(user1, user2);
   console.log(room, roomMember1, roomMember2);
 }
