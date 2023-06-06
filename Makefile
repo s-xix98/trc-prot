@@ -9,6 +9,7 @@ DOCKER_BUILD_TXT	:=	.docker_build
 PHONY	:=	all
 all: $(DOCKER_BUILD_TXT)
 	$(MAKE) local-npm-i
+	$(MAKE) local-prisma-generate
 	docker compose up
 
 $(DOCKER_BUILD_TXT): $(DOCKER_FILES)
@@ -19,6 +20,10 @@ PHONY	+=	local-npm-i
 local-npm-i:
 	cd frontend && npm i
 	cd backend && npm i
+
+PHONY	+=	local-prisma-generate
+local-prisma-generate:
+	cd backend && npx prisma generate
 
 PHONY	+=	down
 down:
@@ -39,11 +44,13 @@ backend-it:
 # ------------------------------------------------------------------------------------------
 PHONY	+=	fmt
 fmt:
+	npx prettier --write docker-compose.yml
 	docker exec -t frontend make fmt
 	docker exec -t backend make fmt
 
 PHONY	+=	fmt-ck
 fmt-ck:
+	npx prettier --check docker-compose.yml
 	docker exec -t frontend make fmt-ck
 	docker exec -t backend make fmt-ck
 

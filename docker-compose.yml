@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 volumes:
   frontend_node_modules:
@@ -11,6 +11,8 @@ services:
     ports:
       - 3000:3000
       - 6006:6006
+    environment:
+      - WATCHPACK_POLLING=true
     volumes:
       - ./frontend:/workdir
       - frontend_node_modules:/workdir/node_modules
@@ -37,8 +39,7 @@ services:
     ports:
       - 5432:5432
     environment:
-        POSTGRES_USER: test
-        POSTGRES_PASSWORD: test
-        POSTGRES_DB: test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
     restart: always
-

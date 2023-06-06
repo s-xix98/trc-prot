@@ -1,30 +1,13 @@
-import { ReactNode } from 'react';
+import styled from 'styled-components';
 
-export const ContainerItem = ({
-  children,
-  display = 'inline',
-  flexRatio = 1,
-  overflowX = 'hidden',
-  overflowY = 'hidden',
-}: {
-  children: ReactNode;
+export const ContainerItem = styled.div<{
   display?: 'inline' | 'flex';
   flexRatio?: number;
   overflowX?: 'hidden' | 'scroll';
   overflowY?: 'hidden' | 'scroll';
-}) => {
-  return (
-    <>
-      <div
-        style={{
-          display: display,
-          flex: flexRatio,
-          overflowX: overflowX,
-          overflowY: overflowY,
-        }}
-      >
-        {children}
-      </div>
-    </>
-  );
-};
+}>`
+  display: ${({ display }) => (display ? display : 'inline')};
+  flex: ${({ flexRatio }) => (flexRatio ? flexRatio : 1)};
+  overflow-x: ${({ overflowX }) => (overflowX ? overflowX : 'hidden')};
+  overflow-y: ${({ overflowY }) => (overflowY ? overflowY : 'hidden')};
+`;
