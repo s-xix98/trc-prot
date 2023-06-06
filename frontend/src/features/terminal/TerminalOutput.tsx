@@ -11,7 +11,9 @@ export const TerminalOutput = ({
   return (
     <Container flexDirection={'column'}>
       <ContainerItem overflowY="scroll">
-        {outputArr.map((output) => output)}
+        {outputArr.map((output, idx) => (
+          <div key={idx}>{output}</div>
+        ))}
         <div ref={scrollBottomRef} />
       </ContainerItem>
     </Container>
