@@ -8,6 +8,7 @@ import { PostMessageModule } from './post-message/post-message.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ChatModule } from './chat/chat.module';
     ConfigModule,
     UserModule,
     ChatModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, EventsGateway],
