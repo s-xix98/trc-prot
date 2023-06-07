@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-
+import { PrismaService } from '../prisma/prisma.service';
+import { ChatRoom } from '@prisma/client';
 @Injectable()
 export class ChatService {
-  getAllChannels() {
-    return [
-      { id: 1, name: 'mock room 1' },
-      { id: 2, name: 'mock room 2' },
-    ];
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async getAllChannels(): Promise<ChatRoom[]> {
+    return this.prismaService.chatRoom.findMany();
   }
 }
