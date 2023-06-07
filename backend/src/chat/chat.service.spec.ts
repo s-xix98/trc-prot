@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ChatService } from './chat.service';
-import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
+
+import { ChatService } from './chat.service';
 
 describe('ChatService', () => {
   let service: ChatService;

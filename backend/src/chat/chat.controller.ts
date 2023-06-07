@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { ChatService } from './chat.service';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { ChatService } from './chat.service';
+
 @Controller('chat')
 @ApiTags('/chat')
 export class ChatController {
