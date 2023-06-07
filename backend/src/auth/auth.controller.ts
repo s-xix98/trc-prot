@@ -1,7 +1,8 @@
 import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
 import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
 @ApiTags('/auth')
