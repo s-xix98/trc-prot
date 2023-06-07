@@ -18,12 +18,22 @@ export const TerminalModal = ({
   modalIsOpen: boolean;
   closeModal: () => void;
 }) => {
+  const customStyles = {
+    content: {
+      background: 'dimgray',
+    },
+  };
+
   if (children === undefined) {
     return <></>;
   }
 
   return (
-    <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+    <Modal
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      style={customStyles}
+    >
       {children}
     </Modal>
   );
