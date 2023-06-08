@@ -36,3 +36,5 @@ next-env.d.ts
 
 # storybook coverage
 /.nyc_output
+
+__image_snapshots___prev/
