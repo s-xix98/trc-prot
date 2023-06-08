@@ -5,6 +5,7 @@ import { useInterval } from '@/hooks/useInterval';
 import { useCanvas } from '@/hooks/useCanvas';
 
 import { Ball, Paddle, KeyAction } from './Types';
+import styled from 'styled-components';
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
@@ -36,6 +37,11 @@ const UpdateBallPosition = (ball: Ball, width: number, height: number) => {
   ball.x += ball.dx;
   ball.y += ball.dy;
 };
+
+const StyledCanvas = styled.canvas`
+  border: 4px solid;
+  color: black;
+`;
 
 export const Game = () => {
   const width = 400;
@@ -88,14 +94,6 @@ export const Game = () => {
 
   const { canvas, ctx } = useCanvas(canvasId);
 
-  useEffect(() => {
-    if (canvas === null) {
-      return;
-    }
-    canvas.style.border = '4px solid';
-    canvas.style.color = 'black';
-  }, [canvas]);
-
   // TODO vectorで書き換え
   useInterval(() => {
     if (ctx === null || canvas == null) {
@@ -143,5 +141,7 @@ export const Game = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   });
 
-  return <canvas width={width} height={height} id={canvasId}></canvas>;
+  return (
+    <StyledCanvas width={width} height={height} id={canvasId}></StyledCanvas>
+  );
 };
