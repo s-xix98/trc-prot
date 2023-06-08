@@ -1,8 +1,7 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useInterval } from '@/hooks/useInterval';
-import { useCanvas } from '@/hooks/useCanvas';
 
 import { Ball, Paddle, KeyAction } from './Types';
 import styled from 'styled-components';
@@ -44,6 +43,9 @@ const StyledCanvas = styled.canvas`
 `;
 
 export const Game = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  let canvas: HTMLCanvasElement | null;
+  let ctx: CanvasRenderingContext2D | null | undefined;
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
@@ -92,12 +94,15 @@ export const Game = () => {
     );
   });
 
-  const { canvas, ctx } = useCanvas(canvasId);
+  useEffect(() => {
+    canvas = canvasRef.current;
+    ctx = canvas?.getContext('2d');
+  }, []);
 
   // TODO vectorで書き換え
   useInterval(() => {
-    if (ctx === null || canvas == null) {
-      return;
+    if (!canvas || !ctx) {
+      throw new Error('no canvas');
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     UpKeyAction.Run();
@@ -142,6 +147,11 @@ export const Game = () => {
   });
 
   return (
-    <StyledCanvas width={width} height={height} id={canvasId}></StyledCanvas>
+    <StyledCanvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      id={canvasId}
+    ></StyledCanvas>
   );
 };
