@@ -5,6 +5,8 @@ import { TextField } from '@mui/material';
 import { socket } from '@/socket';
 import { useAtomValue } from 'jotai';
 import { userInfoAtom } from '@/App';
+import { CreateChannelDto } from '../types/CreateChannelDto';
+
 Modal.setAppElement('body');
 
 const customStyles = {
@@ -39,11 +41,11 @@ export const ChatChannelCreateModal = () => {
   });
 
   const onSubmit = () => {
-    const createChannel = {
-      roomName: roomName,
+    const createChannelDto:CreateChannelDto = {
+      roomName,
       userId: userinfo?.id || '',
     }
-    socket.emit('createChannel', createChannel );
+    socket.emit('createChannel', createChannelDto);
     closeModal();
   };
 
