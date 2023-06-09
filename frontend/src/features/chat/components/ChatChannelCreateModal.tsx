@@ -19,6 +19,7 @@ const customStyles = {
 
 export const ChatChannelCreateModal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [roomName, setRoomName] = useState('');
 
   const closeModal = () => {
     setModalIsOpen(false);
@@ -39,6 +40,8 @@ export const ChatChannelCreateModal = () => {
           <TextField
           label="ChannelName"
           variant='outlined'
+          value={roomName}
+          onChange={(e) => setRoomName(e.target.value)}
           />
           <button onClick={closeModal}>cancel</button>
           <button> create </button>
