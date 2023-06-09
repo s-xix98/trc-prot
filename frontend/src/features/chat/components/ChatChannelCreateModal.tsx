@@ -2,9 +2,11 @@
 import Modal from 'react-modal';
 import { useState } from 'react';
 import { TextField } from '@mui/material';
-import { socket } from '@/socket';
 import { useAtomValue } from 'jotai';
+
+import { socket } from '@/socket';
 import { userInfoAtom } from '@/App';
+
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
 Modal.setAppElement('body');
@@ -19,7 +21,7 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-  }
+  },
 };
 
 export const ChatChannelCreateModal = () => {
@@ -36,15 +38,16 @@ export const ChatChannelCreateModal = () => {
 
   // TODO roomの情報が返ってきてらチャットリストの更新をする必要があるから
   // chatの一番上の階層で一番上の階層で宣言するのがいいかも
+  // eslint-disable-next-line
   socket.on('createChannel', (createdRoom: any) => {
     console.log(createdRoom);
   });
 
   const onSubmit = () => {
-    const createChannelDto:CreateChannelDto = {
+    const createChannelDto: CreateChannelDto = {
       roomName,
       userId: userinfo?.id || '',
-    }
+    };
     socket.emit('createChannel', createChannelDto);
     closeModal();
   };
@@ -52,21 +55,21 @@ export const ChatChannelCreateModal = () => {
   return (
     <div>
       <div onClick={onClick}>ChannelCreate</div>
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}>
-
-          <h5>ChannelCreate</h5>
-          <TextField
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+      >
+        <h5>ChannelCreate</h5>
+        <TextField
           label="ChannelName"
-          variant='outlined'
+          variant="outlined"
           value={roomName}
           onChange={(e) => setRoomName(e.target.value)}
-          />
-          <button onClick={closeModal}>cancel</button>
-          <button onClick={onSubmit}> create </button>
-        </Modal>
+        />
+        <button onClick={closeModal}>cancel</button>
+        <button onClick={onSubmit}> create </button>
+      </Modal>
     </div>
   );
-}
+};
