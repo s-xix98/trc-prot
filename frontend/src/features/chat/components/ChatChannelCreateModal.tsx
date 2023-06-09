@@ -1,7 +1,7 @@
 'use client';
 import Modal from 'react-modal';
 import { useState } from 'react';
-
+import { TextField } from '@mui/material';
 Modal.setAppElement('body');
 
 const customStyles = {
@@ -26,6 +26,7 @@ export const ChatChannelCreateModal = () => {
   const onClick = () => {
     setModalIsOpen(true);
   };
+
   return (
     <div>
       <div onClick={onClick}>ChannelCreate</div>
@@ -35,6 +36,10 @@ export const ChatChannelCreateModal = () => {
           style={customStyles}>
 
           <h5>ChannelCreate</h5>
+          <TextField
+          label="ChannelName"
+          variant='outlined'
+          />
           <button onClick={closeModal}>cancel</button>
           <button> create </button>
         </Modal>
