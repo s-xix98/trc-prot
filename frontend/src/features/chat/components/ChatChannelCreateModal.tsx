@@ -33,6 +33,10 @@ export const ChatChannelCreateModal = () => {
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           style={customStyles}>
+
+          <h5>ChannelCreate</h5>
+          <button onClick={closeModal}>cancel</button>
+          <button> create </button>
         </Modal>
     </div>
   );
