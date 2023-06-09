@@ -2,6 +2,9 @@
 import Modal from 'react-modal';
 import { useState } from 'react';
 import { TextField } from '@mui/material';
+import { socket } from '@/socket';
+import { useAtomValue } from 'jotai';
+import { userInfoAtom } from '@/App';
 Modal.setAppElement('body');
 
 const customStyles = {
@@ -20,12 +23,27 @@ const customStyles = {
 export const ChatChannelCreateModal = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [roomName, setRoomName] = useState('');
+  const userinfo = useAtomValue(userInfoAtom);
 
   const closeModal = () => {
     setModalIsOpen(false);
   };
   const onClick = () => {
     setModalIsOpen(true);
+  };
+
+  // TODO roomの情報が返ってきてらチャットリストの更新をする必要があるから
+  // chatの一番上の階層で一番上の階層で宣言するのがいいかも
+  socket.on('createChannel', (createdRoom: any) => {
+    console.log(createdRoom);
+  });
+
+  const onSubmit = () => {
+    const createChannel = {
+      roomName: roomName,
+      userId: userinfo?.id || '',
+    }
+    socket.emit('createChannel', createChannel );
   };
 
   return (
@@ -44,7 +62,7 @@ export const ChatChannelCreateModal = () => {
           onChange={(e) => setRoomName(e.target.value)}
           />
           <button onClick={closeModal}>cancel</button>
-          <button> create </button>
+          <button onClick={onSubmit}> create </button>
         </Modal>
     </div>
   );
