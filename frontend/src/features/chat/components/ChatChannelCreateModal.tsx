@@ -44,6 +44,7 @@ export const ChatChannelCreateModal = () => {
       userId: userinfo?.id || '',
     }
     socket.emit('createChannel', createChannel );
+    closeModal();
   };
 
   return (
