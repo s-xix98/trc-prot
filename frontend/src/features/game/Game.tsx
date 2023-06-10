@@ -62,8 +62,6 @@ const HandleKeyActions = (
 
 export const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  let canvas: HTMLCanvasElement | null;
-  let ctx: CanvasRenderingContext2D | null | undefined;
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
@@ -93,13 +91,10 @@ export const Game = () => {
     speed: 10,
   };
 
-  useEffect(() => {
-    canvas = canvasRef.current;
-    ctx = canvas?.getContext('2d');
-  }, []);
-
   // TODO vectorで書き換え
   useInterval(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
       throw new Error('no canvas');
     }
