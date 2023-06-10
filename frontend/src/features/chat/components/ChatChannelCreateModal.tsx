@@ -6,6 +6,7 @@ import { useAtomValue } from 'jotai';
 
 import { socket } from '@/socket';
 import { userInfoAtom } from '@/App';
+import { useSocket } from '@/hooks/useSocket';
 
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
@@ -39,7 +40,7 @@ export const ChatChannelCreateModal = () => {
   // TODO roomの情報が返ってきてらチャットリストの更新をする必要があるから
   // chatの一番上の階層で一番上の階層で宣言するのがいいかも
   // eslint-disable-next-line
-  socket.on('createChannel', (createdRoom: any) => {
+  useSocket('createChannel', (createdRoom: any) => {
     console.log(createdRoom);
   });
 
