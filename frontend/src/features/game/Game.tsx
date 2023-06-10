@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import styled from 'styled-components';
 
 import { useInterval } from '@/hooks/useInterval';
 
-import { Ball, Paddle, KeyAction } from './Types';
-import styled from 'styled-components';
+import { Ball, Paddle } from './Types';
+import { Keys, keyActions } from './KeyAction';
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
@@ -42,6 +43,23 @@ const StyledCanvas = styled.canvas`
   color: black;
 `;
 
+const HandleKeyActions = (
+  keyInputs: boolean[],
+  leftPaddle: Paddle,
+  rightPaddle: Paddle,
+  canvas: HTMLCanvasElement,
+) => {
+  // 一旦どっちも動かす
+  if (keyInputs[Keys.Up]) {
+    keyActions[Keys.Up](leftPaddle);
+    keyActions[Keys.Up](rightPaddle);
+  }
+  if (keyInputs[Keys.Down]) {
+    keyActions[Keys.Down](leftPaddle, canvas.height);
+    keyActions[Keys.Down](rightPaddle, canvas.height);
+  }
+};
+
 export const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   let canvas: HTMLCanvasElement | null;
@@ -49,6 +67,7 @@ export const Game = () => {
   const width = 400;
   const height = 400;
   const canvasId = 'canvas';
+  const keyInputs: boolean[] = [];
 
   const ball: Ball = {
     x: width / 2,
@@ -74,26 +93,6 @@ export const Game = () => {
     speed: 10,
   };
 
-  // 一旦どっちも動かす
-  const UpKeyAction = new KeyAction(() => {
-    leftPaddle.y = Math.max(leftPaddle.y - 5, 0);
-    rightPaddle.y = Math.max(rightPaddle.y - 5, 0);
-  });
-
-  const DownKeyAction = new KeyAction(() => {
-    if (canvas === null) {
-      return;
-    }
-    leftPaddle.y = Math.min(
-      leftPaddle.y + 5,
-      canvas.height - leftPaddle.height,
-    );
-    rightPaddle.y = Math.min(
-      rightPaddle.y + 5,
-      canvas.height - rightPaddle.height,
-    );
-  });
-
   useEffect(() => {
     canvas = canvasRef.current;
     ctx = canvas?.getContext('2d');
@@ -105,8 +104,7 @@ export const Game = () => {
       throw new Error('no canvas');
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    UpKeyAction.Run();
-    DownKeyAction.Run();
+    HandleKeyActions(keyInputs, leftPaddle, rightPaddle, canvas);
     DrawPaddle(ctx, leftPaddle);
     DrawPaddle(ctx, rightPaddle);
     DrawBall(ctx, ball);
@@ -117,20 +115,20 @@ export const Game = () => {
   const keyDownHandler = (e: KeyboardEvent) => {
     if (e.key === 'Up' || e.key === 'ArrowUp') {
       console.log('press u');
-      UpKeyAction.SetOn();
+      keyInputs[Keys.Up] = true;
     } else if (e.key === 'Down' || e.key === 'ArrowDown') {
       console.log('press d');
-      DownKeyAction.SetOn();
+      keyInputs[Keys.Down] = true;
     }
   };
 
   const keyUpHandler = (e: KeyboardEvent) => {
     if (e.key === 'Up' || e.key === 'ArrowUp') {
       console.log('release u');
-      UpKeyAction.SetOff();
+      keyInputs[Keys.Up] = false;
     } else if (e.key === 'Down' || e.key === 'ArrowDown') {
       console.log('release d');
-      DownKeyAction.SetOff();
+      keyInputs[Keys.Down] = false;
     }
   };
 
