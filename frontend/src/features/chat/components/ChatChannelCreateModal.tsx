@@ -45,11 +45,11 @@ export const ChatChannelCreateModal = () => {
   });
 
   const onSubmit = () => {
-    const createChannelDto: CreateChannelDto = {
+    const dto: CreateChannelDto = {
       roomName,
       userId: userinfo?.id || '',
     };
-    socket.emit('createChannel', createChannelDto);
+    socket.emit('createChannel', dto);
     closeModal();
   };
 
