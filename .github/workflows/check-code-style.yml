@@ -39,3 +39,5 @@ jobs:
         run: cd backend && npm install
       - name: backend fmt-ck
         run: cd backend && timeout 300 make fmt-ck
+      - name: backend prisma
+        run: cd backend && timeout 300 make fmt && git status
