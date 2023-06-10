@@ -28,11 +28,12 @@ model User {
 }
 
 model Auth {
-  userId String @unique
-  providerId String
+  userId       String       @unique
+  providerId   String
   providerName String
   authProvider AuthProvider @relation(fields: [providerName], references: [name])
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([providerName, providerId])
 }
 
