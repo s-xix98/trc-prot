@@ -42,6 +42,8 @@ function App() {
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('p', <PrevApp />);
   commandElemMap.set('g', <Game />);
+  commandElemMap.set('./game', <Game />);
+  commandElemMap.set('./chat', <PrevApp />);
 
   return (
     <MainLayout>
