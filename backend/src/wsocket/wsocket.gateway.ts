@@ -1,13 +1,13 @@
 import { WebSocketGateway } from '@nestjs/websockets';
-import { Server,Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
+
 import { generatePrefixedId, socketNamespaceType } from './utils';
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-
 export class WsocketGateway {
   @WebSocketServer()
   server: Server;
@@ -17,7 +17,11 @@ export class WsocketGateway {
     client.join(prefixedId);
   }
 
-  socketLeaveNamespace(client: Socket, prefix: socketNamespaceType, id: string) {
+  socketLeaveNamespace(
+    client: Socket,
+    prefix: socketNamespaceType,
+    id: string,
+  ) {
     const prefixedId = generatePrefixedId(prefix, id);
     client.leave(prefixedId);
   }
