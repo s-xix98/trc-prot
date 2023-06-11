@@ -51,6 +51,7 @@ export class ChatGateway {
     });
 
     rooms.forEach((room) => {
+      client.join(room.id.toString());
       client.emit('addRoom', room);
     });
   }
