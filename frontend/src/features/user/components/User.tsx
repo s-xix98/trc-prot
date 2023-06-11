@@ -1,21 +1,18 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { useAtom } from 'jotai';
 import { signIn } from 'next-auth/react';
 
 import { Container } from '@/components/Layout/Container';
 import { userInfoAtom } from '@/App';
+import { useModal } from '@/hooks/useModal';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
-import { UserDetailsModal } from './UserDetailsModal';
 
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const closeModal = () => {
-    console.log('closeModal');
-    setModalIsOpen(false);
-  };
+  const { modalIsOpen, openModal, closeModal } = useModal();
 
   const UserInputArea = () => {
     if (userInfo) {
@@ -23,17 +20,17 @@ export const User = ({ children }: { children: ReactNode }) => {
         <div>
           <button
             onClick={() => {
-              setModalIsOpen(true);
+              openModal();
             }}
           >
             botton
           </button>
           <p>name : {userInfo?.nickname}</p>
-          <UserDetailsModal
-            userInfo={userInfo}
-            modalIsOpen={modalIsOpen}
-            closeModal={closeModal}
-          />
+          <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
+            <p>
+              id : {userInfo?.id}, name : {userInfo?.nickname}
+            </p>
+          </ModalView>
         </div>
       );
     } else {
