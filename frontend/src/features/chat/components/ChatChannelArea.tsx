@@ -1,20 +1,20 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 
-import { channelListAtom } from '../../../App';
-export const ChatChannelArea = ({
-  setSelectedChannel,
-}: {
-  setSelectedChannel: React.Dispatch<React.SetStateAction<string | undefined>>;
-}) => {
+import { channelListAtom,selectedChannelAtom } from '../../../App';
+import { chatChannelDto } from '../types/chatChannelDto';
+export const ChatChannelArea = () => {
   const channels = useAtomValue(channelListAtom);
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    const roomName = e.currentTarget.innerText;
-    setSelectedChannel(roomName);
+  const setSelectedChannel = useSetAtom(selectedChannelAtom);
+
+  const handleClick = (channel: chatChannelDto) => {
+    return () =>{
+      setSelectedChannel(channel);
+    };
   };
   return (
     <Container flexDirection={'column'}>
@@ -26,7 +26,7 @@ export const ChatChannelArea = ({
         <Container flexDirection={'column'}>
           <ContainerItem overflowY={'scroll'}>
             {channels.map((channel, idx) => (
-              <p key={idx} onClick={handleClick} style={{ cursor: 'pointer' }}>
+              <p key={idx} onClick={handleClick(channel)} style={{ cursor: 'pointer' }}>
                 {channel.roomName}
               </p>
             ))}

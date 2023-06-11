@@ -14,6 +14,7 @@ import { chatChannelDto } from './features/chat/types/chatChannelDto';
 // TODO : 変数 の 場所 移動 させる
 export const userInfoAtom = atom<UserInfo | undefined>(undefined);
 export const channelListAtom = atom<chatChannelDto[]>([]);
+export const selectedChannelAtom = atom<chatChannelDto | undefined>(undefined);
 const onConnect = () => {
   console.log('socket connect');
 };
