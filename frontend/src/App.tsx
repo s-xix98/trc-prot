@@ -9,10 +9,11 @@ import { UserInfo } from './features/user/types/UserDto';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
+import { chatChannelDto } from './features/chat/types/chatChannelDto';
 
 // TODO : 変数 の 場所 移動 させる
 export const userInfoAtom = atom<UserInfo | undefined>(undefined);
-export const channelListAtom = atom< {id:string, roomName: string}[]>([]);
+export const channelListAtom = atom<chatChannelDto[]>([]);
 const onConnect = () => {
   console.log('socket connect');
 };
