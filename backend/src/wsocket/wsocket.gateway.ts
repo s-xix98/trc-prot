@@ -16,4 +16,9 @@ export class WsocketGateway {
     const prefixedId = generatePrefixedId(prefix, id);
     client.join(prefixedId);
   }
+
+  socketLeaveNamespace(client: Socket, prefix: socketNamespaceType, id: string) {
+    const prefixedId = generatePrefixedId(prefix, id);
+    client.leave(prefixedId);
+  }
 }
