@@ -50,8 +50,8 @@ export const SelectChannel: Story = {
     }
     await userEvent.type(terminalInputElem, 'p\n');
 
-    const hoge0 = screen.getByText('hoge 0');
-    await userEvent.click(hoge0);
+    const hogeRoom = await screen.findByText('hogeRoom');
+    await userEvent.click(hogeRoom);
 
     await sleep(1000);
   },
@@ -68,8 +68,8 @@ export const SendMsg: Story = {
     }
     await userEvent.type(terminalInputElem, 'p\n');
 
-    const hoge0 = screen.getByText('hoge 0');
-    await userEvent.click(hoge0);
+    const hogeRoom = await screen.findByText('hogeRoom');
+    await userEvent.click(hogeRoom);
 
     const inputElem =
       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
@@ -99,8 +99,8 @@ export const SendSomeMsg: Story = {
     }
     await userEvent.type(terminalInputElem, 'p\n');
 
-    const hoge0 = screen.getByText('hoge 0');
-    await userEvent.click(hoge0);
+    const hogeRoom = await screen.findByText('hogeRoom');
+    await userEvent.click(hogeRoom);
 
     const inputElem =
       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
