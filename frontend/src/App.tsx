@@ -1,6 +1,6 @@
 'use client';
 
-import { atom } from 'jotai';
+import { atom, useSetAtom } from 'jotai';
 
 import { User } from './features/user/components/User';
 import { Chat } from './features/chat/components/Chat';
@@ -12,7 +12,7 @@ import { Terminal } from './features/terminal/Terminal';
 
 // TODO : 変数 の 場所 移動 させる
 export const userInfoAtom = atom<UserInfo | undefined>(undefined);
-
+export const channelListAtom = atom< {id:string, roomName: string}[]>([]);
 const onConnect = () => {
   console.log('socket connect');
 };
@@ -30,8 +30,11 @@ export const PrevApp = () => {
 };
 
 function App() {
+  const setChannelList = useSetAtom(channelListAtom);
+
   useSocket('addRoom', (data) => {
     console.log('addRoom', data);
+    setChannelList((prev) => [...prev, data]);
   });
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
