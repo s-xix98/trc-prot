@@ -1,8 +1,10 @@
+import { useAtomValue } from 'jotai';
+
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
-import { useAtomValue } from 'jotai';
+
 import { channelListAtom } from '../../../App';
 export const ChatChannelArea = ({
   setSelectedChannel,
