@@ -18,6 +18,9 @@ export const TerminalInput = ({
           outline: 'none',
           fontSize: 'inherit',
           fontFamily: 'inherit',
+          color: '#33ff33',
+          // TODO : 背景色と同色だと、見づらいのでいったんちょっと違う色に
+          backgroundColor: '#303030',
         }}
         rows={1}
         autoFocus={true}
