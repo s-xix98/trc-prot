@@ -30,7 +30,7 @@ export const ChatTalkArea = () => {
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader/>
+      <ChatTalkAreaHeader />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}

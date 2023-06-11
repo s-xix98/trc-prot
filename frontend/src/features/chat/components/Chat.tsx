@@ -8,6 +8,7 @@ import { userInfoAtom } from '@/App';
 
 import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';
+
 import { selectedChannelAtom } from '../../../App';
 export const Chat = () => {
   const userInfo = useAtomValue(userInfoAtom);

@@ -3,16 +3,17 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 
+import { chatChannelDto } from '../types/chatChannelDto';
+
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 
-import { channelListAtom,selectedChannelAtom } from '../../../App';
-import { chatChannelDto } from '../types/chatChannelDto';
+import { channelListAtom, selectedChannelAtom } from '../../../App';
 export const ChatChannelArea = () => {
   const channels = useAtomValue(channelListAtom);
   const setSelectedChannel = useSetAtom(selectedChannelAtom);
 
   const handleClick = (channel: chatChannelDto) => {
-    return () =>{
+    return () => {
       setSelectedChannel(channel);
     };
   };
@@ -26,7 +27,11 @@ export const ChatChannelArea = () => {
         <Container flexDirection={'column'}>
           <ContainerItem overflowY={'scroll'}>
             {channels.map((channel, idx) => (
-              <p key={idx} onClick={handleClick(channel)} style={{ cursor: 'pointer' }}>
+              <p
+                key={idx}
+                onClick={handleClick(channel)}
+                style={{ cursor: 'pointer' }}
+              >
                 {channel.roomName}
               </p>
             ))}
