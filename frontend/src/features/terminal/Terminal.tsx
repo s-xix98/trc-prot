@@ -3,6 +3,8 @@ import { ChangeEvent } from 'react';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
+import { useModal } from '@/hooks/useModal';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { TerminalInput } from './TerminalInput';
 import { TerminalOutput } from './TerminalOutput';
@@ -15,6 +17,10 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
+
+  const [currentModalElem, setCurrentModalElem] = useState<JSX.Element>();
+
+  const { modalIsOpen, openModal, closeModal } = useModal();
 
   const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value === '\n') {
@@ -32,7 +38,9 @@ export const Terminal = ({
     handleScroll();
 
     if (commandElem) {
-      setOutputArr([...outputArr, inputElem, commandElem]);
+      setOutputArr([...outputArr, inputElem]);
+      setCurrentModalElem(commandElem);
+      openModal();
     } else {
       const notFoundElem = <p>NotFound</p>;
       setOutputArr([...outputArr, inputElem, notFoundElem]);
@@ -45,6 +53,9 @@ export const Terminal = ({
     <Container flexDirection="column">
       <h1>Terminal</h1>
       <TerminalOutput outputArr={outputArr} scrollBottomRef={scrollBottomRef} />
+      <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
+        {currentModalElem}
+      </ModalView>
       <TerminalInput input={input} onChangeAct={onChangeAct} />
     </Container>
   );
