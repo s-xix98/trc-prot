@@ -30,6 +30,9 @@ export const PrevApp = () => {
 };
 
 function App() {
+  useSocket('addRoom', (data) => {
+    console.log('addRoom', data);
+  });
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
 
