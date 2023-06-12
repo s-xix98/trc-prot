@@ -1,7 +1,8 @@
 import { ReactNode } from 'react';
-import Modal from 'react-modal';
+import Modal from '@mui/material/Modal';
 
-Modal.setAppElement('body');
+import { Container } from '@/components/Layout/Container';
+
 export const ModalView = ({
   children,
   modalIsOpen,
@@ -11,19 +12,22 @@ export const ModalView = ({
   modalIsOpen: boolean;
   closeModal: () => void;
 }) => {
-  const customStyles = {
-    content: {
-      background: '#252525',
-    },
+  const style = {
+    position: 'absolute' as const,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    height: '90%',
+    width: '90%',
+    borderRadius: '5px',
+    padding: '10px',
+    backgroundColor: '#252525',
+    outline: 'none',
   };
 
   return (
-    <Modal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
-      style={customStyles}
-    >
-      {children}
+    <Modal open={modalIsOpen} onClose={closeModal}>
+      <Container style={style}>{children}</Container>
     </Modal>
   );
 };
