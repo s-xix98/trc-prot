@@ -89,20 +89,20 @@ const HandleKeyActions = (
 
 const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const width = 400;
-  const height = 400;
+  const canvasWidth = 400;
+  const canvasHeight = 400;
   const canvasId = 'canvas';
   const keyInputs: boolean[] = [];
 
   const paddleConstants = {
-    height: width / 4,
-    width: height / 40,
-    speed: height / 40,
+    height: canvasWidth / 4,
+    width: canvasHeight / 40,
+    speed: canvasHeight / 40,
   };
 
   const ball: Ball = {
-    x: width / 2,
-    y: height / 2,
+    x: canvasWidth / 2,
+    y: canvasHeight / 2,
     radius: 10,
     dx: 2,
     dy: 0.5,
@@ -110,15 +110,15 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 
   const leftPaddle: Paddle = {
     x: 0,
-    y: height / 2 - paddleConstants.height / 2,
+    y: canvasHeight / 2 - paddleConstants.height / 2,
     width: paddleConstants.width,
     height: paddleConstants.height,
     speed: paddleConstants.speed,
   };
 
   const rightPaddle: Paddle = {
-    x: width - 10,
-    y: height / 2 - paddleConstants.height / 2,
+    x: canvasWidth - 10,
+    y: canvasHeight / 2 - paddleConstants.height / 2,
     width: paddleConstants.width,
     height: paddleConstants.height,
     speed: paddleConstants.speed,
@@ -182,8 +182,8 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
   return (
     <StyledCanvas
       ref={canvasRef}
-      width={width}
-      height={height}
+      width={canvasWidth}
+      height={canvasHeight}
       id={canvasId}
     ></StyledCanvas>
   );
