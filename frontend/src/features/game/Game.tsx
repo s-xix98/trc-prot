@@ -27,13 +27,19 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+const HandleGameOver = (ball: Ball, width: number, setGameOver: () => void) => {
+  if (IsInRange(ball.x, ball.radius, width - ball.radius)) {
+    return;
+  }
+  setGameOver();
+};
+
 const UpdateBallPosition = (
   ball: Ball,
   leftPaddle: Paddle,
   rightPaddle: Paddle,
   width: number,
   height: number,
-  setGameOver: () => void,
 ) => {
   const isLeftPaddleHitByBall = () => {
     return (
@@ -49,12 +55,8 @@ const UpdateBallPosition = (
     );
   };
 
-  if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
-    if (isLeftPaddleHitByBall() || isRightPaddleHitByBall()) {
-      ball.dx = -ball.dx;
-    } else {
-      setGameOver();
-    }
+  if (isLeftPaddleHitByBall() || isRightPaddleHitByBall()) {
+    ball.dx = -ball.dx;
   }
   if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
     ball.dy = -ball.dy;
@@ -134,8 +136,8 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
       rightPaddle,
       canvas.width,
       canvas.height,
-      setGameOver,
     );
+    HandleGameOver(ball, canvas.width, setGameOver);
   }, 10);
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
