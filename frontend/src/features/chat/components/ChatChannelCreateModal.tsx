@@ -43,14 +43,27 @@ export const ChatChannelCreateModal = () => {
         <div>
           <h5>ChannelCreate</h5>
           <br />
+          {/* TODO : MUI の方の色も変えたりしたい */}
           <TextField
             label="ChannelName"
             variant="outlined"
             value={roomName}
             onChange={(e) => setRoomName(e.target.value)}
           />
-          <button onClick={closeModal}>cancel</button>
-          <button onClick={onSubmit}> create </button>
+          <br />
+          <br />
+          <button
+            style={{ color: '#33ff33', background: '#353535' }}
+            onClick={closeModal}
+          >
+            cancel
+          </button>
+          <button
+            style={{ color: '#33ff33', background: '#353535' }}
+            onClick={onSubmit}
+          >
+            create
+          </button>
         </div>
       </ModalView>
     </div>
