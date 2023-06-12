@@ -94,6 +94,12 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
   const canvasId = 'canvas';
   const keyInputs: boolean[] = [];
 
+  const paddleConstants = {
+    height: width / 4,
+    width: height / 40,
+    speed: height / 40,
+  };
+
   const ball: Ball = {
     x: width / 2,
     y: height / 2,
@@ -105,17 +111,17 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
   const leftPaddle: Paddle = {
     x: 0,
     y: 0,
-    width: 10,
-    height: 100,
-    speed: 10,
+    width: paddleConstants.width,
+    height: paddleConstants.height,
+    speed: paddleConstants.speed,
   };
 
   const rightPaddle: Paddle = {
     x: width - 10,
     y: 0,
-    width: 10,
-    height: 100,
-    speed: 10,
+    width: paddleConstants.width,
+    height: paddleConstants.height,
+    speed: paddleConstants.speed,
   };
 
   // TODO vectorで書き換え
