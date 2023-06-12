@@ -110,7 +110,7 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 
   const leftPaddle: Paddle = {
     x: 0,
-    y: 0,
+    y: height / 2 - paddleConstants.height / 2,
     width: paddleConstants.width,
     height: paddleConstants.height,
     speed: paddleConstants.speed,
@@ -118,7 +118,7 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 
   const rightPaddle: Paddle = {
     x: width - 10,
-    y: 0,
+    y: height / 2 - paddleConstants.height / 2,
     width: paddleConstants.width,
     height: paddleConstants.height,
     speed: paddleConstants.speed,
