@@ -29,12 +29,32 @@ const IsInRange = (pos: number, start: number, end: number) => {
 
 const UpdateBallPosition = (
   ball: Ball,
+  leftPaddle: Paddle,
+  rightPaddle: Paddle,
   width: number,
   height: number,
   setGameOver: () => void,
 ) => {
+  const isLeftPaddleHitByBall = () => {
+    return (
+      ball.x + ball.dx <= ball.radius &&
+      IsInRange(ball.y, leftPaddle.y, leftPaddle.y + leftPaddle.height)
+    );
+  };
+
+  const isRightPaddleHitByBall = () => {
+    return (
+      ball.x + ball.dx >= width - ball.radius &&
+      IsInRange(ball.y, rightPaddle.y, rightPaddle.y + rightPaddle.height)
+    );
+  };
+
   if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
-    setGameOver();
+    if (isLeftPaddleHitByBall() || isRightPaddleHitByBall()) {
+      ball.dx = -ball.dx;
+    } else {
+      setGameOver();
+    }
   }
   if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
     ball.dy = -ball.dy;
@@ -108,7 +128,14 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
     DrawPaddle(ctx, leftPaddle);
     DrawPaddle(ctx, rightPaddle);
     DrawBall(ctx, ball);
-    UpdateBallPosition(ball, canvas.width, canvas.height, setGameOver);
+    UpdateBallPosition(
+      ball,
+      leftPaddle,
+      rightPaddle,
+      canvas.width,
+      canvas.height,
+      setGameOver,
+    );
   }, 10);
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
