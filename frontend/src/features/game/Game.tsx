@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { useInterval } from '@/hooks/useInterval';
@@ -27,8 +27,35 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
-const UpdateBallPosition = (ball: Ball, width: number, height: number) => {
-  if (!IsInRange(ball.x + ball.dx, ball.radius, width - ball.radius)) {
+const HandleGameOver = (ball: Ball, width: number, setGameOver: () => void) => {
+  if (IsInRange(ball.x, ball.radius, width - ball.radius)) {
+    return;
+  }
+  setGameOver();
+};
+
+const UpdateBallPosition = (
+  ball: Ball,
+  leftPaddle: Paddle,
+  rightPaddle: Paddle,
+  width: number,
+  height: number,
+) => {
+  const isLeftPaddleHitByBall = () => {
+    return (
+      ball.x + ball.dx <= ball.radius &&
+      IsInRange(ball.y, leftPaddle.y, leftPaddle.y + leftPaddle.height)
+    );
+  };
+
+  const isRightPaddleHitByBall = () => {
+    return (
+      ball.x + ball.dx >= width - ball.radius &&
+      IsInRange(ball.y, rightPaddle.y, rightPaddle.y + rightPaddle.height)
+    );
+  };
+
+  if (isLeftPaddleHitByBall() || isRightPaddleHitByBall()) {
     ball.dx = -ball.dx;
   }
   if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
@@ -60,7 +87,7 @@ const HandleKeyActions = (
   }
 };
 
-export const Game = () => {
+const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const width = 400;
   const height = 400;
@@ -103,7 +130,14 @@ export const Game = () => {
     DrawPaddle(ctx, leftPaddle);
     DrawPaddle(ctx, rightPaddle);
     DrawBall(ctx, ball);
-    UpdateBallPosition(ball, canvas.width, canvas.height);
+    UpdateBallPosition(
+      ball,
+      leftPaddle,
+      rightPaddle,
+      canvas.width,
+      canvas.height,
+    );
+    HandleGameOver(ball, canvas.width, setGameOver);
   }, 10);
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
@@ -146,5 +180,15 @@ export const Game = () => {
       height={height}
       id={canvasId}
     ></StyledCanvas>
+  );
+};
+
+export const Game = () => {
+  const [isGameOver, setGameOver] = useState(false);
+  return (
+    <>
+      {isGameOver && <h1>GameOver</h1>}
+      {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
+    </>
   );
 };
