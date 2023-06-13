@@ -17,21 +17,6 @@ type User = {
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('signup')
-  @ApiOperation({ summary: 'signUp nori' })
-  async signUp(@Body() dto: signUpDto): Promise<User> {
-    console.log('on /user/signup');
-    const userData = await this.userService.signUp(dto);
-    return {
-      id: userData.id,
-      createdAt: userData.createdAt,
-      updatedAt: userData.updatedAt,
-      email: userData.email,
-      nickname: userData.username,
-      hashedPassword: userData.hashedPassword,
-    };
-  }
-
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'login nori' })

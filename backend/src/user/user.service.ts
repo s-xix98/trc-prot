@@ -9,31 +9,6 @@ import { loginDto, signUpDto } from './dto/user.dto';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async signUp(dto: signUpDto): Promise<User> {
-    console.log(dto);
-    try {
-      const user = await this.prisma.user.create({
-        data: {
-          email: dto.email,
-          username: dto.nickname,
-          // 今後ハッシュ化
-          hashedPassword: dto.hashedPassword,
-        },
-      });
-      return user;
-    } catch (e) {
-      console.log(e);
-      // email,nicknameが被った時のエラーは'P2002'が帰ってくる
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === 'P2002') {
-          throw new ForbiddenException('Email or nickname is already taken');
-        }
-      }
-      // 500 internal server err
-      throw e;
-    }
-  }
-
   async login(dto: loginDto): Promise<User> {
     console.log(dto);
     const user = await this.prisma.user.findUnique({
