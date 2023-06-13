@@ -2,9 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { accessToken } from './types/auth.types';
+
+import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService, private readonly prismaService: PrismaService) {}
 
   async providerLogin(): Promise<accessToken> {
     const mockUserData = {
