@@ -4,6 +4,8 @@
 // .storybook/test-runner.js
 const { toMatchImageSnapshot } = require('jest-image-snapshot');
 
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
 module.exports = {
   setup() {
     expect.extend({ toMatchImageSnapshot });
@@ -20,6 +22,9 @@ module.exports = {
       console.log('Skip Snapshot Test :', context.name);
       return;
     }
+
+    // モーションのあるコンポーネントだと、diffが発生するので少し待ってからスクショ撮るように
+    await sleep(500);
 
     const image = await page.screenshot();
     expect(image).toMatchImageSnapshot({
