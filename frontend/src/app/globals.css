@@ -12,6 +12,14 @@ body,
 
 :root {
   font-family: 'Courier New';
-  color: white;
-  background-color: dimgray;
+  color: #33ff33;
+  background-color: #252525;
+}
+
+a:link {
+  color: #33ff33;
+}
+
+a:visited {
+  color: #23aa23;
 }
