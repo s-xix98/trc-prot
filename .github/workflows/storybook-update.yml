@@ -1,0 +1,84 @@
+# storybook update
+
+name: storybook-update
+
+on: workflow_dispatch
+
+env:
+  DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+
+jobs:
+  storybook-update:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: cache frontend node-modules
+        id: cache-frontend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: playwright version
+        run: npx playwright -V > playwright-version.txt && cat playwright-version.txt
+
+      - name: cache playwright
+        id: cache-playwright
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('playwright-version.txt') }}
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: backend npm install
+        run: cd backend && npm install
+      - name: set up prisma
+        run: cd backend && npx prisma db push && npx prisma generate && npx prisma db seed
+      - name: run backend
+        run: cd backend && npm run start:dev &
+
+      - name: frontend npm install
+        run: cd frontend && npm install
+      - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
+        name: install playwright
+        run: cd frontend && npx playwright install
+      - name: install playwright deps
+        run: cd frontend && npx playwright install-deps
+      - name: is storybook file exists
+        run: cd frontend && make sb-ck-file
+      - name: rm img files
+        run: rm -rf $(find frontend/src/ -type d -name '__image_snapshots__')
+      - name: run storybook update
+        run: cd frontend && npm run storybook-update-snapshot-ci
+
+      # 変更がない時は、commit 失敗して終了
+      - name: git commit
+        run: |
+          git config user.name s-github-action
+          git config user.email ${{ secrets.GIT_EMAIL }}
+          git add $(find frontend/src -name '*.png')
+          (git commit -m '[auto commit from github action] sb-update' && git push) || echo commit or push fail
