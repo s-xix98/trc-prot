@@ -13,7 +13,7 @@ export const ModalView = ({
 }) => {
   const customStyles = {
     content: {
-      background: 'dimgray',
+      background: '#252525',
     },
   };
 
