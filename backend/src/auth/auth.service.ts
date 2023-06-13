@@ -1,16 +1,19 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
-import { accessToken } from './types/auth.types';
-
-import { PrismaService } from '../prisma/prisma.service';
-import { signUpDto } from './dto/signUp.dto';
 import { User } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+
+import { PrismaService } from '../prisma/prisma.service';
+
+import { accessToken } from './types/auth.types';
+import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService, private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   async providerLogin(): Promise<accessToken> {
     const mockUserData = {

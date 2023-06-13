@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
+
 import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
+
 import { AuthService } from './auth.service';
 import { signUpDto } from './dto/signUp.dto';
 
