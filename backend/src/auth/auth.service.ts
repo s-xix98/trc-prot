@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { signUpDto } from './dto/signUp.dto';
 import { User } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import { loginDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService, private readonly prismaService: PrismaService) {}
@@ -53,5 +54,25 @@ export class AuthService {
       // 500 internal server err
       throw e;
     }
+  }
+
+  async login(dto: loginDto): Promise<User> {
+    console.log(dto);
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (!user) {
+      console.log('emailが間違っている');
+      throw new ForbiddenException('Email incorrect');
+    }
+    if (user.hashedPassword != dto.hashedPassword) {
+      console.log(user.hashedPassword, dto.hashedPassword);
+      console.log('passwordが間違っている');
+      throw new ForbiddenException('Password incorrect');
+    }
+    console.log('OK');
+    return user;
   }
 }
