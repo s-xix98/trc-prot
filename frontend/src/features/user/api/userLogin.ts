@@ -10,7 +10,7 @@ export const userLogin = async (
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>,
 ) => {
   console.log('post');
-  const url = BACKEND + '/user/login';
+  const url = BACKEND + '/auth/login';
   const loginDto: LoginDto = { email: email, hashedPassword: passwd };
 
   // postでブロックしても問題ないならasync awaitでもいいかも
