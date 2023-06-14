@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import FortyTwoProvider from 'next-auth/providers/42-school';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import axios from 'axios';
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -41,7 +42,31 @@ const handler = NextAuth({
       console.log(profile);
       console.log(email);
       console.log(credentials);
+
+      const response = await axios.post('http://backend:8000' + '/auth/providerLogin');
+      if (response.status !== 200) {
+        return false;
+      }
+      // userプロパティにアクセストークンを入れるプロパティがないからとりあえずnameに入れた
+      // jwt,sessionも同様にnameに入れた
+      user.name = response.data.jwt;
       return true;
+    },
+    // 下のsession関数を使うと呼ばれる
+    async jwt({token, user}) {
+      if(user){
+        token.name = user.name;
+      }
+
+      return token;
+    },
+     // getSession関数を使うと呼ばれる
+    async session({session, token}) {
+      if(token && session.user){
+        session.user.image = token.picture;
+      }
+
+      return session;
     },
   },
 });
