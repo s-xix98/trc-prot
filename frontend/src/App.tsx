@@ -10,6 +10,8 @@ import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { chatChannelDto } from './features/chat/types/chatChannelDto';
+import { useEffect } from 'react';
+import { getSession } from 'next-auth/react';
 
 // TODO : 変数 の 場所 移動 させる
 export const userInfoAtom = atom<UserInfo | undefined>(undefined);
@@ -33,7 +35,21 @@ export const PrevApp = () => {
 function App() {
   const setChannelList = useSetAtom(channelListAtom);
   // 確認用
-  localStorage.setItem('access_token', 'mock jwt');
+  useEffect(() => {
+    const f = async () => {
+      const session = await getSession();
+      return session;
+    };
+
+    f().then((session) => {
+      console.log('session', session);
+      // sessionプロパティにjwtがないので、とりあえずnameを使う
+      localStorage.setItem('access_token', session?.user?.name || 'mock jwt');
+    }).catch((err) => {
+      console.error(err);
+    });
+
+  }, []);
 
   useSocket('addRoom', (data) => {
     console.log('addRoom', data);
