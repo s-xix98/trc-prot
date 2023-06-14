@@ -1,5 +1,6 @@
-
+// eslint-disable-next-line
 import { JWT } from "next-auth/jwt";
+// eslint-disable-next-line
 import NextAuth from "next-auth";
 
 declare module "next-auth/jwt" {
