@@ -10,6 +10,7 @@ import { AuthController } from './auth.controller';
 @Module({
   imports: [
     PrismaModule,
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
