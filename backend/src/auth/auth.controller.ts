@@ -38,4 +38,9 @@ export class AuthController {
   jwtTest(@Request() req: any) {
     return req.user;
   }
+
+  @Get('jwtHuga')
+  async jwtHuga(): Promise<accessToken> {
+    return this.authService.jwtHuga();
+  }
 }
