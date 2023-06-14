@@ -44,7 +44,7 @@ function App() {
     f().then((session) => {
       console.log('session', session);
       // sessionプロパティにjwtがないので、とりあえずnameを使う
-      localStorage.setItem('access_token', session?.user?.name || 'mock jwt');
+      localStorage.setItem('access_token', session?.accessToken || 'mock jwt');
     }).catch((err) => {
       console.error(err);
     });

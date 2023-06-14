@@ -47,23 +47,22 @@ const handler = NextAuth({
       if (response.status !== 200) {
         return false;
       }
-      // userプロパティにアクセストークンを入れるプロパティがないからとりあえずnameに入れた
-      // jwt,sessionも同様にnameに入れた
-      user.name = response.data.jwt;
+
+      user.accessToken = response.data.jwt;
       return true;
     },
     // 下のsession関数を使うと呼ばれる
     async jwt({token, user}) {
       if(user){
-        token.name = user.name;
+        token.accessToken = user.accessToken;
       }
 
       return token;
     },
      // getSession関数を使うと呼ばれる
     async session({session, token}) {
-      if(token && session.user){
-        session.user.image = token.picture;
+      if(token){
+        session.accessToken = token.accessToken;
       }
 
       return session;
