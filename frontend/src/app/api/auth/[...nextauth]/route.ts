@@ -43,7 +43,9 @@ const handler = NextAuth({
       console.log(email);
       console.log(credentials);
 
-      const response = await axios.post('http://backend:8000' + '/auth/providerLogin');
+      const response = await axios.post(
+        'http://backend:8000' + '/auth/providerLogin',
+      );
       if (response.status !== 200) {
         return false;
       }
@@ -52,16 +54,16 @@ const handler = NextAuth({
       return true;
     },
     // 下のsession関数を使うと呼ばれる
-    async jwt({token, user}) {
-      if(user){
+    async jwt({ token, user }) {
+      if (user) {
         token.accessToken = user.accessToken;
       }
 
       return token;
     },
-     // getSession関数を使うと呼ばれる
-    async session({session, token}) {
-      if(token){
+    // getSession関数を使うと呼ばれる
+    async session({ session, token }) {
+      if (token) {
         session.accessToken = token.accessToken;
       }
 

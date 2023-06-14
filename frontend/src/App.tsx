@@ -1,6 +1,8 @@
 'use client';
 
 import { atom, useSetAtom } from 'jotai';
+import { useEffect } from 'react';
+import { getSession } from 'next-auth/react';
 
 import { User } from './features/user/components/User';
 import { Chat } from './features/chat/components/Chat';
@@ -10,8 +12,6 @@ import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { chatChannelDto } from './features/chat/types/chatChannelDto';
-import { useEffect } from 'react';
-import { getSession } from 'next-auth/react';
 
 // TODO : 変数 の 場所 移動 させる
 export const userInfoAtom = atom<UserInfo | undefined>(undefined);
@@ -41,14 +41,18 @@ function App() {
       return session;
     };
 
-    f().then((session) => {
-      console.log('session', session);
-      // sessionプロパティにjwtがないので、とりあえずnameを使う
-      localStorage.setItem('access_token', session?.accessToken || 'mock jwt');
-    }).catch((err) => {
-      console.error(err);
-    });
-
+    f()
+      .then((session) => {
+        console.log('session', session);
+        // sessionプロパティにjwtがないので、とりあえずnameを使う
+        localStorage.setItem(
+          'access_token',
+          session?.accessToken || 'mock jwt',
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   useSocket('addRoom', (data) => {
