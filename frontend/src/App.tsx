@@ -32,6 +32,8 @@ export const PrevApp = () => {
 
 function App() {
   const setChannelList = useSetAtom(channelListAtom);
+  // 確認用
+  localStorage.setItem('access_token', 'mock jwt');
 
   useSocket('addRoom', (data) => {
     console.log('addRoom', data);
