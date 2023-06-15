@@ -32,9 +32,9 @@ export const SearchUser = () => {
       <Container flexDirection={'column'}>
         <div>User Search</div>
         <ContainerItem overflowY="scroll">
-          {searchUsers.map((user, key) => {
-            return <p key={key}> {user}</p>;
-          })}
+          {searchUsers.map((user, key) => (
+            <p key={key}> {user}</p>
+          ))}
         </ContainerItem>
         <TextField
           variant="standard"
