@@ -9,10 +9,8 @@ import { UserInfo } from './features/user/types/UserDto';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
-
 import { SearchUser } from './features/user/components/Search';
 import { chatChannelDto } from './features/chat/types/chatChannelDto';
-
 
 // TODO : 変数 の 場所 移動 させる
 export const userInfoAtom = atom<UserInfo | undefined>(undefined);
