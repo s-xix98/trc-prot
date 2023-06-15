@@ -74,7 +74,7 @@ export class ChatGateway {
       },
     });
     client.join(createdRoom.id.toString());
-    this.server.emit('createChannel', createdRoom);
+    this.server.emit('addRoom', createdRoom);
   }
 
   @SubscribeMessage('joinChannel')

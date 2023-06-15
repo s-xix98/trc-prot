@@ -75,6 +75,7 @@ describe('ChatGateway', () => {
       };
       await testService.emitAndWaitForEvent<CreateChannelDto>(
         'createChannel',
+        'addRoom',
         user.socket,
         createChannelDto,
       );
@@ -107,6 +108,7 @@ describe('ChatGateway', () => {
           chatRoomId: roomId,
         };
         const joinPromise = testService.emitAndWaitForEvent<JoinChannelDto>(
+          'joinChannel',
           'joinChannel',
           testUser.socket,
           joinChannel,
@@ -143,6 +145,7 @@ describe('ChatGateway', () => {
       };
 
       await testService.emitAndWaitForEvent<MessageDto>(
+        'sendMessage',
         'sendMessage',
         user.socket,
         messageDto,

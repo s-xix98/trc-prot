@@ -41,13 +41,14 @@ export class TestService {
   }
 
   async emitAndWaitForEvent<T>(
-    eventName: string,
+    emitEventName: string,
+    onEventName: string,
     socket: Socket,
     dto: T,
   ): Promise<unknown> {
     return new Promise((resolve) => {
-      socket.on(eventName, async () => resolve(null));
-      socket.emit(eventName, dto);
+      socket.on(onEventName, async () => resolve(null));
+      socket.emit(emitEventName, dto);
     });
   }
 }
