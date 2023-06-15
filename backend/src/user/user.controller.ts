@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 
@@ -7,4 +7,9 @@ import { UserService } from './user.service';
 @ApiTags('/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get(':username')
+  findOne(@Param('username') username: string) {
+    return this.userService.findOne(username);
+  }
 }
