@@ -1,20 +1,24 @@
+import { ContainerItem } from "@/components/Layout/ContainerItem";
+import { Container } from "@/components/Layout/Container";
 
 export const SearchUser = () => {
   const mockUsers = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 100; i++) {
     mockUsers.push(`user${i}`);
   }
 
   return (
-    <>
-      <div>User Search</div>
-      <div>
+    <div>
+    <Container flexDirection={'column'}>
+    <div>User Search</div>
+    <ContainerItem overflowY="scroll">
       {mockUsers.map((user, key) => {
         return (
-          <li key={key}> {user}</li>
-        )
-        })};
-      </div>
-    </>
+          <p key={key}> {user}</p>
+          )
+        })}
+    </ContainerItem>
+    </Container>
+    </div>
   );
 };
