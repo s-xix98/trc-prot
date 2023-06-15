@@ -19,6 +19,12 @@ export const SearchUser = () => {
     setSearchUsers(data.map((user) => user.username));
   });
 
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchWord:searchUserDto = {searchWord: e.target.value}
+    socket.emit('searchUser', searchWord);
+    setSearchWord(e.target.value)
+  }
+
   return (
     <div>
     <Container flexDirection={'column'}>
@@ -41,11 +47,7 @@ export const SearchUser = () => {
       }
       }}
       value={searchWord}
-      onChange={(e) => {
-        const searchWord:searchUserDto = {searchWord: e.target.value}
-        socket.emit('searchUser', searchWord);
-        setSearchWord(e.target.value)
-      }}
+      onChange={onChange}
     />
     </Container>
     </div>
