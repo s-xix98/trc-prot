@@ -17,9 +17,9 @@ type Story = StoryObj<typeof Home>;
 
 export const Basic: Story = {};
 
-// TODO : react-modal が このテスト対象のコンポーネントの下に、エレメントを作成せず、
+// TODO : mui modal が このテスト対象のコンポーネントの下に、エレメントを作成せず、
 // canvas.getXXXでエレメントが取得できないので、screen からエレメント取得
-// react-modal のエレメント取得する方法等考える
+// mui modal のエレメント取得する方法等考える
 
 export const Login: Story = {
   play: async ({ canvasElement }) => {
