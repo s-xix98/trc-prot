@@ -22,9 +22,16 @@ export const SearchUser = () => {
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dto: searchUserDto = { searchWord: e.target.value };
-    socket.emit('searchUser', dto);
     setSearchWord(e.target.value);
+
+    if (e.target.value.length === 0) {
+      setSearchUsers([]);
+      return;
+    }
+
+    const dto: searchUserDto = { searchWord: e.target.value };
+
+    socket.emit('searchUser', dto);
   };
 
   return (
