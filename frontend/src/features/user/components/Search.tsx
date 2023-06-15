@@ -1,5 +1,6 @@
 import { ContainerItem } from "@/components/Layout/ContainerItem";
 import { Container } from "@/components/Layout/Container";
+import { TextField } from "@mui/material";
 
 export const SearchUser = () => {
   const mockUsers = []
@@ -18,6 +19,11 @@ export const SearchUser = () => {
           )
         })}
     </ContainerItem>
+    <TextField
+      variant="standard"
+      placeholder="username"
+      color="success"
+    />
     </Container>
     </div>
   );
