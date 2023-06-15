@@ -9,6 +9,7 @@ import { UserInfo } from './features/user/types/UserDto';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
+import { SearchUser } from './features/user/components/Search';
 import { chatChannelDto } from './features/chat/types/chatChannelDto';
 
 // TODO : 変数 の 場所 移動 させる
@@ -51,6 +52,7 @@ function App() {
   commandElemMap.set('g', <Game />);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <PrevApp />);
+  commandElemMap.set('./search', <SearchUser />);
 
   return (
     <MainLayout>
