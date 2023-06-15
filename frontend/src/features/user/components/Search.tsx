@@ -4,7 +4,7 @@ import { TextField } from "@mui/material";
 import { useState } from "react";
 import { useSocket } from "@/hooks/useSocket";
 import { socket } from "@/socket";
-
+import { searchUserDto } from "../types/SearchUserDto";
 
 export const SearchUser = () => {
   const [searchWord, setSearchWord] = useState('');
@@ -43,7 +43,8 @@ export const SearchUser = () => {
       }}
       value={searchWord}
       onChange={(e) => {
-        socket.emit('searchUser', {searchWord: e.target.value});
+        const searchWord:searchUserDto = {searchWord: e.target.value}
+        socket.emit('searchUser', searchWord);
         setSearchWord(e.target.value)
       }}
     />
