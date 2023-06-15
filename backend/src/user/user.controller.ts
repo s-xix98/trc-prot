@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { UserService } from './user.service';
 
@@ -8,6 +8,8 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({ summary: 'findOne' })
+  @ApiParam({name: 'username', required: true, type: String , description: 'username'})
   @Get(':username')
   async findOne(@Param('username') username: string) {
     return this.userService.findOne(username);
