@@ -9,7 +9,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: 'findOne' })
-  @ApiParam({name: 'username', required: true, type: String , description: 'username'})
+  @ApiParam({
+    name: 'username',
+    required: true,
+    type: String,
+    description: 'username',
+  })
   @Get(':username')
   async findOne(@Param('username') username: string) {
     return this.userService.findOne(username);
