@@ -2,10 +2,18 @@ import { ContainerItem } from "@/components/Layout/ContainerItem";
 import { Container } from "@/components/Layout/Container";
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import { useSocket } from "@/hooks/useSocket";
+import { socket } from "@/socket";
 
 
 export const SearchUser = () => {
   const [searchWord, setSearchWord] = useState('');
+
+  useSocket('searchUser', (data) => {
+    console.log('searchUser', data);
+  });
+
+
 
   const mockUsers = []
   for (let i = 0; i < 100; i++) {
@@ -35,8 +43,9 @@ export const SearchUser = () => {
       }}
       value={searchWord}
       onChange={(e) => {
-        console.log(e.target.value);
-        setSearchWord(e.target.value)}}
+        socket.emit('searchUser', {searchWord: e.target.value});
+        setSearchWord(e.target.value)
+      }}
     />
     </Container>
     </div>
