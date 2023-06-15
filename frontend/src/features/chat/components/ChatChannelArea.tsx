@@ -1,17 +1,17 @@
+import { useAtomValue } from 'jotai';
+
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 
+import { channelListAtom } from '../../../App';
 export const ChatChannelArea = ({
   setSelectedChannel,
 }: {
   setSelectedChannel: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) => {
-  const channels: string[] = [];
-  for (let n = 0; n < 100; n++) {
-    channels.push(`hoge ${n}`);
-  }
+  const channels = useAtomValue(channelListAtom);
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     const roomName = e.currentTarget.innerText;
     setSelectedChannel(roomName);
@@ -27,7 +27,7 @@ export const ChatChannelArea = ({
           <ContainerItem overflowY={'scroll'}>
             {channels.map((channel, idx) => (
               <p key={idx} onClick={handleClick} style={{ cursor: 'pointer' }}>
-                {channel}
+                {channel.roomName}
               </p>
             ))}
           </ContainerItem>

@@ -18,10 +18,42 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
   constructor(private prisma: PrismaService) {}
-  handleConnection(client: Socket) {
+
+  async handleConnection(client: Socket) {
     // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
     console.log('chat Connection');
     console.log(client.id);
+
+    // handleConnection(client: Socket)の引数にデータを渡すにはクライアント側のURLパスにクエリを追加しないといけないから
+    // 元々あるhugaで代用
+    // jwt導入次第削除
+    const huga = await this.prisma.user.findUnique({
+      where: {
+        username: 'huga',
+      },
+    });
+
+    if (!huga) {
+      return;
+    }
+    const roomIds = await this.prisma.roomMember.findMany({
+      where: {
+        userId: huga.id,
+      },
+    });
+
+    const rooms = await this.prisma.chatRoom.findMany({
+      where: {
+        id: {
+          in: roomIds.map((room) => room.chatRoomId),
+        },
+      },
+    });
+
+    rooms.forEach((room) => {
+      client.join(room.id.toString());
+      client.emit('addRoom', room);
+    });
   }
 
   handleDisconnect(client: Socket) {
@@ -42,7 +74,7 @@ export class ChatGateway {
       },
     });
     client.join(createdRoom.id.toString());
-    this.server.emit('createChannel', createdRoom);
+    this.server.emit('addRoom', createdRoom);
   }
 
   @SubscribeMessage('joinChannel')

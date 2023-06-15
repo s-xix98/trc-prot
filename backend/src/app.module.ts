@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
+import { WsocketModule } from './wsocket/wsocket.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     ChatModule,
     AuthModule,
+    WsocketModule,
   ],
   controllers: [AppController],
   providers: [AppService, EventsGateway],
