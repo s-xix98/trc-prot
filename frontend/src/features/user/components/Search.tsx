@@ -8,24 +8,23 @@ import { searchUserDto } from "../types/SearchUserDto";
 
 export const SearchUser = () => {
   const [searchWord, setSearchWord] = useState('');
+  const [searchUsers, setSearchUsers] = useState<string[]>([]);
 
-  useSocket('searchUser', (data) => {
-    console.log('searchUser', data);
-  });
-
-
-
-  const mockUsers = []
-  for (let i = 0; i < 100; i++) {
-    mockUsers.push(`user${i}`);
+  type userData = {
+    username: string;
   }
+
+  // TODO userInfoのnicknameを変えたらuserinfoにする
+  useSocket('searchUser', (data: userData[]) => {
+    setSearchUsers(data.map((user) => user.username));
+  });
 
   return (
     <div>
     <Container flexDirection={'column'}>
     <div>User Search</div>
     <ContainerItem overflowY="scroll">
-      {mockUsers.map((user, key) => {
+      {searchUsers.map((user, key) => {
         return (
           <p key={key}> {user}</p>
           )
