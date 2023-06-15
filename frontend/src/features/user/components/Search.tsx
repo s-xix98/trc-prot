@@ -1,8 +1,12 @@
 import { ContainerItem } from "@/components/Layout/ContainerItem";
 import { Container } from "@/components/Layout/Container";
 import { TextField } from "@mui/material";
+import { useState } from "react";
+
 
 export const SearchUser = () => {
+  const [searchWord, setSearchWord] = useState('');
+
   const mockUsers = []
   for (let i = 0; i < 100; i++) {
     mockUsers.push(`user${i}`);
@@ -29,6 +33,10 @@ export const SearchUser = () => {
         backgroundColor: '#303030', // 背景色
       }
       }}
+      value={searchWord}
+      onChange={(e) => {
+        console.log(e.target.value);
+        setSearchWord(e.target.value)}}
     />
     </Container>
     </div>
