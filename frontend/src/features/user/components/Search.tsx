@@ -23,6 +23,12 @@ export const SearchUser = () => {
       variant="standard"
       placeholder="username"
       color="success"
+      sx={{
+        '& .MuiInputBase-input': {
+        color: '#33ff33', // Text color
+        backgroundColor: '#303030', // 背景色
+      }
+      }}
     />
     </Container>
     </div>
