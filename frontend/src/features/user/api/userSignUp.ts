@@ -10,8 +10,8 @@ export const userSignUp = async (
   passwd: string,
   setUserInfo: (v: UserInfo) => void,
 ) => {
-  console.log('post /user/signup');
-  const url = BACKEND + '/user/signup';
+  console.log('post /auth/signup');
+  const url = BACKEND + '/auth/signup';
 
   // TODO validation フロントとバックどっちの責任？
   const signUpDto: SignUpDto = {
