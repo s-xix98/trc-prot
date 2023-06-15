@@ -9,7 +9,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get(':username')
-  findOne(@Param('username') username: string) {
+  async findOne(@Param('username') username: string) {
     return this.userService.findOne(username);
   }
 }
