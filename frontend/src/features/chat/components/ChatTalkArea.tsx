@@ -5,11 +5,11 @@ import { useSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
 
 import { handleMessageDto } from '../types/MessageDto';
+import { chatChannelDto } from '../types/chatChannelDto';
 
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
 import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
-import { chatChannelDto } from '../types/chatChannelDto';
 
 export const ChatTalkArea = ({
   selectedChannel,
