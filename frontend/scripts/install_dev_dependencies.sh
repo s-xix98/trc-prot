@@ -12,6 +12,8 @@ npm install --save-dev @storybook/addon-coverage
 
 # wait-on
 npm install --save-dev wait-on
+# http-server
+npm install --save-dev http-server
 
 # prettier, eslint
 npm install --save-dev prettier
