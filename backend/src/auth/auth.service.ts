@@ -2,13 +2,13 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
-import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
@@ -78,7 +78,10 @@ export class AuthService {
       throw new Error('logic error');
     }
 
-    const isMatch = await bcrypt.compare(dto.hashedPassword, user.hashedPassword);
+    const isMatch = await bcrypt.compare(
+      dto.hashedPassword,
+      user.hashedPassword,
+    );
 
     if (!isMatch) {
       console.log(user.hashedPassword, dto.hashedPassword);

@@ -52,16 +52,16 @@ model UserProfile {
 
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
-  id            String          @id @default(cuid())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  roomName      String          @unique
-  HashedPassword      String?
-  isPrivate     Boolean         @default(false)
-  isDM          Boolean         @default(false)
-  messages      Message[]
-  roomMembers   RoomMember[]
-  userChatState UserChatState[]
+  id             String          @id @default(cuid())
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  roomName       String          @unique
+  HashedPassword String?
+  isPrivate      Boolean         @default(false)
+  isDM           Boolean         @default(false)
+  messages       Message[]
+  roomMembers    RoomMember[]
+  userChatState  UserChatState[]
 }
 
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除

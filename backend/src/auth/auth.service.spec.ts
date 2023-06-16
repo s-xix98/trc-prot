@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
 
 import { AuthService } from './auth.service';
 import { signUpDto } from './dto/signUp.dto';
-import * as bcrypt from 'bcrypt';
 
 const dto: signUpDto = {
   email: 'signUp@example.com',
@@ -45,7 +45,10 @@ describe('AuthService', () => {
       expect(user.email).toEqual(dto.email);
       expect(user.username).toEqual(dto.username);
       if (user.hashedPassword) {
-        const isMatch = await bcrypt.compare(dto.hashedPassword, user.hashedPassword)
+        const isMatch = await bcrypt.compare(
+          dto.hashedPassword,
+          user.hashedPassword,
+        );
         expect(isMatch).toBe(true);
       }
     });
@@ -64,7 +67,10 @@ describe('AuthService', () => {
       expect(user.email).toEqual(dto.email);
       expect(user.username).toEqual(dto.username);
       if (user.hashedPassword) {
-        const isMatch = await bcrypt.compare(dto.hashedPassword, user.hashedPassword)
+        const isMatch = await bcrypt.compare(
+          dto.hashedPassword,
+          user.hashedPassword,
+        );
         expect(isMatch).toBe(true);
       }
     });
