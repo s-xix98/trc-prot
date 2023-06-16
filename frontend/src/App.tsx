@@ -12,7 +12,7 @@ import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { SearchUser } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
-import { useRequireLogin } from './hooks/useRequireLogin';
+import { useRequireLogin } from './hooks/useLogin';
 
 const onConnect = () => {
   console.log('socket connect');
