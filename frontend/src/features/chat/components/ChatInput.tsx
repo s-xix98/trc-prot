@@ -6,7 +6,7 @@ import { socket } from '@/socket';
 import { Input } from '@/components/Elements/Input/Input';
 import { SendButton } from '@/components/Elements/Button/SendButton';
 import { Container } from '@/components/Layout/Container';
-import { userInfoAtom } from '@/App';
+import { userInfoAtom } from '@/stores/jotai';
 
 import { postMessage } from '../api/postMessage';
 import { handleMessageDto } from '../types/MessageDto';
