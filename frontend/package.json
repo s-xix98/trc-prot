@@ -15,7 +15,6 @@
     "storybook": "storybook dev -p 6006 --quiet",
     "storybook-test": "test-storybook --maxWorkers=1 --coverage",
     "storybook-update-snapshot": "test-storybook --updateSnapshot",
-    "storybook-update-snapshot-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-update-snapshot\"",
     "storybook-build": "storybook build"
   },
   "dependencies": {
