@@ -36,7 +36,7 @@ export class AuthController {
       updatedAt: userData.updatedAt,
       email: userData.email,
       nickname: userData.username,
-      hashedPassword: userData.hashedPassword,
+      hashedPassword: userData.hashedPassword || '',
     };
   }
 
@@ -51,7 +51,7 @@ export class AuthController {
       updatedAt: userData.updatedAt,
       email: userData.email,
       nickname: userData.username,
-      hashedPassword: userData.hashedPassword,
+      hashedPassword: userData.hashedPassword || '',
     };
   }
 }
