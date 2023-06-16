@@ -5,17 +5,19 @@ import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { channelListAtom } from '@/stores/jotai';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
+import { chatChannelDto } from '../types/chatChannelDto';
 
 export const ChatChannelArea = ({
   setSelectedChannel,
 }: {
-  setSelectedChannel: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setSelectedChannel: React.Dispatch<React.SetStateAction<chatChannelDto | undefined>>;
 }) => {
   const channels = useAtomValue(channelListAtom);
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    const roomName = e.currentTarget.innerText;
-    setSelectedChannel(roomName);
+
+  const handleClick = (channel:chatChannelDto) => {
+    setSelectedChannel(channel);
   };
+
   return (
     <Container flexDirection={'column'}>
       <h2>ChatChannelArea</h2>
@@ -26,7 +28,7 @@ export const ChatChannelArea = ({
         <Container flexDirection={'column'}>
           <ContainerItem overflowY={'scroll'}>
             {channels.map((channel, idx) => (
-              <p key={idx} onClick={handleClick} style={{ cursor: 'pointer' }}>
+              <p key={idx} onClick={()=>handleClick(channel)} style={{ cursor: 'pointer' }}>
                 {channel.roomName}
               </p>
             ))}

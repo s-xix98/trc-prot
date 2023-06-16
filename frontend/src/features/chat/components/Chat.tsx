@@ -9,9 +9,10 @@ import { userInfoAtom } from '@/stores/jotai';
 
 import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';
+import { chatChannelDto } from '../types/chatChannelDto';
 export const Chat = () => {
   const userInfo = useAtomValue(userInfoAtom);
-  const [selectedChannel, setSelectedChannel] = useState<string>();
+  const [selectedChannel, setSelectedChannel] = useState<chatChannelDto>();
 
   if (userInfo === undefined) {
     return (

@@ -9,11 +9,12 @@ import { handleMessageDto } from '../types/MessageDto';
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
 import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
+import { chatChannelDto } from '../types/chatChannelDto';
 
 export const ChatTalkArea = ({
   selectedChannel,
 }: {
-  selectedChannel: string;
+  selectedChannel: chatChannelDto;
 }) => {
   const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
 
@@ -34,7 +35,7 @@ export const ChatTalkArea = ({
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader roomName={selectedChannel} />
+      <ChatTalkAreaHeader roomName={selectedChannel.roomName} />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}
