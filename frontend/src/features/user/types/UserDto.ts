@@ -1,6 +1,6 @@
 export type SignUpDto = {
   email: string;
-  nickname: string;
+  username: string;
   hashedPassword: string;
 };
 
@@ -11,5 +11,5 @@ export type LoginDto = {
 
 export type UserInfo = {
   id: string;
-  nickname: string;
+  username: string;
 };

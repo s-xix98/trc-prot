@@ -1,4 +1,4 @@
 export type handleMessageDto = {
-  nickname: string;
+  username: string;
   msg: string;
 };

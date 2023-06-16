@@ -5,15 +5,8 @@ import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
-// TODO front直したら消す
-type User = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  email: string;
-  nickname: string;
-  hashedPassword: string;
-};
+import { User } from '@prisma/client';
+
 @Controller('auth')
 @ApiTags('/auth')
 export class AuthController {
@@ -29,29 +22,14 @@ export class AuthController {
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
   async signUp(@Body() dto: signUpDto): Promise<User> {
-    const userData = await this.authService.signUp(dto);
-    return {
-      id: userData.id,
-      createdAt: userData.createdAt,
-      updatedAt: userData.updatedAt,
-      email: userData.email,
-      nickname: userData.username,
-      hashedPassword: userData.hashedPassword || '',
-    };
+    return this.authService.signUp(dto);
+
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'login nori' })
   async login(@Body() dto: loginDto): Promise<User> {
-    const userData = await this.authService.login(dto);
-    return {
-      id: userData.id,
-      createdAt: userData.createdAt,
-      updatedAt: userData.updatedAt,
-      email: userData.email,
-      nickname: userData.username,
-      hashedPassword: userData.hashedPassword || '',
-    };
+    return this.authService.login(dto);
   }
 }

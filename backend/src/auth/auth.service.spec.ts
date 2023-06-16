@@ -10,7 +10,7 @@ import { signUpDto } from './dto/signUp.dto';
 
 const dto: signUpDto = {
   email: 'signUp@example.com',
-  nickname: 'signUp',
+  username: 'signUp',
   hashedPassword: 'signupsignup',
 };
 
@@ -42,11 +42,11 @@ describe('AuthService', () => {
       // await prismaService.user.delete({where: {email: 'signUp@example.com'}});
       const user = await authService.signUp(dto);
       expect(user.email).toEqual(dto.email);
-      expect(user.username).toEqual(dto.nickname);
+      expect(user.username).toEqual(dto.username);
       expect(user.hashedPassword).toEqual(dto.hashedPassword);
     });
 
-    test('should be throw ForbiddenException when email or nickname is already taken', async () => {
+    test('should be throw ForbiddenException when email or username is already taken', async () => {
       await expect(authService.signUp(dto)).rejects.toThrow(ForbiddenException);
     });
   });
@@ -58,7 +58,7 @@ describe('AuthService', () => {
         hashedPassword: dto.hashedPassword,
       });
       expect(user.email).toEqual(dto.email);
-      expect(user.username).toEqual(dto.nickname);
+      expect(user.username).toEqual(dto.username);
       expect(user.hashedPassword).toEqual(dto.hashedPassword);
     });
 

@@ -40,7 +40,7 @@ export class AuthService {
       const user = await this.prismaService.user.create({
         data: {
           email: dto.email,
-          username: dto.nickname,
+          username: dto.username,
           // 今後ハッシュ化
           hashedPassword: dto.hashedPassword,
         },
@@ -48,10 +48,10 @@ export class AuthService {
       return user;
     } catch (e) {
       console.log(e);
-      // email,nicknameが被った時のエラーは'P2002'が帰ってくる
+      // email,usernameが被った時のエラーは'P2002'が帰ってくる
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {
-          throw new ForbiddenException('Email or nickname is already taken');
+          throw new ForbiddenException('Email or username is already taken');
         }
       }
       // 500 internal server err

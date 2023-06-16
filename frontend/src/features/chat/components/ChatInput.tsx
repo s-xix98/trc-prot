@@ -36,7 +36,7 @@ export const ChatInput = () => {
     // バックエンドで post の方に クライアントに 送信したもの返す実装が現状ないので
     // socket の方も残したまま (送信したものが表示されないため)
     // 送信したもの送り返すかどうかも、そもそも検討 (そのまま chatHistMsgs に追加するなど )
-    const sendMsg: handleMessageDto = { nickname: userInfo.nickname, msg };
+    const sendMsg: handleMessageDto = { username: userInfo.username, msg };
     socket.emit('message', sendMsg);
     setMsg('');
   };
