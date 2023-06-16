@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(
@@ -36,13 +37,15 @@ export class AuthService {
 
   async signUp(dto: signUpDto): Promise<User> {
     console.log(dto);
+
+    const hashedPassword = await bcrypt.hash(dto.hashedPassword, 10);
+
     try {
       const user = await this.prismaService.user.create({
         data: {
           email: dto.email,
           username: dto.username,
-          // 今後ハッシュ化
-          hashedPassword: dto.hashedPassword,
+          hashedPassword: hashedPassword,
         },
       });
       return user;
@@ -58,7 +61,7 @@ export class AuthService {
       throw e;
     }
   }
-
+  // TODO authのエラーを追加する
   async login(dto: loginDto): Promise<User> {
     console.log(dto);
     const user = await this.prismaService.user.findUnique({
@@ -70,7 +73,14 @@ export class AuthService {
       console.log('emailが間違っている');
       throw new ForbiddenException('Email incorrect');
     }
-    if (user.hashedPassword != dto.hashedPassword) {
+
+    if (user.hashedPassword === null) {
+      throw new Error('logic error');
+    }
+
+    const isMatch = await bcrypt.compare(dto.hashedPassword, user.hashedPassword);
+
+    if (!isMatch) {
       console.log(user.hashedPassword, dto.hashedPassword);
       console.log('passwordが間違っている');
       throw new ForbiddenException('Password incorrect');
