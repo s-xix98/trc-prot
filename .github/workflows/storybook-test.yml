@@ -75,5 +75,7 @@ jobs:
         run: cd frontend && npx playwright install-deps
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
+      - name: storybook build
+        run: cd frontend && npm run build-storybook
       - name: run storybook test
         run: cd frontend && npm run storybook-test-ci
