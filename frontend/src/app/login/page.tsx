@@ -1,8 +1,9 @@
 'use client';
 
 import { MainLayout } from '@/components/Layout/MainLayout';
-import { User } from '@/features/user/components/User';
 import { useRedirectToHome } from '@/hooks/useLogin';
+
+import { User } from '../../features/user/components/User';
 
 // TODO : UI 改善する
 export default function Login() {
