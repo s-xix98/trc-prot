@@ -14,9 +14,9 @@
     "noEmit": "tsc --noEmit",
     "storybook": "storybook dev -p 6006 --quiet",
     "storybook-test": "test-storybook --maxWorkers=1 --coverage",
-    "storybook-test-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-test\"",
+    "storybook-test-ci": "concurrently --kill-others --success first \"npm run build-storybook && npx http-server storybook-static --port 6006\" \"wait-on tcp:6006 && npm run storybook-test\"",
     "storybook-update-snapshot": "test-storybook --updateSnapshot",
-    "storybook-update-snapshot-ci": "concurrently --kill-others --success first \"npm run storybook\" \"wait-on tcp:6006 && npm run storybook-update-snapshot\"",
+    "storybook-update-snapshot-ci": "concurrently --kill-others --success first \"npm run build-storybook && npx http-server storybook-static --port 6006\" \"wait-on tcp:6006 && npm run storybook-update-snapshot\"",
     "build-storybook": "storybook build",
     "concurrent": "concurrently \"npm run dev\" \"npm run storybook\""
   },
