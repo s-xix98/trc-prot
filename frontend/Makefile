@@ -10,6 +10,10 @@ PHONY	+=	build
 build:
 	npm run build
 
+PHONY	+=	setup
+setup:
+	npm install
+
 # LINTER, FORMATTER
 # ------------------------------------------------------------------------------------------
 PHONY	+=	lint
