@@ -17,7 +17,7 @@ model User {
   updatedAt      DateTime        @updatedAt
   username       String          @unique
   email          String          @unique
-  hashedPassword String
+  hashedPassword String?
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]

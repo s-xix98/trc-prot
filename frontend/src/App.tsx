@@ -1,6 +1,8 @@
 'use client';
 
 import { useSetAtom } from 'jotai';
+import { useEffect } from 'react';
+import { getSession } from 'next-auth/react';
 
 import { User } from './features/user/components/User';
 import { Chat } from './features/chat/components/Chat';
@@ -29,6 +31,26 @@ export const PrevApp = () => {
 
 function App() {
   const setChannelList = useSetAtom(channelListAtom);
+  // 確認用
+  useEffect(() => {
+    const f = async () => {
+      const session = await getSession();
+      return session;
+    };
+
+    f()
+      .then((session) => {
+        console.log('session', session);
+        // sessionプロパティにjwtがないので、とりあえずnameを使う
+        localStorage.setItem(
+          'access_token',
+          session?.accessToken || 'mock jwt',
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   useSocket('addRoom', (data) => {
     console.log('addRoom', data);
