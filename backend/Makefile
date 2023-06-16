@@ -10,6 +10,13 @@ PHONY	+=	build
 build:
 	npm run build
 
+PHONY	+=	setup
+setup:
+	npm install
+	npx prisma db push --force-reset
+	npx prisma generate
+	npx prisma db seed
+
 # LINTER, FORMATTER
 # ------------------------------------------------------------------------------------------
 PHONY	+=	lint
