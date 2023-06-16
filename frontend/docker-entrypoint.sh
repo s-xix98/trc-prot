@@ -2,4 +2,6 @@
 
 make setup
 
-exec npm run concurrent
+npm run storybook &
+
+exec npm run dev
