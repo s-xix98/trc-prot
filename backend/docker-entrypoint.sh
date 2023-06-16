@@ -1,10 +1,6 @@
 #!/bin/bash -eux
 
-npm install
-
-npx prisma db push --force-reset
-npx prisma generate
-npx prisma db seed
+make setup
 
 npx prisma studio &
 
