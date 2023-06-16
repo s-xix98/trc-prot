@@ -73,7 +73,12 @@ jobs:
       - name: rm img files
         run: rm -rf $(find frontend/src/ -type d -name '__image_snapshots__')
       - name: run storybook update
-        run: cd frontend && npm run storybook-update-snapshot-ci
+        run: |
+          cd frontend
+          npm run storybook-build
+          python3 -m http.server 6006 --directory storybook-static &
+          timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
+          npm run storybook-update-snapshot
 
       # 変更がない時は、commit 失敗して終了
       - name: git commit
