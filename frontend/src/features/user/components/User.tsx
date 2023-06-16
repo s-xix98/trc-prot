@@ -25,10 +25,10 @@ export const User = ({ children }: { children: ReactNode }) => {
           >
             botton
           </button>
-          <p>name : {userInfo?.nickname}</p>
+          <p>name : {userInfo?.username}</p>
           <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
             <p>
-              id : {userInfo?.id}, name : {userInfo?.nickname}
+              id : {userInfo?.id}, name : {userInfo?.username}
             </p>
           </ModalView>
         </div>

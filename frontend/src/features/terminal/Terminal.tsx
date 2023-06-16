@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
+import { useAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
+import { userInfoAtom } from '@/stores/jotai';
 
 import { TerminalInput } from './TerminalInput';
 import { TerminalOutput } from './TerminalOutput';
@@ -17,6 +19,7 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
+  const [, setUserInfo] = useAtom(userInfoAtom);
 
   const [currentModalElem, setCurrentModalElem] = useState<JSX.Element>();
 
@@ -28,6 +31,10 @@ export const Terminal = ({
     }
     if (e.target.value.slice(-1) !== '\n') {
       setInput(e.target.value);
+      return;
+    }
+    if (input === 'logout') {
+      setUserInfo(undefined);
       return;
     }
 

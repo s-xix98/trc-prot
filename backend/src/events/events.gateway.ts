@@ -55,7 +55,7 @@ export class EventsGateway {
       'getPastMessages',
       pastMessages.map((m) => {
         return {
-          nickname: user?.username,
+          username: user?.username,
           msg: m.content,
         };
       }),

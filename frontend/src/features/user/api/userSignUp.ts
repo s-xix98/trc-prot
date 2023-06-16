@@ -5,7 +5,7 @@ import { SignUpDto, UserInfo } from '../types/UserDto';
 import { BACKEND } from '../../../constants';
 
 export const userSignUp = async (
-  nickname: string,
+  username: string,
   email: string,
   passwd: string,
   setUserInfo: (v: UserInfo) => void,
@@ -15,7 +15,7 @@ export const userSignUp = async (
 
   // TODO validation フロントとバックどっちの責任？
   const signUpDto: SignUpDto = {
-    nickname: nickname,
+    username: username,
     email: email,
     hashedPassword: passwd,
   };

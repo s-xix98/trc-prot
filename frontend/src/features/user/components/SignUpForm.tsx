@@ -11,18 +11,18 @@ export const SignUpForm = ({
   const handleSignUp: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log('signUpButton');
-    const nickname = (event.target as HTMLFormElement).nickname.value;
+    const username = (event.target as HTMLFormElement).username.value;
     const email = (event.target as HTMLFormElement).email.value;
     const password = (event.target as HTMLFormElement).password.value;
-    userSignUp(nickname, email, password, setUserInfo);
+    userSignUp(username, email, password, setUserInfo);
   };
 
   return (
     <form onSubmit={handleSignUp}>
       <input
         type="text"
-        name="nickname"
-        placeholder="nickname"
+        name="username"
+        placeholder="username"
         style={{ marginRight: '5px' }}
       />
       <input
