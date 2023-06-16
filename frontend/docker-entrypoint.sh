@@ -1,5 +1,5 @@
 #!/bin/bash -eux
 
-npm install
+make setup
 
 exec npm run concurrent
