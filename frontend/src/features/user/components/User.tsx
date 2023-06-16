@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { signIn } from 'next-auth/react';
 
 import { Container } from '@/components/Layout/Container';
-import { userInfoAtom } from '@/App';
+import { userInfoAtom } from '@/stores/jotai';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 

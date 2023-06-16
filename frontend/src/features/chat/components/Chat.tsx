@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
-import { userInfoAtom } from '@/App';
+import { userInfoAtom } from '@/stores/jotai';
 
 import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';

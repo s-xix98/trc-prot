@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai';
 import { Container } from '@/components/Layout/Container';
 import { socket } from '@/socket';
 import { BasicButton } from '@/components/Elements/Button/BasicButton';
-import { userInfoAtom } from '@/App';
+import { userInfoAtom } from '@/stores/jotai';
 
 export const ChatTalkAreaHeader = ({ roomName }: { roomName: string }) => {
   const userInfo = useAtomValue(userInfoAtom);

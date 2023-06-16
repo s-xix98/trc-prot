@@ -3,7 +3,7 @@ import { TextField } from '@mui/material';
 import { useAtomValue } from 'jotai';
 
 import { socket } from '@/socket';
-import { userInfoAtom } from '@/App';
+import { userInfoAtom } from '@/stores/jotai';
 import { useSocket } from '@/hooks/useSocket';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';

@@ -1,20 +1,16 @@
 'use client';
 
-import { atom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 import { User } from './features/user/components/User';
 import { Chat } from './features/chat/components/Chat';
 import { Game } from './features/game/Game';
-import { UserInfo } from './features/user/types/UserDto';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { SearchUser } from './features/user/components/Search';
-import { chatChannelDto } from './features/chat/types/chatChannelDto';
+import { channelListAtom } from './stores/jotai';
 
-// TODO : 変数 の 場所 移動 させる
-export const userInfoAtom = atom<UserInfo | undefined>(undefined);
-export const channelListAtom = atom<chatChannelDto[]>([]);
 const onConnect = () => {
   console.log('socket connect');
 };
