@@ -11,4 +11,10 @@ export default meta;
 
 type Story = StoryObj<typeof Login>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+    },
+  },
+};
