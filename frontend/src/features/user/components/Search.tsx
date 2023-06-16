@@ -7,17 +7,13 @@ import { useSocket } from '@/hooks/useSocket';
 import { socket } from '@/socket';
 
 import { searchUserDto } from '../types/SearchUserDto';
+import { UserInfo } from '../types/UserDto';
 
 export const SearchUser = () => {
   const [searchWord, setSearchWord] = useState('');
   const [searchUsers, setSearchUsers] = useState<string[]>([]);
 
-  type userData = {
-    username: string;
-  };
-
-  // TODO userInfoのnicknameを変えたらuserinfoにする
-  useSocket('searchUser', (data: userData[]) => {
+  useSocket('searchUser', (data: UserInfo[]) => {
     setSearchUsers(data.map((user) => user.username));
   });
 

@@ -15,7 +15,7 @@ export const ChatHistory = ({
       <ContainerItem overflowY={'scroll'}>
         {chatHistMsgs.map((msgDto, idx) => (
           <p key={idx} style={{ overflowWrap: 'break-word' }}>
-            {`${msgDto.nickname}> ${msgDto.msg}`}
+            {`${msgDto.username}> ${msgDto.msg}`}
           </p>
         ))}
         <div ref={scrollBottomRef}></div>
