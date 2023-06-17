@@ -1,25 +1,22 @@
-import { Drawer } from "@mui/material";
+import { Drawer } from '@mui/material';
 import { useState } from 'react';
-import { Container } from "../Layout/Container";
+
+import { Container } from '../Layout/Container';
 export const FriendshipDrawer = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <div>
-    <button onClick={()=> setDrawerOpen(true)}>
-      openDrawer
-      </button>
+      <button onClick={() => setDrawerOpen(true)}>openDrawer</button>
       <Drawer
-      open={isDrawerOpen}
-      onClose={()=> setDrawerOpen(false)}
-
-      PaperProps={{
-        style: {
-          backgroundColor: '#8c8282',
-        },
-      }}
-
-      anchor= "right"
+        open={isDrawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          style: {
+            backgroundColor: '#8c8282',
+          },
+        }}
+        anchor="right"
       >
         <Container flexDirection="column">
           <h2>MyState</h2>
@@ -30,4 +27,4 @@ export const FriendshipDrawer = () => {
       </Drawer>
     </div>
   );
-}
+};
