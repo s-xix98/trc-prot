@@ -1,13 +1,19 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const storageKey = 'access_token';
 
+class authError extends Error {
+  constructor(e?:string){
+    super(e);
+  }
+}
 const getAccessTokenFromSession = async() => {
   const session = await getSession();
   const accessToken = session?.accessToken;
   if (!accessToken) {
-    throw new Error('no session');
+    throw new authError('no session');
   }
   return accessToken;
 }
@@ -29,16 +35,24 @@ const SetAccessTokenForRequest = async (
 
 const handleUnauthorizedResponse = async (res: AxiosResponse) => {
   if (res.status === 401) {
-    throw new Error('401');
+    throw new authError('401');
   }
   return res;
 };
 
 export const useAuthAxios = () => {
   const customAxios = axios.create();
+  const router = useRouter();
 
-  customAxios.interceptors.request.use(SetAccessTokenForRequest);
-  customAxios.interceptors.response.use(handleUnauthorizedResponse);
+  const routeOnAuthErr = (err: any) =>{
+    if (err instanceof authError){
+      router.push('/login');
+    }
+    throw err;
+  };
+
+  customAxios.interceptors.request.use(SetAccessTokenForRequest,routeOnAuthErr);
+  customAxios.interceptors.response.use(handleUnauthorizedResponse, routeOnAuthErr);
 
   return customAxios;
 }
