@@ -42,8 +42,7 @@ export const useAuthAxios = () => {
   const customAxios = axios.create();
   const router = useRouter();
 
-  const routeOnAuthErr = (err: any) =>{
-    if (err instanceof authError){
+  // eslint-disable-next-line
       router.push('/login');
     }
     throw err;
