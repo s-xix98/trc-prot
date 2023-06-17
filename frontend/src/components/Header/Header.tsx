@@ -1,4 +1,5 @@
 import { Container } from '../Layout/Container';
+import { FriendshipDrawer } from './FriendShipDrawer';
 
 const HeaderLink = ({ href, name }: { href: string; name: string }) => {
   return (
@@ -13,6 +14,7 @@ export const Header = () => {
     <div>
       <Container>
         <h1>Header</h1>
+        <FriendshipDrawer/>
         <div style={{ margin: 'auto 10px auto auto' }}>
           <HeaderLink name="STORYBOOK" href={'http://localhost:6006/'} />
           <HeaderLink name="SWAGGER" href={'http://localhost:8000/api'} />
