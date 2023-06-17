@@ -18,7 +18,7 @@ env:
   DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
 
 jobs:
-  storybook-test:
+  setup:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     services:
@@ -59,6 +59,11 @@ jobs:
           path: backend/node_modules
           key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
 
+  setup-backend:
+    timeout-minutes: 10
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: backend npm install
         run: cd backend && npm install
       - name: set up prisma
@@ -66,13 +71,30 @@ jobs:
       - name: run backend
         run: cd backend && npm run start:dev &
 
+  setup-frontend:
+    timeout-minutes: 10
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: frontend npm install
         run: cd frontend && npm install
+
+  setup-frontend-playwright:
+    timeout-minutes: 10
+    needs: setup-frontend
+    runs-on: ubuntu-latest
+    steps:
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
         run: cd frontend && npx playwright install
       - name: install playwright deps
         run: cd frontend && npx playwright install-deps
+
+  setup-frontend-storybook-build:
+    timeout-minutes: 10
+    needs: setup-frontend
+    runs-on: ubuntu-latest
+    steps:
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: run storybook test
@@ -81,4 +103,12 @@ jobs:
           npm run storybook-build
           python3 -m http.server 6006 --directory storybook-static &
           timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
-          npm run storybook-test
+
+  run-test:
+    timeout-minutes: 10
+    needs:
+      [setup-backend, setup-frontend-playwright, setup-frontend-storybook-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: run test
+        run: cd frontend && npm run storybook-test
