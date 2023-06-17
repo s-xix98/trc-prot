@@ -1,7 +1,16 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+
+const storageKey = 'access_token';
+
+
 const SetAccessTokenForRequest = async (
   req: InternalAxiosRequestConfig,
 ) => {
+  let token = localStorage.getItem(storageKey);
+
+
+  const authHeaders = `Bearer ${token}`;
+  req.headers.Authorization = authHeaders;
   return req;
 };
 
