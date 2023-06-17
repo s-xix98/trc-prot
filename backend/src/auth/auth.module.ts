@@ -17,7 +17,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       inject: [ConfigService],
 
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || '',
+        secret: configService.get<string>('JWT_SECRET') || 'hoge',
       }),
     }),
   ],
