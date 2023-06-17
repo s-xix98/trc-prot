@@ -18,6 +18,8 @@ export const FriendshipDrawer = () => {
           backgroundColor: '#8c8282',
         },
       }}
+
+      anchor= "right"
       >
         <Container flexDirection="column">
           <h2>MyState</h2>
