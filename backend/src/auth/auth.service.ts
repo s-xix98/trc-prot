@@ -78,4 +78,16 @@ export class AuthService {
     console.log('OK');
     return user;
   }
+
+  async jwtHuga(): Promise<accessToken> {
+    const huga = await this.prismaService.user.findUnique({
+      where: {
+        username: 'huga',
+      },
+    });
+    if (!huga) {
+      throw new Error('huga not found');
+    }
+    return { jwt: await this.generateJwt(huga.id, huga.username) };
+  }
 }
