@@ -6,6 +6,9 @@ const SetAccessTokenForRequest = async (
 };
 
 const handleUnauthorizedResponse = async (res: AxiosResponse) => {
+  if (res.status === 401) {
+    throw new Error('401');
+  }
   return res;
 };
 
