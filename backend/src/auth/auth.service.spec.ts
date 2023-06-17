@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
@@ -43,7 +44,13 @@ describe('AuthService', () => {
       const user = await authService.signUp(dto);
       expect(user.email).toEqual(dto.email);
       expect(user.username).toEqual(dto.username);
-      expect(user.hashedPassword).toEqual(dto.hashedPassword);
+      if (user.hashedPassword) {
+        const isMatch = await bcrypt.compare(
+          dto.hashedPassword,
+          user.hashedPassword,
+        );
+        expect(isMatch).toBe(true);
+      }
     });
 
     test('should be throw ForbiddenException when email or username is already taken', async () => {
@@ -59,7 +66,13 @@ describe('AuthService', () => {
       });
       expect(user.email).toEqual(dto.email);
       expect(user.username).toEqual(dto.username);
-      expect(user.hashedPassword).toEqual(dto.hashedPassword);
+      if (user.hashedPassword) {
+        const isMatch = await bcrypt.compare(
+          dto.hashedPassword,
+          user.hashedPassword,
+        );
+        expect(isMatch).toBe(true);
+      }
     });
 
     test('should be throw ForbiddenException when email is incorrect', async () => {
