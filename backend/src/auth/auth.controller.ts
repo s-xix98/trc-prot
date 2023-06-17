@@ -1,4 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 
@@ -6,6 +15,7 @@ import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
+import { JwtAuthGuard } from './guard/jwt-auth.gurad';
 
 @Controller('auth')
 @ApiTags('/auth')
@@ -30,5 +40,16 @@ export class AuthController {
   @ApiOperation({ summary: 'login nori' })
   async login(@Body() dto: loginDto): Promise<User> {
     return this.authService.login(dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('jwtTest')
+  jwtTest(@Request() req: any) {
+    return req.user;
+  }
+
+  @Get('jwtHuga')
+  async jwtHuga(): Promise<accessToken> {
+    return this.authService.jwtHuga();
   }
 }
