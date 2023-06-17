@@ -1,13 +1,13 @@
 const storageKey = 'access_token';
 
 export const tokenStorage = {
-  get:() => {
+  get: () => {
     return localStorage.getItem(storageKey);
   },
-  set:(token : string ) => {
+  set: (token: string) => {
     localStorage.setItem(storageKey, token);
   },
   remove: () => {
     localStorage.removeItem(storageKey);
-  }
-}
+  },
+};

@@ -1,27 +1,26 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+
 import { tokenStorage } from '@/utils/tokenStorage';
 class authError extends Error {
-  constructor(e?:string){
+  constructor(e?: string) {
     super(e);
   }
 }
-const getAccessTokenFromSession = async() => {
+const getAccessTokenFromSession = async () => {
   const session = await getSession();
   const accessToken = session?.accessToken;
   if (!accessToken) {
     throw new authError('no session');
   }
   return accessToken;
-}
+};
 
-const SetAccessTokenForRequest = async (
-  req: InternalAxiosRequestConfig,
-) => {
+const SetAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
   let token = tokenStorage.get();
 
-  if (!token){
+  if (!token) {
     token = await getAccessTokenFromSession();
     tokenStorage.set(token);
   }
@@ -43,13 +42,21 @@ export const useAuthAxios = () => {
   const router = useRouter();
 
   // eslint-disable-next-line
+  const routeOnAuthErr = (err: any) => {
+    if (err instanceof authError) {
       router.push('/login');
     }
     throw err;
   };
 
-  customAxios.interceptors.request.use(SetAccessTokenForRequest,routeOnAuthErr);
-  customAxios.interceptors.response.use(handleUnauthorizedResponse, routeOnAuthErr);
+  customAxios.interceptors.request.use(
+    SetAccessTokenForRequest,
+    routeOnAuthErr,
+  );
+  customAxios.interceptors.response.use(
+    handleUnauthorizedResponse,
+    routeOnAuthErr,
+  );
 
   return customAxios;
-}
+};
