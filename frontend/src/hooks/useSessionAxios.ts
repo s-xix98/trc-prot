@@ -3,11 +3,13 @@ import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 import { tokenStorage } from '@/utils/tokenStorage';
+
 class authError extends Error {
   constructor(e?: string) {
     super(e);
   }
 }
+
 const getAccessTokenFromSession = async () => {
   const session = await getSession();
   const accessToken = session?.accessToken;
@@ -37,7 +39,7 @@ const handleUnauthorizedResponse = async (res: AxiosResponse) => {
   return res;
 };
 
-export const useAuthAxios = () => {
+export const useSessionAxios = () => {
   const router = useRouter();
   const customAxios = axios.create();
 
