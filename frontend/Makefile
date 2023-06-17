@@ -47,12 +47,20 @@ sb-create-file:
 
 PHONY += sb-test
 sb-test:
-	export STORYBOOK_BACKEND="http://backend:8000" && npm i && npm run storybook-test-ci
+	npm i
+	export STORYBOOK_BACKEND="http://backend:8000" && npm run storybook-build
+	python3 -m http.server 6006 --directory storybook-static &
+	timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
+	npm run storybook-test
 
 PHONY += sb-update
 sb-update:
+	npm i
 	rm -rf $(shell find src/ -type d -name '__image_snapshots__')
-	export STORYBOOK_BACKEND="http://backend:8000" && npm i && npm run storybook-update-snapshot-ci
+	export STORYBOOK_BACKEND="http://backend:8000" && npm run storybook-build
+	python3 -m http.server 6006 --directory storybook-static &
+	timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
+	npm run storybook-update-snapshot
 
 # etc...
 # ------------------------------------------------------------------------------------------
