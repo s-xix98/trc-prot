@@ -1,9 +1,7 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-
-const storageKey = 'access_token';
-
+import { tokenStorage } from '@/utils/tokenStorage';
 class authError extends Error {
   constructor(e?:string){
     super(e);
@@ -21,11 +19,11 @@ const getAccessTokenFromSession = async() => {
 const SetAccessTokenForRequest = async (
   req: InternalAxiosRequestConfig,
 ) => {
-  let token = localStorage.getItem(storageKey);
+  let token = tokenStorage.get();
 
   if (!token){
     token = await getAccessTokenFromSession();
-    localStorage.setItem(storageKey, token);
+    tokenStorage.set(token);
   }
 
   const authHeaders = `Bearer ${token}`;
