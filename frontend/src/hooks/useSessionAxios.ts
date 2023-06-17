@@ -10,7 +10,7 @@ class authError extends Error {
   }
 }
 
-const SetAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
+const setAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
 
   const session = await getSession();
   const token = session?.accessToken;
@@ -43,7 +43,7 @@ export const useSessionAxios = () => {
   };
 
   customAxios.interceptors.request.use(
-    SetAccessTokenForRequest,
+    setAccessTokenForRequest,
     routeOnAuthErr,
   );
   customAxios.interceptors.response.use(
