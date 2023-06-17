@@ -2,8 +2,6 @@ import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-import { tokenStorage } from '@/utils/tokenStorage';
-
 class authError extends Error {
   constructor(e?: string) {
     super(e);
@@ -11,7 +9,6 @@ class authError extends Error {
 }
 
 const setAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
-
   const session = await getSession();
   const token = session?.accessToken;
   if (!token) {
