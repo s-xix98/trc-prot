@@ -1,5 +1,6 @@
 import { Drawer } from "@mui/material";
 import { useState } from 'react';
+import { Container } from "../Layout/Container";
 export const FriendshipDrawer = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
@@ -12,7 +13,12 @@ export const FriendshipDrawer = () => {
       open={isDrawerOpen}
       onClose={()=> setDrawerOpen(false)}
       >
-        a
+        <Container flexDirection="column">
+          <h2>MyState</h2>
+          <h2>DM</h2>
+          <h2>FriendList</h2>
+          <h2>BlockList</h2>
+        </Container>
       </Drawer>
     </div>
   );
