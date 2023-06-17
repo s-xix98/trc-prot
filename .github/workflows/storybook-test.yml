@@ -64,6 +64,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
       - name: test
         run: pwd && ls
       - name: backend npm install
@@ -78,8 +80,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: test
-        run: pwd && ls
+      - name: checkout git repository
+        uses: actions/checkout@v3
       - name: frontend npm install
         run: cd frontend && npm install
 
@@ -88,6 +90,8 @@ jobs:
     needs: setup-frontend
     runs-on: ubuntu-latest
     steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
         run: cd frontend && npx playwright install
@@ -99,6 +103,8 @@ jobs:
     needs: setup-frontend
     runs-on: ubuntu-latest
     steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: run storybook test
@@ -114,5 +120,7 @@ jobs:
       [setup-backend, setup-frontend-playwright, setup-frontend-storybook-build]
     runs-on: ubuntu-latest
     steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
       - name: run test
         run: cd frontend && npm run storybook-test
