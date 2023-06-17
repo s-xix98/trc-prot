@@ -12,6 +12,12 @@ export const FriendshipDrawer = () => {
       <Drawer
       open={isDrawerOpen}
       onClose={()=> setDrawerOpen(false)}
+
+      PaperProps={{
+        style: {
+          backgroundColor: '#8c8282',
+        },
+      }}
       >
         <Container flexDirection="column">
           <h2>MyState</h2>
