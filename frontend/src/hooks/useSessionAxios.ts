@@ -10,21 +10,12 @@ class authError extends Error {
   }
 }
 
-const getAccessTokenFromSession = async () => {
-  const session = await getSession();
-  const accessToken = session?.accessToken;
-  if (!accessToken) {
-    throw new authError('no session');
-  }
-  return accessToken;
-};
-
 const SetAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
-  let token = tokenStorage.get();
 
+  const session = await getSession();
+  const token = session?.accessToken;
   if (!token) {
-    token = await getAccessTokenFromSession();
-    tokenStorage.set(token);
+    throw new authError('no session');
   }
 
   const authHeaders = `Bearer ${token}`;
