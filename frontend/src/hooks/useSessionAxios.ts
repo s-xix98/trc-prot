@@ -8,6 +8,8 @@ class authError extends Error {
   }
 }
 
+// backendが設定したsession時間よりnext-authが設定したsession時間(maxAge)が短いと正しく動かないかも
+// next-authはデフォルトでsession時間30日らしくてbackendより長いから問題ない気がする
 const setAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
   const session = await getSession();
   const token = session?.accessToken;
