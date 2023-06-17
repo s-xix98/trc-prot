@@ -10,6 +10,9 @@ import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';
 import { AuthModule } from './auth/auth.module';
 import { WsocketModule } from './wsocket/wsocket.module';
+import { GameService } from './game/game.service';
+import { GameGateway } from './game/game.gateway';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -20,8 +23,9 @@ import { WsocketModule } from './wsocket/wsocket.module';
     ChatModule,
     AuthModule,
     WsocketModule,
+    GameModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EventsGateway],
+  providers: [AppService, EventsGateway, GameService, GameGateway],
 })
 export class AppModule {}
