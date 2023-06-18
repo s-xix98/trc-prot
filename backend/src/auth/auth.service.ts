@@ -106,10 +106,14 @@ export class AuthService {
 
   // TODO frontとbackendのauthを繋げたら消す
   async authLogin(loginDto: loginDto) {
-    return this.login(loginDto);
+    const user = await this.login(loginDto);
+
+    return {jwt: await this.generateJwt(user.id, user.username)};
   }
   // TODO frontとbackendのauthを繋げたら消す
   async authSignUp(signUpDto: signUpDto) {
-    return this.signUp(signUpDto);
+    const user = await this.signUp(signUpDto);
+
+    return {jwt: await this.generateJwt(user.id, user.username)};
   }
 }
