@@ -66,6 +66,9 @@ const handler = NextAuth({
         }
         accessToken = response.data.jwt;
 
+      } else if (provider === 'credentials') {
+        accessToken = user.accessToken;
+
       } else {
         return false;
       }
