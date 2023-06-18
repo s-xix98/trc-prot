@@ -11,6 +11,7 @@ on:
 
 jobs:
   make-build:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: checkout git repository
