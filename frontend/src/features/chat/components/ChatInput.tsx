@@ -45,7 +45,10 @@ export const ChatInput = () => {
     <>
       <div>
         <Container>
-          <Input msg={msg} onChangeAct={onChangeAct} />
+          <Container>
+            <p style={{ margin: 'auto' }}>&nbsp;&gt;&nbsp;</p>
+            <Input msg={msg} onChangeAct={onChangeAct} />
+          </Container>
           <SendButton sendBtnAct={sendBtnAct} />
         </Container>
       </div>
