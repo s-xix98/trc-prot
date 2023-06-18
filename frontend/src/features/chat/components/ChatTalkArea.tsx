@@ -16,13 +16,13 @@ export const ChatTalkArea = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
-  const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
+  const [chatHistMsgs, setChatHistMsgs] = useState<handleMessageDto[]>([]);
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
 
   const onMessage = (data: handleMessageDto[]) => {
     handleScroll();
-    setchatHistMsgs(data);
+    setChatHistMsgs(data);
   };
 
   // TODO イベント名は適当だから後でかえる
