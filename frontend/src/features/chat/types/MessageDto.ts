@@ -9,3 +9,10 @@ export type handleMessageDto = {
   username: string;
   msg: string;
 };
+
+export type sendMessageDto = {
+  content: string,
+  // TODO authができたらheaderからuserID取り出せるから消す
+  userId: string,
+  chatRoomId: string,
+}
