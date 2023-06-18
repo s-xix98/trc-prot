@@ -22,7 +22,7 @@ export const LoginForm = ({
   };
   const loginAsPiyo = () => {
     userLogin('piyo@example.com', 'piyopiyo', setUserInfo);
-  }
+  };
 
   return (
     <>
