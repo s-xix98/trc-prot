@@ -16,6 +16,9 @@ export const Matching = () => {
   useSocket('already playing', () => {
     console.log('already playing');
   });
+  useSocket('enemy diconnected', () => {
+    console.log('enemy diconnected');
+  });
 
   const onClickAct = () => {
     socket.emit('matchmake', userInfo);
