@@ -23,15 +23,23 @@ const handler = NextAuth({
         },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // backendにリクエストを送る
-        console.log(credentials);
-        console.log(req);
-        const user = { id: '1', name: 'hoge', email: 'example@example.com' };
-        if (user) {
-          return user;
+        if (!credentials){
+          return null;
         }
-        return null;
+
+        const response = await axios.post('http://backend:8000' + '/auth/authLogin',
+        {
+          email: credentials.email,
+          hashedPassword: credentials.password,
+        });
+
+        if (response.status !== 200) {
+          return null;
+        }
+
+        return response.data;
       },
     }),
   ],
