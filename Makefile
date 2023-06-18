@@ -46,25 +46,25 @@ PHONY	+=	fmt
 fmt:
 	npx prettier --write .github
 	npx prettier --write docker-compose.yml
-	docker exec -t frontend make fmt
-	docker exec -t backend make fmt
+	docker compose run --rm frontend make fmt
+	docker compose run --rm backend make fmt
 
 PHONY	+=	fmt-ck
 fmt-ck:
 	npx prettier --check .github
 	npx prettier --check docker-compose.yml
-	docker exec -t frontend make fmt-ck
-	docker exec -t backend make fmt-ck
+	docker compose run --rm frontend make fmt-ck
+	docker compose run --rm backend make fmt-ck
 
 PHONY	+=	lint
 lint:
-	docker exec -t frontend make lint
-	docker exec -t backend make lint
+	docker compose run --rm frontend make lint
+	docker compose run --rm backend make lint
 
 PHONY	+=	lint-fix
 lint-fix:
-	docker exec -t frontend make lint-fix
-	docker exec -t backend make lint-fix
+	docker compose run --rm frontend make lint-fix
+	docker compose run --rm backend make lint-fix
 
 PHONY += sb-test
 sb-test:
