@@ -54,20 +54,23 @@ jobs:
           path: backend/node_modules
           key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
 
-      - name: backend npm install
-        run: cd backend && npm install
-      - name: set up prisma
-        run: cd backend && npx prisma db push && npx prisma generate && npx prisma db seed
-      - name: run backend
-        run: cd backend && npm run start:dev &
+      - name: setup backend
+        run: |
+          cd backend
+          make setup
+          make setup-db
+          npm run start:dev &
 
-      - name: frontend npm install
-        run: cd frontend && npm install
+      - name: setup frontend
+        run: |
+          cd frontend
+          make setup
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
         run: cd frontend && npx playwright install
       - name: install playwright deps
         run: cd frontend && npx playwright install-deps
+
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: rm img files
