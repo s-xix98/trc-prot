@@ -20,6 +20,9 @@ export const LoginForm = ({
   const loginAsHuga = () => {
     userLogin('huga@example.com', 'hugahuga', setUserInfo);
   };
+  const loginAsPiyo = () => {
+    userLogin('piyo@example.com', 'piyopiyo', setUserInfo);
+  };
 
   return (
     <>
@@ -40,6 +43,7 @@ export const LoginForm = ({
       </form>
       <div style={{ padding: '3px' }}>
         <button onClick={loginAsHuga}>login as fuga</button>
+        <button onClick={loginAsPiyo}>login as piyo</button>
       </div>
     </>
   );
