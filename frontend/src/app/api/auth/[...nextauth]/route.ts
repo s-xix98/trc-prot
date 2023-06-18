@@ -24,57 +24,52 @@ const handler = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // backendにリクエストを送る
         if (!credentials) {
           return null;
         }
-
-        const response = await axios.post(
-          'http://backend:8000' + '/auth/authLogin',
-          {
-            email: credentials.email,
-            hashedPassword: credentials.password,
-          },
-        );
-
-        if (response.status !== 200) {
-          return null;
-        }
-
-        return response.data;
+        // loginの処理はsignInで行うからここでは何もしない
+        // eslint-disable-next-line
+        return credentials as any;
       },
     }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, credentials }) {
       console.log(user);
       console.log(account);
-
+      console.log(credentials);
       if (!user || !account) {
         return false;
       }
 
       const provider = account.provider;
-      let accessToken;
       let response;
-      //  TODO リクエストの引数にid, provider, emailを追加する
+      //  TODO リクエストの引数にtokenを追加する
       if (provider === 'google' || provider === '42-school') {
         response = await axios.post(
           'http://backend:8000' + '/auth/providerLogin',
         );
-        if (response.status !== 200) {
+      } else if (provider === 'credentials') {
+        if (!credentials) {
           return false;
         }
-        accessToken = response.data.jwt;
-      } else if (provider === 'credentials') {
-        accessToken = user.accessToken;
+
+        response = await axios.post('http://backend:8000' + '/auth/authLogin', {
+          email: credentials.email,
+          hashedPassword: credentials.password,
+        });
       } else {
         return false;
       }
 
-      user.accessToken = accessToken;
+      if (response.status !== 200) {
+        return false;
+      }
+
+      user.accessToken = response.data.accessToke;
       return true;
     },
+
     // 下のsession関数を使うと呼ばれる
     async jwt({ token, user }) {
       if (user) {
