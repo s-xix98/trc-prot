@@ -25,6 +25,7 @@ export const Input = ({
         }}
         value={msg}
         onChange={onChangeAct}
+        style={{ width: '100%' }}
       />
     </>
   );
