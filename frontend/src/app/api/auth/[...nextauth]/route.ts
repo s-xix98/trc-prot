@@ -44,21 +44,33 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user, account}) {
       console.log(user);
       console.log(account);
-      console.log(profile);
-      console.log(email);
-      console.log(credentials);
 
-      const response = await axios.post(
-        'http://backend:8000' + '/auth/providerLogin',
-      );
-      if (response.status !== 200) {
+      if (!user || !account) {
         return false;
       }
 
-      user.accessToken = response.data.jwt;
+      const provider = account.provider;
+      let accessToken;
+      let response;
+      //  TODO リクエストの引数にid, provider, emailを追加する
+      if (provider === 'google' || provider === '42-school') {
+
+        response = await axios.post(
+          'http://backend:8000' + '/auth/providerLogin',
+        );
+        if (response.status !== 200) {
+          return false;
+        }
+        accessToken = response.data.jwt;
+
+      } else {
+        return false;
+      }
+
+      user.accessToken = accessToken;
       return true;
     },
     // 下のsession関数を使うと呼ばれる
