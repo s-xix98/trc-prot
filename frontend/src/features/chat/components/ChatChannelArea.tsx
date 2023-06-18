@@ -8,6 +8,7 @@ import { chatChannelDto } from '../types/chatChannelDto';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 import { socket } from '@/socket';
+import { joinChannelDto } from '../types/joinChannelDto';
 
 export const ChatChannelArea = ({
   setSelectedChannel,
@@ -20,8 +21,8 @@ export const ChatChannelArea = ({
   const user = useAtomValue(userInfoAtom);
 
   const handleClick = (channel: chatChannelDto) => {
-    const dto = {
-      userId: user?.id,
+    const dto:joinChannelDto = {
+      userId: user?.id || '',
       chatRoomId: channel.id,
     };
     socket.emit('joinChannel', dto);
