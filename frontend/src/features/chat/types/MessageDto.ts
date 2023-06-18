@@ -1,3 +1,4 @@
+import { UserInfo } from '../../user/types/UserDto';
 // バックエンドの方と同じデータ構造
 
 export type MessageDto = {
@@ -6,8 +7,8 @@ export type MessageDto = {
 };
 
 export type handleMessageDto = {
-  username: string;
-  msg: string;
+  content: string;
+  user:UserInfo;
 };
 
 export type sendMessageDto = {
