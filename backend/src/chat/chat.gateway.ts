@@ -101,6 +101,14 @@ export class ChatGateway {
       },
     });
     const roomMsgs = await this.prisma.message.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
       where: {
         chatRoomId: messageDto.chatRoomId,
       },
