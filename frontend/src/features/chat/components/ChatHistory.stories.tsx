@@ -15,7 +15,7 @@ type Story = StoryObj<typeof ChatHistory>;
 
 const items: handleMessageDto[] = [];
 for (let n = 0; n < 100; n++) {
-  items.push({ username: 'hoge', msg: `hoge${n}` });
+  items.push({ user:{ id: n.toString(),  username: 'hoge'}, content: `hoge${n}` });
 }
 
 export const Basic: Story = {
