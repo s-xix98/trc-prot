@@ -73,15 +73,18 @@ jobs:
       - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
         name: install playwright
         run: cd frontend && npx playwright install
-      - name: install playwright deps
-        run: cd frontend && npx playwright install-deps
+      - name: install playwright deps & storybook build
+        run: |
+          cd frontend
+          npx playwright install-deps &
+          npx_playwright_install_deps_pid=$(echo $!)
+          npm run storybook-build
+          echo wait ${npx_playwright_install_deps_pid}
+          wait ${npx_playwright_install_deps_pid}
+          python3 -m http.server 6006 --directory storybook-static &
+          timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
 
       - name: is storybook file exists
         run: cd frontend && make sb-ck-file
       - name: run storybook test
-        run: |
-          cd frontend
-          npm run storybook-build
-          python3 -m http.server 6006 --directory storybook-static &
-          timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
-          npm run storybook-test
+        run: cd frontend && npm run storybook-test
