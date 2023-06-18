@@ -16,7 +16,7 @@ export class ChatController {
   }
 
   @Get('rooms/:id/history')
-  getChannelHistoryById(@Param('id') roomId: string) {
+  async getChannelHistoryById(@Param('id') roomId: string) {
     return this.chatService.getChannelHistoryById(roomId);
   }
 }

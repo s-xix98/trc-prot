@@ -12,6 +12,20 @@ export class ChatService {
   }
 
   async getChannelHistoryById(roomId: string) {
-    return roomId;
+    const roomMsgs = await this.prismaService.message.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      where: {
+        chatRoomId: roomId,
+      },
+    });
+
+    return roomMsgs;
   }
 }
