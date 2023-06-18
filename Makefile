@@ -44,12 +44,14 @@ backend-it:
 # ------------------------------------------------------------------------------------------
 PHONY	+=	fmt
 fmt:
+	npx prettier --write .github
 	npx prettier --write docker-compose.yml
 	docker compose run --rm frontend make fmt
 	docker compose run --rm backend make fmt
 
 PHONY	+=	fmt-ck
 fmt-ck:
+	npx prettier --check .github
 	npx prettier --check docker-compose.yml
 	docker compose run --rm frontend make fmt-ck
 	docker compose run --rm backend make fmt-ck
