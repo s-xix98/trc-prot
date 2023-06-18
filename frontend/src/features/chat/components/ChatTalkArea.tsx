@@ -5,6 +5,7 @@ import { useSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
 
 import { handleMessageDto } from '../types/MessageDto';
+import { chatChannelDto } from '../types/chatChannelDto';
 
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
@@ -13,7 +14,7 @@ import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
 export const ChatTalkArea = ({
   selectedChannel,
 }: {
-  selectedChannel: string;
+  selectedChannel: chatChannelDto;
 }) => {
   const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
 
@@ -34,7 +35,7 @@ export const ChatTalkArea = ({
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader roomName={selectedChannel} />
+      <ChatTalkAreaHeader roomName={selectedChannel?.roomName} />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}
