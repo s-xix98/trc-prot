@@ -13,6 +13,9 @@ export const Matching = () => {
     setName(enemyName);
     setMatched(true);
   });
+  useSocket('already playing', () => {
+    console.log('already playing');
+  });
 
   const onClickAct = () => {
     socket.emit('matchmake', userInfo);
