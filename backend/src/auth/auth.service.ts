@@ -103,4 +103,13 @@ export class AuthService {
     }
     return { jwt: await this.generateJwt(huga.id, huga.username) };
   }
+
+  // TODO frontとbackendのauthを繋げたら消す
+  async authLogin(loginDto: loginDto) {
+    return this.login(loginDto);
+  }
+  // TODO frontとbackendのauthを繋げたら消す
+  async authSignUp(signUpDto: signUpDto) {
+    return this.signUp(signUpDto);
+  }
 }

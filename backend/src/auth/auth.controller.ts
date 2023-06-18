@@ -52,4 +52,16 @@ export class AuthController {
   async jwtHuga(): Promise<accessToken> {
     return this.authService.jwtHuga();
   }
+
+  // TODO frontとbackendのauthを繋げたら消す
+  @Post('authSignup')
+  async authSignUp(@Body() dto: signUpDto){
+    return this.authService.authSignUp(dto);
+  }
+  // TODO frontとbackendのauthを繋げたら消す
+  @HttpCode(HttpStatus.OK)
+  @Post('authLogin')
+  async authLogin(@Body() dto: loginDto){
+    return this.authService.authLogin(dto);
+  }
 }
