@@ -9,6 +9,7 @@ env:
   DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
 jobs:
   make-backend-test:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -36,4 +37,4 @@ jobs:
       - name: set up prisma
         run: cd backend && npx prisma db push && npx prisma generate
       - name: backend test
-        run: cd backend && timeout 300 make test
+        run: cd backend && make test

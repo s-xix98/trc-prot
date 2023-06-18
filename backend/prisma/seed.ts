@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { UserRole } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -21,6 +23,8 @@ async function main() {
       name: 'google',
     },
   });
+
+  const hugaPassword = await bcrypt.hash('hugahuga', 10);
   const user1 = await prisma.user.upsert({
     where: {
       email: 'huga@example.com',
@@ -29,9 +33,11 @@ async function main() {
     create: {
       email: 'huga@example.com',
       username: 'huga',
-      hashedPassword: 'hugahuga',
+      hashedPassword: hugaPassword,
     },
   });
+
+  const piyoPassword = await bcrypt.hash('piyopiyo', 10);
   const user2 = await prisma.user.upsert({
     where: {
       email: 'piyo@example.com',
@@ -40,7 +46,7 @@ async function main() {
     create: {
       email: 'piyo@example.com',
       username: 'piyo',
-      hashedPassword: 'piyopiyo',
+      hashedPassword: piyoPassword,
     },
   });
   const room = await prisma.chatRoom.create({

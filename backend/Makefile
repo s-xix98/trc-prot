@@ -13,8 +13,11 @@ build:
 PHONY	+=	setup
 setup:
 	npm install
-	npx prisma db push --force-reset
 	npx prisma generate
+
+PHONY	+=	setup-db
+setup-db:
+	npx prisma db push --force-reset
 	npx prisma db seed
 
 # LINTER, FORMATTER
