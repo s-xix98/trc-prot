@@ -13,6 +13,7 @@ import { Terminal } from './features/terminal/Terminal';
 import { SearchUser } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
 import { useRequireLogin } from './hooks/useLogin';
+import { Matching } from './features/game/Matching';
 
 const onConnect = () => {
   console.log('socket connect');
@@ -71,6 +72,7 @@ function App() {
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('p', <PrevApp />);
   commandElemMap.set('g', <Game />);
+  commandElemMap.set('m', <Matching />);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <PrevApp />);
   commandElemMap.set('./search', <SearchUser />);
