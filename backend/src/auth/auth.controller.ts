@@ -55,13 +55,13 @@ export class AuthController {
 
   // TODO frontとbackendのauthを繋げたら消す
   @Post('authSignup')
-  async authSignUp(@Body() dto: signUpDto){
+  async authSignUp(@Body() dto: signUpDto) {
     return this.authService.authSignUp(dto);
   }
   // TODO frontとbackendのauthを繋げたら消す
   @HttpCode(HttpStatus.OK)
   @Post('authLogin')
-  async authLogin(@Body() dto: loginDto){
+  async authLogin(@Body() dto: loginDto) {
     return this.authService.authLogin(dto);
   }
 }

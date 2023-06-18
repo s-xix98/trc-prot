@@ -25,15 +25,17 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         // backendにリクエストを送る
-        if (!credentials){
+        if (!credentials) {
           return null;
         }
 
-        const response = await axios.post('http://backend:8000' + '/auth/authLogin',
-        {
-          email: credentials.email,
-          hashedPassword: credentials.password,
-        });
+        const response = await axios.post(
+          'http://backend:8000' + '/auth/authLogin',
+          {
+            email: credentials.email,
+            hashedPassword: credentials.password,
+          },
+        );
 
         if (response.status !== 200) {
           return null;
@@ -44,7 +46,7 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user, account}) {
+    async signIn({ user, account }) {
       console.log(user);
       console.log(account);
 
@@ -57,7 +59,6 @@ const handler = NextAuth({
       let response;
       //  TODO リクエストの引数にid, provider, emailを追加する
       if (provider === 'google' || provider === '42-school') {
-
         response = await axios.post(
           'http://backend:8000' + '/auth/providerLogin',
         );
@@ -65,10 +66,8 @@ const handler = NextAuth({
           return false;
         }
         accessToken = response.data.jwt;
-
       } else if (provider === 'credentials') {
         accessToken = user.accessToken;
-
       } else {
         return false;
       }
