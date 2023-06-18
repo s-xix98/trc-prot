@@ -75,4 +75,40 @@ export class GameGateway {
     client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
     this.waitingUser = undefined;
   }
+
+  @SubscribeMessage('clear match')
+  clearMatch(client: Socket, userId: string) {
+    console.log('clearMatch');
+    if (this.waitingUser?.data.id === userId) {
+      this.waitingUser = undefined;
+      console.log('to undefined waiter');
+      return;
+    }
+    if (!this.matchedUsers.has(userId)) {
+      return;
+    }
+    const sock = this.userSockMap.get(userId);
+    if (sock === undefined) {
+      // NotReach
+      return;
+    }
+    const enemyUser = this.matchedUsers.get(userId);
+    if (enemyUser === undefined) {
+      // NotReach
+      return;
+    }
+    const enemySocket = this.userSockMap.get(enemyUser.id);
+    if (enemySocket === undefined) {
+      // NotReach
+      return;
+    }
+    console.log(this.matchedUsers.delete(userId));
+    console.log(this.matchedUsers.delete(enemyUser.id));
+
+    console.log(this.userSockMap.delete(userId));
+    console.log(this.userSockMap.delete(enemyUser.id));
+
+    console.log(this.sockUserMap.delete(sock.id));
+    console.log(this.sockUserMap.delete(enemySocket.id));
+  }
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useSocket } from '@/hooks/useSocket';
 import { socket } from '@/socket';
@@ -20,6 +20,12 @@ export const Matching = () => {
   useSocket('enemy diconnected', () => {
     console.log('enemy diconnected');
   });
+
+  useEffect(() => {
+    return () => {
+      socket.emit('clear match', userInfo?.id);
+    };
+  }, [userInfo]);
 
   const onClickAct = () => {
     socket.emit('matchmake', userInfo);
