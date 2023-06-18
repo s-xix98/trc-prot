@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSocket } from '@/hooks/useSocket';
 import { socket } from '@/socket';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { Container } from '@/components/Layout/Container';
 
 export const Matching = () => {
   const [isMatched, setMatched] = useState(false);
@@ -32,10 +33,12 @@ export const Matching = () => {
   };
   // console.log("ui", userInfo);
   return (
-    <>
-      <button onClick={onClickAct}>button</button>
-      {isMatched && <h1> {name} </h1>}
-      {!isMatched && <h1> WAITING... </h1>}
-    </>
+    <Container flexDirection={'column'}>
+      <div>
+        <button onClick={onClickAct}>button</button>
+        {isMatched && <h1> {name} </h1>}
+        {!isMatched && <h1> WAITING... </h1>}
+      </div>
+    </Container>
   );
 };
