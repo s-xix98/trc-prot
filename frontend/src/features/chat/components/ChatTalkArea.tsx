@@ -20,18 +20,13 @@ export const ChatTalkArea = ({
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
 
-  const onMessage = (data: handleMessageDto) => {
+  const onMessage = (data: handleMessageDto[]) => {
     handleScroll();
-    setchatHistMsgs((chatHistMsgs) => [...chatHistMsgs, data]);
+    setchatHistMsgs(data);
   };
 
-  const onGetChatLog = (chatlog: handleMessageDto[]) => {
-    console.log('onGetChatLog', chatlog);
-    setchatHistMsgs(chatlog);
-  };
-
-  useSocket('message', onMessage);
-  useSocket('getPastMessages', onGetChatLog);
+  // TODO イベント名は適当だから後でかえる
+  useSocket('sendMessage', onMessage);
 
   return (
     <Container flexDirection={'column'}>
