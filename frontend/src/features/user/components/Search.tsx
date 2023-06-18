@@ -40,7 +40,7 @@ export const SearchUser = () => {
             <p key={key}> {user}</p>
           ))}
         </ContainerItem>
-        <Input msg={searchWord} onChangeAct={onChange} />
+        <Input msg={searchWord} onChangeAct={onChange} placeholder="username" />
       </Container>
     </div>
   );

@@ -4,9 +4,11 @@ import TextField from '@mui/material/TextField';
 export const Input = ({
   msg,
   onChangeAct,
+  placeholder,
 }: {
   msg: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string | undefined;
 }) => {
   return (
     <>
@@ -15,7 +17,7 @@ export const Input = ({
         data-testid="input-test-id"
         multiline
         variant="standard"
-        placeholder="username"
+        placeholder={placeholder}
         sx={{
           '& .MuiInputBase-input': {
             color: '#33ff33', // Text color
