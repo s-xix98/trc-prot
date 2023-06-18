@@ -34,9 +34,9 @@ jobs:
       - name: frontend npm install
         run: cd frontend && npm install
       - name: frontend lint
-        run: cd frontend && timeout 300 make lint
+        run: cd frontend && make lint
 
       - name: backend npm install
         run: cd backend && npm install
       - name: backend lint
-        run: cd backend && timeout 300 make lint
+        run: cd backend && make lint

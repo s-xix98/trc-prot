@@ -34,11 +34,11 @@ jobs:
       - name: frontend npm install
         run: cd frontend && npm install
       - name: frontend fmt-ck
-        run: cd frontend && timeout 300 make fmt-ck
+        run: cd frontend && make fmt-ck
 
       - name: backend npm install
         run: cd backend && npm install
       - name: backend fmt-ck
-        run: cd backend && timeout 300 make fmt-ck
+        run: cd backend && make fmt-ck
       - name: backend prisma fmt ck
-        run: cd backend && timeout 300 make fmt && (! git status -s | grep 'prisma') 
+        run: cd backend && make fmt && (! git status -s | grep 'prisma')

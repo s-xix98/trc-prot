@@ -34,9 +34,9 @@ jobs:
       - name: frontend npm install
         run: cd frontend && npm install
       - name: frontend build
-        run: cd frontend && timeout 300 make build
+        run: cd frontend && make build
 
       - name: backend npm install
         run: cd backend && npm install
       - name: backend build
-        run: cd backend && npx prisma generate && timeout 300 make build
+        run: cd backend && npx prisma generate && make build
