@@ -35,7 +35,7 @@ export const ChatTalkArea = ({
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}
       />
-      <ChatInput  selectedChannel={selectedChannel}/>
+      <ChatInput selectedChannel={selectedChannel} />
     </Container>
   );
 };

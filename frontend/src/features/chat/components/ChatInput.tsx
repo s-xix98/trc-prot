@@ -11,9 +11,11 @@ import { userInfoAtom } from '@/stores/jotai';
 import { sendMessageDto } from '../types/MessageDto';
 import { chatChannelDto } from '../types/chatChannelDto';
 
-export const ChatInput = (
-  {selectedChannel}:{selectedChannel:chatChannelDto}
-) => {
+export const ChatInput = ({
+  selectedChannel,
+}: {
+  selectedChannel: chatChannelDto;
+}) => {
   const [msg, setMsg] = useState('');
   const userInfo = useAtomValue(userInfoAtom);
 
@@ -42,7 +44,7 @@ export const ChatInput = (
       content: msg,
       userId: userInfo.id,
       chatRoomId: selectedChannel.id,
-    }
+    };
 
     socket.emit('sendMessage', dto);
     setMsg('');

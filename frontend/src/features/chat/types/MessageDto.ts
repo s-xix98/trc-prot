@@ -8,12 +8,12 @@ export type MessageDto = {
 
 export type handleMessageDto = {
   content: string;
-  user:UserInfo;
+  user: UserInfo;
 };
 
 export type sendMessageDto = {
-  content: string,
+  content: string;
   // TODO authができたらheaderからuserID取り出せるから消す
-  userId: string,
-  chatRoomId: string,
-}
+  userId: string;
+  chatRoomId: string;
+};
