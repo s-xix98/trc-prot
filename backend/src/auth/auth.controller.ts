@@ -22,13 +22,6 @@ import { GoogleAuthGuard } from './guard/google-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
-  @Post('providerLogin')
-  @ApiOperation({ summary: 'providerLogin' })
-  async providerLogin(): Promise<accessToken> {
-    return this.authService.providerLogin();
-  }
-
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
   async signUp(@Body() dto: signUpDto): Promise<accessToken> {
@@ -62,7 +55,7 @@ export class AuthController {
   // googleAuthの処理が終わった後のエンドポイント
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  redirect(@Request() req: any) {
-    return req.user;
+  redirect(@Request() req: any): Promise<accessToken> {
+    return this.authService.providerLogin(req.user);
   }
 }
