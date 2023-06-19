@@ -14,6 +14,8 @@ export const Header = () => {
       <Container>
         <h1>Header</h1>
         <div style={{ margin: 'auto 10px auto auto' }}>
+          <HeaderLink name="huga" href={'http://localhost:3000/login/huga'} />
+          <HeaderLink name="piyo" href={'http://localhost:3000/login/piyo'} />
           <HeaderLink name="STORYBOOK" href={'http://localhost:6006/'} />
           <HeaderLink name="SWAGGER" href={'http://localhost:8000/api'} />
           <HeaderLink name="PRISMA" href={'http://localhost:5555'} />
