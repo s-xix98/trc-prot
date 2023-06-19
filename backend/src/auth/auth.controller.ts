@@ -56,7 +56,7 @@ export class AuthController {
   // googleAuthの処理が終わった後のエンドポイント
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  async redirect(@Request() req: any): Promise<accessToken> {
+  async GoogleRedirect(@Request() req: any): Promise<accessToken> {
     return this.authService.providerLogin(req.user);
   }
 
