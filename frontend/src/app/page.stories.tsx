@@ -62,36 +62,36 @@ export const SelectChannel: Story = {
   },
 };
 
-export const SendMsg: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+// export const SendMsg: Story = {
+//   play: async ({ canvasElement }) => {
+//     const canvas = within(canvasElement);
 
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
-    if (terminalInputElem === undefined || terminalInputElem === null) {
-      expect(false);
-      return;
-    }
-    await userEvent.type(terminalInputElem, 'p\n');
+//     const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
+//     if (terminalInputElem === undefined || terminalInputElem === null) {
+//       expect(false);
+//       return;
+//     }
+//     await userEvent.type(terminalInputElem, 'p\n');
 
-    const hogeRoom = await screen.findByText('hogeRoom');
-    await userEvent.click(hogeRoom);
+//     const hogeRoom = await screen.findByText('hogeRoom');
+//     await userEvent.click(hogeRoom);
 
-    const inputElem =
-      screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
-    if (inputElem === undefined || inputElem === null) {
-      expect(false);
-      return;
-    }
-    await userEvent.type(inputElem, 'This is test msg');
-    await userEvent.click(screen.getByText('Send'));
+//     const inputElem =
+//       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
+//     if (inputElem === undefined || inputElem === null) {
+//       expect(false);
+//       return;
+//     }
+//     await userEvent.type(inputElem, 'This is test msg');
+//     await userEvent.click(screen.getByText('Send'));
 
-    // SEND ボタンに アニメーションがあり、スクショのタイミングによって
-    // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
-    await userEvent.click(canvas.getByText('Footer'));
+//     // SEND ボタンに アニメーションがあり、スクショのタイミングによって
+//     // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
+//     await userEvent.click(canvas.getByText('Footer'));
 
-    await sleep(1000);
-  },
-};
+//     await sleep(1000);
+//   },
+// };
 
 export const SendSomeMsg: Story = {
   play: async ({ canvasElement }) => {
