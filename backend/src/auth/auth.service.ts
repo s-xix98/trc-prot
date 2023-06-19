@@ -33,7 +33,21 @@ export class AuthService {
       return { jwt: await this.generateJwt(user.user.id, user.user.username) };
     }
 
-    return { jwt: '' };
+    // まだ登録されていない場合
+    const newUser = await this.prismaService.user.create({
+      data: {
+        email: auser.email,
+
+        auth: {
+          create: {
+            providerName: auser.provider,
+            providerId: auser.id,
+          },
+        },
+      },
+    });
+
+    return { jwt: await this.generateJwt(newUser.id, newUser.username) };
   }
 
   async generateJwt(userId: string, username: string): Promise<string> {
