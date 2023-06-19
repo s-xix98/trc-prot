@@ -76,6 +76,9 @@ export const SendMsg: Story = {
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
 
+    // TODO : chat hist をとるまで一旦待つように
+    await sleep(3000);
+
     const inputElem =
       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
     if (inputElem === undefined || inputElem === null) {
@@ -106,6 +109,9 @@ export const SendSomeMsg: Story = {
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
+
+    // TODO : chat hist をとるまで一旦待つように
+    await sleep(3000);
 
     const inputElem =
       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
