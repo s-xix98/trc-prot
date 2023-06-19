@@ -19,7 +19,7 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
-  const [, setUserInfo] = useAtom(userInfoAtom);
+  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 
   const [currentModalElem, setCurrentModalElem] = useState<JSX.Element>();
 
@@ -63,7 +63,11 @@ export const Terminal = ({
       <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
         {currentModalElem}
       </ModalView>
-      <TerminalInput input={input} onChangeAct={onChangeAct} />
+      <TerminalInput
+        input={input}
+        username={userInfo?.username ?? ''}
+        onChangeAct={onChangeAct}
+      />
     </Container>
   );
 };

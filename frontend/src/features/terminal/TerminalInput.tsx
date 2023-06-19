@@ -2,14 +2,16 @@ import { ChangeEvent } from 'react';
 
 export const TerminalInput = ({
   input,
+  username,
   onChangeAct,
 }: {
   input: string;
+  username: string;
   onChangeAct: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }) => {
   return (
     <div style={{ display: 'flex' }}>
-      <p>&gt;&nbsp;</p>
+      <p>{username} &gt;&nbsp;</p>
       <textarea
         data-testid="terminal-input-test-id"
         style={{
