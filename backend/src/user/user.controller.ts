@@ -11,8 +11,8 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  findMe(@Request() req: any) {
-    return req.user;
+  async findMe(@Request() req: any) {
+    return this.userService.findOneById(req.user.userId);
   }
 
   @ApiOperation({ summary: 'findOne' })

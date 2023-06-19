@@ -23,4 +23,23 @@ export class UserService {
     }
     return user;
   }
+
+  async findOneById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+    return user;
+  }
 }
