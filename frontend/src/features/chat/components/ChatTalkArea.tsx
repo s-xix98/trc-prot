@@ -16,22 +16,17 @@ export const ChatTalkArea = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
-  const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
+  const [chatHistMsgs, setChatHistMsgs] = useState<handleMessageDto[]>([]);
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
 
-  const onMessage = (data: handleMessageDto) => {
+  const onMessage = (data: handleMessageDto[]) => {
     handleScroll();
-    setchatHistMsgs((chatHistMsgs) => [...chatHistMsgs, data]);
+    setChatHistMsgs(data);
   };
 
-  const onGetChatLog = (chatlog: handleMessageDto[]) => {
-    console.log('onGetChatLog', chatlog);
-    setchatHistMsgs(chatlog);
-  };
-
-  useSocket('message', onMessage);
-  useSocket('getPastMessages', onGetChatLog);
+  // TODO イベント名は適当だから後でかえる
+  useSocket('sendMessage', onMessage);
 
   return (
     <Container flexDirection={'column'}>
@@ -40,7 +35,7 @@ export const ChatTalkArea = ({
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}
       />
-      <ChatInput />
+      <ChatInput selectedChannel={selectedChannel} />
     </Container>
   );
 };

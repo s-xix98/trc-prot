@@ -8,10 +8,14 @@ import { SendButton } from '@/components/Elements/Button/SendButton';
 import { Container } from '@/components/Layout/Container';
 import { userInfoAtom } from '@/stores/jotai';
 
-import { postMessage } from '../api/postMessage';
-import { handleMessageDto } from '../types/MessageDto';
+import { sendMessageDto } from '../types/MessageDto';
+import { chatChannelDto } from '../types/chatChannelDto';
 
-export const ChatInput = () => {
+export const ChatInput = ({
+  selectedChannel,
+}: {
+  selectedChannel: chatChannelDto;
+}) => {
   const [msg, setMsg] = useState('');
   const userInfo = useAtomValue(userInfoAtom);
 
@@ -32,12 +36,17 @@ export const ChatInput = () => {
       console.log('Error : sendBtnAct : userInfo is undefined');
       return;
     }
-    postMessage(userInfo.id, msg);
+
     // バックエンドで post の方に クライアントに 送信したもの返す実装が現状ないので
     // socket の方も残したまま (送信したものが表示されないため)
     // 送信したもの送り返すかどうかも、そもそも検討 (そのまま chatHistMsgs に追加するなど )
-    const sendMsg: handleMessageDto = { username: userInfo.username, msg };
-    socket.emit('message', sendMsg);
+    const dto: sendMessageDto = {
+      content: msg,
+      userId: userInfo.id,
+      chatRoomId: selectedChannel.id,
+    };
+
+    socket.emit('sendMessage', dto);
     setMsg('');
   };
 

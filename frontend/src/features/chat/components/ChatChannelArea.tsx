@@ -2,9 +2,11 @@ import { useAtomValue } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
-import { channelListAtom } from '@/stores/jotai';
+import { channelListAtom, userInfoAtom } from '@/stores/jotai';
+import { socket } from '@/socket';
 
 import { chatChannelDto } from '../types/chatChannelDto';
+import { joinChannelDto } from '../types/joinChannelDto';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 
@@ -16,8 +18,14 @@ export const ChatChannelArea = ({
   >;
 }) => {
   const channels = useAtomValue(channelListAtom);
+  const user = useAtomValue(userInfoAtom);
 
   const handleClick = (channel: chatChannelDto) => {
+    const dto: joinChannelDto = {
+      userId: user?.id || '',
+      chatRoomId: channel.id,
+    };
+    socket.emit('joinChannel', dto);
     setSelectedChannel(channel);
   };
 
