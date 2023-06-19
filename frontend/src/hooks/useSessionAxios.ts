@@ -1,18 +1,15 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
+import { tokenStorage } from '@/utils/tokenStorage';
 class authError extends Error {
   constructor(e?: string) {
     super(e);
   }
 }
 
-// backendが設定したsession時間よりnext-authが設定したsession時間(maxAge)が短いと正しく動かないかも
-// next-authはデフォルトでsession時間30日らしくてbackendより長いから問題ない気がする
-const setAccessTokenForRequest = async (req: InternalAxiosRequestConfig) => {
-  const session = await getSession();
-  const token = session?.accessToken;
+const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
+  const token = tokenStorage.get();
   if (!token) {
     throw new authError('no session');
   }
