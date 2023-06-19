@@ -24,7 +24,7 @@ export const ChatTalkArea = ({
 
   useEffect(() => {
     axios
-      .get(BACKEND + '/chat/rooms/' + selectedChannel.id + '/history')
+      .get(BACKEND + '/chat/rooms/' + selectedChannel?.id + '/history')
       .then((res) => {
         setChatHistMsgs(res.data);
       })
