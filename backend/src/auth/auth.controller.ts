@@ -50,7 +50,7 @@ export class AuthController {
   @Get('google')
   @UseGuards(GoogleAuthGuard)
   // eslint-disable-next-line
-  async googleAuth(){}
+  async googleAuth() {}
 
   // googleAuthの処理が終わった後のエンドポイント
   @Get('google/redirect')
