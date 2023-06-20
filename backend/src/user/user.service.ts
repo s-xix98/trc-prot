@@ -5,10 +5,29 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async findOne(username: string) {
+  async findOneByUsername(username: string) {
     const user = await this.prisma.user.findUnique({
       where: {
         username,
+      },
+      select: {
+        id: true,
+        username: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+    return user;
+  }
+
+  async findOneById(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
       },
       select: {
         id: true,
