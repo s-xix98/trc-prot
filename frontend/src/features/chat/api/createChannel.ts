@@ -5,7 +5,7 @@ import { socket } from '@/socket';
 
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
-const emitCreateChannel = (roomName: string, userId: string) => {
+const emitCreateChannel = (userId: string, roomName: string) => {
   const dto: CreateChannelDto = {
     roomName,
     userId: userId,
@@ -21,7 +21,7 @@ export const useCreateChannel = () => {
       console.log('userinfo is undef');
       return;
     }
-    emitCreateChannel(roomName, userinfo.id);
+    emitCreateChannel(userinfo.id, roomName);
   };
 
   return { emit };
