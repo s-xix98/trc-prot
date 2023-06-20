@@ -2,7 +2,6 @@ import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { socket } from '@/socket';
 
-
 import { chatChannelDto } from '../types/chatChannelDto';
 import { joinChannelDto } from '../types/joinChannelDto';
 
