@@ -1,23 +1,21 @@
 import {
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 
 import { PrismaService } from '../prisma/prisma.service';
 
 import { MessageDto } from './dto/message.dto';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
+import { WsocketGateway } from '../wsocket/wsocket.gateway';
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
 export class ChatGateway {
-  @WebSocketServer()
-  server: Server;
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private server: WsocketGateway) {}
 
   async handleConnection(client: Socket) {
     // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
