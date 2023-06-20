@@ -15,7 +15,8 @@ export const ChatTalkArea = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
-  const { chatHistMsgs, setChatHistMsgs } = useRoomHistory(selectedChannel.id);
+  // TODO : storybook が 引数設定してなくて、selectedChannel が undef でくるので一旦、`?` は必要ないはず
+  const { chatHistMsgs, setChatHistMsgs } = useRoomHistory(selectedChannel?.id);
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
 
