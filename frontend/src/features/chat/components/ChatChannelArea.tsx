@@ -33,22 +33,20 @@ export const ChatChannelArea = ({
     <Container flexDirection={'column'}>
       <h2>ChatChannelArea</h2>
       <hr />
+      <ChatChannelCreateModal />
+      <hr />
       <Container flexDirection={'column'}>
-        <ChatChannelCreateModal />
-        <hr />
-        <Container flexDirection={'column'}>
-          <ContainerItem overflowY={'scroll'}>
-            {channels.map((channel, idx) => (
-              <p
-                key={idx}
-                onClick={() => handleClick(channel)}
-                style={{ cursor: 'pointer' }}
-              >
-                {channel.roomName}
-              </p>
-            ))}
-          </ContainerItem>
-        </Container>
+        <ContainerItem overflowY={'scroll'}>
+          {channels.map((channel, idx) => (
+            <p
+              key={idx}
+              onClick={() => handleClick(channel)}
+              style={{ cursor: 'pointer' }}
+            >
+              {channel.roomName}
+            </p>
+          ))}
+        </ContainerItem>
       </Container>
     </Container>
   );
