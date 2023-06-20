@@ -41,7 +41,6 @@ export const Chat = () => {
     <Container>
       <ContainerItem display={'flex'} flexRatio={1}>
         <ChatChannelArea
-          userInfo={userInfo}
           channels={channels}
           setSelectedChannel={setSelectedChannel}
         />

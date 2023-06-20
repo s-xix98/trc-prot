@@ -1,31 +1,25 @@
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
-import { socket } from '@/socket';
 
 import { chatChannelDto } from '../types/chatChannelDto';
-import { joinChannelDto } from '../types/joinChannelDto';
+import { useJoinChannel } from '../api/joinChannel';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 
-import { UserInfo } from '../../../features/user/types/UserDto';
 
 export const ChatChannelArea = ({
-  userInfo,
   channels,
   setSelectedChannel,
 }: {
-  userInfo: UserInfo;
   channels: chatChannelDto[];
   setSelectedChannel: React.Dispatch<
     React.SetStateAction<chatChannelDto | undefined>
   >;
 }) => {
+  const joinChannel = useJoinChannel();
+
   const handleClick = (channel: chatChannelDto) => {
-    const dto: joinChannelDto = {
-      userId: userInfo.id,
-      chatRoomId: channel.id,
-    };
-    socket.emit('joinChannel', dto);
+    joinChannel.emit(channel.id);
     setSelectedChannel(channel);
   };
 
