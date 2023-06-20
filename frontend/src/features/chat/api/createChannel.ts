@@ -7,7 +7,7 @@ import { CreateChannelDto } from '../types/CreateChannelDto';
 
 const emitCreateChannel = (userId: string, roomName: string) => {
   const dto: CreateChannelDto = {
-    roomName,
+    roomName: roomName,
     userId: userId,
   };
   socket.emit('createChannel', dto);
