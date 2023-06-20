@@ -25,4 +25,9 @@ export class WsocketGateway {
     const prefixedId = generatePrefixedId(prefix, id);
     client.leave(prefixedId);
   }
+
+  to(prefix: socketNamespaceType, id: string) {
+    const prefixedId = generatePrefixedId(prefix, id);
+    return this.server.to(prefixedId);
+  }
 }
