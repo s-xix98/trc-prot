@@ -7,11 +7,11 @@ const prisma = new PrismaClient();
 async function main() {
   const authProvider1 = await prisma.authProvider.upsert({
     where: {
-      name: '42',
+      name: '42-school',
     },
     update: {},
     create: {
-      name: '42',
+      name: '42-school',
     },
   });
   const authProvider2 = await prisma.authProvider.upsert({
