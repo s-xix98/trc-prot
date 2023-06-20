@@ -8,11 +8,6 @@ const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const meta = {
   component: Home,
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
   tags: ['autodocs'],
 } satisfies Meta<typeof Home>;
 
