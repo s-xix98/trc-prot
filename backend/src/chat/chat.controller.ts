@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -13,5 +13,10 @@ export class ChatController {
   @ApiOperation({ summary: 'getChannels' })
   async getAllChannels(): Promise<ChatRoom[]> {
     return this.chatService.getAllChannels();
+  }
+
+  @Get('rooms/:id/history')
+  async getChannelHistoryById(@Param('id') roomId: string) {
+    return this.chatService.getChannelHistoryById(roomId);
   }
 }

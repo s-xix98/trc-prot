@@ -8,6 +8,11 @@ const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 const meta = {
   component: Home,
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+    },
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof Home>;
 
@@ -15,24 +20,13 @@ export default meta;
 
 type Story = StoryObj<typeof Home>;
 
-export const Basic: Story = {
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
-};
+export const Basic: Story = {};
 
 // TODO : mui modal が このテスト対象のコンポーネントの下に、エレメントを作成せず、
 // canvas.getXXXでエレメントが取得できないので、screen からエレメント取得
 // mui modal のエレメント取得する方法等考える
 
 export const Login: Story = {
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -51,11 +45,6 @@ export const Login: Story = {
 };
 
 export const SelectChannel: Story = {
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -74,11 +63,6 @@ export const SelectChannel: Story = {
 };
 
 export const SendMsg: Story = {
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -91,6 +75,9 @@ export const SendMsg: Story = {
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
+
+    // TODO : chat hist をとるまで一旦待つように
+    await sleep(3000);
 
     const inputElem =
       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
@@ -110,11 +97,6 @@ export const SendMsg: Story = {
 };
 
 export const SendSomeMsg: Story = {
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -127,6 +109,9 @@ export const SendSomeMsg: Story = {
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
+
+    // TODO : chat hist をとるまで一旦待つように
+    await sleep(3000);
 
     const inputElem =
       screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;

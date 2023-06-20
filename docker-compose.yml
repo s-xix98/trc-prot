@@ -34,7 +34,7 @@ services:
     command: ["bash", "docker-entrypoint.sh"]
 
   db:
-    build: db
+    image: postgres:latest
     container_name: postgres
     ports:
       - 5432:5432

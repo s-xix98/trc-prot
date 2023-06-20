@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import { Container } from '@/components/Layout/Container';
 import { useSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
+import { BACKEND } from '@/constants';
 
 import { handleMessageDto } from '../types/MessageDto';
 import { chatChannelDto } from '../types/chatChannelDto';
@@ -16,22 +18,28 @@ export const ChatTalkArea = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
-  const [chatHistMsgs, setchatHistMsgs] = useState<handleMessageDto[]>([]);
+  const [chatHistMsgs, setChatHistMsgs] = useState<handleMessageDto[]>([]);
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
 
-  const onMessage = (data: handleMessageDto) => {
+  useEffect(() => {
+    axios
+      .get(BACKEND + '/chat/rooms/' + selectedChannel?.id + '/history')
+      .then((res) => {
+        setChatHistMsgs(res.data);
+      })
+      .catch(() => {
+        console.log('room 取得失敗');
+      });
+  }, [selectedChannel]);
+
+  const onMessage = (data: handleMessageDto[]) => {
     handleScroll();
-    setchatHistMsgs((chatHistMsgs) => [...chatHistMsgs, data]);
+    setChatHistMsgs(data);
   };
 
-  const onGetChatLog = (chatlog: handleMessageDto[]) => {
-    console.log('onGetChatLog', chatlog);
-    setchatHistMsgs(chatlog);
-  };
-
-  useSocket('message', onMessage);
-  useSocket('getPastMessages', onGetChatLog);
+  // TODO イベント名は適当だから後でかえる
+  useSocket('sendMessage', onMessage);
 
   return (
     <Container flexDirection={'column'}>
@@ -40,7 +48,7 @@ export const ChatTalkArea = ({
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}
       />
-      <ChatInput />
+      <ChatInput selectedChannel={selectedChannel} />
     </Container>
   );
 };
