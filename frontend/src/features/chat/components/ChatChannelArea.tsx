@@ -6,7 +6,6 @@ import { useJoinChannel } from '../api/joinChannel';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 
-
 export const ChatChannelArea = ({
   channels,
   setSelectedChannel,
