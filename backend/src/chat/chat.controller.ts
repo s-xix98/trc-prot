@@ -21,4 +21,9 @@ export class ChatController {
   async getChannelHistoryById(@Param('id') roomId: string) {
     return this.chatService.getChannelHistoryById(roomId);
   }
+
+  @Get('search/:searchWord')
+  async search(@Param('searchWord') searchWord: string) {
+    return this.chatService.search(searchWord);
+  }
 }

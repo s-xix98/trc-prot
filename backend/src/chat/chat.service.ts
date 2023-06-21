@@ -28,4 +28,8 @@ export class ChatService {
 
     return roomMsgs;
   }
+
+  async search(searchWord: string) {
+    return searchWord;
+  }
 }
