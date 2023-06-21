@@ -12,12 +12,12 @@ export class WsocketGateway {
   @WebSocketServer()
   server: Server;
 
-  socketJoinRoom(client: Socket, prefix: socketNamespaceType, id: string) {
+  JoinRoom(client: Socket, prefix: socketNamespaceType, id: string) {
     const prefixedId = generatePrefixedId(prefix, id);
     client.join(prefixedId);
   }
 
-  socketLeaveRoom(
+  LeaveRoom(
     client: Socket,
     prefix: socketNamespaceType,
     id: string,
