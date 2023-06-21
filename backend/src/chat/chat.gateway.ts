@@ -2,7 +2,7 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { socketNamespaceType } from '../wsocket/utils';
+import { roomType } from '../wsocket/utils';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { MessageDto } from './dto/message.dto';
@@ -47,7 +47,7 @@ export class ChatGateway {
     });
 
     rooms.forEach((room) => {
-      this.server.JoinRoom(client, socketNamespaceType.Chat, room.id);
+      this.server.JoinRoom(client, roomType.Chat, room.id);
       client.emit('addRoom', room);
     });
   }
@@ -69,7 +69,7 @@ export class ChatGateway {
         chatRoomId: createdRoom.id,
       },
     });
-    this.server.JoinRoom(client, socketNamespaceType.Chat, createdRoom.id);
+    this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
     client.emit('addRoom', createdRoom);
     client.broadcast.emit('addRoom', createdRoom);
   }
@@ -91,13 +91,9 @@ export class ChatGateway {
       },
     });
 
-    this.server.JoinRoom(
-      client,
-      socketNamespaceType.Chat,
-      addedUser.chatRoomId,
-    );
+    this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
     this.server
-      .to(socketNamespaceType.Chat, addedUser.chatRoomId)
+      .to(roomType.Chat, addedUser.chatRoomId)
       .emit('joinChannel', addedUser);
   }
 
@@ -123,8 +119,6 @@ export class ChatGateway {
         chatRoomId: messageDto.chatRoomId,
       },
     });
-    this.server
-      .to(socketNamespaceType.Chat, msg.chatRoomId)
-      .emit('sendMessage', roomMsgs);
+    this.server.to(roomType.Chat, msg.chatRoomId).emit('sendMessage', roomMsgs);
   }
 }
