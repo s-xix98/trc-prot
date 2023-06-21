@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-
 import { Container } from '@/components/Layout/Container';
 import { useSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
-import { BACKEND } from '@/constants';
 
 import { handleMessageDto } from '../types/MessageDto';
 import { chatChannelDto } from '../types/chatChannelDto';
+import { useRoomHistory } from '../api/roomHistory';
 
 import { ChatHistory } from './ChatHistory';
 import { ChatInput } from './ChatInput';
@@ -18,20 +15,10 @@ export const ChatTalkArea = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
-  const [chatHistMsgs, setChatHistMsgs] = useState<handleMessageDto[]>([]);
+  // TODO : storybook が 引数設定してなくて、selectedChannel が undef でくるので一旦、`?` は必要ないはず
+  const { chatHistMsgs, setChatHistMsgs } = useRoomHistory(selectedChannel?.id);
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
-
-  useEffect(() => {
-    axios
-      .get(BACKEND + '/chat/rooms/' + selectedChannel?.id + '/history')
-      .then((res) => {
-        setChatHistMsgs(res.data);
-      })
-      .catch(() => {
-        console.log('room 取得失敗');
-      });
-  }, [selectedChannel]);
 
   const onMessage = (data: handleMessageDto[]) => {
     handleScroll();
