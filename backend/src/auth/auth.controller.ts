@@ -14,19 +14,13 @@ import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
-import { JwtAuthGuard } from './guard/jwt-auth.gurad';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { GoogleAuthGuard } from './guard/google-auth.guard';
 
 @Controller('auth')
 @ApiTags('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  @HttpCode(HttpStatus.OK)
-  @Post('providerLogin')
-  @ApiOperation({ summary: 'providerLogin' })
-  async providerLogin(): Promise<accessToken> {
-    return this.authService.providerLogin();
-  }
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
@@ -50,5 +44,18 @@ export class AuthController {
   @Get('jwtHuga')
   async jwtHuga(): Promise<accessToken> {
     return this.authService.jwtHuga();
+  }
+
+  // googleAuthのエンドポイント
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  // eslint-disable-next-line
+  async googleAuth() {}
+
+  // googleAuthの処理が終わった後のエンドポイント
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async redirect(@Request() req: any): Promise<accessToken> {
+    return this.authService.providerLogin(req.user);
   }
 }
