@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
@@ -17,6 +17,7 @@ const StyledButton = styled.button`
 export const SearchUserOrChannel = () => {
   const { searchedList, searcher } = useSearch<UserInfo>();
   const { focusRef } = useFocus();
+  const [isSearchingUser, setIsSearchingUser] = useState(true);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     searcher('/user/search/', e.target.value);
@@ -26,10 +27,10 @@ export const SearchUserOrChannel = () => {
     <div>
       <Container flexDirection={'column'}>
         <Container flexDirection={'row'}>
-        <StyledButton>
+        <StyledButton onClick={() => setIsSearchingUser(true)}>
         User Search
         </StyledButton>
-        <StyledButton>
+        <StyledButton onClick={() => setIsSearchingUser(false)}>
         room Search
         </StyledButton>
 
@@ -39,11 +40,7 @@ export const SearchUserOrChannel = () => {
             <p key={key}> {user.username}</p>
           ))}
         </ContainerItem>
-        <Input
-          onChangeAct={onChange}
-          placeholder="username"
-          focusRef={focusRef}
-        />
+        <Input focusRef={focusRef} onChangeAct={onChange} placeholder= {isSearchingUser? "username": "roomname"}  />
       </Container>
     </div>
   );
