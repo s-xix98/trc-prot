@@ -3,32 +3,30 @@ import { ChangeEvent } from 'react';
 
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
-import { useSocket } from '@/hooks/useSocket';
-import { socket } from '@/socket';
 import { Input } from '@/components/Elements/Input/Input';
 
-import { searchUserDto } from '../types/SearchUserDto';
 import { UserInfo } from '../types/UserDto';
+import { useSessionAxios } from '../../../hooks/useSessionAxios';
 
 export const SearchUser = () => {
-  const [searchWord, setSearchWord] = useState('');
   const [searchUsers, setSearchUsers] = useState<string[]>([]);
+  const axios = useSessionAxios();
 
-  useSocket('searchUser', (data: UserInfo[]) => {
-    setSearchUsers(data.map((user) => user.username));
-  });
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchWord(e.target.value);
 
     if (e.target.value.length === 0) {
       setSearchUsers([]);
       return;
     }
 
-    const dto: searchUserDto = { searchWord: e.target.value };
-
-    socket.emit('searchUser', dto);
+    axios.get<UserInfo[]>('/user/search/' + e.target.value)
+    .then((res)=>{
+      const users = res.data.map((user: UserInfo) => user.username);
+      setSearchUsers(users);
+    })
+    // TODO とりあえず何もしない エラー表示とか出したいね
+    .catch((err)=> console.log(err));
   };
 
   return (
@@ -40,7 +38,7 @@ export const SearchUser = () => {
             <p key={key}> {user}</p>
           ))}
         </ContainerItem>
-        <Input msg={searchWord} onChangeAct={onChange} placeholder="username" />
+        <Input onChangeAct={onChange} placeholder="username" />
       </Container>
     </div>
   );
