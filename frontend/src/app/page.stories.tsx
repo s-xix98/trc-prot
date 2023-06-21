@@ -80,12 +80,7 @@ export const SendMsg: Story = {
       expect(false);
       return;
     }
-    await userEvent.type(inputElem, 'This is test msg');
-    await userEvent.click(screen.getByText('Send'));
-
-    // SEND ボタンに アニメーションがあり、スクショのタイミングによって
-    // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
-    await userEvent.click(canvas.getByText('Footer'));
+    await userEvent.type(inputElem, 'This is test msg\n');
 
     await sleep(1000);
   },
@@ -115,13 +110,8 @@ export const SendSomeMsg: Story = {
       return;
     }
     for (let i = 0; i < 30; i++) {
-      await userEvent.type(inputElem, `This is test msg ${i}`);
-      await userEvent.click(screen.getByText('Send'));
+      await userEvent.type(inputElem, `This is test msg ${i}\n`);
     }
-
-    // SEND ボタンに アニメーションがあり、スクショのタイミングによって
-    // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
-    await userEvent.click(canvas.getByText('Footer'));
 
     await sleep(1000);
   },
