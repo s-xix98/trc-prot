@@ -6,6 +6,13 @@ import './globals.css';
 // import { Inter } from 'next/font/google';
 
 import StyledComponentsRegistry from '../lib/registry';
+import { useEffect } from 'react';
+import { useSessionAxios } from '@/hooks/useSessionAxios';
+import { UserInfo } from '@/features/user/types/UserDto';
+import { BACKEND } from '@/constants';
+import { useSetAtom } from 'jotai';
+import { userInfoAtom } from '@/stores/jotai';
+import { usePathname } from 'next/navigation';
 // const inter = Inter({ subsets: ['latin'] });
 
 // client sideだとエラー出るので、一旦コメントアウト
@@ -19,6 +26,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const axios = useSessionAxios();
+  const setUserInfo = useSetAtom(userInfoAtom);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    axios.get<UserInfo>(BACKEND + '/user/me').then((res) => {
+      setUserInfo(res.data);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }, [axios, setUserInfo, pathname]);
+
   return (
     <html lang="en">
       {/* <body className={inter.className}> */}
