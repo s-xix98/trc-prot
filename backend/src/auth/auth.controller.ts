@@ -16,6 +16,7 @@ import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
+import { FtAuthGuard } from './guard/ft-auth.guard';
 
 @Controller('auth')
 @ApiTags('/auth')
@@ -55,7 +56,18 @@ export class AuthController {
   // googleAuthの処理が終わった後のエンドポイント
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  async redirect(@Request() req: any): Promise<accessToken> {
+  async GoogleRedirect(@Request() req: any): Promise<accessToken> {
+    return this.authService.providerLogin(req.user);
+  }
+
+  @Get('42')
+  @UseGuards(FtAuthGuard)
+  // eslint-disable-next-line
+  async ftAuth() {}
+
+  @Get('42/redirect')
+  @UseGuards(FtAuthGuard)
+  async ftRedirect(@Request() req: any): Promise<accessToken> {
     return this.authService.providerLogin(req.user);
   }
 }
