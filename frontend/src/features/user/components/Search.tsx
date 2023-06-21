@@ -14,7 +14,6 @@ import { isUserInfo, isChatChannelDto } from '@/utils/typeGuars';
 
 const StyledButton = styled.button`
   align-items: flex-start;
-  height: 50px;
 `
 
 export const SearchUserOrChannel = () => {
@@ -33,15 +32,13 @@ export const SearchUserOrChannel = () => {
   return (
     <div>
       <Container flexDirection={'column'}>
-        <Container flexDirection={'row'}>
+        <ContainerItem>
         <StyledButton onClick={() => setIsSearchingUser(true)}>
         User Search
         </StyledButton>
         <StyledButton onClick={() => setIsSearchingUser(false)}>
         room Search
         </StyledButton>
-
-        </Container>
         <ContainerItem overflowY="scroll">
           {searchedList.map((elm, key) => {
             if (isUserInfo(elm)){
