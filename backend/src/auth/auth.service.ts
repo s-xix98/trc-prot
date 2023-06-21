@@ -1,14 +1,14 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-import { accessToken } from './types/auth.types';
+import { accessToken, authUser } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -16,14 +16,38 @@ export class AuthService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async providerLogin(): Promise<accessToken> {
-    const mockUserData = {
-      id: 'mockId',
-      username: 'mockUsername',
-    };
+  async providerLogin(auser: authUser): Promise<accessToken> {
+    const user = await this.prismaService.auth.findUnique({
+      include: {
+        user: true,
+      },
+      where: {
+        providerName_providerId: {
+          providerName: auser.provider,
+          providerId: auser.id,
+        },
+      },
+    });
+    // 既に登録されている場合
+    if (user) {
+      return { jwt: await this.generateJwt(user.user.id, user.user.username) };
+    }
 
-    const jwt = await this.generateJwt(mockUserData.id, mockUserData.username);
-    return { jwt };
+    // まだ登録されていない場合
+    const newUser = await this.prismaService.user.create({
+      data: {
+        email: auser.email,
+
+        auth: {
+          create: {
+            providerName: auser.provider,
+            providerId: auser.id,
+          },
+        },
+      },
+    });
+
+    return { jwt: await this.generateJwt(newUser.id, newUser.username) };
   }
 
   async generateJwt(userId: string, username: string): Promise<string> {
@@ -35,7 +59,7 @@ export class AuthService {
     return this.jwtService.signAsync(payload, { expiresIn: '1h' });
   }
 
-  async signUp(dto: signUpDto): Promise<User> {
+  async signUp(dto: signUpDto): Promise<accessToken> {
     console.log(dto);
 
     const hashedPassword = await bcrypt.hash(dto.hashedPassword, 10);
@@ -48,7 +72,7 @@ export class AuthService {
           hashedPassword: hashedPassword,
         },
       });
-      return user;
+      return { jwt: await this.generateJwt(user.id, user.username) };
     } catch (e) {
       console.log(e);
       // email,usernameが被った時のエラーは'P2002'が帰ってくる
@@ -62,7 +86,7 @@ export class AuthService {
     }
   }
   // TODO authのエラーを追加する
-  async login(dto: loginDto): Promise<User> {
+  async login(dto: loginDto): Promise<accessToken> {
     console.log(dto);
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -89,7 +113,7 @@ export class AuthService {
       throw new ForbiddenException('Password incorrect');
     }
     console.log('OK');
-    return user;
+    return { jwt: await this.generateJwt(user.id, user.username) };
   }
 
   async jwtHuga(): Promise<accessToken> {
