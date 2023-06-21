@@ -3,11 +3,12 @@ import { ChangeEvent } from 'react';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
 import { Input } from '@/components/Elements/Input/Input';
+
 import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
 
 export const SearchUser = () => {
-  const {searchedList, searcher } = useSearch<UserInfo>();
+  const { searchedList, searcher } = useSearch<UserInfo>();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     searcher('/user/search/', e.target.value);

@@ -1,6 +1,6 @@
-
-import { useSessionAxios } from '../../../hooks/useSessionAxios';
 import { useState } from 'react';
+
+import { useSessionAxios } from '@/hooks/useSessionAxios';
 
 export const useSearch = <T>() => {
   const [searchedList, setSearchList] = useState<T[]>([]);
@@ -20,5 +20,5 @@ export const useSearch = <T>() => {
       .catch((err) => console.log(err));
   };
 
-  return {searchedList, searcher};
+  return { searchedList, searcher };
 };
