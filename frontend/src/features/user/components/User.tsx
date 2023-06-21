@@ -11,7 +11,7 @@ import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 
 export const User = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [userInfo] = useAtom(userInfoAtom);
   const { modalIsOpen, openModal, closeModal } = useModal();
 
   const UserInputArea = () => {

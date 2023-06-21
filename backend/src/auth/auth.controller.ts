@@ -9,7 +9,6 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 
 import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
