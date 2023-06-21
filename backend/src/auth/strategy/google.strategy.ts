@@ -29,7 +29,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ): Promise<authUser> {
     const { id, emails } = profile;
     console.log('id', id);
-    console.log('id', emails);
+    console.log('emails', emails);
 
     // emailは100%あるはずだが、undefinedの可能性があるので
     if (!emails) {
