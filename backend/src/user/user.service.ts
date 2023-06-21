@@ -42,4 +42,9 @@ export class UserService {
     }
     return user;
   }
+
+  async search(searchWord: string) {
+
+    return searchWord;
+  }
 }
