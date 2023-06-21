@@ -18,6 +18,7 @@ export const Input = ({
         multiline
         variant="standard"
         placeholder={placeholder}
+        autoFocus={true}
         sx={{
           '& .MuiInputBase-input': {
             color: '#33ff33', // Text color
