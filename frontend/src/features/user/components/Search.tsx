@@ -3,12 +3,14 @@ import { ChangeEvent } from 'react';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
 import { Input } from '@/components/Elements/Input/Input';
+import { useFocus } from '@/hooks/useFocus';
 
 import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
 
 export const SearchUser = () => {
   const { searchedList, searcher } = useSearch<UserInfo>();
+  const { focusRef } = useFocus();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     searcher('/user/search/', e.target.value);
@@ -23,7 +25,11 @@ export const SearchUser = () => {
             <p key={key}> {user.username}</p>
           ))}
         </ContainerItem>
-        <Input onChangeAct={onChange} placeholder="username" />
+        <Input
+          onChangeAct={onChange}
+          placeholder="username"
+          focusRef={focusRef}
+        />
       </Container>
     </div>
   );

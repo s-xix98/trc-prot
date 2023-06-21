@@ -1,3 +1,4 @@
+import { RefObject } from 'react';
 import { ChangeEvent } from 'react';
 import TextField from '@mui/material/TextField';
 
@@ -5,10 +6,12 @@ export const Input = ({
   msg,
   onChangeAct,
   placeholder,
+  focusRef = undefined,
 }: {
   msg?: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string | undefined;
+  focusRef?: RefObject<HTMLTextAreaElement> | undefined;
 }) => {
   return (
     <>
@@ -18,6 +21,7 @@ export const Input = ({
         multiline
         variant="standard"
         placeholder={placeholder}
+        autoFocus={true}
         sx={{
           '& .MuiInputBase-input': {
             color: '#33ff33', // Text color
@@ -30,6 +34,7 @@ export const Input = ({
         value={msg}
         onChange={onChangeAct}
         style={{ width: '100%' }}
+        inputRef={focusRef}
       />
     </>
   );
