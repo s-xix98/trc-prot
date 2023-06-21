@@ -11,6 +11,7 @@ import { tokenStorage } from '@/utils/tokenStorage';
 import { Input } from '@/components/Elements/Input/Input';
 
 import { TerminalOutput } from './TerminalOutput';
+import { useRouter } from 'next/navigation';
 
 export const Terminal = ({
   commandElemMap,
@@ -26,7 +27,9 @@ export const Terminal = ({
 
   const { modalIsOpen, openModal, closeModal } = useModal();
 
-  const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
+  const router = useRouter();
+
+  const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value === '\n') {
       return;
     }
@@ -37,7 +40,7 @@ export const Terminal = ({
     if (input === 'logout') {
       setUserInfo(undefined);
       tokenStorage.remove();
-      return;
+      router.push('/login');
     }
 
     const inputElem = <p>&gt;&nbsp;{input}</p>;
