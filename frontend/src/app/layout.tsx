@@ -5,14 +5,17 @@ import './globals.css';
 // Inter コメントアウトしても、特に影響がなかったので一旦コメントアウト
 // import { Inter } from 'next/font/google';
 
-import StyledComponentsRegistry from '../lib/registry';
 import { useEffect } from 'react';
-import { useSessionAxios } from '@/hooks/useSessionAxios';
-import { UserInfo } from '@/features/user/types/UserDto';
-import { BACKEND } from '@/constants';
 import { useSetAtom } from 'jotai';
-import { userInfoAtom } from '@/stores/jotai';
 import { usePathname } from 'next/navigation';
+
+import { useSessionAxios } from '@/hooks/useSessionAxios';
+import { BACKEND } from '@/constants';
+import { userInfoAtom } from '@/stores/jotai';
+
+
+import { UserInfo } from '../features/user/types/UserDto';
+import StyledComponentsRegistry from '../lib/registry';
 // const inter = Inter({ subsets: ['latin'] });
 
 // client sideだとエラー出るので、一旦コメントアウト
@@ -31,11 +34,14 @@ export default function RootLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    axios.get<UserInfo>(BACKEND + '/user/me').then((res) => {
-      setUserInfo(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    axios
+      .get<UserInfo>(BACKEND + '/user/me')
+      .then((res) => {
+        setUserInfo(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [axios, setUserInfo, pathname]);
 
   return (
