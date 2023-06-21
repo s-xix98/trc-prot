@@ -5,12 +5,12 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 import { UserService } from './user.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 @ApiTags('/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   async findMe(@Request() req: any) {
     return this.userService.findOneById(req.user.userId);

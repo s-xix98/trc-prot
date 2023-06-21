@@ -1,9 +1,11 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.gurad';
 
 import { ChatService } from './chat.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('chat')
 @ApiTags('/chat')
 export class ChatController {
