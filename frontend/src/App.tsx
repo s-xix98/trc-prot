@@ -33,8 +33,6 @@ function App() {
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
 
-  useRequireLogin();
-
   // useSocket()
 
   const commandElemMap = new Map<string, JSX.Element>();
