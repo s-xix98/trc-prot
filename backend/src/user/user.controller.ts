@@ -27,4 +27,9 @@ export class UserController {
   async findOne(@Param('username') username: string) {
     return this.userService.findOneByUsername(username);
   }
+
+  @Get('search/:searchWord')
+  async search(@Param('searchWord') searchWord: string) {
+    return this.userService.search(searchWord);
+  }
 }
