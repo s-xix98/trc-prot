@@ -34,31 +34,4 @@ export class EventsGateway {
     }
     return 'Hello world!';
   }
-
-  @SubscribeMessage('getPastMessages')
-  async handleGetPastMessages(client: Socket, authorId: string) {
-    console.log('getPastMessages');
-    // Userテーブルのidでそのuserのmsgデータを全て取得
-    const pastMessages = await this.prisma.message.findMany({
-      where: {
-        userId: authorId,
-      },
-    });
-    console.log('mid', authorId);
-    const user = await this.prisma.user.findUnique({
-      where: {
-        id: authorId,
-      },
-    });
-    console.log(user);
-    client.emit(
-      'getPastMessages',
-      pastMessages.map((m) => {
-        return {
-          username: user?.username,
-          msg: m.content,
-        };
-      }),
-    );
-  }
 }

@@ -11,4 +11,8 @@ export default meta;
 
 type Story = StoryObj<typeof ChatChannelArea>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+  args: {
+    channels: [],
+  },
+};
