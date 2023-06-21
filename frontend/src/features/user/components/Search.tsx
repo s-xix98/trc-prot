@@ -7,6 +7,12 @@ import { useFocus } from '@/hooks/useFocus';
 
 import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
+import styled from 'styled-components';
+
+const StyledButton = styled.button`
+  align-items: flex-start;
+  height: 50px;
+`
 
 export const SearchUserOrChannel = () => {
   const { searchedList, searcher } = useSearch<UserInfo>();
@@ -20,16 +26,13 @@ export const SearchUserOrChannel = () => {
     <div>
       <Container flexDirection={'column'}>
         <Container flexDirection={'row'}>
-        <div>
-        <button>
+        <StyledButton>
         User Search
-        </button>
-        </div>
-        <div>
-        <button>
+        </StyledButton>
+        <StyledButton>
         room Search
-        </button>
-        </div>
+        </StyledButton>
+
         </Container>
         <ContainerItem overflowY="scroll">
           {searchedList.map((user: UserInfo, key: number) => (
