@@ -1,4 +1,8 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig, AxiosError } from 'axios';
+import axios, {
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosError,
+} from 'axios';
 import { useRouter } from 'next/navigation';
 
 import { tokenStorage } from '@/utils/tokenStorage';

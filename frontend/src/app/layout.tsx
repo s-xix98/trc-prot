@@ -13,7 +13,6 @@ import { useSessionAxios } from '@/hooks/useSessionAxios';
 import { BACKEND } from '@/constants';
 import { userInfoAtom } from '@/stores/jotai';
 
-
 import { UserInfo } from '../features/user/types/UserDto';
 import StyledComponentsRegistry from '../lib/registry';
 // const inter = Inter({ subsets: ['latin'] });

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { useAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
@@ -11,7 +12,6 @@ import { tokenStorage } from '@/utils/tokenStorage';
 import { Input } from '@/components/Elements/Input/Input';
 
 import { TerminalOutput } from './TerminalOutput';
-import { useRouter } from 'next/navigation';
 
 export const Terminal = ({
   commandElemMap,
