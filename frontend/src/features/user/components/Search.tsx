@@ -7,7 +7,10 @@ import { useFocus } from '@/hooks/useFocus';
 
 import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
+import { chatChannelDto } from '../../chat/types/chatChannelDto';
 import styled from 'styled-components';
+import { isUserInfo, isChatChannelDto } from '@/utils/typeGuars';
+
 
 const StyledButton = styled.button`
   align-items: flex-start;
@@ -15,12 +18,16 @@ const StyledButton = styled.button`
 `
 
 export const SearchUserOrChannel = () => {
-  const { searchedList, searcher } = useSearch<UserInfo>();
   const { focusRef } = useFocus();
+  const { searchedList, searcher } = useSearch<UserInfo | chatChannelDto>();
   const [isSearchingUser, setIsSearchingUser] = useState(true);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    searcher('/user/search/', e.target.value);
+    if(isSearchingUser){
+      searcher('/user/search/', e.target.value);
+    } else {
+      searcher('/chat/search/', e.target.value);
+    }
   };
 
   return (
@@ -36,9 +43,13 @@ export const SearchUserOrChannel = () => {
 
         </Container>
         <ContainerItem overflowY="scroll">
-          {searchedList.map((user: UserInfo, key: number) => (
-            <p key={key}> {user.username}</p>
-          ))}
+          {searchedList.map((elm, key) => {
+            if (isUserInfo(elm)){
+              return <p key={key}> {elm.username}</p>
+            } else if (isChatChannelDto(elm)){
+              return <p key={key}> {elm.roomName}</p>
+            }
+          })}
         </ContainerItem>
         <Input focusRef={focusRef} onChangeAct={onChange} placeholder= {isSearchingUser? "username": "roomname"}  />
       </Container>
