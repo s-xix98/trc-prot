@@ -19,7 +19,18 @@ export const SearchUserOrChannel = () => {
   return (
     <div>
       <Container flexDirection={'column'}>
-        <div>User Search</div>
+        <Container flexDirection={'row'}>
+        <div>
+        <button>
+        User Search
+        </button>
+        </div>
+        <div>
+        <button>
+        room Search
+        </button>
+        </div>
+        </Container>
         <ContainerItem overflowY="scroll">
           {searchedList.map((user: UserInfo, key: number) => (
             <p key={key}> {user.username}</p>
