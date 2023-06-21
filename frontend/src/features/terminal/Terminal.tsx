@@ -10,6 +10,7 @@ import { userInfoAtom } from '@/stores/jotai';
 
 import { TerminalInput } from './TerminalInput';
 import { TerminalOutput } from './TerminalOutput';
+import { tokenStorage } from '@/utils/tokenStorage';
 
 export const Terminal = ({
   commandElemMap,
@@ -35,6 +36,7 @@ export const Terminal = ({
     }
     if (input === 'logout') {
       setUserInfo(undefined);
+      tokenStorage.remove();
       return;
     }
 
