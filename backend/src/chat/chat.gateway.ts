@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { MessageDto } from './dto/message.dto';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { socketNamespaceType } from 'src/wsocket/utils';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -49,7 +50,7 @@ export class ChatGateway {
     });
 
     rooms.forEach((room) => {
-      client.join(room.id.toString());
+      this.server.JoinRoom(client, socketNamespaceType.Chat, room.id);
       client.emit('addRoom', room);
     });
   }
@@ -71,8 +72,9 @@ export class ChatGateway {
         chatRoomId: createdRoom.id,
       },
     });
-    client.join(createdRoom.id.toString());
-    this.server.emit('addRoom', createdRoom);
+    this.server.JoinRoom(client, socketNamespaceType.Chat, createdRoom.id);
+    client.emit('addRoom', createdRoom);
+    client.broadcast.emit('addRoom', createdRoom);
   }
 
   @SubscribeMessage('joinChannel')
@@ -92,11 +94,8 @@ export class ChatGateway {
       },
     });
 
-    client.join(addedUser.chatRoomId.toString());
-
-    this.server
-      .to(addedUser.chatRoomId.toString())
-      .emit('joinChannel', addedUser);
+    this.server.JoinRoom(client, socketNamespaceType.Chat, addedUser.chatRoomId);
+    this.server.to(socketNamespaceType.Chat, addedUser.chatRoomId).emit('joinChannel', addedUser);
   }
 
   @SubscribeMessage('sendMessage')
@@ -121,6 +120,6 @@ export class ChatGateway {
         chatRoomId: messageDto.chatRoomId,
       },
     });
-    this.server.to(msg.chatRoomId.toString()).emit('sendMessage', roomMsgs);
+  this.server.to(socketNamespaceType.Chat, msg.chatRoomId).emit('sendMessage', roomMsgs);
   }
 }
