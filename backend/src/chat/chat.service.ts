@@ -30,6 +30,15 @@ export class ChatService {
   }
 
   async search(searchWord: string) {
-    return searchWord;
+    const partialMatchRooms = await this.prismaService.chatRoom.findMany({
+      where: {
+        roomName: {
+          contains: searchWord,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    return partialMatchRooms;
   }
 }
