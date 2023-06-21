@@ -9,7 +9,6 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 
 import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
@@ -31,14 +30,14 @@ export class AuthController {
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
-  async signUp(@Body() dto: signUpDto): Promise<User> {
+  async signUp(@Body() dto: signUpDto): Promise<accessToken> {
     return this.authService.signUp(dto);
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @ApiOperation({ summary: 'login nori' })
-  async login(@Body() dto: loginDto): Promise<User> {
+  async login(@Body() dto: loginDto): Promise<accessToken> {
     return this.authService.login(dto);
   }
 

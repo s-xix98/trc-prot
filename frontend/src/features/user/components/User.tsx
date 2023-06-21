@@ -11,7 +11,7 @@ import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 
 export const User = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [userInfo] = useAtom(userInfoAtom);
   const { modalIsOpen, openModal, closeModal } = useModal();
 
   const UserInputArea = () => {
@@ -36,9 +36,9 @@ export const User = ({ children }: { children: ReactNode }) => {
     } else {
       return (
         <div style={{ margin: '10px auto 10px auto' }}>
-          <SignUpForm setUserInfo={(v) => setUserInfo(v)} />
+          <SignUpForm />
           <div style={{ margin: '5px 10px auto auto', textAlign: 'right' }}>
-            <LoginForm setUserInfo={(v) => setUserInfo(v)} />
+            <LoginForm />
           </div>
         </div>
       );

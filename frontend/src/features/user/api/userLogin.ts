@@ -1,27 +1,36 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
+import { useSetAtom } from 'jotai';
+
+import { tokenStorage } from '@/utils/tokenStorage';
+import { accessToken } from '@/app/login/types/accessToken';
+import { userInfoAtom } from '@/stores/jotai';
 
 import { LoginDto, UserInfo } from '../types/UserDto';
 
+import { useSessionAxios } from '../../../hooks/useSessionAxios';
 import { BACKEND } from '../../../constants';
 
-export const userLogin = async (
-  email: string,
-  passwd: string,
-  setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>,
-) => {
-  console.log('post');
-  const url = BACKEND + '/auth/login';
-  const loginDto: LoginDto = { email: email, hashedPassword: passwd };
+export const useLogin = () => {
+  const setUserInfo = useSetAtom(userInfoAtom);
+  const sessionAxios = useSessionAxios();
 
-  // postでブロックしても問題ないならasync awaitでもいいかも
-  axios
-    .post<UserInfo>(url, loginDto)
-    .then((res: AxiosResponse<UserInfo>) => {
-      console.log('login res:', res);
-      setUserInfo(res.data);
-    })
-    .catch((err) => {
-      // TODO とりあえずなにもしない
-      console.log('login err:', err);
-    });
+  const login = async (email: string, pass: string) => {
+    const loginDto: LoginDto = { email: email, hashedPassword: pass };
+
+    try {
+      const res = await axios.post<accessToken>(
+        BACKEND + '/auth/login',
+        loginDto,
+      );
+      tokenStorage.set(res.data.jwt);
+
+      const user = await sessionAxios.get<UserInfo>('/user/me');
+      setUserInfo(user.data);
+      // TODO とりあえずlogだけ
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  return login;
 };

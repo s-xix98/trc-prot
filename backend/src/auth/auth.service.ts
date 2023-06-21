@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -35,7 +34,7 @@ export class AuthService {
     return this.jwtService.signAsync(payload, { expiresIn: '1h' });
   }
 
-  async signUp(dto: signUpDto): Promise<User> {
+  async signUp(dto: signUpDto): Promise<accessToken> {
     console.log(dto);
 
     const hashedPassword = await bcrypt.hash(dto.hashedPassword, 10);
@@ -48,7 +47,7 @@ export class AuthService {
           hashedPassword: hashedPassword,
         },
       });
-      return user;
+      return { jwt: await this.generateJwt(user.id, user.username) };
     } catch (e) {
       console.log(e);
       // email,usernameが被った時のエラーは'P2002'が帰ってくる
@@ -62,7 +61,7 @@ export class AuthService {
     }
   }
   // TODO authのエラーを追加する
-  async login(dto: loginDto): Promise<User> {
+  async login(dto: loginDto): Promise<accessToken> {
     console.log(dto);
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -89,7 +88,7 @@ export class AuthService {
       throw new ForbiddenException('Password incorrect');
     }
     console.log('OK');
-    return user;
+    return { jwt: await this.generateJwt(user.id, user.username) };
   }
 
   async jwtHuga(): Promise<accessToken> {
