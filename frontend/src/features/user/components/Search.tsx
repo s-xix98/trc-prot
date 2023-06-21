@@ -8,7 +8,7 @@ import { useFocus } from '@/hooks/useFocus';
 import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
 
-export const SearchUser = () => {
+export const SearchUserOrChannel = () => {
   const { searchedList, searcher } = useSearch<UserInfo>();
   const { focusRef } = useFocus();
 
