@@ -1,27 +1,25 @@
 import { FormEventHandler } from 'react';
 
-import { userLogin } from '../api/userLogin';
-import { UserInfo } from '../types/UserDto';
+import { useLogin } from '../api/userLogin';
 
-export const LoginForm = ({
-  setUserInfo,
-}: {
-  setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | undefined>>;
-}) => {
+
+export const LoginForm = () => {
+  const login = useLogin();
+
   const handleLogin: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log('loginButton');
     const email = (event.target as HTMLFormElement).email.value;
     const password = (event.target as HTMLFormElement).password.value;
-    userLogin(email, password, setUserInfo);
+    login(email, password);
   };
 
   // TODO : 消す
   const loginAsHuga = () => {
-    userLogin('huga@example.com', 'hugahuga', setUserInfo);
+    login('huga@example.com', 'hugahuga');
   };
   const loginAsPiyo = () => {
-    userLogin('piyo@example.com', 'piyopiyo', setUserInfo);
+    login('piyo@example.com', 'piyopiyo');
   };
 
   return (

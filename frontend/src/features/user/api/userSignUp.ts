@@ -12,35 +12,6 @@ import { UserInfo } from '../types/UserDto';
 import { useSetAtom } from 'jotai';
 import { userInfoAtom } from '@/stores/jotai';
 
-export const userSignUp = async (
-  username: string,
-  email: string,
-  passwd: string,
-  setUserInfo: (v: UserInfo) => void,
-) => {
-  console.log('post /auth/signup');
-  const url = BACKEND + '/auth/signup';
-
-  // TODO validation フロントとバックどっちの責任？
-  const signUpDto: SignUpDto = {
-    username: username,
-    email: email,
-    hashedPassword: passwd,
-  };
-
-  // postでブロックしても問題ないならasync awaitでもいいかも
-  axios
-    .post<UserInfo>(url, signUpDto)
-    .then((res: AxiosResponse<UserInfo>) => {
-      console.log('signup res:', res);
-      setUserInfo(res.data);
-    })
-    .catch((err) => {
-      // TODO とりあえずなにもしない
-      console.log('signup err:', err);
-    });
-};
-
 export const useSignUp = () => {
   const setUserInfo = useSetAtom(userInfoAtom);
   const sessionAxios = useSessionAxios();
