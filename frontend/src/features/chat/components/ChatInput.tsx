@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ChangeEvent } from 'react';
 
 import { Input } from '@/components/Elements/Input/Input';
-import { SendButton } from '@/components/Elements/Button/SendButton';
 import { Container } from '@/components/Layout/Container';
 
 import { chatChannelDto } from '../types/chatChannelDto';
@@ -37,11 +36,8 @@ export const ChatInput = ({
     <>
       <div>
         <Container>
-          <Container>
-            <p style={{ margin: 'auto' }}>&nbsp;&gt;&nbsp;</p>
-            <Input msg={msg} onChangeAct={onChangeAct} />
-          </Container>
-          <SendButton sendBtnAct={sendBtnAct} />
+          <p style={{ margin: 'auto' }}>&nbsp;&gt;&nbsp;</p>
+          <Input msg={msg} onChangeAct={onChangeAct} />
         </Container>
       </div>
     </>
