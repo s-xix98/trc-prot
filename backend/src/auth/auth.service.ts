@@ -5,9 +5,10 @@ import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-import { accessToken } from './types/auth.types';
+import { accessToken, authUser } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -15,14 +16,38 @@ export class AuthService {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async providerLogin(): Promise<accessToken> {
-    const mockUserData = {
-      id: 'mockId',
-      username: 'mockUsername',
-    };
+  async providerLogin(auser: authUser): Promise<accessToken> {
+    const user = await this.prismaService.auth.findUnique({
+      include: {
+        user: true,
+      },
+      where: {
+        providerName_providerId: {
+          providerName: auser.provider,
+          providerId: auser.id,
+        },
+      },
+    });
+    // 既に登録されている場合
+    if (user) {
+      return { jwt: await this.generateJwt(user.user.id, user.user.username) };
+    }
 
-    const jwt = await this.generateJwt(mockUserData.id, mockUserData.username);
-    return { jwt };
+    // まだ登録されていない場合
+    const newUser = await this.prismaService.user.create({
+      data: {
+        email: auser.email,
+
+        auth: {
+          create: {
+            providerName: auser.provider,
+            providerId: auser.id,
+          },
+        },
+      },
+    });
+
+    return { jwt: await this.generateJwt(newUser.id, newUser.username) };
   }
 
   async generateJwt(userId: string, username: string): Promise<string> {
