@@ -6,7 +6,7 @@ export const Input = ({
   onChangeAct,
   placeholder,
 }: {
-  msg: string;
+  msg?: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string | undefined;
 }) => {
