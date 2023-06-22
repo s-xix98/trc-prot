@@ -13,14 +13,6 @@ export const LoginForm = () => {
     login(email, password);
   };
 
-  // TODO : 消す
-  const loginAsHuga = () => {
-    login('huga@example.com', 'hugahuga');
-  };
-  const loginAsPiyo = () => {
-    login('piyo@example.com', 'piyopiyo');
-  };
-
   return (
     <>
       <form onSubmit={handleLogin}>
@@ -38,10 +30,6 @@ export const LoginForm = () => {
         />
         <input type="submit" value="Login" />
       </form>
-      <div style={{ padding: '3px' }}>
-        <button onClick={loginAsHuga}>login as fuga</button>
-        <button onClick={loginAsPiyo}>login as piyo</button>
-      </div>
     </>
   );
 };

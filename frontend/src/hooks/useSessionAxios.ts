@@ -27,11 +27,12 @@ const handleUnauthorizedResponse = async (res: AxiosResponse) => {
   return res;
 };
 
+const customAxios = axios.create({
+  baseURL: BACKEND,
+});
+
 export const useSessionAxios = () => {
   const router = useRouter();
-  const customAxios = axios.create({
-    baseURL: BACKEND,
-  });
 
   // eslint-disable-next-line
   const routeOnAuthErr = (err: any) => {
