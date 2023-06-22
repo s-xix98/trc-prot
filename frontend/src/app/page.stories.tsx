@@ -38,7 +38,7 @@ export const SelectChannel: Story = {
       expect(false);
       return;
     }
-    await userEvent.type(terminalInputElem, 'p\n');
+    await userEvent.type(terminalInputElem, './chat\n');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -56,7 +56,7 @@ export const SendMsg: Story = {
       expect(false);
       return;
     }
-    await userEvent.type(terminalInputElem, 'p\n');
+    await userEvent.type(terminalInputElem, './chat\n');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -85,7 +85,7 @@ export const SendSomeMsg: Story = {
       expect(false);
       return;
     }
-    await userEvent.type(terminalInputElem, 'p\n');
+    await userEvent.type(terminalInputElem, './chat\n');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
