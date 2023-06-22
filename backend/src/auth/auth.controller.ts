@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
   Request,
+  Redirect,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -18,10 +19,12 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { FtAuthGuard } from './guard/ft-auth.guard';
 
+import { ConfigService } from '@nestjs/config';
+
 @Controller('auth')
 @ApiTags('/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly configService:ConfigService) {}
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
@@ -56,8 +59,11 @@ export class AuthController {
   // googleAuthの処理が終わった後のエンドポイント
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  async GoogleRedirect(@Request() req: any): Promise<accessToken> {
-    return this.authService.providerLogin(req.user);
+  @Redirect()
+  async GoogleRedirect(@Request() req: any) {
+    const frontUrl = this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
+    const token = await this.authService.providerLogin(req.user);
+    return {url: frontUrl + '/login?access_token=' + token.jwt};
   }
 
   @Get('42')
@@ -67,7 +73,10 @@ export class AuthController {
 
   @Get('42/redirect')
   @UseGuards(FtAuthGuard)
-  async ftRedirect(@Request() req: any): Promise<accessToken> {
-    return this.authService.providerLogin(req.user);
+  @Redirect()
+  async ftRedirect(@Request() req: any) {
+    const frontUrl = this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
+    const token = await this.authService.providerLogin(req.user);
+    return {url: frontUrl + '/login?access_token=' + token.jwt};
   }
 }
