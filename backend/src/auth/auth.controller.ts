@@ -10,6 +10,7 @@ import {
   Redirect,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
@@ -19,12 +20,13 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { FtAuthGuard } from './guard/ft-auth.guard';
 
-import { ConfigService } from '@nestjs/config';
-
 @Controller('auth')
 @ApiTags('/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly configService:ConfigService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
@@ -61,9 +63,10 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Redirect()
   async GoogleRedirect(@Request() req: any) {
-    const frontUrl = this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
+    const frontUrl =
+      this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
     const token = await this.authService.providerLogin(req.user);
-    return {url: frontUrl + '/login?access_token=' + token.jwt};
+    return { url: frontUrl + '/login?access_token=' + token.jwt };
   }
 
   @Get('42')
@@ -75,8 +78,9 @@ export class AuthController {
   @UseGuards(FtAuthGuard)
   @Redirect()
   async ftRedirect(@Request() req: any) {
-    const frontUrl = this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
+    const frontUrl =
+      this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
     const token = await this.authService.providerLogin(req.user);
-    return {url: frontUrl + '/login?access_token=' + token.jwt};
+    return { url: frontUrl + '/login?access_token=' + token.jwt };
   }
 }

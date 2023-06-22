@@ -1,10 +1,12 @@
-import { useSessionAxios } from "@/hooks/useSessionAxios";
-import { tokenStorage } from "@/utils/tokenStorage";
-import { BACKEND } from "@/constants";
-import { UserInfo } from "../types/UserDto";
-import { useSetAtom } from "jotai";
-import { userInfoAtom } from "@/stores/jotai";
-import { useEffect } from "react";
+import { useSetAtom } from 'jotai';
+import { useEffect } from 'react';
+
+import { useSessionAxios } from '@/hooks/useSessionAxios';
+import { tokenStorage } from '@/utils/tokenStorage';
+import { BACKEND } from '@/constants';
+import { userInfoAtom } from '@/stores/jotai';
+
+import { UserInfo } from '../types/UserDto';
 
 export const useAuthLogin = () => {
   const axios = useSessionAxios();
@@ -20,21 +22,21 @@ export const useAuthLogin = () => {
 
     tokenStorage.set(token);
 
-    axios.get<UserInfo>('/user/me')
-    .then((res) => {
-      console.log(res.data);
-      setUserInfo(res.data);
-      // TODO とりあえずlogだけ
-      }).catch((err) => {
+    axios
+      .get<UserInfo>('/user/me')
+      .then((res) => {
+        console.log(res.data);
+        setUserInfo(res.data);
+        // TODO とりあえずlogだけ
+      })
+      .catch((err) => {
         console.log(err);
-    });
-
+      });
   }, [axios, setUserInfo]);
 
   const login = (path: string) => {
     window.location.href = BACKEND + path;
   };
 
-
   return login;
-}
+};
