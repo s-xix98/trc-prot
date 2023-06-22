@@ -39,8 +39,8 @@ export const User = ({ children }: { children: ReactNode }) => {
           <SignUpForm />
           <div style={{ margin: '5px 10px auto auto', textAlign: 'right' }}>
             <LoginForm />
-            <AuthLogin />
-            <AuthLogin />
+            <AuthLogin provider='42' path='/auth/42' />
+            <AuthLogin provider='google' path='/auth/google' />
           </div>
         </div>
       );

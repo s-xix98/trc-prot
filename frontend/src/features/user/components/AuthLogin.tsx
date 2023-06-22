@@ -1,4 +1,4 @@
 
-export const AuthLogin = () => {
-  return <button> button</button>
+export const AuthLogin = ({provider, path}:{provider:string, path:string}) => {
+  return <button>{provider} {path}</button>
 };
