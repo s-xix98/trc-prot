@@ -1,4 +1,11 @@
+import { useAuthLogin } from "../api/authLogin";
 
 export const AuthLogin = ({provider, path}:{provider:string, path:string}) => {
-  return <button>{provider} {path}</button>
+  const login = useAuthLogin();
+
+  const onClick = () => {
+    login(path);
+  };
+
+  return <button onClick={onClick}>{provider}</button>
 };
