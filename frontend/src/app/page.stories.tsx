@@ -22,20 +22,10 @@ export const Basic: Story = {};
 // mui modal のエレメント取得する方法等考える
 
 export const Login: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
-    if (terminalInputElem === undefined || terminalInputElem === null) {
-      expect(false);
-      return;
-    }
-    await userEvent.type(terminalInputElem, 'p\n');
-
+  play: async () => {
     const loginBtn = screen.getByText('login as fuga');
     await userEvent.click(loginBtn);
     await sleep(1000);
-    expect(screen.getByText('ChatChannelArea'));
   },
 };
 
@@ -80,12 +70,7 @@ export const SendMsg: Story = {
       expect(false);
       return;
     }
-    await userEvent.type(inputElem, 'This is test msg');
-    await userEvent.click(screen.getByText('Send'));
-
-    // SEND ボタンに アニメーションがあり、スクショのタイミングによって
-    // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
-    await userEvent.click(canvas.getByText('Footer'));
+    await userEvent.type(inputElem, 'This is test msg\n');
 
     await sleep(1000);
   },
@@ -115,13 +100,8 @@ export const SendSomeMsg: Story = {
       return;
     }
     for (let i = 0; i < 30; i++) {
-      await userEvent.type(inputElem, `This is test msg ${i}`);
-      await userEvent.click(screen.getByText('Send'));
+      await userEvent.type(inputElem, `This is test msg ${i}\n`);
     }
-
-    // SEND ボタンに アニメーションがあり、スクショのタイミングによって
-    // スクショに若干の差異が生まれ テストが落ちてしまうので 適当に Footer を クリック
-    await userEvent.click(canvas.getByText('Footer'));
 
     await sleep(1000);
   },

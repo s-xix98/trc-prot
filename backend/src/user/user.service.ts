@@ -42,4 +42,16 @@ export class UserService {
     }
     return user;
   }
+
+  async search(searchWord: string) {
+    const partialMatchUsers = await this.prisma.user.findMany({
+      where: {
+        username: {
+          contains: searchWord,
+          mode: 'insensitive',
+        },
+      },
+    });
+    return partialMatchUsers;
+  }
 }
