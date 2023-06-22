@@ -12,6 +12,7 @@ import { SearchUser } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
 import { useRequireLogin } from './hooks/useLogin';
 import { Matching } from './features/game/Matching';
+import { useCurrentUser } from './hooks/useCurrentUser';
 
 const onConnect = () => {
   console.log('socket connect');
@@ -30,6 +31,8 @@ export const PrevApp = () => {
 };
 
 function App() {
+  // TODO : 消す、login ページに飛ぶ前に、ページ見えちゃうの嫌なので一旦
+  const { userInfo } = useCurrentUser();
   const setChannelList = useSetAtom(channelListAtom);
 
   useSocket('addRoom', (data) => {
@@ -57,7 +60,8 @@ function App() {
 
   return (
     <MainLayout>
-      <Terminal commandElemMap={commandElemMap} />
+      {!userInfo && <h1>GO LOGIN PAGE</h1>}
+      {userInfo && <Terminal commandElemMap={commandElemMap} />}
     </MainLayout>
   );
 }
