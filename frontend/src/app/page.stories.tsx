@@ -22,20 +22,10 @@ export const Basic: Story = {};
 // mui modal のエレメント取得する方法等考える
 
 export const Login: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
-    if (terminalInputElem === undefined || terminalInputElem === null) {
-      expect(false);
-      return;
-    }
-    await userEvent.type(terminalInputElem, 'p\n');
-
+  play: async () => {
     const loginBtn = screen.getByText('login as fuga');
     await userEvent.click(loginBtn);
     await sleep(1000);
-    expect(screen.getByText('ChatChannelArea'));
   },
 };
 

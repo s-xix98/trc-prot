@@ -23,3 +23,9 @@ a:link {
 a:visited {
   color: #23aa23;
 }
+
+button {
+  padding: 1px;
+  color: #23aa23;
+  background-color: #252525;
+}
