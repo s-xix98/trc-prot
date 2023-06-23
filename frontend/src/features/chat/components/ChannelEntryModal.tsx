@@ -2,6 +2,7 @@ import { useModal } from "@/hooks/useModal";
 import { chatChannelDto } from "../types/chatChannelDto";
 import { ModalView } from "@/components/Elements/Modal/ModalView";
 import { Container } from "@mui/material";
+import { useJoinChannel } from "../api/joinChannel";
 
 export const ChannelEntryModal = ({
   channelData,
@@ -11,7 +12,11 @@ export const ChannelEntryModal = ({
   key:number
 }) => {
   const {modalIsOpen, openModal, closeModal} = useModal();
+  const {emit} = useJoinChannel();
 
+  const entryRoom = () => {
+    emit(channelData.id);
+  };
   return (
     <Container>
       <ModalView
@@ -19,7 +24,7 @@ export const ChannelEntryModal = ({
       closeModal={closeModal}
       >
         <h1>{channelData.roomName}</h1>
-        <button>入る</button>
+        <button onClick={entryRoom}>入る</button>
         <button>入らない</button>
       </ModalView>
       <p key={key} onClick={openModal}>{channelData.roomName}</p>
