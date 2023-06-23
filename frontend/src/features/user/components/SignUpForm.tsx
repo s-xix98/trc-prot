@@ -27,7 +27,7 @@ export const SignUpForm = () => {
         {errors.email?.message && <span>{errors.email.message}</span>}
         <input {...register('hashedPassword')} placeholder="password" />
         {errors.hashedPassword && <span>{errors.hashedPassword.message}</span>}
-        <input type="submit" />
+        <input type="submit" value="SignUp" />
       </form>
     </>
   );
