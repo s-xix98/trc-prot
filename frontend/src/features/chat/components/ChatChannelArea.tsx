@@ -14,7 +14,6 @@ export const ChatChannelArea = ({
     React.SetStateAction<chatChannelDto | undefined>
   >;
 }) => {
-
   const handleClick = (channel: chatChannelDto) => {
     setSelectedChannel(channel);
   };
