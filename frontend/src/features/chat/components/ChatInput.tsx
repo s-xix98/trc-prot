@@ -36,8 +36,7 @@ export const ChatInput = ({
     <>
       <div>
         <Container>
-          <p style={{ margin: 'auto' }}>&nbsp;&gt;&nbsp;</p>
-          <Input msg={msg} onChangeAct={onChangeAct} />
+          <Input msg={msg} start={"> "} onChangeAct={onChangeAct} />
         </Container>
       </div>
     </>
