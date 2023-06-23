@@ -23,7 +23,7 @@ export class UserController {
     type: String,
     description: 'username',
   })
-  @Get(':username')
+  @Get('profile/:username')
   async findOne(@Param('username') username: string) {
     return this.userService.findOneByUsername(username);
   }
