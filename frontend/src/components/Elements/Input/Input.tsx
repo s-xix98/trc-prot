@@ -1,14 +1,17 @@
 import { RefObject } from 'react';
 import { ChangeEvent } from 'react';
 import TextField from '@mui/material/TextField';
+import { InputAdornment } from '@mui/material';
 
 export const Input = ({
   msg,
+  start = undefined,
   onChangeAct,
   placeholder,
   focusRef = undefined,
 }: {
   msg?: string;
+  start?: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string | undefined;
   focusRef?: RefObject<HTMLTextAreaElement> | undefined;
@@ -30,6 +33,13 @@ export const Input = ({
           '& .MuiInput-underline:after': {
             borderBottomColor: '#33ff33', // 通常時のボーダー色
           },
+        }}
+        InputProps={{
+          startAdornment: start ? (
+            <InputAdornment position="start">
+              <p style={{ color: '#33ff33' }}>{start}</p>
+            </InputAdornment>
+          ) : undefined,
         }}
         value={msg}
         onChange={onChangeAct}
