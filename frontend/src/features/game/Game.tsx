@@ -2,10 +2,11 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import { useInterval } from '@/hooks/useInterval';
+import { socket } from '@/socket';
+import { useSocket } from '@/hooks/useSocket';
 
-import { Ball, Paddle } from './Types';
-import { Keys, keyActions } from './KeyAction';
+import { Ball } from './Types';
+import { GameDto } from './dto/GameDto';
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
@@ -15,168 +16,32 @@ const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.closePath();
 };
 
-const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
-  ctx.beginPath();
-  ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-  ctx.fillStyle = 'black';
-  ctx.fill();
-  ctx.closePath();
-};
-
-const IsInRange = (pos: number, start: number, end: number) => {
-  return start < pos && pos < end;
-};
-
-const HandleGameOver = (ball: Ball, width: number, setGameOver: () => void) => {
-  if (IsInRange(ball.x, ball.radius, width - ball.radius)) {
-    return;
-  }
-  setGameOver();
-};
-
-const UpdateBallPosition = (
-  ball: Ball,
-  leftPaddle: Paddle,
-  rightPaddle: Paddle,
-  width: number,
-  height: number,
-) => {
-  const isLeftPaddleHitByBall = () => {
-    return (
-      ball.x + ball.dx <= ball.radius &&
-      IsInRange(ball.y, leftPaddle.y, leftPaddle.y + leftPaddle.height)
-    );
-  };
-
-  const isRightPaddleHitByBall = () => {
-    return (
-      ball.x + ball.dx >= width - ball.radius &&
-      IsInRange(ball.y, rightPaddle.y, rightPaddle.y + rightPaddle.height)
-    );
-  };
-
-  if (isLeftPaddleHitByBall() || isRightPaddleHitByBall()) {
-    ball.dx = -ball.dx;
-  }
-  if (!IsInRange(ball.y + ball.dy, ball.radius, height - ball.radius)) {
-    ball.dy = -ball.dy;
-  }
-  ball.x += ball.dx;
-  ball.y += ball.dy;
-};
-
 const StyledCanvas = styled.canvas`
   border: 4px solid;
   color: black;
 `;
-
-const HandleKeyActions = (
-  keyInputs: boolean[],
-  leftPaddle: Paddle,
-  rightPaddle: Paddle,
-  canvas: HTMLCanvasElement,
-) => {
-  // 一旦どっちも動かす
-  if (keyInputs[Keys.Up]) {
-    keyActions[Keys.Up](leftPaddle);
-    keyActions[Keys.Up](rightPaddle);
-  }
-  if (keyInputs[Keys.Down]) {
-    keyActions[Keys.Down](leftPaddle, canvas.height);
-    keyActions[Keys.Down](rightPaddle, canvas.height);
-  }
-};
 
 const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = 400;
   const canvasHeight = 400;
   const canvasId = 'canvas';
-  const keyInputs: boolean[] = [];
 
-  const paddleConstants = {
-    height: canvasWidth / 4,
-    width: canvasHeight / 40,
-    speed: canvasHeight / 40,
-  };
-
-  const ball: Ball = {
-    x: canvasWidth / 2,
-    y: canvasHeight / 2,
-    radius: 10,
-    dx: 2,
-    dy: 0.5,
-  };
-
-  const leftPaddle: Paddle = {
-    x: 0,
-    y: canvasHeight / 2 - paddleConstants.height / 2,
-    width: paddleConstants.width,
-    height: paddleConstants.height,
-    speed: paddleConstants.speed,
-  };
-
-  const rightPaddle: Paddle = {
-    x: canvasWidth - 10,
-    y: canvasHeight / 2 - paddleConstants.height / 2,
-    width: paddleConstants.width,
-    height: paddleConstants.height,
-    speed: paddleConstants.speed,
-  };
-
-  // TODO vectorで書き換え
-  useInterval(() => {
+  useSocket('game data', (game: GameDto) => {
+    console.log('game start');
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
-      throw new Error('no canvas');
+      return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    HandleKeyActions(keyInputs, leftPaddle, rightPaddle, canvas);
-    DrawPaddle(ctx, leftPaddle);
-    DrawPaddle(ctx, rightPaddle);
-    DrawBall(ctx, ball);
-    UpdateBallPosition(
-      ball,
-      leftPaddle,
-      rightPaddle,
-      canvas.width,
-      canvas.height,
-    );
-    HandleGameOver(ball, canvas.width, setGameOver);
-  }, 10);
-
-  // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
-  const keyDownHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Up' || e.key === 'ArrowUp') {
-      console.log('press u');
-      keyInputs[Keys.Up] = true;
-    } else if (e.key === 'Down' || e.key === 'ArrowDown') {
-      console.log('press d');
-      keyInputs[Keys.Down] = true;
-    }
-  };
-
-  const keyUpHandler = (e: KeyboardEvent) => {
-    if (e.key === 'Up' || e.key === 'ArrowUp') {
-      console.log('release u');
-      keyInputs[Keys.Up] = false;
-    } else if (e.key === 'Down' || e.key === 'ArrowDown') {
-      console.log('release d');
-      keyInputs[Keys.Down] = false;
-    }
-  };
-
-  // TODO 何処に置くべきか分からん
-  useEffect(() => {
-    document.addEventListener('keydown', keyDownHandler, false);
-    document.addEventListener('keyup', keyUpHandler, false);
-
-    return () => {
-      document.removeEventListener('keydown', keyDownHandler, false);
-      document.removeEventListener('keyup', keyUpHandler, false);
+    const ball: Ball = {
+      x: game.ball.x * canvasWidth,
+      y: game.ball.y * canvasHeight,
+      radius: 10,
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log(ball);
+    DrawBall(ctx, ball);
   });
 
   return (
@@ -191,6 +56,14 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 
 export const Game = () => {
   const [isGameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+    socket.emit('start game');
+    return () => {
+      socket.emit('end game');
+    };
+  }, []);
+
   return (
     <>
       {isGameOver && <h1>GameOver</h1>}

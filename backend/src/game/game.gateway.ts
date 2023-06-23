@@ -111,4 +111,13 @@ export class GameGateway {
     console.log(this.sockUserMap.delete(sock.id));
     console.log(this.sockUserMap.delete(enemySocket.id));
   }
+
+  // stub
+  @SubscribeMessage('start game')
+  StartGame(client: Socket) {
+  }
+
+  @SubscribeMessage('end game')
+  EndGame() {
+  }
 }
