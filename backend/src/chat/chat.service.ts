@@ -28,4 +28,17 @@ export class ChatService {
 
     return roomMsgs;
   }
+
+  async search(searchWord: string) {
+    const partialMatchRooms = await this.prismaService.chatRoom.findMany({
+      where: {
+        roomName: {
+          contains: searchWord,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    return partialMatchRooms;
+  }
 }

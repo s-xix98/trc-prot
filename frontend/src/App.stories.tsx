@@ -4,11 +4,6 @@ import App from './App';
 
 const meta = {
   component: App,
-  parameters: {
-    nextjs: {
-      appDirectory: true,
-    },
-  },
   tags: ['autodocs'],
 } satisfies Meta<typeof App>;
 

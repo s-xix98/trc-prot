@@ -7,6 +7,7 @@ import { useScroll } from '@/hooks/useScroll';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { userInfoAtom } from '@/stores/jotai';
+import { tokenStorage } from '@/utils/tokenStorage';
 
 import { TerminalInput } from './TerminalInput';
 import { TerminalOutput } from './TerminalOutput';
@@ -35,6 +36,7 @@ export const Terminal = ({
     }
     if (input === 'logout') {
       setUserInfo(undefined);
+      tokenStorage.remove();
       return;
     }
 

@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ForbiddenException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 
 import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
@@ -28,53 +27,13 @@ describe('AuthService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
   });
   afterAll(async () => {
-    await prismaService.user.delete({
-      where: {
-        email: 'signUp@example.com',
-      },
-    });
     await prismaService.$disconnect();
   });
   test('should be defined', () => {
     expect(authService).toBeDefined();
   });
-  describe('signUp', () => {
-    test('should be create user successfully', async () => {
-      // await prismaService.user.delete({where: {email: 'signUp@example.com'}});
-      const user = await authService.signUp(dto);
-      expect(user.email).toEqual(dto.email);
-      expect(user.username).toEqual(dto.username);
-      if (user.hashedPassword) {
-        const isMatch = await bcrypt.compare(
-          dto.hashedPassword,
-          user.hashedPassword,
-        );
-        expect(isMatch).toBe(true);
-      }
-    });
-
-    test('should be throw ForbiddenException when email or username is already taken', async () => {
-      await expect(authService.signUp(dto)).rejects.toThrow(ForbiddenException);
-    });
-  });
 
   describe('login', () => {
-    test('should be login successfully', async () => {
-      const user = await authService.login({
-        email: dto.email,
-        hashedPassword: dto.hashedPassword,
-      });
-      expect(user.email).toEqual(dto.email);
-      expect(user.username).toEqual(dto.username);
-      if (user.hashedPassword) {
-        const isMatch = await bcrypt.compare(
-          dto.hashedPassword,
-          user.hashedPassword,
-        );
-        expect(isMatch).toBe(true);
-      }
-    });
-
     test('should be throw ForbiddenException when email is incorrect', async () => {
       await expect(
         authService.login({

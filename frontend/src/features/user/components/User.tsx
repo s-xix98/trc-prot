@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import { useAtom } from 'jotai';
-import { signIn } from 'next-auth/react';
 
 import { Container } from '@/components/Layout/Container';
 import { userInfoAtom } from '@/stores/jotai';
@@ -11,7 +10,7 @@ import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 
 export const User = ({ children }: { children: ReactNode }) => {
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const [userInfo] = useAtom(userInfoAtom);
   const { modalIsOpen, openModal, closeModal } = useModal();
 
   const UserInputArea = () => {
@@ -36,16 +35,13 @@ export const User = ({ children }: { children: ReactNode }) => {
     } else {
       return (
         <div style={{ margin: '10px auto 10px auto' }}>
-          <SignUpForm setUserInfo={(v) => setUserInfo(v)} />
+          <SignUpForm />
           <div style={{ margin: '5px 10px auto auto', textAlign: 'right' }}>
-            <LoginForm setUserInfo={(v) => setUserInfo(v)} />
+            <LoginForm />
           </div>
         </div>
       );
     }
-  };
-  const AuthLoginButton = () => {
-    return <button onClick={() => signIn()}>authlogin</button>;
   };
 
   return (
@@ -57,9 +53,6 @@ export const User = ({ children }: { children: ReactNode }) => {
           </Container>
           <div style={{ margin: 'auto 10px auto auto' }}>
             <UserInputArea />
-          </div>
-          <div>
-            <AuthLoginButton />
           </div>
         </Container>
       </div>

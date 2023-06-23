@@ -1,46 +1,59 @@
-import { useState } from 'react';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
+import styled from 'styled-components';
 
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
-import { useSocket } from '@/hooks/useSocket';
-import { socket } from '@/socket';
 import { Input } from '@/components/Elements/Input/Input';
+import { useFocus } from '@/hooks/useFocus';
+import { isUserInfo, isChatChannelDto } from '@/utils/typeGuars';
 
-import { searchUserDto } from '../types/SearchUserDto';
+import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
 
-export const SearchUser = () => {
-  const [searchWord, setSearchWord] = useState('');
-  const [searchUsers, setSearchUsers] = useState<string[]>([]);
+import { chatChannelDto } from '../../chat/types/chatChannelDto';
 
-  useSocket('searchUser', (data: UserInfo[]) => {
-    setSearchUsers(data.map((user) => user.username));
-  });
+const StyledButton = styled.button`
+  align-items: flex-start;
+`;
+
+export const SearchUserOrChannel = () => {
+  const { focusRef } = useFocus();
+  const { searchedList, searcher } = useSearch<UserInfo | chatChannelDto>();
+  const [isSearchingUser, setIsSearchingUser] = useState(true);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchWord(e.target.value);
-
-    if (e.target.value.length === 0) {
-      setSearchUsers([]);
-      return;
+    if (isSearchingUser) {
+      searcher('/user/search', e.target.value);
+    } else {
+      searcher('/chat/search', e.target.value);
     }
-
-    const dto: searchUserDto = { searchWord: e.target.value };
-
-    socket.emit('searchUser', dto);
   };
 
   return (
     <div>
       <Container flexDirection={'column'}>
-        <div>User Search</div>
-        <ContainerItem overflowY="scroll">
-          {searchUsers.map((user, key) => (
-            <p key={key}> {user}</p>
-          ))}
+        <ContainerItem>
+          <StyledButton onClick={() => setIsSearchingUser(true)}>
+            User Search
+          </StyledButton>
+          <StyledButton onClick={() => setIsSearchingUser(false)}>
+            room Search
+          </StyledButton>
+          <ContainerItem overflowY="scroll">
+            {searchedList.map((elm, key) => {
+              if (isUserInfo(elm)) {
+                return <p key={key}> {elm.username}</p>;
+              } else if (isChatChannelDto(elm)) {
+                return <p key={key}> {elm.roomName}</p>;
+              }
+            })}
+          </ContainerItem>
         </ContainerItem>
-        <Input msg={searchWord} onChangeAct={onChange} placeholder="username" />
+        <Input
+          focusRef={focusRef}
+          onChangeAct={onChange}
+          placeholder={isSearchingUser ? 'username' : 'roomname'}
+        />
       </Container>
     </div>
   );

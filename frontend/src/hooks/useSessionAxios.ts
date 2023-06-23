@@ -2,6 +2,7 @@ import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
 
 import { tokenStorage } from '@/utils/tokenStorage';
+import { BACKEND } from '@/constants';
 class authError extends Error {
   constructor(e?: string) {
     super(e);
@@ -26,9 +27,12 @@ const handleUnauthorizedResponse = async (res: AxiosResponse) => {
   return res;
 };
 
+const customAxios = axios.create({
+  baseURL: BACKEND,
+});
+
 export const useSessionAxios = () => {
   const router = useRouter();
-  const customAxios = axios.create();
 
   // eslint-disable-next-line
   const routeOnAuthErr = (err: any) => {

@@ -1,20 +1,17 @@
 import { FormEventHandler } from 'react';
 
-import { UserInfo } from '../types/UserDto';
-import { userSignUp } from '../api/userSignUp';
+import { useSignUp } from '../api/userSignUp';
 
-export const SignUpForm = ({
-  setUserInfo,
-}: {
-  setUserInfo: (v: UserInfo) => void;
-}) => {
+export const SignUpForm = () => {
+  const signUp = useSignUp();
+
   const handleSignUp: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     console.log('signUpButton');
     const username = (event.target as HTMLFormElement).username.value;
     const email = (event.target as HTMLFormElement).email.value;
     const password = (event.target as HTMLFormElement).password.value;
-    userSignUp(username, email, password, setUserInfo);
+    signUp(username, email, password);
   };
 
   return (
