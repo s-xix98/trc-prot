@@ -18,7 +18,9 @@ export const ChannelEntryModal = ({
       modalIsOpen={modalIsOpen}
       closeModal={closeModal}
       >
-        <p>test</p>
+        <h1>{channelData.roomName}</h1>
+        <button>入る</button>
+        <button>入らない</button>
       </ModalView>
       <p key={key} onClick={openModal}>{channelData.roomName}</p>
     </Container>
