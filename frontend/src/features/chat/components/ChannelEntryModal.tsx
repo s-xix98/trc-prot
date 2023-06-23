@@ -16,6 +16,7 @@ export const ChannelEntryModal = ({
 
   const entryRoom = () => {
     emit(channelData.id);
+    closeModal();
   };
   return (
     <Container>
@@ -25,7 +26,7 @@ export const ChannelEntryModal = ({
       >
         <h1>{channelData.roomName}</h1>
         <button onClick={entryRoom}>入る</button>
-        <button>入らない</button>
+        <button onClick={closeModal}>入らない</button>
       </ModalView>
       <p key={key} onClick={openModal}>{channelData.roomName}</p>
     </Container>
