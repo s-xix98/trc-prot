@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+// import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { socket } from '@/socket';
@@ -21,7 +22,8 @@ const StyledCanvas = styled.canvas`
   color: black;
 `;
 
-const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
+// const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
+const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = 400;
   const canvasHeight = 400;
@@ -55,7 +57,7 @@ const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 };
 
 export const Game = () => {
-  const [isGameOver, setGameOver] = useState(false);
+  // const [isGameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     socket.emit('start game');
@@ -65,9 +67,10 @@ export const Game = () => {
   }, []);
 
   return (
-    <>
-      {isGameOver && <h1>GameOver</h1>}
-      {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
-    </>
+    <GameCanvas />
+    // <>
+    //   {isGameOver && <h1>GameOver</h1>}
+    //   {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
+    // </>
   );
 };
