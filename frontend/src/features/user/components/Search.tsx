@@ -23,9 +23,9 @@ export const SearchUserOrChannel = () => {
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (isSearchingUser) {
-      searcher('/user/search/', e.target.value);
+      searcher('/user/search', e.target.value);
     } else {
-      searcher('/chat/search/', e.target.value);
+      searcher('/chat/search', e.target.value);
     }
   };
 

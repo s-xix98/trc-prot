@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
@@ -28,8 +28,9 @@ export class UserController {
     return this.userService.findOneByUsername(username);
   }
 
-  @Get('search/:searchWord')
-  async search(@Param('searchWord') searchWord: string) {
+  @Get('search')
+  async search(@Query('searchWord') searchWord: string) {
+    console.log(searchWord);
     return this.userService.search(searchWord);
   }
 }
