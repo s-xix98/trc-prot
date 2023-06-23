@@ -22,7 +22,7 @@ export const InvalidForm: Story = {
     const usernameInputelem = canvas.getByPlaceholderText('username');
     const emailInputElem = canvas.getByPlaceholderText('email');
     const passwordInputElem = canvas.getByPlaceholderText('password');
-    const submitBtn = canvas.getByRole('button', { name: 'Submit' });
+    const submitBtn = canvas.getByRole('button', { name: 'SignUp' });
 
     if (!emailInputElem || !passwordInputElem || !submitBtn) {
       expect(false);
