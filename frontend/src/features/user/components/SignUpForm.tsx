@@ -1,40 +1,34 @@
-import { FormEventHandler } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useSignUp } from '../api/userSignUp';
+import { SignUpDto, SignUpDtoSchema } from '../types/UserDto';
 
 export const SignUpForm = () => {
   const signUp = useSignUp();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpDto>({
+    resolver: zodResolver(SignUpDtoSchema),
+  });
 
-  const handleSignUp: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-    console.log('signUpButton');
-    const username = (event.target as HTMLFormElement).username.value;
-    const email = (event.target as HTMLFormElement).email.value;
-    const password = (event.target as HTMLFormElement).password.value;
-    signUp(username, email, password);
+  const handleSignUp: SubmitHandler<SignUpDto> = (data) => {
+    signUp(data.username, data.email, data.hashedPassword);
   };
 
   return (
-    <form onSubmit={handleSignUp}>
-      <input
-        type="text"
-        name="username"
-        placeholder="username"
-        style={{ marginRight: '5px' }}
-      />
-      <input
-        type="text"
-        name="email"
-        placeholder="email"
-        style={{ marginRight: '5px' }}
-      />
-      <input
-        type="text"
-        name="password"
-        placeholder="password"
-        style={{ marginRight: '10px' }}
-      />
-      <input type="submit" value="SignUp" />
-    </form>
+    <>
+      <form onSubmit={handleSubmit(handleSignUp)}>
+        <input {...register('username')} placeholder="username" />
+        {errors.username?.message && <span>{errors.username.message}</span>}
+        <input {...register('email')} placeholder="email" />
+        {errors.email?.message && <span>{errors.email.message}</span>}
+        <input {...register('hashedPassword')} placeholder="password" />
+        {errors.hashedPassword && <span>{errors.hashedPassword.message}</span>}
+        <input type="submit" />
+      </form>
+    </>
   );
 };
