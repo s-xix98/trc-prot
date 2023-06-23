@@ -11,6 +11,7 @@ import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
 
 import { chatChannelDto } from '../../chat/types/chatChannelDto';
+import { ChannelEntryModal } from '../../chat/components/ChannelEntryModal';
 
 const StyledButton = styled.button`
   align-items: flex-start;
@@ -44,7 +45,7 @@ export const SearchUserOrChannel = () => {
               if (isUserInfo(elm)) {
                 return <p key={key}> {elm.username}</p>;
               } else if (isChatChannelDto(elm)) {
-                return <p key={key}> {elm.roomName}</p>;
+                return <ChannelEntryModal channelData={elm} key={key} />;
               }
             })}
           </ContainerItem>
