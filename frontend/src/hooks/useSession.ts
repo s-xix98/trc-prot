@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useSetAtom } from 'jotai';
 import { usePathname } from 'next/navigation';
 
@@ -13,7 +13,7 @@ export const useSession = () => {
   const setUserInfo = useSetAtom(userInfoAtom);
   const pathname = usePathname();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     axios
       .get<UserInfo>(BACKEND + '/user/me')
       .then((res) => {

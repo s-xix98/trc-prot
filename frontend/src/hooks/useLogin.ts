@@ -1,5 +1,5 @@
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 
 import { useCurrentUser } from './useCurrentUser';
 
@@ -10,7 +10,7 @@ export const useRedirectToHome = () => {
   const { userInfo } = useCurrentUser();
   const router = useRouter();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (userInfo !== undefined) {
       router.push('/');
     }
