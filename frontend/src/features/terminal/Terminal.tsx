@@ -65,11 +65,13 @@ export const Terminal = ({
       <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
         {currentModalElem}
       </ModalView>
-      <Input
-        msg={input}
-        start={`${userInfo?.username ?? ''} > `}
-        onChangeAct={onChangeAct}
-      />
+      <div style={{ padding: '3px' }}>
+        <Input
+          msg={input}
+          start={`${userInfo?.username ?? ''} > `}
+          onChangeAct={onChangeAct}
+        />
+      </div>
     </Container>
   );
 };
