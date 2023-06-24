@@ -63,7 +63,6 @@ const GameCanvas = () => {
   const canvasId = 'canvas';
 
   useSocket('game data', (game: GameDto) => {
-    console.log('game start');
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
@@ -77,7 +76,6 @@ const GameCanvas = () => {
       canvasHeight,
     );
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log(ball);
     DrawBall(ctx, ball);
     DrawPaddle(ctx, rightPaddle);
     DrawPaddle(ctx, leftPaddle);
