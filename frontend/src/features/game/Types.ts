@@ -9,5 +9,4 @@ export type Paddle = {
   y: number;
   width: number;
   height: number;
-  readonly speed: number;
 };
