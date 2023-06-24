@@ -8,8 +8,8 @@ import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { userInfoAtom } from '@/stores/jotai';
 import { tokenStorage } from '@/utils/tokenStorage';
+import { Input } from '@/components/Elements/Input/Input';
 
-import { TerminalInput } from './TerminalInput';
 import { TerminalOutput } from './TerminalOutput';
 
 export const Terminal = ({
@@ -26,7 +26,7 @@ export const Terminal = ({
 
   const { modalIsOpen, openModal, closeModal } = useModal();
 
-  const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '\n') {
       return;
     }
@@ -65,9 +65,9 @@ export const Terminal = ({
       <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
         {currentModalElem}
       </ModalView>
-      <TerminalInput
-        input={input}
-        username={userInfo?.username ?? ''}
+      <Input
+        msg={input}
+        start={`${userInfo?.username ?? ''} > `}
         onChangeAct={onChangeAct}
       />
     </Container>
