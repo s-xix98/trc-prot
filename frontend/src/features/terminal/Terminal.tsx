@@ -70,6 +70,7 @@ export const Terminal = ({
           msg={input}
           start={`${userInfo?.username ?? ''} > `}
           onChangeAct={onChangeAct}
+          disableUnderline={true}
         />
       </div>
     </Container>

@@ -8,12 +8,14 @@ export const Input = ({
   start = undefined,
   onChangeAct,
   placeholder,
+  disableUnderline = false,
   focusRef = undefined,
 }: {
   msg?: string;
   start?: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string | undefined;
+  disableUnderline?: boolean;
   focusRef?: RefObject<HTMLTextAreaElement> | undefined;
 }) => {
   return (
@@ -35,6 +37,7 @@ export const Input = ({
           },
         }}
         InputProps={{
+          disableUnderline: disableUnderline,
           startAdornment: start ? (
             <InputAdornment position="start">
               <p style={{ color: '#33ff33' }}>{start}</p>
