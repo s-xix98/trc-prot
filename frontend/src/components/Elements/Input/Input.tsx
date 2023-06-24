@@ -40,6 +40,9 @@ export const Input = ({
               <p style={{ color: '#33ff33' }}>{start}</p>
             </InputAdornment>
           ) : undefined,
+          style: {
+            fontFamily: 'Courier New',
+          },
         }}
         value={msg}
         onChange={onChangeAct}
