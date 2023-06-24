@@ -23,12 +23,12 @@ export const ChannelEntryModal = ({
   return (
     <Container>
       <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
-        <h1>{channelData.roomName}</h1>
+        <h1>{channelData?.roomName}</h1>
         <button onClick={entryRoom}>入る</button>
         <button onClick={closeModal}>入らない</button>
       </ModalView>
       <p key={key} onClick={openModal}>
-        {channelData.roomName}
+        {channelData?.roomName}
       </p>
     </Container>
   );
