@@ -4,6 +4,10 @@ import { Ball } from '../types.d';
 import { CreateBall } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
+const IsInRange = (pos: number, start: number, end: number) => {
+  return start < pos && pos < end;
+};
+
 export class GameLogic {
   private ball: Ball;
   private p1: Socket;
@@ -34,6 +38,9 @@ export class GameLogic {
   }
 
   private UpdateBallPosition() {
+    if (!IsInRange(this.ball.y + this.ball.dy, 0, 1)) {
+      this.ball.dy = -this.ball.dy;
+    }
     this.ball.x += this.ball.dx;
     this.ball.y += this.ball.dy;
   }
