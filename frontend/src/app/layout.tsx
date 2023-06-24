@@ -4,17 +4,10 @@ import './globals.css';
 // storybook addon-coverage を入れたら、test でエラーが出るようになった。
 // Inter コメントアウトしても、特に影響がなかったので一旦コメントアウト
 // import { Inter } from 'next/font/google';
+import { useSession } from '@/hooks/useSession';
 
-import { useEffect } from 'react';
-import { useSetAtom } from 'jotai';
-import { usePathname } from 'next/navigation';
-
-import { useSessionAxios } from '@/hooks/useSessionAxios';
-import { BACKEND } from '@/constants';
-import { userInfoAtom } from '@/stores/jotai';
-
-import { UserInfo } from '../features/user/types/UserDto';
 import StyledComponentsRegistry from '../lib/registry';
+
 // const inter = Inter({ subsets: ['latin'] });
 
 // client sideだとエラー出るので、一旦コメントアウト
@@ -28,20 +21,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const axios = useSessionAxios();
-  const setUserInfo = useSetAtom(userInfoAtom);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    axios
-      .get<UserInfo>(BACKEND + '/user/me')
-      .then((res) => {
-        setUserInfo(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [axios, setUserInfo, pathname]);
+  useSession();
 
   return (
     <html lang="en">
