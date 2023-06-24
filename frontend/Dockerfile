@@ -4,6 +4,11 @@ FROM node:18-bullseye
 
 WORKDIR /workdir
 
+RUN set -eux \
+  && apt-get update && apt-get install -y --no-install-recommends \
+  chromium \
+  && apt-get clean
+
 COPY --chown=node:node package*.json ./
 
 RUN npm i
