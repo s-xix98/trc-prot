@@ -110,7 +110,7 @@ export const CheckScroll: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
+    const terminalInputElem = canvas.getByRole('textbox');
     if (terminalInputElem === undefined || terminalInputElem === null) {
       expect(false);
       return;
