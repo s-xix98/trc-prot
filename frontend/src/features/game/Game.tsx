@@ -6,13 +6,21 @@ import styled from 'styled-components';
 import { socket } from '@/socket';
 import { useSocket } from '@/hooks/useSocket';
 
-import { Ball } from './Types';
+import { Ball, Paddle } from './Types';
 import { GameDto } from './dto/GameDto';
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
+  ctx.fill();
+  ctx.closePath();
+};
+
+const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
+  ctx.beginPath();
+  ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+  ctx.fillStyle = 'black';
   ctx.fill();
   ctx.closePath();
 };
@@ -37,13 +45,31 @@ const GameCanvas = () => {
       return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     const ball: Ball = {
       x: game.ball.x * canvasWidth,
       y: game.ball.y * canvasHeight,
       radius: 10,
     };
+
+    const leftPaddle: Paddle = {
+      x: game.leftPaddle.x * canvasWidth,
+      y: game.leftPaddle.y * canvasHeight,
+      width: game.leftPaddle.width * canvasWidth,
+      height: game.leftPaddle.height * canvasHeight,
+    };
+
+    const rightPaddle: Paddle = {
+      x: game.rightPaddle.x * canvasWidth,
+      y: game.rightPaddle.y * canvasHeight,
+      width: game.rightPaddle.width * canvasWidth,
+      height: game.rightPaddle.height * canvasHeight,
+    };
+
     console.log(ball);
     DrawBall(ctx, ball);
+    DrawPaddle(ctx, rightPaddle);
+    DrawPaddle(ctx, leftPaddle);
   });
 
   return (
