@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
@@ -13,6 +14,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   // http://localhost:8000/api でswaggerに接続可能
   SwaggerModule.setup('api', app, document);
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
   await app.listen(8000);
 }
 bootstrap();

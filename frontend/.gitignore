@@ -37,3 +37,6 @@ next-env.d.ts
 # storybook
 /.nyc_output
 /storybook-static/
+
+# memlab
+/.memlab/img/

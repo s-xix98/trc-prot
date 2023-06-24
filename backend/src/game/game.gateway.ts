@@ -2,6 +2,7 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
 import { UserInfo } from './dto/UserDto';
+import { GameLogic } from './logic/game-logic';
 
 enum PlaySide {
   LEFT = 0,
@@ -16,6 +17,8 @@ export class GameGateway {
   private userSockMap = new Map<string, Socket>();
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
+
+  private game: GameLogic | undefined;
 
   handleConnection() {
     console.log('game connection');
@@ -110,5 +113,21 @@ export class GameGateway {
 
     console.log(this.sockUserMap.delete(sock.id));
     console.log(this.sockUserMap.delete(enemySocket.id));
+  }
+
+  @SubscribeMessage('start game')
+  StartGame(client: Socket) {
+    if (this.game) {
+      return;
+    }
+    // 一旦同じクライアントを登録。マルチプレイ対応したら直す
+    this.game = new GameLogic(client, client);
+    this.game.StartGame();
+  }
+
+  @SubscribeMessage('end game')
+  EndGame() {
+    this.game?.EndGame();
+    this.game = undefined;
   }
 }
