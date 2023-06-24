@@ -99,9 +99,28 @@ export const SendSomeMsg: Story = {
       expect(false);
       return;
     }
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 50; i++) {
       await userEvent.type(inputElem, `This is test msg ${i}\n`);
     }
+
+    await sleep(1000);
+  },
+};
+
+// SendSomeMsg で メッセージ送信したチャンネル再度開いて一番下にスクロールされるか
+export const CheckScroll: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
+    if (terminalInputElem === undefined || terminalInputElem === null) {
+      expect(false);
+      return;
+    }
+    await userEvent.type(terminalInputElem, './chat\n');
+
+    const hogeRoom = await screen.findByText('hogeRoom');
+    await userEvent.click(hogeRoom);
 
     await sleep(1000);
   },
