@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { ChangeEvent } from 'react';
 import { useAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
@@ -9,6 +8,7 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { userInfoAtom } from '@/stores/jotai';
 import { tokenStorage } from '@/utils/tokenStorage';
 import { Input } from '@/components/Elements/Input/Input';
+import { useInput } from '@/hooks/useInput';
 
 import { TerminalOutput } from './TerminalOutput';
 
@@ -17,7 +17,6 @@ export const Terminal = ({
 }: {
   commandElemMap: Map<string, JSX.Element>;
 }) => {
-  const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
@@ -26,14 +25,7 @@ export const Terminal = ({
 
   const { modalIsOpen, openModal, closeModal } = useModal();
 
-  const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === '\n') {
-      return;
-    }
-    if (e.target.value.slice(-1) !== '\n') {
-      setInput(e.target.value);
-      return;
-    }
+  const { input, onChangeAct, onKeyDownAct } = useInput(() => {
     if (input === 'logout') {
       setUserInfo(undefined);
       tokenStorage.remove();
@@ -54,9 +46,7 @@ export const Terminal = ({
       const notFoundElem = <p>NotFound</p>;
       setOutputArr([...outputArr, inputElem, notFoundElem]);
     }
-
-    setInput('');
-  };
+  });
 
   return (
     <Container flexDirection="column">
@@ -70,6 +60,7 @@ export const Terminal = ({
           msg={input}
           start={`${userInfo?.username ?? ''} > `}
           onChangeAct={onChangeAct}
+          onKeyDownAct={onKeyDownAct}
           disableUnderline={true}
         />
       </div>
