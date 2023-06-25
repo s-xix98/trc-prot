@@ -4,6 +4,8 @@ import { Ball, Paddle } from '../types.d';
 import { CreateBall, CreatePaddle } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
+import { Keys } from './KeyAction';
+
 const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
@@ -15,6 +17,7 @@ export class GameLogic {
   private p1: Socket;
   private p2: Socket;
   private intervalId: any;
+  private keyInputs: boolean[] = [];
 
   constructor(p1: Socket, p2: Socket, ball: Ball = CreateBall()) {
     this.ball = ball;
@@ -37,6 +40,16 @@ export class GameLogic {
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
     }, 10);
+  }
+
+  HandleKeyPress(key: Keys) {
+    console.log('handle press', key);
+    this.keyInputs[key] = true;
+  }
+
+  HandleKeyRelease(key: Keys) {
+    console.log('handle release', key);
+    this.keyInputs[key] = false;
   }
 
   EndGame() {

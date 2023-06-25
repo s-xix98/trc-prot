@@ -135,10 +135,12 @@ export class GameGateway {
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
+    this.game?.HandleKeyPress(key);
   }
 
   @SubscribeMessage('key release')
   handleKeyRelease(client: Socket, key: Keys) {
     console.log('release', key);
+    this.game?.HandleKeyRelease(key);
   }
 }
