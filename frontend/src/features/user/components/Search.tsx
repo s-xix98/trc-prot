@@ -1,58 +1,42 @@
-import { ChangeEvent, useState } from 'react';
-import styled from 'styled-components';
+import { ChangeEvent } from 'react';
 
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
 import { Input } from '@/components/Elements/Input/Input';
 import { useFocus } from '@/hooks/useFocus';
-import { isUserInfo, isChatChannelDto } from '@/utils/typeGuars';
 
-import { useSearch } from '../api/useSearch';
 import { UserInfo } from '../types/UserDto';
 
-import { chatChannelDto } from '../../chat/types/chatChannelDto';
+import { useSearch } from '../../../hooks/useSearch';
+const SearchedResult = ({ searchedList }: { searchedList: UserInfo[] }) => {
+  return (
+    <>
+      {searchedList.map((user, idx) => (
+        <p key={idx}> {user.username}</p>
+      ))}
+    </>
+  );
+};
 
-const StyledButton = styled.button`
-  align-items: flex-start;
-`;
-
-export const SearchUserOrChannel = () => {
+export const UserSearch = () => {
   const { focusRef } = useFocus();
-  const { searchedList, searcher } = useSearch<UserInfo | chatChannelDto>();
-  const [isSearchingUser, setIsSearchingUser] = useState(true);
+  const { searchedList, searcher } = useSearch<UserInfo>();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (isSearchingUser) {
-      searcher('/user/search', e.target.value);
-    } else {
-      searcher('/chat/search', e.target.value);
-    }
+    searcher('/user/search', e.target.value);
   };
 
   return (
     <div>
-      <Container flexDirection={'column'}>
-        <ContainerItem>
-          <StyledButton onClick={() => setIsSearchingUser(true)}>
-            User Search
-          </StyledButton>
-          <StyledButton onClick={() => setIsSearchingUser(false)}>
-            room Search
-          </StyledButton>
-          <ContainerItem overflowY="scroll">
-            {searchedList.map((elm, key) => {
-              if (isUserInfo(elm)) {
-                return <p key={key}> {elm.username}</p>;
-              } else if (isChatChannelDto(elm)) {
-                return <p key={key}> {elm.roomName}</p>;
-              }
-            })}
-          </ContainerItem>
+      <Container flexDirection="column">
+        <h2>User Search</h2>
+        <ContainerItem overflowY="scroll">
+          <SearchedResult searchedList={searchedList} />
         </ContainerItem>
         <Input
           focusRef={focusRef}
           onChangeAct={onChange}
-          placeholder={isSearchingUser ? 'username' : 'roomname'}
+          placeholder={'username'}
         />
       </Container>
     </div>

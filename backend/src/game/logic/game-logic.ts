@@ -6,9 +6,9 @@ import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
 
-// const IsInRange = (pos: number, start: number, end: number) => {
-//   return start < pos && pos < end;
-// };
+const IsInRange = (pos: number, start: number, end: number) => {
+  return start < pos && pos < end;
+};
 
 export class GameLogic {
   private ball: Ball;
@@ -59,10 +59,40 @@ export class GameLogic {
     }
   }
 
+  // ボールの半径とパドルの厚みを考慮してないからめり込む
   private UpdateBallPosition() {
-    // eslint-disable-next-line
     let newX = this.ball.x + this.ball.dx;
     let newY = this.ball.y + this.ball.dy;
+
+    const isLeftPaddleHitByBall = () => {
+      return (
+        newX <= 0 &&
+        IsInRange(
+          this.ball.y,
+          this.leftPaddle.y,
+          this.leftPaddle.y + this.leftPaddle.height,
+        )
+      );
+    };
+
+    const isRightPaddleHitByBall = () => {
+      return (
+        newX >= 1 &&
+        IsInRange(
+          this.ball.y,
+          this.rightPaddle.y,
+          this.rightPaddle.y + this.rightPaddle.height,
+        )
+      );
+    };
+
+    if (isLeftPaddleHitByBall()) {
+      newX = -newX;
+      this.ball.dx = -this.ball.dx;
+    } else if (isRightPaddleHitByBall()) {
+      newX = 1 - (newX - 1);
+      this.ball.dx = -this.ball.dx;
+    }
 
     if (newY <= 0) {
       newY = -newY;
@@ -71,6 +101,7 @@ export class GameLogic {
       newY = 1 - (newY - 1);
       this.ball.dy = -this.ball.dy;
     }
+
     this.ball.x = newX;
     this.ball.y = newY;
   }
