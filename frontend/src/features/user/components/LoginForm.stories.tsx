@@ -4,6 +4,8 @@ import { userEvent, within } from '@storybook/testing-library';
 
 import { LoginForm } from './LoginForm';
 
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 const meta = {
   component: LoginForm,
   tags: ['autodocs'],
@@ -32,5 +34,7 @@ export const InvalidForm: Story = {
     await userEvent.type(passwordInputElem, 'password');
 
     await userEvent.click(submitBtn);
+
+    await sleep(1000);
   },
 };
