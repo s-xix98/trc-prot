@@ -1,4 +1,8 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosError,
+} from 'axios';
 import { useRouter } from 'next/navigation';
 
 import { tokenStorage } from '@/utils/tokenStorage';
@@ -7,6 +11,11 @@ class authError extends Error {
   constructor(e?: string) {
     super(e);
   }
+}
+
+// eslint-disable-next-line
+function isAxiosError(error: any): error is AxiosError {
+  return !!error.isAxiosError;
 }
 
 const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
@@ -36,7 +45,7 @@ export const useSessionAxios = () => {
 
   // eslint-disable-next-line
   const routeOnAuthErr = (err: any) => {
-    if (err instanceof authError) {
+    if (isAxiosError(err)) {
       router.push('/login');
     }
     throw err;
