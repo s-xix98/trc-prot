@@ -73,7 +73,7 @@ const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
 const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
   ctx.beginPath();
   ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = 'white';
   ctx.fill();
   ctx.closePath();
 };
