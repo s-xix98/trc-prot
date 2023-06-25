@@ -29,7 +29,7 @@ export const Terminal = ({
 
   const router = useRouter();
 
-  const onChangeAct = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '\n') {
       return;
     }
