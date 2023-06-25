@@ -1,4 +1,4 @@
-import { Ball, Paddle } from './types.d';
+import { Ball, Paddle } from './types';
 
 export const CreateBall = (): Ball => structuredClone(ballConstants);
 
