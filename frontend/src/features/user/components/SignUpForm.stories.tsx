@@ -35,6 +35,8 @@ export const InvalidForm: Story = {
     await userEvent.type(emailInputElem, 'email addr');
     await userEvent.type(passwordInputElem, 'password');
 
+    await sleep(1000);
+
     await userEvent.click(submitBtn);
 
     await sleep(1000);
