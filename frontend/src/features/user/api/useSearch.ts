@@ -12,7 +12,7 @@ export const useSearch = <T>() => {
       return;
     }
     axios
-      .get<T[]>(path + searchWord)
+      .get<T[]>(path, { params: { searchWord } })
       .then((res) => {
         setSearchList(res.data);
       })

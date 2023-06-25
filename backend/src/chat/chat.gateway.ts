@@ -1,11 +1,9 @@
-import {
-  SubscribeMessage,
-  WebSocketGateway,
-  WebSocketServer,
-} from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { roomType } from '../wsocket/utils';
+import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { MessageDto } from './dto/message.dto';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
@@ -15,9 +13,7 @@ import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
   },
 })
 export class ChatGateway {
-  @WebSocketServer()
-  server: Server;
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private server: WsocketGateway) {}
 
   async handleConnection(client: Socket) {
     // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
@@ -51,7 +47,7 @@ export class ChatGateway {
     });
 
     rooms.forEach((room) => {
-      client.join(room.id.toString());
+      this.server.JoinRoom(client, roomType.Chat, room.id);
       client.emit('addRoom', room);
     });
   }
@@ -73,8 +69,9 @@ export class ChatGateway {
         chatRoomId: createdRoom.id,
       },
     });
-    client.join(createdRoom.id.toString());
-    this.server.emit('addRoom', createdRoom);
+    this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
+    client.emit('addRoom', createdRoom);
+    client.broadcast.emit('addRoom', createdRoom);
   }
 
   @SubscribeMessage('joinChannel')
@@ -94,10 +91,9 @@ export class ChatGateway {
       },
     });
 
-    client.join(addedUser.chatRoomId.toString());
-
+    this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
     this.server
-      .to(addedUser.chatRoomId.toString())
+      .to(roomType.Chat, addedUser.chatRoomId)
       .emit('joinChannel', addedUser);
   }
 
@@ -123,6 +119,6 @@ export class ChatGateway {
         chatRoomId: messageDto.chatRoomId,
       },
     });
-    this.server.to(msg.chatRoomId.toString()).emit('sendMessage', roomMsgs);
+    this.server.to(roomType.Chat, msg.chatRoomId).emit('sendMessage', roomMsgs);
   }
 }

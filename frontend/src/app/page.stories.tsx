@@ -33,12 +33,12 @@ export const SelectChannel: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
+    const terminalInputElem = canvas.getByRole('textbox');
     if (terminalInputElem === undefined || terminalInputElem === null) {
       expect(false);
       return;
     }
-    await userEvent.type(terminalInputElem, 'p\n');
+    await userEvent.type(terminalInputElem, './chat\n');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -51,12 +51,12 @@ export const SendMsg: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
+    const terminalInputElem = canvas.getByRole('textbox');
     if (terminalInputElem === undefined || terminalInputElem === null) {
       expect(false);
       return;
     }
-    await userEvent.type(terminalInputElem, 'p\n');
+    await userEvent.type(terminalInputElem, './chat\n');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -64,8 +64,7 @@ export const SendMsg: Story = {
     // TODO : chat hist をとるまで一旦待つように
     await sleep(3000);
 
-    const inputElem =
-      screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
+    const inputElem = screen.getByRole('textbox');
     if (inputElem === undefined || inputElem === null) {
       expect(false);
       return;
@@ -80,12 +79,12 @@ export const SendSomeMsg: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const terminalInputElem = canvas.getByTestId('terminal-input-test-id');
+    const terminalInputElem = canvas.getByRole('textbox');
     if (terminalInputElem === undefined || terminalInputElem === null) {
       expect(false);
       return;
     }
-    await userEvent.type(terminalInputElem, 'p\n');
+    await userEvent.type(terminalInputElem, './chat\n');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -93,15 +92,33 @@ export const SendSomeMsg: Story = {
     // TODO : chat hist をとるまで一旦待つように
     await sleep(3000);
 
-    const inputElem =
-      screen.getByTestId('input-test-id')?.firstElementChild?.firstElementChild;
+    const inputElem = screen.getByRole('textbox');
     if (inputElem === undefined || inputElem === null) {
       expect(false);
       return;
     }
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 50; i++) {
       await userEvent.type(inputElem, `This is test msg ${i}\n`);
     }
+
+    await sleep(1000);
+  },
+};
+
+// SendSomeMsg で メッセージ送信したチャンネル再度開いて一番下にスクロールされるか
+export const CheckScroll: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const terminalInputElem = canvas.getByRole('textbox');
+    if (terminalInputElem === undefined || terminalInputElem === null) {
+      expect(false);
+      return;
+    }
+    await userEvent.type(terminalInputElem, './chat\n');
+
+    const hogeRoom = await screen.findByText('hogeRoom');
+    await userEvent.click(hogeRoom);
 
     await sleep(1000);
   },

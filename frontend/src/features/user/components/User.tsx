@@ -36,8 +36,10 @@ export const User = ({ children }: { children: ReactNode }) => {
     } else {
       return (
         <div style={{ margin: '10px auto 10px auto' }}>
-          <SignUpForm />
-          <div style={{ margin: '5px 10px auto auto', textAlign: 'right' }}>
+          <div style={{ textAlign: 'right' }}>
+            <SignUpForm />
+          </div>
+          <div style={{ textAlign: 'right' }}>
             <LoginForm />
             <AuthLogin provider="42" path="/auth/42" />
             <AuthLogin provider="google" path="/auth/google" />

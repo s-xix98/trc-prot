@@ -7,6 +7,8 @@ import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { testUser } from '../test/types/test.types';
 import { TestService } from '../test/test.service';
+import { WsocketModule } from '../wsocket/wsocket.module';
+import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
@@ -25,8 +27,8 @@ describe('ChatGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
-      providers: [ChatGateway, PrismaService],
+      imports: [TestModule, WsocketModule],
+      providers: [ChatGateway, PrismaService, WsocketGateway],
     }).compile();
 
     gateway = module.get<ChatGateway>(ChatGateway);

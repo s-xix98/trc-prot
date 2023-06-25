@@ -33,11 +33,15 @@ jobs:
 
       - name: frontend npm install
         run: cd frontend && npm install
+      - name: check file changes
+        run: cd frontend && git diff --exit-code
       - name: frontend fmt-ck
         run: cd frontend && make fmt-ck
 
       - name: backend npm install
         run: cd backend && npm install
+      - name: check file changes
+        run: cd backend && git diff --exit-code
       - name: backend fmt-ck
         run: cd backend && make fmt-ck
       - name: backend prisma fmt ck

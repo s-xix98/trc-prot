@@ -2,8 +2,6 @@ export type Ball = {
   x: number;
   y: number;
   radius: number;
-  dx: number;
-  dy: number;
 };
 
 export type Paddle = {
@@ -11,5 +9,10 @@ export type Paddle = {
   y: number;
   width: number;
   height: number;
-  readonly speed: number;
+};
+
+export type GameObjects = {
+  ball: Ball;
+  leftPaddle: Paddle;
+  rightPaddle: Paddle;
 };

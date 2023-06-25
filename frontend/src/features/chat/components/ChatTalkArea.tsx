@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { Container } from '@/components/Layout/Container';
 import { useSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
@@ -27,6 +29,12 @@ export const ChatTalkArea = ({
 
   // TODO イベント名は適当だから後でかえる
   useSocket('sendMessage', onMessage);
+
+  // TODO : handleScrollがちょっと多めに呼ばれちゃってるの改善したい
+  // チャンネルを選択した時一番下まで行く
+  useEffect(() => {
+    handleScroll();
+  }, [selectedChannel, handleScroll]);
 
   return (
     <Container flexDirection={'column'}>
