@@ -7,6 +7,7 @@ WORKDIR /workdir
 RUN set -eux \
   && apt-get update && apt-get install -y --no-install-recommends \
   chromium \
+  python3-pip \
   && apt-get clean
 
 COPY --chown=node:node package*.json ./
@@ -14,3 +15,5 @@ COPY --chown=node:node package*.json ./
 RUN npm i
 
 RUN npx playwright install && npx playwright install-deps
+RUN pip install playwright
+RUN playwright install
