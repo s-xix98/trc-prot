@@ -6,9 +6,9 @@ import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
 
-const IsInRange = (pos: number, start: number, end: number) => {
-  return start < pos && pos < end;
-};
+// const IsInRange = (pos: number, start: number, end: number) => {
+//   return start < pos && pos < end;
+// };
 
 export class GameLogic {
   private ball: Ball;
@@ -60,11 +60,19 @@ export class GameLogic {
   }
 
   private UpdateBallPosition() {
-    if (!IsInRange(this.ball.y + this.ball.dy, 0, 1)) {
+    // eslint-disable-next-line
+    let newX = this.ball.x + this.ball.dx;
+    let newY = this.ball.y + this.ball.dy;
+
+    if (newY <= 0) {
+      newY = -newY;
+      this.ball.dy = -this.ball.dy;
+    } else if (newY >= 1) {
+      newY = 1 - (newY - 1);
       this.ball.dy = -this.ball.dy;
     }
-    this.ball.x += this.ball.dx;
-    this.ball.y += this.ball.dy;
+    this.ball.x = newX;
+    this.ball.y = newY;
   }
 
   private HandleKeyActions() {
