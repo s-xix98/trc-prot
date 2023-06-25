@@ -33,4 +33,9 @@ export class UserGateway {
     console.log(partialMatchUsers);
     client.emit('searchUser', partialMatchUsers);
   }
+
+  @SubscribeMessage('friendRequest')
+  async friendRequest(client: Socket) {
+    console.log('friendRequest', client.id);
+  }
 }
