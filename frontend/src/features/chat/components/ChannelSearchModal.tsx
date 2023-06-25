@@ -37,6 +37,8 @@ export const ChannelSearchModal = () => {
       <ModalView
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
+        width="200px"
+        height="250px"
         >
         <div>
           <Container flexDirection={'column'}>
