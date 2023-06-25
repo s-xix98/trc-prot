@@ -9,7 +9,6 @@ import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { SearchUserOrChannel } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
-import { useRequireLogin } from './hooks/useLogin';
 import { Matching } from './features/game/Matching';
 import { useCurrentUser } from './hooks/useCurrentUser';
 
@@ -32,8 +31,6 @@ function App() {
   });
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
-
-  useRequireLogin();
 
   // useSocket()
 
