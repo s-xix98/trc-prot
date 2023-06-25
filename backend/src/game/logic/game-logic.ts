@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle } from '../types.d';
+import { Ball, Paddle } from '../types';
 import { CreateBall, CreatePaddle } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
