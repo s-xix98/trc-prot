@@ -4,6 +4,7 @@ import { Socket } from 'socket.io';
 import { PrismaService } from '../prisma/prisma.service';
 
 import { searchUserDto } from './dto/user.dto';
+import { friendshipDto } from './dto/friendship.dto';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -35,7 +36,9 @@ export class UserGateway {
   }
 
   @SubscribeMessage('friendRequest')
-  async friendRequest(client: Socket) {
+  async friendRequest(client: Socket, dto: friendshipDto) {
     console.log('friendRequest', client.id);
+    console.log(dto);
+
   }
 }
