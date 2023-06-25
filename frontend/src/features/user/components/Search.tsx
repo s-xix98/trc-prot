@@ -28,7 +28,7 @@ export const UserSearch = () => {
 
   return (
     <div>
-      <Container>
+      <Container flexDirection='column'>
         <h2>User Search</h2>
         <ContainerItem overflowY="scroll">
           <SearchedResult searchedList={searchedList} />
