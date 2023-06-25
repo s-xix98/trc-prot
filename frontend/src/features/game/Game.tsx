@@ -6,8 +6,59 @@ import styled from 'styled-components';
 import { socket } from '@/socket';
 import { useSocket } from '@/hooks/useSocket';
 
-import { Ball, Paddle } from './Types';
-import { GameDto } from './dto/GameDto';
+import { Ball, GameObjects, Paddle } from './Types';
+import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
+
+const CreateBall = (
+  ballDto: BallDto,
+  canvasWidth: number,
+  canvasHeight: number,
+): Ball => {
+  return {
+    x: ballDto.x * canvasWidth,
+    y: ballDto.y * canvasHeight,
+    radius: 10,
+  };
+};
+
+const CreatePaddle = (
+  paddleDto: PaddleDto,
+  canvasWidth: number,
+  canvasHeight: number,
+): Paddle => {
+  return {
+    x: paddleDto.x * canvasWidth,
+    y: paddleDto.y * canvasHeight,
+    width: paddleDto.width * canvasWidth,
+    height: paddleDto.height * canvasHeight,
+  };
+};
+
+const CreateGameObjects = (
+  gameDto: GameDto,
+  canvasWidth: number,
+  canvasHeight: number,
+): GameObjects => {
+  const ball = CreateBall(gameDto.ball, canvasWidth, canvasHeight);
+
+  const leftPaddle = CreatePaddle(
+    gameDto.leftPaddle,
+    canvasWidth,
+    canvasHeight,
+  );
+
+  const rightPaddle = CreatePaddle(
+    gameDto.rightPaddle,
+    canvasWidth,
+    canvasHeight,
+  );
+
+  return {
+    ball,
+    leftPaddle,
+    rightPaddle,
+  };
+};
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
@@ -37,39 +88,17 @@ const GameCanvas = () => {
   const canvasHeight = 400;
   const canvasId = 'canvas';
 
-  useSocket('game data', (game: GameDto) => {
-    console.log('game start');
+  useSocket('game data', (gameDto: GameDto) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
       return;
     }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const ball: Ball = {
-      x: game.ball.x * canvasWidth,
-      y: game.ball.y * canvasHeight,
-      radius: 10,
-    };
-
-    const leftPaddle: Paddle = {
-      x: game.leftPaddle.x * canvasWidth,
-      y: game.leftPaddle.y * canvasHeight,
-      width: game.leftPaddle.width * canvasWidth,
-      height: game.leftPaddle.height * canvasHeight,
-    };
-
-    const rightPaddle: Paddle = {
-      x: game.rightPaddle.x * canvasWidth,
-      y: game.rightPaddle.y * canvasHeight,
-      width: game.rightPaddle.width * canvasWidth,
-      height: game.rightPaddle.height * canvasHeight,
-    };
-
-    console.log(ball);
-    DrawBall(ctx, ball);
-    DrawPaddle(ctx, rightPaddle);
-    DrawPaddle(ctx, leftPaddle);
+    DrawBall(ctx, game.ball);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
   });
 
   return (

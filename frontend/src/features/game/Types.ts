@@ -10,3 +10,9 @@ export type Paddle = {
   width: number;
   height: number;
 };
+
+export type GameObjects = {
+  ball: Ball;
+  leftPaddle: Paddle;
+  rightPaddle: Paddle;
+};
