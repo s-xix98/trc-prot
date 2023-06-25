@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { ChangeEvent } from 'react';
 
 import { Input } from '@/components/Elements/Input/Input';
-import { Container } from '@/components/Layout/Container';
 
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useSendMessage } from '../api/sendMsg';
@@ -34,12 +33,7 @@ export const ChatInput = ({
 
   return (
     <>
-      <div>
-        <Container>
-          <p style={{ margin: 'auto' }}>&nbsp;&gt;&nbsp;</p>
-          <Input msg={msg} onChangeAct={onChangeAct} />
-        </Container>
-      </div>
+      <Input msg={msg} start={'> '} onChangeAct={onChangeAct} />
     </>
   );
 };
