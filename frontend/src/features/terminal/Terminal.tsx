@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { useAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
@@ -26,6 +27,8 @@ export const Terminal = ({
 
   const { modalIsOpen, openModal, closeModal } = useModal();
 
+  const router = useRouter();
+
   const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '\n') {
       return;
@@ -37,7 +40,7 @@ export const Terminal = ({
     if (input === 'logout') {
       setUserInfo(undefined);
       tokenStorage.remove();
-      return;
+      router.push('/login');
     }
 
     const inputElem = <p>&gt;&nbsp;{input}</p>;
