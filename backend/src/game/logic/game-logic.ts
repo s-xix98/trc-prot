@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 
-import { Ball } from '../types.d';
-import { CreateBall } from '../game-constants';
+import { Ball, Paddle } from '../types.d';
+import { CreateBall, CreatePaddle } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
 const IsInRange = (pos: number, start: number, end: number) => {
@@ -10,6 +10,8 @@ const IsInRange = (pos: number, start: number, end: number) => {
 
 export class GameLogic {
   private ball: Ball;
+  private leftPaddle: Paddle;
+  private rightPaddle: Paddle;
   private p1: Socket;
   private p2: Socket;
   private intervalId: any;
@@ -18,14 +20,20 @@ export class GameLogic {
     this.ball = ball;
     this.p1 = p1;
     this.p2 = p2;
+    this.leftPaddle = CreatePaddle(0);
+    this.rightPaddle = CreatePaddle(1);
   }
 
   StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
       this.UpdateBallPosition();
-      const gameDto: GameDto = { ball: this.ball };
-      console.log(gameDto.ball);
+      const gameDto: GameDto = {
+        ball: this.ball,
+        leftPaddle: this.leftPaddle,
+        rightPaddle: this.rightPaddle,
+      };
+      // console.log(gameDto);
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
     }, 10);
