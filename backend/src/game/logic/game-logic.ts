@@ -6,9 +6,9 @@ import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
 
-const IsInRange = (pos: number, start: number, end: number) => {
-  return start < pos && pos < end;
-};
+// const IsInRange = (pos: number, start: number, end: number) => {
+//   return start < pos && pos < end;
+// };
 
 export class GameLogic {
   private ball: Ball;
@@ -60,6 +60,7 @@ export class GameLogic {
   }
 
   private UpdateBallPosition() {
+    // eslint-disable-next-line
     let newX = this.ball.x + this.ball.dx;
     let newY = this.ball.y + this.ball.dy;
 
