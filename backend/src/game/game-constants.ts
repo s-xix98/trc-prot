@@ -4,7 +4,7 @@ export const CreateBall = (): Ball => structuredClone(ballConstants);
 
 export const CreatePaddle = (x: number): Paddle => {
   return {
-    x: x == 0 ? x : x - paddleConstants.width,
+    x: x >= 1 - paddleConstants.width ? 1 - paddleConstants.width : x,
     y: 0.5 - paddleConstants.height / 2,
     height: paddleConstants.height,
     width: paddleConstants.width,
