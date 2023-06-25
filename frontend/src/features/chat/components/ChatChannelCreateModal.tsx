@@ -25,8 +25,8 @@ export const ChatChannelCreateModal = () => {
   };
 
   return (
-    <div>
-      <div onClick={() => openModal()}>ChannelCreate</div>
+    <>
+      <p onClick={() => openModal()}>ChannelCreate</p>
       <ModalView
         modalIsOpen={modalIsOpen}
         closeModal={closeModal}
@@ -57,6 +57,6 @@ export const ChatChannelCreateModal = () => {
           </button>
         </div>
       </ModalView>
-    </div>
+    </>
   );
 };

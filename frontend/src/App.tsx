@@ -7,7 +7,7 @@ import { Game } from './features/game/Game';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
-import { SearchUserOrChannel } from './features/user/components/Search';
+import { UserSearch } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
 import { Matching } from './features/game/Matching';
 import { useCurrentUser } from './hooks/useCurrentUser';
@@ -43,7 +43,7 @@ function App() {
   commandElemMap.set('m', <Matching />);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);
-  commandElemMap.set('./search', <SearchUserOrChannel />);
+  commandElemMap.set('./search', <UserSearch />);
 
   return (
     <MainLayout>
