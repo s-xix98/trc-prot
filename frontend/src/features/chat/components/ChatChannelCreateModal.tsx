@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { TextField } from '@mui/material';
 
 import { useSocket } from '@/hooks/useSocket';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
+import { Input } from '@/components/Elements/Input/Input';
 
 import { useCreateChannel } from '../api/createChannel';
 
@@ -36,12 +36,10 @@ export const ChatChannelCreateModal = () => {
         <div>
           <h5>ChannelCreate</h5>
           <br />
-          {/* TODO : MUI の方の色も変えたりしたい */}
-          <TextField
-            label="ChannelName"
-            variant="outlined"
-            value={roomName}
-            onChange={(e) => setRoomName(e.target.value)}
+          <Input
+            msg={roomName}
+            placeholder="ChannelName"
+            onChangeAct={(e) => setRoomName(e.target.value)}
           />
           <br />
           <br />
