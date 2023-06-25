@@ -3,6 +3,7 @@ import { Socket } from 'socket.io';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
+import { Keys } from './logic/KeyAction';
 
 enum PlaySide {
   LEFT = 0,
@@ -129,5 +130,17 @@ export class GameGateway {
   EndGame() {
     this.game?.EndGame();
     this.game = undefined;
+  }
+
+  @SubscribeMessage('key press')
+  handleKeyPress(client: Socket, key: Keys) {
+    console.log('press', key);
+    this.game?.HandleKeyPress(key);
+  }
+
+  @SubscribeMessage('key release')
+  handleKeyRelease(client: Socket, key: Keys) {
+    console.log('release', key);
+    this.game?.HandleKeyRelease(key);
   }
 }

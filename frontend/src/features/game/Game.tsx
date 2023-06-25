@@ -8,6 +8,8 @@ import { useSocket } from '@/hooks/useSocket';
 
 import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
+import { Keys } from './Keys';
+import { useKeyInput } from './useKeyinput';
 
 const CreateBall = (
   ballDto: BallDto,
@@ -71,7 +73,7 @@ const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
 const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
   ctx.beginPath();
   ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = 'white';
   ctx.fill();
   ctx.closePath();
 };
@@ -113,6 +115,41 @@ const GameCanvas = () => {
 
 export const Game = () => {
   // const [isGameOver, setGameOver] = useState(false);
+
+  const keyInputs: boolean[] = [];
+
+  // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
+  const keyPressHandler = (e: KeyboardEvent) => {
+    if (!keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
+      console.log('press u');
+      keyInputs[Keys.Up] = true;
+      socket.emit('key press', Keys.Up);
+    } else if (
+      !keyInputs[Keys.Down] &&
+      (e.key === 'Down' || e.key === 'ArrowDown')
+    ) {
+      console.log('press d');
+      keyInputs[Keys.Down] = true;
+      socket.emit('key press', Keys.Down);
+    }
+  };
+
+  const keyReleaseHandler = (e: KeyboardEvent) => {
+    if (keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
+      console.log('release u');
+      keyInputs[Keys.Up] = false;
+      socket.emit('key release', Keys.Up);
+    } else if (
+      keyInputs[Keys.Down] &&
+      (e.key === 'Down' || e.key === 'ArrowDown')
+    ) {
+      console.log('release d');
+      keyInputs[Keys.Down] = false;
+      socket.emit('key release', Keys.Down);
+    }
+  };
+
+  useKeyInput(keyPressHandler, keyReleaseHandler);
 
   useEffect(() => {
     socket.emit('start game');
