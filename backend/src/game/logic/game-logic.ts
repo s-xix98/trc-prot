@@ -4,7 +4,7 @@ import { Ball, Paddle } from '../types.d';
 import { CreateBall, CreatePaddle } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
-import { Keys } from './KeyAction';
+import { keyActions, Keys } from './KeyAction';
 
 const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
@@ -30,6 +30,7 @@ export class GameLogic {
   StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
+      this.HandleKeyActions();
       this.UpdateBallPosition();
       const gameDto: GameDto = {
         ball: this.ball,
@@ -64,5 +65,17 @@ export class GameLogic {
     }
     this.ball.x += this.ball.dx;
     this.ball.y += this.ball.dy;
+  }
+
+  private HandleKeyActions() {
+    // 一旦どっちも動かす
+    if (this.keyInputs[Keys.Up]) {
+      keyActions[Keys.Up](this.leftPaddle);
+      keyActions[Keys.Up](this.rightPaddle);
+    }
+    if (this.keyInputs[Keys.Down]) {
+      keyActions[Keys.Down](this.leftPaddle);
+      keyActions[Keys.Down](this.rightPaddle);
+    }
   }
 }
