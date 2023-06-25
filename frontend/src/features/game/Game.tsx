@@ -8,7 +8,7 @@ import { useSocket } from '@/hooks/useSocket';
 
 import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
-import { Keys } from './KeyAction';
+import { Keys } from './Keys';
 import { useKeyInput } from './useKeyinput';
 
 const CreateBall = (
