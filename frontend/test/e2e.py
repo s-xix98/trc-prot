@@ -10,8 +10,11 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
     page = context.new_page()
 
+    page.on("console", lambda msg: print(msg.text))
+
     # ログインしてない状態だと、login に 飛ばされるはず
     page.goto("http://localhost:3000/")
+    time.sleep(3)
     page.screenshot(path=f"{TEST_IMG_DIR}/1.png")
 
     # とりあえず適当にログイン
