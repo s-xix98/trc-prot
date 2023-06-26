@@ -5,4 +5,5 @@ export class JoinChannelDto {
 export class CreateChannelDto {
   roomName: string;
   userId: string;
+  password?: string;
 }
