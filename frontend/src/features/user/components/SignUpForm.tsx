@@ -40,7 +40,7 @@ export const SignUpForm = () => {
         <span>password : </span>
         <input {...register('hashedPassword')} placeholder="password" />
         <span>&nbsp;</span>
-        <input type="submit" value="Login" />
+        <input type="submit" value="SignUp" />
         {errors.hashedPassword && (
           <p style={{ color: 'red' }}>{errors.hashedPassword.message}</p>
         )}
