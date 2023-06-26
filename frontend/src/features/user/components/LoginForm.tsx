@@ -21,11 +21,15 @@ export const LoginForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(handleLogin)}>
+        <span>email &nbsp;&nbsp;&nbsp;: </span>
         <input {...register('email')} placeholder="email" />
-        {errors.email?.message && <span>{errors.email.message}</span>}
+        {errors.email?.message ? <p>{errors.email.message}</p> : <br />}
+
+        <span>password : </span>
         <input {...register('hashedPassword')} placeholder="password" />
-        {errors.hashedPassword && <span>{errors.hashedPassword.message}</span>}
+        <span>&nbsp;</span>
         <input type="submit" value="Login" />
+        {errors.hashedPassword && <p>{errors.hashedPassword.message}</p>}
       </form>
     </>
   );
