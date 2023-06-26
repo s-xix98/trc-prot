@@ -44,14 +44,14 @@ describe('ChatGateway', () => {
 
     testUsers.map((testUser) => {
       testUser.socket.on('connect', () => {
-        console.log(`connected ${testUser.user.username}`);
+        //
       });
     });
   });
   afterAll(async () => {
     testUsers.map((testUser) => {
       testUser.socket.off('connect', () => {
-        console.log(`dissconnected ${testUser.user.username}`);
+        //
       });
     });
 

@@ -48,7 +48,7 @@ describe('UserGateway', () => {
 
     testUsers.map((testUser) => {
       testUser.socket.on('connect', () => {
-        console.log(`connected ${testUser.user.username}`);
+        //
       });
     });
   });
@@ -56,7 +56,7 @@ describe('UserGateway', () => {
   afterAll(async () => {
     testUsers.map((testUser) => {
       testUser.socket.off('connect', () => {
-        console.log(`dissconnected ${testUser.user.username}`);
+        //
       });
     });
 
