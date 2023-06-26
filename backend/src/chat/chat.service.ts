@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
+
 import { CreateChannelDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';

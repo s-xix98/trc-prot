@@ -14,7 +14,11 @@ import { ChatService } from './chat.service';
   },
 })
 export class ChatGateway {
-  constructor(private prisma: PrismaService, private server: WsocketGateway, private chatService: ChatService) {}
+  constructor(
+    private prisma: PrismaService,
+    private server: WsocketGateway,
+    private chatService: ChatService,
+  ) {}
 
   async handleConnection(client: Socket) {
     // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
@@ -80,8 +84,12 @@ export class ChatGateway {
   async sendMessage(client: Socket, messageDto: MessageDto) {
     const msg = await this.chatService.createMessage(messageDto);
 
-    const roomMsgs = await this.chatService.getChannelHistoryById(msg.chatRoomId);
+    const roomMsgs = await this.chatService.getChannelHistoryById(
+      msg.chatRoomId,
+    );
 
-    this.server.to(roomType.Chat, msg.chatRoomId).emit('receiveMessage', roomMsgs);
+    this.server
+      .to(roomType.Chat, msg.chatRoomId)
+      .emit('receiveMessage', roomMsgs);
   }
 }
