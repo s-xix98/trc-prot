@@ -21,13 +21,29 @@ export const SignUpForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(handleSignUp)}>
+        <span>username : </span>
         <input {...register('username')} placeholder="username" />
-        {errors.username?.message && <span>{errors.username.message}</span>}
+        {errors.username?.message ? (
+          <p style={{ color: 'red' }}>{errors.username.message}</p>
+        ) : (
+          <br />
+        )}
+
+        <span>email &nbsp;&nbsp;&nbsp;: </span>
         <input {...register('email')} placeholder="email" />
-        {errors.email?.message && <span>{errors.email.message}</span>}
+        {errors.email?.message ? (
+          <p style={{ color: 'red' }}>{errors.email.message}</p>
+        ) : (
+          <br />
+        )}
+
+        <span>password : </span>
         <input {...register('hashedPassword')} placeholder="password" />
-        {errors.hashedPassword && <span>{errors.hashedPassword.message}</span>}
-        <input type="submit" value="SignUp" />
+        <span>&nbsp;</span>
+        <input type="submit" value="Login" />
+        {errors.hashedPassword && (
+          <p style={{ color: 'red' }}>{errors.hashedPassword.message}</p>
+        )}
       </form>
     </>
   );
