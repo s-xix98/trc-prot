@@ -115,8 +115,8 @@ model Friendship {
   srcUserId  String
   destUserId String
   status     FriendshipStatus
-  user1      User             @relation("src", fields: [srcUserId], references: [id])
-  user2      User             @relation("dest", fields: [destUserId], references: [id])
+  user1      User             @relation("src", fields: [srcUserId], references: [id], onDelete: Cascade)
+  user2      User             @relation("dest", fields: [destUserId], references: [id], onDelete: Cascade)
 
   @@id([srcUserId, destUserId])
 }
