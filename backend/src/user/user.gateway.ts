@@ -100,5 +100,26 @@ export class UserGateway {
   @SubscribeMessage('blockUser')
   async blockUser(client: Socket, dto: friendshipDto) {
     console.log('blockUser', client.id, dto);
+
+    const relation = await this.prisma.friendship.upsert({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: dto.userId,
+          destUserId: dto.targetId,
+        },
+      },
+      update: {
+        status: 'Blocked',
+      },
+      create: {
+        srcUserId: dto.userId,
+        destUserId: dto.targetId,
+        status: 'Blocked',
+      },
+    });
+
+    console.log(relation);
+
+    // TODO targetがフレンドだった場合targetのフレンドリストからdbとフロントから削除しチャットmsgを非表示にする
   }
 }
