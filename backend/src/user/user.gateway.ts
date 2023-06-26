@@ -96,4 +96,9 @@ export class UserGateway {
     // TODO targetユーザーに通知を送る
     // client.to(target client id).emit('friendRequest', userid , username);
   }
+
+  @SubscribeMessage('blockUser')
+  async blockUser(client: Socket, dto: friendshipDto) {
+    console.log('blockUser', client.id, dto);
+  }
 }
