@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { SearchUserOrChannel } from './Search';
+import { UserSearch } from './Search';
 
 const meta = {
-  component: SearchUserOrChannel,
+  component: UserSearch,
   tags: ['autodocs'],
-} satisfies Meta<typeof SearchUserOrChannel>;
+} satisfies Meta<typeof UserSearch>;
 
 export default meta;
 
-type Story = StoryObj<typeof SearchUserOrChannel>;
+type Story = StoryObj<typeof UserSearch>;
 
 export const Basic: Story = {};
