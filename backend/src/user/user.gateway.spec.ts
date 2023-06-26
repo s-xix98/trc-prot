@@ -9,7 +9,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
 
 import { UserGateway } from './user.gateway';
-
 import { friendshipDto } from './dto/friendship.dto';
 
 const USERNUM = 10;
