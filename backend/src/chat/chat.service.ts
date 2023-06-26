@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateChannelDto } from './dto/Channel.dto';
 
 @Injectable()
 export class ChatService {
@@ -40,5 +41,22 @@ export class ChatService {
     });
 
     return partialMatchRooms;
+  }
+
+  async createChannel(createChannelDto: CreateChannelDto) {
+    const createdRoom = await this.prismaService.chatRoom.create({
+      data: {
+        roomName: createChannelDto.roomName,
+      },
+    });
+
+    await this.prismaService.roomMember.create({
+      data: {
+        userId: createChannelDto.userId,
+        chatRoomId: createdRoom.id,
+      },
+    });
+
+    return createdRoom;
   }
 }

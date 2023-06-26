@@ -7,13 +7,14 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { MessageDto } from './dto/message.dto';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
+import { ChatService } from './chat.service';
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
 export class ChatGateway {
-  constructor(private prisma: PrismaService, private server: WsocketGateway) {}
+  constructor(private prisma: PrismaService, private server: WsocketGateway, private chatService: ChatService) {}
 
   async handleConnection(client: Socket) {
     // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
@@ -58,17 +59,8 @@ export class ChatGateway {
   }
   @SubscribeMessage('createChannel')
   async createChannel(client: Socket, createChannelDto: CreateChannelDto) {
-    const createdRoom = await this.prisma.chatRoom.create({
-      data: {
-        roomName: createChannelDto.roomName,
-      },
-    });
-    await this.prisma.roomMember.create({
-      data: {
-        userId: createChannelDto.userId,
-        chatRoomId: createdRoom.id,
-      },
-    });
+    const createdRoom = await this.chatService.createChannel(createChannelDto);
+
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
     client.emit('addRoom', createdRoom);
     client.broadcast.emit('addRoom', createdRoom);
