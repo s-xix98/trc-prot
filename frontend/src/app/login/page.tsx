@@ -10,7 +10,6 @@ import { useRedirectToHome } from '@/hooks/useLogin';
 import { LoginForm } from '@/features/user/components/LoginForm';
 import { SignUpForm } from '@/features/user/components/SignUpForm';
 
-
 // TODO : UI 改善する
 export default function Login() {
   useRedirectToHome();
