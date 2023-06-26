@@ -19,10 +19,26 @@ export class UserGateway {
     // 接続時にfriendRequestをfrontに送る。
     // 現状接続してきたuserのidを取得できないからhugaへのfriendRequestを送る
     const huga = await this.prisma.user.findUnique({where: {username: 'huga'}});
+    const piyo = await this.prisma.user.findUnique({where: {username: 'piyo'}});
 
-    if (!huga) {
+    if (!huga || !piyo) {
       return;
     }
+
+    await this.prisma.friendship.upsert({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: piyo.id,
+          destUserId: huga.id,
+        },
+      },
+      update: {},
+      create: {
+        srcUserId: piyo.id,
+        destUserId: huga.id,
+        status: 'Requested',
+      },
+    });
 
     const friendRequests = await this.prisma.friendship.findMany({
       where: {
