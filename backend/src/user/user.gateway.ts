@@ -130,7 +130,10 @@ export class UserGateway {
       },
     });
 
-    if (targetRelation?.status === 'Accepted' || targetRelation?.status === 'Requested') {
+    if (
+      targetRelation?.status === 'Accepted' ||
+      targetRelation?.status === 'Requested'
+    ) {
       await this.prisma.friendship.delete({
         where: {
           srcUserId_destUserId: {
