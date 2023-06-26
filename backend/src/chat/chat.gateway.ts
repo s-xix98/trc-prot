@@ -82,6 +82,6 @@ export class ChatGateway {
 
     const roomMsgs = await this.chatService.getChannelHistoryById(msg.chatRoomId);
 
-    this.server.to(roomType.Chat, msg.chatRoomId).emit('sendMessage', roomMsgs);
+    this.server.to(roomType.Chat, msg.chatRoomId).emit('receiveMessage', roomMsgs);
   }
 }

@@ -148,7 +148,7 @@ describe('ChatGateway', () => {
 
       await testService.emitAndWaitForEvent<MessageDto>(
         'sendMessage',
-        'sendMessage',
+        'receiveMessage',
         user.socket,
         messageDto,
       );
@@ -174,7 +174,7 @@ describe('ChatGateway', () => {
 
       testUsers.map((user) => {
         const joinPromise = new Promise((resolve) => {
-          user.socket.on('sendMessage', async () => {
+          user.socket.on('receiveMessage', async () => {
             receivedCount++;
             console.log(receivedCount);
             resolve(null);
