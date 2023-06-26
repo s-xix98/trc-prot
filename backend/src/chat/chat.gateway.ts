@@ -68,20 +68,7 @@ export class ChatGateway {
 
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, joinChannelDto: JoinChannelDto) {
-    // TODO createだと２回createすると例外を投げるので一旦upsertにした
-    const addedUser = await this.prisma.roomMember.upsert({
-      where: {
-        userId_chatRoomId: {
-          userId: joinChannelDto.userId,
-          chatRoomId: joinChannelDto.chatRoomId,
-        },
-      },
-      update: {},
-      create: {
-        userId: joinChannelDto.userId,
-        chatRoomId: joinChannelDto.chatRoomId,
-      },
-    });
+    const addedUser = await this.chatService.JoinChannel(joinChannelDto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
     this.server

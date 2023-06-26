@@ -3,6 +3,7 @@ import { ChatRoom } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto } from './dto/Channel.dto';
+import { JoinChannelDto } from './dto/Channel.dto';
 
 @Injectable()
 export class ChatService {
@@ -58,5 +59,24 @@ export class ChatService {
     });
 
     return createdRoom;
+  }
+
+  // TODO createだと２回createすると例外を投げるので一旦upsertにした
+  async JoinChannel(joinChannelDto: JoinChannelDto) {
+    const roomMember = await this.prismaService.roomMember.upsert({
+      where: {
+        userId_chatRoomId: {
+          userId: joinChannelDto.userId,
+          chatRoomId: joinChannelDto.chatRoomId,
+        },
+      },
+      update: {},
+      create: {
+        userId: joinChannelDto.userId,
+        chatRoomId: joinChannelDto.chatRoomId,
+      },
+    });
+
+    return roomMember;
   }
 }
