@@ -10,7 +10,9 @@ import { TestModule } from '../test/test.module';
 
 import { UserGateway } from './user.gateway';
 
-const USERNUM = 1;
+import { friendshipDto } from './dto/friendship.dto';
+
+const USERNUM = 10;
 
 const subStrings = (s: string) => {
   const res: string[] = [];
@@ -103,6 +105,32 @@ describe('UserGateway', () => {
       });
 
       await promise;
+    });
+  });
+
+  describe('friendRequest', () => {
+    test('friendRequestしたらdbにレコードが存在し正しく挿入されてるか', async () => {
+      const dto: friendshipDto = {
+        userId: testUsers[0].user.id,
+        targetId: testUsers[1].user.id,
+      };
+
+      testUsers[0].socket.emit('friendRequest', dto);
+
+      await testService.sleep(3000);
+
+      const friendship = await prismaService.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: testUsers[0].user.id,
+            destUserId: testUsers[1].user.id,
+          },
+        },
+      });
+
+      expect(friendship?.srcUserId).toEqual(testUsers[0].user.id);
+      expect(friendship?.destUserId).toEqual(testUsers[1].user.id);
+      expect(friendship?.status).toEqual('Requested');
     });
   });
 });
