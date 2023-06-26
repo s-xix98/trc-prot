@@ -49,6 +49,7 @@ export class ChatService {
     const createdRoom = await this.prismaService.chatRoom.create({
       data: {
         roomName: dto.roomName,
+        hashedPassword: dto.password,
       },
     });
 
