@@ -1,12 +1,9 @@
-import axios, {
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { BACKEND } from '@/constants';
-import { useEffect } from 'react';
 class authError extends Error {
   constructor(e?: string) {
     super(e);
@@ -44,23 +41,22 @@ export const useSessionAxios = () => {
   const router = useRouter();
 
   useEffect(() => {
-  // eslint-disable-next-line
-  const routeOnAuthErr = (err: any) => {
-    if (isAuthError(err)) {
-      router.push('/login');
-    }
-    throw err;
-  };
+    // eslint-disable-next-line
+    const routeOnAuthErr = (err: any) => {
+      if (isAuthError(err)) {
+        router.push('/login');
+      }
+      throw err;
+    };
 
-  customAxios.interceptors.request.use(
-    setAccessTokenForRequest,
-    routeOnAuthErr,
-  );
-  customAxios.interceptors.response.use(
-    handleUnauthorizedResponse,
-    routeOnAuthErr,
-  );
-
+    customAxios.interceptors.request.use(
+      setAccessTokenForRequest,
+      routeOnAuthErr,
+    );
+    customAxios.interceptors.response.use(
+      handleUnauthorizedResponse,
+      routeOnAuthErr,
+    );
   }, [router]);
 
   return customAxios;
