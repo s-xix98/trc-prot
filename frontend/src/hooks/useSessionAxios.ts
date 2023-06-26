@@ -1,39 +1,19 @@
-import axios, {
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-  AxiosError,
-} from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
+import { useSetAtom } from 'jotai';
+import { useEffect } from 'react';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { BACKEND } from '@/constants';
-class authError extends Error {
-  constructor(e?: string) {
-    super(e);
-  }
-}
-
-// eslint-disable-next-line
-function isAxiosError(error: any): error is AxiosError {
-  return !!error.isAxiosError;
-}
+import { userInfoAtom } from '@/stores/jotai';
 
 const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
   const token = tokenStorage.get();
-  if (!token) {
-    throw new authError('no session');
+  if (token) {
+    const authHeaders = `Bearer ${token}`;
+    req.headers.Authorization = authHeaders;
   }
-
-  const authHeaders = `Bearer ${token}`;
-  req.headers.Authorization = authHeaders;
   return req;
-};
-
-const handleUnauthorizedResponse = async (res: AxiosResponse) => {
-  if (res.status === 401) {
-    throw new authError('401');
-  }
-  return res;
 };
 
 const customAxios = axios.create({
@@ -42,23 +22,27 @@ const customAxios = axios.create({
 
 export const useSessionAxios = () => {
   const router = useRouter();
+  const setUserInfo = useSetAtom(userInfoAtom);
 
-  // eslint-disable-next-line
-  const routeOnAuthErr = (err: any) => {
-    if (isAxiosError(err)) {
-      router.push('/login');
-    }
-    throw err;
-  };
+  useEffect(() => {
+    customAxios.interceptors.request.use(setAccessTokenForRequest);
+    customAxios.interceptors.response.use(
+      (res) => {
+        return res;
+      },
+      (error) => {
+        // 401 の時のみ login に飛ばす
+        if (error?.response?.status === 401) {
+          // TODO : login に飛ばす処理統一させる
+          setUserInfo(undefined);
+          tokenStorage.remove();
+          router.push('/login');
+        }
 
-  customAxios.interceptors.request.use(
-    setAccessTokenForRequest,
-    routeOnAuthErr,
-  );
-  customAxios.interceptors.response.use(
-    handleUnauthorizedResponse,
-    routeOnAuthErr,
-  );
+        return Promise.reject(error);
+      },
+    );
+  }, [setUserInfo, router]);
 
   return customAxios;
 };
