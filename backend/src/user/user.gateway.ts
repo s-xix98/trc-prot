@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
+
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -12,8 +13,24 @@ import { friendshipDto } from './dto/friendship.dto';
 })
 export class UserGateway {
   constructor(private prisma: PrismaService) {}
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
+
+    // 接続時にfriendRequestをfrontに送る。
+    // 現状接続してきたuserのidを取得できないからhugaへのfriendRequestを送る
+    const huga = await this.prisma.user.findUnique({where: {username: 'huga'}});
+
+    if (!huga) {
+      return;
+    }
+
+    const friendRequests = await this.prisma.friendship.findMany({
+      where: {
+        destUserId: huga.id,
+      },
+    });
+
+    client.emit('friendRequest', friendRequests);
   }
 
   handleDisconnect(client: Socket) {
