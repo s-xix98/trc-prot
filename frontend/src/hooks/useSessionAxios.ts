@@ -14,8 +14,8 @@ class authError extends Error {
 }
 
 // eslint-disable-next-line
-function isAxiosError(error: any): error is AxiosError {
-  return !!error.isAxiosError;
+function isAuthError(error: any): error is authError {
+  return error instanceof authError;
 }
 
 const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
@@ -45,7 +45,7 @@ export const useSessionAxios = () => {
 
   // eslint-disable-next-line
   const routeOnAuthErr = (err: any) => {
-    if (isAxiosError(err)) {
+    if (isAuthError(err)) {
       router.push('/login');
     }
     throw err;
