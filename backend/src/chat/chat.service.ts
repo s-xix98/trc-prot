@@ -4,6 +4,7 @@ import { ChatRoom } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
+import { MessageDto } from './dto/message.dto';
 
 @Injectable()
 export class ChatService {
@@ -30,7 +31,6 @@ export class ChatService {
 
     return roomMsgs;
   }
-
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
       where: {
@@ -78,5 +78,17 @@ export class ChatService {
     });
 
     return roomMember;
+  }
+
+  async createMessage(messageDto: MessageDto) {
+    const newMsg = await this.prismaService.message.create({
+      data: {
+        content: messageDto.content,
+        userId: messageDto.userId,
+        chatRoomId: messageDto.chatRoomId,
+      },
+    });
+
+    return newMsg;
   }
 }

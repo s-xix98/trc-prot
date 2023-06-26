@@ -78,26 +78,10 @@ export class ChatGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, messageDto: MessageDto) {
-    const msg = await this.prisma.message.create({
-      data: {
-        content: messageDto.content,
-        userId: messageDto.userId,
-        chatRoomId: messageDto.chatRoomId,
-      },
-    });
-    const roomMsgs = await this.prisma.message.findMany({
-      select: {
-        content: true,
-        user: {
-          select: {
-            username: true,
-          },
-        },
-      },
-      where: {
-        chatRoomId: messageDto.chatRoomId,
-      },
-    });
+    const msg = await this.chatService.createMessage(messageDto);
+
+    const roomMsgs = await this.chatService.getChannelHistoryById(msg.chatRoomId);
+
     this.server.to(roomType.Chat, msg.chatRoomId).emit('sendMessage', roomMsgs);
   }
 }
