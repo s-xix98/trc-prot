@@ -23,13 +23,13 @@ export const LoginForm = () => {
       <form onSubmit={handleSubmit(handleLogin)}>
         <span>email &nbsp;&nbsp;&nbsp;: </span>
         <input {...register('email')} placeholder="email" />
-        {errors.email?.message ? <p>{errors.email.message}</p> : <br />}
+        {errors.email?.message ? <p style={{ color: "red" }}>{errors.email.message}</p> : <br />}
 
         <span>password : </span>
         <input {...register('hashedPassword')} placeholder="password" />
         <span>&nbsp;</span>
         <input type="submit" value="Login" />
-        {errors.hashedPassword && <p>{errors.hashedPassword.message}</p>}
+        {errors.hashedPassword && <p style={{ color: "red" }}>{errors.hashedPassword.message}</p>}
       </form>
     </>
   );
