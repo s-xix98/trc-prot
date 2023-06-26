@@ -48,14 +48,14 @@ export class UserGateway {
 
     const friendRequests = await this.prisma.friendship.findMany({
       include: {
-        user1: true,
+        srcUser: true,
       },
       where: {
         destUserId: huga.id,
       },
     });
 
-    const sender = map(friendRequests, 'user1');
+    const sender = map(friendRequests, 'srcUser');
     client.emit(
       'friendRequest',
       map(sender, (user) => pick(user, 'id', 'username')),
