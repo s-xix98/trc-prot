@@ -1,9 +1,10 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
+import { useSetAtom } from 'jotai';
+import { useEffect } from 'react';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { BACKEND } from '@/constants';
-import { useSetAtom } from 'jotai';
 import { userInfoAtom } from '@/stores/jotai';
 
 const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
