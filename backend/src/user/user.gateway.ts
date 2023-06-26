@@ -40,5 +40,14 @@ export class UserGateway {
     console.log('friendRequest', client.id);
     console.log(dto);
 
+    await this.prisma.friendship.create({
+      data: {
+        srcUserId: dto.userId,
+        destUserId: dto.targetId,
+        status: 'Requested',
+      },
+    });
+    // TODO targetユーザーに通知を送る
+    // client.to(target client id).emit('friendRequest', userid , username);
   }
 }
