@@ -8,6 +8,7 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
+import { AuthLogin } from './AuthLogin';
 
 export const User = ({ children }: { children: ReactNode }) => {
   const [userInfo] = useAtom(userInfoAtom);
@@ -40,6 +41,8 @@ export const User = ({ children }: { children: ReactNode }) => {
           </div>
           <div style={{ textAlign: 'right' }}>
             <LoginForm />
+            <AuthLogin provider="42" path="/auth/42" />
+            <AuthLogin provider="google" path="/auth/google" />
           </div>
         </div>
       );
