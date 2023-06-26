@@ -23,23 +23,25 @@ export const useSessionAxios = () => {
   const router = useRouter();
   const setUserInfo = useSetAtom(userInfoAtom);
 
-  customAxios.interceptors.request.use(setAccessTokenForRequest);
-  customAxios.interceptors.response.use(
-    (res) => {
-      return res;
-    },
-    (error) => {
-      // 401 の時のみ login に飛ばす
-      if (error?.response?.status === 401) {
-        // TODO : login に飛ばす処理統一させる
-        setUserInfo(undefined);
-        tokenStorage.remove();
-        router.push('/login');
-      }
+  useEffect(() => {
+    customAxios.interceptors.request.use(setAccessTokenForRequest);
+    customAxios.interceptors.response.use(
+      (res) => {
+        return res;
+      },
+      (error) => {
+        // 401 の時のみ login に飛ばす
+        if (error?.response?.status === 401) {
+          // TODO : login に飛ばす処理統一させる
+          setUserInfo(undefined);
+          tokenStorage.remove();
+          router.push('/login');
+        }
 
-      return Promise.reject(error);
-    },
-  );
+        return Promise.reject(error);
+      },
+    );
+  }, [setUserInfo, router]);
 
   return customAxios;
 };
