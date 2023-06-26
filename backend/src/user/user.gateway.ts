@@ -41,6 +41,9 @@ export class UserGateway {
     });
 
     const friendRequests = await this.prisma.friendship.findMany({
+      include: {
+        user2: true,
+      },
       where: {
         destUserId: huga.id,
       },
