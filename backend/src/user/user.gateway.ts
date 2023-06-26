@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 
+import { map, pick } from 'lodash';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -49,7 +50,8 @@ export class UserGateway {
       },
     });
 
-    client.emit('friendRequest', friendRequests);
+    const sender = map(friendRequests, 'user2');
+    client.emit('friendRequest', map(sender, (user) => pick(user,  'id', 'username' )));
   }
 
   handleDisconnect(client: Socket) {
