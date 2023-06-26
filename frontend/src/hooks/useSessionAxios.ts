@@ -20,12 +20,10 @@ function isAxiosError(error: any): error is AxiosError {
 
 const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
   const token = tokenStorage.get();
-  if (!token) {
-    throw new authError('no session');
+  if (token) {
+    const authHeaders = `Bearer ${token}`;
+    req.headers.Authorization = authHeaders;
   }
-
-  const authHeaders = `Bearer ${token}`;
-  req.headers.Authorization = authHeaders;
   return req;
 };
 
