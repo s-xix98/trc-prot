@@ -1,12 +1,12 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { map, pick } from 'lodash';
 
 import { PrismaService } from '../prisma/prisma.service';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 
-import { map, pick } from 'lodash';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -14,13 +14,18 @@ import { map, pick } from 'lodash';
 })
 export class UserGateway {
   constructor(private prisma: PrismaService) {}
+
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
 
     // 接続時にfriendRequestをfrontに送る。
     // 現状接続してきたuserのidを取得できないからhugaへのfriendRequestを送る
-    const huga = await this.prisma.user.findUnique({where: {username: 'huga'}});
-    const piyo = await this.prisma.user.findUnique({where: {username: 'piyo'}});
+    const huga = await this.prisma.user.findUnique({
+      where: { username: 'huga' },
+    });
+    const piyo = await this.prisma.user.findUnique({
+      where: { username: 'piyo' },
+    });
 
     if (!huga || !piyo) {
       return;
@@ -51,7 +56,10 @@ export class UserGateway {
     });
 
     const sender = map(friendRequests, 'user2');
-    client.emit('friendRequest', map(sender, (user) => pick(user,  'id', 'username' )));
+    client.emit(
+      'friendRequest',
+      map(sender, (user) => pick(user, 'id', 'username')),
+    );
   }
 
   handleDisconnect(client: Socket) {
