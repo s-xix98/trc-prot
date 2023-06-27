@@ -35,4 +35,23 @@ describe('UserService', () => {
   it('should be defined', () => {
     expect(userService).toBeDefined();
   });
+
+  describe('フレンド', () => {
+    test('testUser[0]のフレンドリストの取得', async () => {
+      for (let i = 1; i < USERNUM; i++) {
+        await prismaService.friendship.create({
+          data: {
+            srcUserId: testUsers[0].user.id,
+            destUserId: testUsers[i].user.id,
+            status: 'Accepted',
+          },
+        });
+      }
+
+      const friends = await userService.getFriends(testUsers[0].user.id);
+
+      expect(friends.length).toEqual(USERNUM - 1);
+    });
+  });
+
 });
