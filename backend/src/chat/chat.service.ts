@@ -3,6 +3,10 @@ import { ChatRoom } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 
+import { CreateChannelDto } from './dto/Channel.dto';
+import { JoinChannelDto } from './dto/Channel.dto';
+import { MessageDto } from './dto/message.dto';
+
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -28,7 +32,6 @@ export class ChatService {
 
     return roomMsgs;
   }
-
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
       where: {
@@ -40,5 +43,53 @@ export class ChatService {
     });
 
     return partialMatchRooms;
+  }
+
+  async createChannel(dto: CreateChannelDto) {
+    const createdRoom = await this.prismaService.chatRoom.create({
+      data: {
+        roomName: dto.roomName,
+      },
+    });
+
+    await this.prismaService.roomMember.create({
+      data: {
+        userId: dto.userId,
+        chatRoomId: createdRoom.id,
+      },
+    });
+
+    return createdRoom;
+  }
+
+  // TODO createだと２回createすると例外を投げるので一旦upsertにした
+  async JoinChannel(dto: JoinChannelDto) {
+    const roomMember = await this.prismaService.roomMember.upsert({
+      where: {
+        userId_chatRoomId: {
+          userId: dto.userId,
+          chatRoomId: dto.chatRoomId,
+        },
+      },
+      update: {},
+      create: {
+        userId: dto.userId,
+        chatRoomId: dto.chatRoomId,
+      },
+    });
+
+    return roomMember;
+  }
+
+  async createMessage(dto: MessageDto) {
+    const newMsg = await this.prismaService.message.create({
+      data: {
+        content: dto.content,
+        userId: dto.userId,
+        chatRoomId: dto.chatRoomId,
+      },
+    });
+
+    return newMsg;
   }
 }
