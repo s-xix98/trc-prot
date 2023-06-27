@@ -1,0 +1,6 @@
+services:
+  frontend:
+    depends_on:
+      - backend
+    stop_grace_period: 1s
+    command: ["make", "test-e2e"]
