@@ -51,4 +51,8 @@ export class TestService {
       socket.emit(emitEventName, dto);
     });
   }
+
+  async sleep(ms: number) {
+    return new Promise((res) => setTimeout(res, ms));
+  }
 }
