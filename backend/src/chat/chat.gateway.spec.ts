@@ -222,5 +222,26 @@ describe('ChatGateway', () => {
 
       expect(isMatch).toEqual(true);
     });
+
+    test('password付きの部屋を取得したらHasPasswordがついてるか', async () => {
+      const user: testUser = testUsers[0];
+      const createChannelDto: CreateChannelDto = {
+        roomName: roomName + '1',
+        userId: user.user.id,
+        password: password,
+      };
+
+      await testService.emitAndWaitForEvent<CreateChannelDto>(
+        'createChannel',
+        'addRoom',
+        user.socket,
+        createChannelDto,
+      );
+
+      const createdRoom = await chatService.search(roomName);
+      createdRoom.map((room) => {
+        expect(room.hasPassword).toEqual(true);
+      });
+    });
   });
 });
