@@ -1,0 +1,69 @@
+name: e2e-test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DATABASE_URL: postgresql://test:test@localhost:5432/test?schema=public
+
+jobs:
+  e2e-test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: checkout git repository
+        uses: actions/checkout@v3
+
+      - name: cache frontend node-modules
+        id: cache-frontend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: frontend/node_modules
+          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
+
+      - name: cache backend node-modules
+        id: cache-backend-node-modules
+        uses: actions/cache@v3
+        with:
+          path: backend/node_modules
+          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
+
+      - name: setup backend
+        run: |
+          cd backend
+          make setup
+          make setup-db
+          npm run start:dev &
+
+      - name: setup frontend
+        run: |
+          cd frontend
+          make setup
+          make build
+          npm run start &
+          timeout 30 bash -c 'while ! >/dev/tcp/localhost/3000; do sleep 3; done'
+
+      - name: setup python playwright
+        run: |
+          pip install playwright
+          playwright install
+
+      - name: run test
+        run: |
+          cd frontend
+          python3 test/e2e.py
+          git diff --exit-code test/img

@@ -3,13 +3,13 @@ import { z } from 'zod';
 export const SignUpDtoSchema = z.object({
   email: z.string().email(),
   username: z.string(),
-  hashedPassword: z.string(),
+  hashedPassword: z.string().min(3),
 });
 export type SignUpDto = z.infer<typeof SignUpDtoSchema>;
 
 export const LoginDtoSchema = z.object({
   email: z.string().email(),
-  hashedPassword: z.string(),
+  hashedPassword: z.string().min(3),
 });
 export type LoginDto = z.infer<typeof LoginDtoSchema>;
 

@@ -62,6 +62,14 @@ sb-update:
 	timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
 	npm run storybook-update-snapshot
 
+PHONY	+=	test-e2e
+test-e2e:
+	npm i
+	export NEXT_PUBLIC_BACKEND="http://backend:8000" && make build
+	npm run start &
+	timeout 30 bash -c 'while ! >/dev/tcp/localhost/3000; do sleep 3; done'
+	python3 test/e2e.py
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
