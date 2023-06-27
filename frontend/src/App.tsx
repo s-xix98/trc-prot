@@ -29,6 +29,12 @@ function App() {
     console.log('addRoom', data);
     setChannelList((prev) => [...prev, data]);
   });
+
+  useSocket('friendRequest', (data) => {
+    // friendRequestの処理を書く
+    console.log('friendRequest', data);
+  });
+
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
 
