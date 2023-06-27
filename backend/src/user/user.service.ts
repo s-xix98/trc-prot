@@ -54,4 +54,8 @@ export class UserService {
     });
     return partialMatchUsers;
   }
+
+  async getFriends(userId: string) {
+    return userId;
+  }
 }

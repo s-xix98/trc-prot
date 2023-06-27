@@ -40,4 +40,10 @@ export class UserController {
     console.log(searchWord);
     return this.userService.search(searchWord);
   }
+
+  @Get('friends')
+  // eslint-disable-next-line
+  async getFriends(@Request() req: any) {
+    return this.userService.getFriends(req.user.userId);
+  }
 }
