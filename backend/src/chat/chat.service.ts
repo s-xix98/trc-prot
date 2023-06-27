@@ -65,6 +65,23 @@ export class ChatService {
 
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
   async JoinChannel(dto: JoinChannelDto) {
+    const room = await this.prismaService.chatRoom.findUnique({
+      where: {
+        id: dto.chatRoomId,
+      },
+      select: {
+        hashedPassword: true,
+      },
+    });
+    // TODO もうちょいちゃんとしたエラー投げる
+    if (!room) {
+      throw new Error('Room not found');
+    }
+    // TODO もうちょいちゃんとしたエラー投げる
+    if (room.hashedPassword && room.hashedPassword !== dto.password) {
+      throw new Error('Password is incorrect');
+    }
+
     const roomMember = await this.prismaService.roomMember.upsert({
       where: {
         userId_chatRoomId: {
