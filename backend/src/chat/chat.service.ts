@@ -45,16 +45,16 @@ export class ChatService {
     return partialMatchRooms;
   }
 
-  async createChannel(createChannelDto: CreateChannelDto) {
+  async createChannel(dto: CreateChannelDto) {
     const createdRoom = await this.prismaService.chatRoom.create({
       data: {
-        roomName: createChannelDto.roomName,
+        roomName: dto.roomName,
       },
     });
 
     await this.prismaService.roomMember.create({
       data: {
-        userId: createChannelDto.userId,
+        userId: dto.userId,
         chatRoomId: createdRoom.id,
       },
     });
@@ -63,30 +63,30 @@ export class ChatService {
   }
 
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
-  async JoinChannel(joinChannelDto: JoinChannelDto) {
+  async JoinChannel(dto: JoinChannelDto) {
     const roomMember = await this.prismaService.roomMember.upsert({
       where: {
         userId_chatRoomId: {
-          userId: joinChannelDto.userId,
-          chatRoomId: joinChannelDto.chatRoomId,
+          userId: dto.userId,
+          chatRoomId: dto.chatRoomId,
         },
       },
       update: {},
       create: {
-        userId: joinChannelDto.userId,
-        chatRoomId: joinChannelDto.chatRoomId,
+        userId: dto.userId,
+        chatRoomId: dto.chatRoomId,
       },
     });
 
     return roomMember;
   }
 
-  async createMessage(messageDto: MessageDto) {
+  async createMessage(dto: MessageDto) {
     const newMsg = await this.prismaService.message.create({
       data: {
-        content: messageDto.content,
-        userId: messageDto.userId,
-        chatRoomId: messageDto.chatRoomId,
+        content: dto.content,
+        userId: dto.userId,
+        chatRoomId: dto.chatRoomId,
       },
     });
 

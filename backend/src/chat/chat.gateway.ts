@@ -62,8 +62,8 @@ export class ChatGateway {
     console.log(client.id);
   }
   @SubscribeMessage('createChannel')
-  async createChannel(client: Socket, createChannelDto: CreateChannelDto) {
-    const createdRoom = await this.chatService.createChannel(createChannelDto);
+  async createChannel(client: Socket, dto: CreateChannelDto) {
+    const createdRoom = await this.chatService.createChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
     client.emit('addRoom', createdRoom);
@@ -71,8 +71,8 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('joinChannel')
-  async joinChannel(client: Socket, joinChannelDto: JoinChannelDto) {
-    const addedUser = await this.chatService.JoinChannel(joinChannelDto);
+  async joinChannel(client: Socket, dto: JoinChannelDto) {
+    const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
     this.server
@@ -81,8 +81,8 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, messageDto: MessageDto) {
-    const msg = await this.chatService.createMessage(messageDto);
+  async sendMessage(client: Socket, dto: MessageDto) {
+    const msg = await this.chatService.createMessage(dto);
 
     const roomMsgs = await this.chatService.getChannelHistoryById(
       msg.chatRoomId,
