@@ -33,6 +33,16 @@ export class ChatService {
 
     return roomMsgs;
   }
+
+  async findChannelById(roomId: string) {
+    const room = await this.prismaService.chatRoom.findUnique({
+      where: {
+        id: roomId,
+      },
+    });
+    return room;
+  }
+
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
       where: {
@@ -79,14 +89,7 @@ export class ChatService {
 
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
   async JoinChannel(dto: JoinChannelDto) {
-    const room = await this.prismaService.chatRoom.findUnique({
-      where: {
-        id: dto.chatRoomId,
-      },
-      select: {
-        hashedPassword: true,
-      },
-    });
+    const room = await this.findChannelById(dto.chatRoomId);
     // TODO もうちょいちゃんとしたエラー投げる
     if (!room) {
       throw new Error('Room not found');
