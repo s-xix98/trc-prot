@@ -14,7 +14,7 @@ import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
-
+import * as bcrypt from 'bcrypt';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
@@ -25,6 +25,7 @@ describe('ChatGateway', () => {
   let room: ChatRoom | null;
   let app: INestApplication;
   let testService: TestService;
+  let chatService: ChatService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,6 +36,7 @@ describe('ChatGateway', () => {
     gateway = module.get<ChatGateway>(ChatGateway);
     prismaService = module.get<PrismaService>(PrismaService);
     testService = module.get<TestService>(TestService);
+    chatService = module.get<ChatService>(ChatService);
 
     app = module.createNestApplication();
     app.useWebSocketAdapter(new IoAdapter(app));
@@ -81,6 +83,7 @@ describe('ChatGateway', () => {
       expect(room?.roomName).toEqual(createChannelDto.roomName);
     });
   });
+
 
   describe('join Channel', () => {
     let roomId: string;
@@ -179,6 +182,45 @@ describe('ChatGateway', () => {
       Promise.all(promises).then(() => {
         expect(receivedCount).toEqual(USERNUM);
       });
+    });
+  });
+
+
+
+  describe('パスワード付きの部屋のテスト', () => {
+    const roomName = 'passwordRoom';
+    const password = 'password';
+
+    test('users[0]がpassword付きの部屋を作れるか', async () => {
+      const user: testUser = testUsers[0];
+      const createChannelDto: CreateChannelDto = {
+        roomName: roomName,
+        userId: user.user.id,
+        password: password,
+      };
+      await testService.emitAndWaitForEvent<CreateChannelDto>(
+        'createChannel',
+        'addRoom',
+        user.socket,
+        createChannelDto,
+      );
+
+      const createdRoom = await prismaService.chatRoom.findFirst({
+        where: {
+          roomName: roomName,
+        },
+      });
+
+      if (createdRoom === null || createdRoom.hashedPassword === null) {
+        throw Error('createdRoom is null');
+      }
+
+      const isMatch = await bcrypt.compare(
+        password,
+        createdRoom.hashedPassword,
+      );
+
+      expect(isMatch).toEqual(true);
     });
   });
 });
