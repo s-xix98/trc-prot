@@ -7,13 +7,18 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { MessageDto } from './dto/message.dto';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
+import { ChatService } from './chat.service';
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
 export class ChatGateway {
-  constructor(private prisma: PrismaService, private server: WsocketGateway) {}
+  constructor(
+    private prisma: PrismaService,
+    private server: WsocketGateway,
+    private chatService: ChatService,
+  ) {}
 
   async handleConnection(client: Socket) {
     // TODO jwtができたら接続時にdbに保存されてる所属しているチャンネルに全てにclient.joinする
@@ -57,39 +62,17 @@ export class ChatGateway {
     console.log(client.id);
   }
   @SubscribeMessage('createChannel')
-  async createChannel(client: Socket, createChannelDto: CreateChannelDto) {
-    const createdRoom = await this.prisma.chatRoom.create({
-      data: {
-        roomName: createChannelDto.roomName,
-      },
-    });
-    await this.prisma.roomMember.create({
-      data: {
-        userId: createChannelDto.userId,
-        chatRoomId: createdRoom.id,
-      },
-    });
+  async createChannel(client: Socket, dto: CreateChannelDto) {
+    const createdRoom = await this.chatService.createChannel(dto);
+
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
     client.emit('addRoom', createdRoom);
     client.broadcast.emit('addRoom', createdRoom);
   }
 
   @SubscribeMessage('joinChannel')
-  async joinChannel(client: Socket, joinChannelDto: JoinChannelDto) {
-    // TODO createだと２回createすると例外を投げるので一旦upsertにした
-    const addedUser = await this.prisma.roomMember.upsert({
-      where: {
-        userId_chatRoomId: {
-          userId: joinChannelDto.userId,
-          chatRoomId: joinChannelDto.chatRoomId,
-        },
-      },
-      update: {},
-      create: {
-        userId: joinChannelDto.userId,
-        chatRoomId: joinChannelDto.chatRoomId,
-      },
-    });
+  async joinChannel(client: Socket, dto: JoinChannelDto) {
+    const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
     this.server
@@ -98,27 +81,15 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, messageDto: MessageDto) {
-    const msg = await this.prisma.message.create({
-      data: {
-        content: messageDto.content,
-        userId: messageDto.userId,
-        chatRoomId: messageDto.chatRoomId,
-      },
-    });
-    const roomMsgs = await this.prisma.message.findMany({
-      select: {
-        content: true,
-        user: {
-          select: {
-            username: true,
-          },
-        },
-      },
-      where: {
-        chatRoomId: messageDto.chatRoomId,
-      },
-    });
-    this.server.to(roomType.Chat, msg.chatRoomId).emit('sendMessage', roomMsgs);
+  async sendMessage(client: Socket, dto: MessageDto) {
+    const msg = await this.chatService.createMessage(dto);
+
+    const roomMsgs = await this.chatService.getChannelHistoryById(
+      msg.chatRoomId,
+    );
+
+    this.server
+      .to(roomType.Chat, msg.chatRoomId)
+      .emit('receiveMessage', roomMsgs);
   }
 }

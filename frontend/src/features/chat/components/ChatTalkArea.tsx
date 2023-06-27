@@ -27,8 +27,7 @@ export const ChatTalkArea = ({
     setChatHistMsgs(data);
   };
 
-  // TODO イベント名は適当だから後でかえる
-  useSocket('sendMessage', onMessage);
+  useSocket('receiveMessage', onMessage);
 
   // TODO : handleScrollがちょっと多めに呼ばれちゃってるの改善したい
   // チャンネルを選択した時一番下まで行く
