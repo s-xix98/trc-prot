@@ -31,7 +31,9 @@ export const ModalView = ({
 
   return (
     <Modal open={modalIsOpen} onClose={closeModal}>
-      <Container style={style}>{children}</Container>
+      <Container style={style} flexDirection="column">
+        {children}
+      </Container>
     </Modal>
   );
 };
