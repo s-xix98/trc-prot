@@ -243,5 +243,30 @@ describe('ChatGateway', () => {
         expect(room.hasPassword).toEqual(true);
       });
     });
+
+    test('password付きの部屋に入れるか', async () => {
+      const room = await chatService.search(roomName);
+      const user = testUsers[1];
+      const joinChannel: JoinChannelDto = {
+        userId: user.user.id,
+        chatRoomId: room[0].id,
+        password: password,
+      };
+
+      await testService.emitAndWaitForEvent<JoinChannelDto>(
+        'joinChannel',
+        'joinChannel',
+        user.socket,
+        joinChannel,
+      );
+
+      const MemberList = await prismaService.roomMember.findMany({
+        where: {
+          chatRoomId: room[0].id,
+        },
+      });
+
+      expect(MemberList.length).toEqual(2);
+    });
   });
 });
