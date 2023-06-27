@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChatService {
@@ -55,10 +56,14 @@ export class ChatService {
   }
 
   async createChannel(dto: CreateChannelDto) {
+    let hashedPassword = dto.password;
+    if (dto.password) {
+      hashedPassword = await bcrypt.hash(dto.password, 10);
+    }
     const createdRoom = await this.prismaService.chatRoom.create({
       data: {
         roomName: dto.roomName,
-        hashedPassword: dto.password,
+        hashedPassword: hashedPassword,
       },
     });
 
@@ -87,8 +92,15 @@ export class ChatService {
       throw new Error('Room not found');
     }
     // TODO もうちょいちゃんとしたエラー投げる
-    if (room.hashedPassword && room.hashedPassword !== dto.password) {
-      throw new Error('Password is incorrect');
+    if (room.hashedPassword) {
+      if (!dto.password) {
+        throw new Error('Password is required');
+      }
+
+      const isMatch = await bcrypt.compare(dto.password, room.hashedPassword);
+      if (!isMatch) {
+        throw new Error('Password is incorrect');
+      }
     }
 
     const roomMember = await this.prismaService.roomMember.upsert({
