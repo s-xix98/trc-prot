@@ -74,6 +74,13 @@ PHONY += sb-update
 sb-update:
 	docker compose run --rm frontend make sb-update
 
+# backend  : DB の初期化
+# frontend : build して test 実行
+PHONY	+=	test-e2e
+test-e2e:
+	docker compose down || :
+	docker compose -f docker-compose.yml -f docker-compose.e2e.yml up
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)

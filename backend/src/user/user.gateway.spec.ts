@@ -9,8 +9,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
 
 import { UserGateway } from './user.gateway';
+import { friendshipDto } from './dto/friendship.dto';
 
-const USERNUM = 1;
+const USERNUM = 10;
 
 const subStrings = (s: string) => {
   const res: string[] = [];
@@ -45,21 +46,9 @@ describe('UserGateway', () => {
     testService = module.get<TestService>(TestService);
 
     testUsers = await testService.createTestUsersWithSockets(USERNUM);
-
-    testUsers.map((testUser) => {
-      testUser.socket.on('connect', () => {
-        console.log(`connected ${testUser.user.username}`);
-      });
-    });
   });
 
   afterAll(async () => {
-    testUsers.map((testUser) => {
-      testUser.socket.off('connect', () => {
-        console.log(`dissconnected ${testUser.user.username}`);
-      });
-    });
-
     testUsers.map((testUser) => {
       testUser.socket.disconnect();
     });
@@ -103,6 +92,101 @@ describe('UserGateway', () => {
       });
 
       await promise;
+    });
+  });
+
+  describe('friendRequest', () => {
+    test('friendRequestしたらdbにレコードが存在し正しく挿入されてるか', async () => {
+      const dto: friendshipDto = {
+        userId: testUsers[0].user.id,
+        targetId: testUsers[1].user.id,
+      };
+
+      testUsers[0].socket.emit('friendRequest', dto);
+
+      await testService.sleep(3000);
+
+      const friendship = await prismaService.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: testUsers[0].user.id,
+            destUserId: testUsers[1].user.id,
+          },
+        },
+      });
+
+      expect(friendship?.srcUserId).toEqual(testUsers[0].user.id);
+      expect(friendship?.destUserId).toEqual(testUsers[1].user.id);
+      expect(friendship?.status).toEqual('Requested');
+    });
+  });
+
+  describe('blockUser', () => {
+    test('blockしたらdbに挿入されるか', async () => {
+      const dto: friendshipDto = {
+        userId: testUsers[0].user.id,
+        targetId: testUsers[1].user.id,
+      };
+
+      testUsers[0].socket.emit('blockUser', dto);
+
+      await testService.sleep(100);
+
+      const friendship = await prismaService.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: testUsers[0].user.id,
+            destUserId: testUsers[1].user.id,
+          },
+        },
+      });
+
+      expect(friendship?.srcUserId).toEqual(testUsers[0].user.id);
+      expect(friendship?.destUserId).toEqual(testUsers[1].user.id);
+      expect(friendship?.status).toEqual('Blocked');
+
+      await prismaService.friendship.deleteMany({
+        where: {
+          srcUserId: testUsers[0].user.id,
+          destUserId: testUsers[1].user.id,
+        },
+      });
+    });
+
+    test('blockしたら相手のフレンドリクエストが削除されるか', async () => {
+      let dto: friendshipDto = {
+        userId: testUsers[1].user.id,
+        targetId: testUsers[0].user.id,
+      };
+      // 1が0にフレンドリクエストを送る
+      testUsers[1].socket.emit('friendRequest', dto);
+      await testService.sleep(100);
+
+      dto = {
+        userId: testUsers[0].user.id,
+        targetId: testUsers[1].user.id,
+      };
+      // 0が1をブロックする
+      testUsers[0].socket.emit('blockUser', dto);
+      await testService.sleep(100);
+
+      const friendship = await prismaService.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: testUsers[1].user.id,
+            destUserId: testUsers[0].user.id,
+          },
+        },
+      });
+
+      expect(friendship).toBeNull();
+
+      await prismaService.friendship.deleteMany({
+        where: {
+          srcUserId: testUsers[0].user.id,
+          destUserId: testUsers[1].user.id,
+        },
+      });
     });
   });
 });

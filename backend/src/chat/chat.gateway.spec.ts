@@ -13,6 +13,7 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
+import { ChatService } from './chat.service';
 
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
@@ -28,7 +29,7 @@ describe('ChatGateway', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule, WsocketModule],
-      providers: [ChatGateway, PrismaService, WsocketGateway],
+      providers: [ChatGateway, PrismaService, WsocketGateway, ChatService],
     }).compile();
 
     gateway = module.get<ChatGateway>(ChatGateway);
@@ -41,20 +42,9 @@ describe('ChatGateway', () => {
 
     testUsers = [];
     testUsers = await testService.createTestUsersWithSockets(USERNUM);
-
-    testUsers.map((testUser) => {
-      testUser.socket.on('connect', () => {
-        console.log(`connected ${testUser.user.username}`);
-      });
-    });
   });
-  afterAll(async () => {
-    testUsers.map((testUser) => {
-      testUser.socket.off('connect', () => {
-        console.log(`dissconnected ${testUser.user.username}`);
-      });
-    });
 
+  afterAll(async () => {
     testUsers.map((testUser) => {
       testUser.socket.disconnect();
     });
@@ -148,7 +138,7 @@ describe('ChatGateway', () => {
 
       await testService.emitAndWaitForEvent<MessageDto>(
         'sendMessage',
-        'sendMessage',
+        'receiveMessage',
         user.socket,
         messageDto,
       );
@@ -174,7 +164,7 @@ describe('ChatGateway', () => {
 
       testUsers.map((user) => {
         const joinPromise = new Promise((resolve) => {
-          user.socket.on('sendMessage', async () => {
+          user.socket.on('receiveMessage', async () => {
             receivedCount++;
             console.log(receivedCount);
             resolve(null);

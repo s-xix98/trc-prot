@@ -17,13 +17,13 @@ export class TestService {
 
       const user: User = await this.prismaService.user.upsert({
         where: {
-          email: `chatTestUser${i}@test.com`,
+          email: `TestUser${i}@test.com`,
         },
         update: {},
         create: {
-          email: `chatTestUser${i}@test.com`,
-          username: `chatTestUser${i}`,
-          hashedPassword: `chatTestUser${i}`,
+          email: `TestUser${i}@test.com`,
+          username: `TestUser${i}`,
+          hashedPassword: `TestUser${i}`,
         },
       });
 
@@ -50,5 +50,9 @@ export class TestService {
       socket.on(onEventName, async () => resolve(null));
       socket.emit(emitEventName, dto);
     });
+  }
+
+  async sleep(ms: number) {
+    return new Promise((res) => setTimeout(res, ms));
   }
 }
