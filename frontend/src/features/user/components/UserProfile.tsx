@@ -1,13 +1,50 @@
-import { UserInfo } from '../types/UserDto';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
-export const UserProfile = ({ userInfo }: { userInfo: UserInfo }) => {
+import { UserInfo } from '../types/UserDto';
+import { useFriendRequestSender } from '../api/friendRequestSender';
+import { useBlockRequestSender } from '../api/blockRequestSender';
+
+const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <div>
-      <h1>{userInfo?.username}</h1>
+      <h1>My : {userInfo.username}</h1>
+    </div>
+  );
+};
+
+const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
+  const friendRequestSender = useFriendRequestSender();
+  const blockRequestSender = useBlockRequestSender();
+
+  const sendFriendReq = () => {
+    friendRequestSender.emit(userInfo.id);
+  };
+
+  const sendBlockReq = () => {
+    blockRequestSender.emit(userInfo.id);
+  };
+
+  return (
+    <div>
+      <h1>{userInfo.username}</h1>
       <hr />
       <br />
-      <button>fake : send frend req</button>
-      <button>fake : send block req</button>
+      <button onClick={sendFriendReq}>Friend Req</button>
+      <button onClick={sendBlockReq}>Block Req</button>
     </div>
+  );
+};
+
+export const UserProfile = ({ userInfo }: { userInfo: UserInfo }) => {
+  const currentUser = useCurrentUser();
+
+  return (
+    <>
+      {currentUser.userInfo?.id === userInfo.id ? (
+        <MyProfile userInfo={userInfo} />
+      ) : (
+        <OtherProfile userInfo={userInfo} />
+      )}
+    </>
   );
 };
