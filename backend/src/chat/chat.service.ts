@@ -94,16 +94,9 @@ export class ChatService {
     if (!room) {
       throw new Error('Room not found');
     }
-    // TODO もうちょいちゃんとしたエラー投げる
-    if (room.hashedPassword) {
-      if (!dto.password) {
-        throw new Error('Password is required');
-      }
 
-      const isMatch = await bcrypt.compare(dto.password, room.hashedPassword);
-      if (!isMatch) {
-        throw new Error('Password is incorrect');
-      }
+    if (room.hashedPassword) {
+      await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
     const roomMember = await this.prismaService.roomMember.upsert({
@@ -133,5 +126,17 @@ export class ChatService {
     });
 
     return newMsg;
+  }
+
+  async verifyPassword(enteredPassword: string | undefined, hashedPassword: string) {
+    // TODO もうちょいちゃんとしたエラー投げる
+    if (!enteredPassword) {
+      throw new Error('Password is required');
+    }
+
+    const isMatch = await bcrypt.compare(enteredPassword, hashedPassword);
+    if (!isMatch) {
+      throw new Error('Password is incorrect');
+    }
   }
 }
