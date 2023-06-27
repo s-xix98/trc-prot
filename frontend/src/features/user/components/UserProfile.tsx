@@ -6,9 +6,9 @@ import { useBlockRequestSender } from '../api/blockRequestSender';
 
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
-    <>
+    <div>
       <h1>My : {userInfo.username}</h1>
-    </>
+    </div>
   );
 };
 
@@ -25,11 +25,13 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   };
 
   return (
-    <>
+    <div>
       <h1>{userInfo.username}</h1>
+      <hr />
+      <br />
       <button onClick={sendFriendReq}>Friend Req</button>
       <button onClick={sendBlockReq}>Block Req</button>
-    </>
+    </div>
   );
 };
 
