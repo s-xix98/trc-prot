@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ChatRoom } from '@prisma/client';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { INestApplication } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,7 +15,6 @@ import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
-import * as bcrypt from 'bcrypt';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
@@ -83,7 +83,6 @@ describe('ChatGateway', () => {
       expect(room?.roomName).toEqual(createChannelDto.roomName);
     });
   });
-
 
   describe('join Channel', () => {
     let roomId: string;
@@ -184,8 +183,6 @@ describe('ChatGateway', () => {
       });
     });
   });
-
-
 
   describe('パスワード付きの部屋のテスト', () => {
     const roomName = 'passwordRoom';

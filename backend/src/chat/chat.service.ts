@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 
 import { CreateChannelDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChatService {
@@ -128,7 +128,10 @@ export class ChatService {
     return newMsg;
   }
 
-  async verifyPassword(enteredPassword: string | undefined, hashedPassword: string) {
+  async verifyPassword(
+    enteredPassword: string | undefined,
+    hashedPassword: string,
+  ) {
     // TODO もうちょいちゃんとしたエラー投げる
     if (!enteredPassword) {
       throw new Error('Password is required');
