@@ -78,8 +78,8 @@ sb-update:
 # frontend : build して test 実行
 PHONY	+=	test-e2e
 test-e2e:
-	docker exec -it backend make setup-db
-	docker compose run --rm frontend make test-e2e
+	docker compose down || :
+	docker compose -f docker-compose.yml -f docker-compose.e2e.yml up
 
 # etc...
 # ------------------------------------------------------------------------------------------
