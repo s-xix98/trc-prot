@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { testUser } from 'src/test/types/test.types';
 
 import { TestModule } from '../test/test.module';
-
-import { UserService } from './user.service';
 import { TestService } from '../test/test.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { testUser } from 'src/test/types/test.types';
+
+import { UserService } from './user.service';
 
 const USERNUM = 10;
 
@@ -53,7 +53,6 @@ describe('UserService', () => {
       expect(friends.length).toEqual(USERNUM - 1);
     });
   });
-
 
   describe('ブロック', () => {
     test('testUser[0]のブロックリストの取得', async () => {
