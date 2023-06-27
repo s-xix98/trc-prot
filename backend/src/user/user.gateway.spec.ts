@@ -46,21 +46,9 @@ describe('UserGateway', () => {
     testService = module.get<TestService>(TestService);
 
     testUsers = await testService.createTestUsersWithSockets(USERNUM);
-
-    testUsers.map((testUser) => {
-      testUser.socket.on('connect', () => {
-        //
-      });
-    });
   });
 
   afterAll(async () => {
-    testUsers.map((testUser) => {
-      testUser.socket.off('connect', () => {
-        //
-      });
-    });
-
     testUsers.map((testUser) => {
       testUser.socket.disconnect();
     });

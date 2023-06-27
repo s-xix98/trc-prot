@@ -41,20 +41,9 @@ describe('ChatGateway', () => {
 
     testUsers = [];
     testUsers = await testService.createTestUsersWithSockets(USERNUM);
-
-    testUsers.map((testUser) => {
-      testUser.socket.on('connect', () => {
-        //
-      });
-    });
   });
-  afterAll(async () => {
-    testUsers.map((testUser) => {
-      testUser.socket.off('connect', () => {
-        //
-      });
-    });
 
+  afterAll(async () => {
     testUsers.map((testUser) => {
       testUser.socket.disconnect();
     });
