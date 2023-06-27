@@ -40,6 +40,9 @@ export class GameLogic {
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
+      if (!IsInRange(this.ball.x, 0, 1)) {
+        this.Restart();
+      }
     }, 10);
   }
 
@@ -116,5 +119,18 @@ export class GameLogic {
       keyActions[Keys.Down](this.leftPaddle);
       keyActions[Keys.Down](this.rightPaddle);
     }
+  }
+
+  private Restart() {
+    this.EndGame();
+    this.ball = CreateBall();
+    this.leftPaddle = CreatePaddle(0);
+    this.rightPaddle = CreatePaddle(1);
+    this.p1.emit('game data', {
+      ball: this.ball,
+      leftPaddle: this.leftPaddle,
+      rightPaddle: this.rightPaddle,
+    });
+    setTimeout(this.StartGame.bind(this), 500);
   }
 }
