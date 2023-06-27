@@ -66,10 +66,6 @@ export class ChatService {
   }
 
   async createChannel(dto: CreateChannelDto) {
-    let hashedPassword = dto.password;
-    if (dto.password) {
-      hashedPassword = await bcrypt.hash(dto.password, 10);
-    }
     const createdRoom = await this.prismaService.chatRoom.create({
       data: {
         roomName: dto.roomName,
@@ -95,7 +91,7 @@ export class ChatService {
       throw new Error('Room not found');
     }
 
-    if (room.hashedPassword) {
+    if (room.hashedPassword !== null) {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
@@ -133,7 +129,7 @@ export class ChatService {
     hashedPassword: string,
   ) {
     // TODO もうちょいちゃんとしたエラー投げる
-    if (!enteredPassword) {
+    if (enteredPassword === undefined) {
       throw new Error('Password is required');
     }
 
