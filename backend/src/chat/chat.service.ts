@@ -42,7 +42,16 @@ export class ChatService {
       },
     });
 
-    return partialMatchRooms;
+    const roomWithPasswordIndication = partialMatchRooms.map((room) => {
+      const { hashedPassword, ...roomWithoutPassword } = room;
+
+      return {
+        ...roomWithoutPassword,
+        hasPassword: hashedPassword ? true : false,
+      };
+    });
+
+    return roomWithPasswordIndication;
   }
 
   async createChannel(dto: CreateChannelDto) {
