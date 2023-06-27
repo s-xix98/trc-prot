@@ -120,4 +120,73 @@ describe('UserGateway', () => {
       expect(friendship?.status).toEqual('Requested');
     });
   });
+
+  describe('blockUser', () => {
+    test('blockしたらdbに挿入されるか', async () => {
+      const dto: friendshipDto = {
+        userId: testUsers[0].user.id,
+        targetId: testUsers[1].user.id,
+      };
+
+      testUsers[0].socket.emit('blockUser', dto);
+
+      await testService.sleep(100);
+
+      const friendship = await prismaService.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: testUsers[0].user.id,
+            destUserId: testUsers[1].user.id,
+          },
+        },
+      });
+
+      expect(friendship?.srcUserId).toEqual(testUsers[0].user.id);
+      expect(friendship?.destUserId).toEqual(testUsers[1].user.id);
+      expect(friendship?.status).toEqual('Blocked');
+
+      await prismaService.friendship.deleteMany({
+        where: {
+          srcUserId: testUsers[0].user.id,
+          destUserId: testUsers[1].user.id,
+        },
+      });
+    });
+
+    test('blockしたら相手のフレンドリクエストが削除されるか', async () => {
+      let dto: friendshipDto = {
+        userId: testUsers[1].user.id,
+        targetId: testUsers[0].user.id,
+      };
+      // 1が0にフレンドリクエストを送る
+      testUsers[1].socket.emit('friendRequest', dto);
+      await testService.sleep(100);
+
+      dto = {
+        userId: testUsers[0].user.id,
+        targetId: testUsers[1].user.id,
+      };
+      // 0が1をブロックする
+      testUsers[0].socket.emit('blockUser', dto);
+      await testService.sleep(100);
+
+      const friendship = await prismaService.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: testUsers[1].user.id,
+            destUserId: testUsers[0].user.id,
+          },
+        },
+      });
+
+      expect(friendship).toBeNull();
+
+      await prismaService.friendship.deleteMany({
+        where: {
+          srcUserId: testUsers[0].user.id,
+          destUserId: testUsers[1].user.id,
+        },
+      });
+    });
+  });
 });

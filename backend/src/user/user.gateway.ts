@@ -96,4 +96,53 @@ export class UserGateway {
     // TODO targetユーザーに通知を送る
     // client.to(target client id).emit('friendRequest', userid , username);
   }
+
+  @SubscribeMessage('blockUser')
+  async blockUser(client: Socket, dto: friendshipDto) {
+    console.log('blockUser', client.id, dto);
+
+    const relation = await this.prisma.friendship.upsert({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: dto.userId,
+          destUserId: dto.targetId,
+        },
+      },
+      update: {
+        status: 'Blocked',
+      },
+      create: {
+        srcUserId: dto.userId,
+        destUserId: dto.targetId,
+        status: 'Blocked',
+      },
+    });
+
+    console.log(relation);
+
+    // 相手がフレンドorリクエストの場合はレコードから削除する
+    const targetRelation = await this.prisma.friendship.findUnique({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: dto.targetId,
+          destUserId: dto.userId,
+        },
+      },
+    });
+
+    if (
+      targetRelation?.status === 'Accepted' ||
+      targetRelation?.status === 'Requested'
+    ) {
+      await this.prisma.friendship.delete({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: dto.targetId,
+            destUserId: dto.userId,
+          },
+        },
+      });
+    }
+    // TODO targetがフレンドだった場合targetのフレンドリストからdbとフロントから削除しチャットmsgを非表示にする
+  }
 }
