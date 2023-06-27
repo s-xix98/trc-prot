@@ -75,4 +75,9 @@ export class UserService {
 
     return friends;
   }
+
+  async getBlockUsers(userId: string) {
+
+    return userId;
+  }
 }
