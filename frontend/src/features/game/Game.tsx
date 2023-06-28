@@ -5,13 +5,12 @@ import styled from 'styled-components';
 
 import { socket } from '@/socket';
 import { useSocket } from '@/hooks/useSocket';
+import { Container } from '@/components/Layout/Container';
 
 import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
 import { Keys } from './Keys';
 import { useKeyInput } from './useKeyinput';
-import { ContainerItem } from '@/components/Layout/ContainerItem';
-import { Container } from '@/components/Layout/Container';
 
 const CreateBall = (
   ballDto: BallDto,

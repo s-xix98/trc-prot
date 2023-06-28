@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import Modal from '@mui/material/Modal';
 
-import { Container } from '@/components/Layout/Container';
-
 export const ModalView = ({
   children,
   modalIsOpen,
