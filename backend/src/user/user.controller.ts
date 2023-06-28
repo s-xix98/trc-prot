@@ -50,6 +50,6 @@ export class UserController {
   @Get('blocks')
   // eslint-disable-next-line
   async getBlockUsers(@Request() req: any) {
-    return this.userService.getFriends(req.user.userId);
+    return this.userService.getBlockUsers(req.user.userId);
   }
 }
