@@ -135,6 +135,10 @@ export class UserGateway {
   async blockUser(client: Socket, dto: friendshipDto) {
     console.log('blockUser', client.id, dto);
 
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot block yourself');
+    }
+
     const relation = await this.userService.upsertFriendship(
       dto.userId,
       dto.targetId,
