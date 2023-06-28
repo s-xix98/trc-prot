@@ -228,6 +228,11 @@ describe('UserGateway', () => {
         userId: testUsers[0].user.id,
         targetId: testUsers[1].user.id,
       };
+
+      testUsers[0].socket.on('deleteFriendRequest', (blockedUserId: string) => {
+        expect(blockedUserId).toEqual(testUsers[1].user.id);
+      });
+
       // 0が1をブロックする
       testUsers[0].socket.emit('blockUser', dto);
       await testService.sleep(100);
