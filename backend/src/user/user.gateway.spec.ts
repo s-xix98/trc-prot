@@ -255,5 +255,40 @@ describe('UserGateway', () => {
         },
       });
     });
+
+    test('blockしたらフレンドが削除されるか', async () => {
+      const user = testUsers[0];
+      const user1 = testUsers[1];
+
+      const dto1: friendshipDto = {
+        userId: user.user.id,
+        targetId: user1.user.id,
+      };
+      const dto2: friendshipDto = {
+        userId: user1.user.id,
+        targetId: user.user.id,
+      };
+
+      // フレンド登録
+      user.socket.emit('friendRequest', dto1);
+      user1.socket.emit('friendRequest', dto2);
+      await testService.sleep(100);
+
+      // 0が1をブロックする
+      testUsers[0].socket.emit('blockUser', dto1);
+      await testService.sleep(100);
+
+      const {outgoingFriendship, incomingFriendship} = await userService.getFriendship(dto1.userId, dto1.targetId);
+
+      expect(incomingFriendship).toBeNull();
+      expect(outgoingFriendship?.status).toEqual('Blocked');
+
+      await prismaService.friendship.deleteMany({
+        where: {
+          srcUserId: dto1.userId,
+          destUserId: dto1.targetId,
+        },
+      });
+    });
   });
 });
