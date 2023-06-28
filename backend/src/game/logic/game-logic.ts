@@ -37,6 +37,11 @@ export class GameLogic {
   StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
+      if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
+        this.UpdateScore();
+        this.Restart();
+        return;
+      }
       this.HandleKeyActions();
       this.UpdateBallPosition();
       const gameDto: GameDto = {
@@ -48,10 +53,6 @@ export class GameLogic {
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
-      if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
-        this.UpdateScore();
-        this.Restart();
-      }
     }, 10);
   }
 
