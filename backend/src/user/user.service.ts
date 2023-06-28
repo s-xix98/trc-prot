@@ -100,4 +100,46 @@ export class UserService {
     });
     return friendship;
   }
+
+  async getFriends(userId: string) {
+    const friends = await this.prisma.friendship.findMany({
+      where: {
+        srcUserId: userId,
+        status: {
+          equals: 'Accepted',
+        },
+      },
+      include: {
+        destUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return friends;
+  }
+
+  async getBlockUsers(userId: string) {
+    const blocks = await this.prisma.friendship.findMany({
+      where: {
+        srcUserId: userId,
+        status: {
+          equals: 'Blocked',
+        },
+      },
+      include: {
+        destUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return blocks;
+  }
 }
