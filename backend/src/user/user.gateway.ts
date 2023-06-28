@@ -100,7 +100,8 @@ export class UserGateway {
     } else if (outgoingFriendship?.status === 'Requested') {
       throw new Error('already requested');
     } else if (incomingFriendship?.status === 'Requested') {
-      // acceptedにする
+      await this.userService.upsertFriendship(dto.userId, dto.targetId, 'Accepted');
+      await this.userService.upsertFriendship(dto.targetId, dto.userId, 'Accepted');
     } else if (outgoingFriendship === null) {
       await this.prisma.friendship.create({
         data: {
