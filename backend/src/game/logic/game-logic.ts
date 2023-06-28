@@ -49,6 +49,7 @@ export class GameLogic {
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
       if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
+        this.UpdateScore();
         this.Restart();
       }
     }, 10);
