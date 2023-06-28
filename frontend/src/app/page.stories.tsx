@@ -39,7 +39,7 @@ export const SelectChannel: Story = {
       return;
     }
     await userEvent.type(terminalInputElem, './chat');
-    await userEvent.keyboard("{enter}");
+    await userEvent.keyboard('{enter}');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -58,7 +58,7 @@ export const SendMsg: Story = {
       return;
     }
     await userEvent.type(terminalInputElem, './chat');
-    await userEvent.keyboard("{enter}");
+    await userEvent.keyboard('{enter}');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -72,7 +72,7 @@ export const SendMsg: Story = {
       return;
     }
     await userEvent.type(inputElem, 'This is test msg');
-    await userEvent.keyboard("{enter}");
+    await userEvent.keyboard('{enter}');
 
     await sleep(1000);
   },
@@ -88,7 +88,7 @@ export const SendSomeMsg: Story = {
       return;
     }
     await userEvent.type(terminalInputElem, './chat');
-    await userEvent.keyboard("{enter}");
+    await userEvent.keyboard('{enter}');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
@@ -103,7 +103,7 @@ export const SendSomeMsg: Story = {
     }
     for (let i = 0; i < 50; i++) {
       await userEvent.type(inputElem, `This is test msg ${i}`);
-      await userEvent.keyboard("{enter}");
+      await userEvent.keyboard('{enter}');
     }
 
     await sleep(1000);
@@ -121,7 +121,7 @@ export const CheckScroll: Story = {
       return;
     }
     await userEvent.type(terminalInputElem, './chat');
-    await userEvent.keyboard("{enter}");
+    await userEvent.keyboard('{enter}');
 
     const hogeRoom = await screen.findByText('hogeRoom');
     await userEvent.click(hogeRoom);
