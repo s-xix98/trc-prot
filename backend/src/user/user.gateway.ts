@@ -159,5 +159,9 @@ export class UserGateway {
     });
     console.log(count);
 
+    if (0 < count) {
+      client.emit('deleteFriendRequest', dto.targetId);
+    }
+    // TODO チャットmsgを非表示にする
   }
 }
