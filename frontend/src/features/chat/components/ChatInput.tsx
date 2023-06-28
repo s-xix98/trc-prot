@@ -30,6 +30,7 @@ export const ChatInput = ({
       <Input
         msg={msg}
         start={'> '}
+        maxRows={1.5}
         onKeyDownAct={onKeyDownAct}
         onChangeAct={(e) => {
           setMsg(e.target.value);

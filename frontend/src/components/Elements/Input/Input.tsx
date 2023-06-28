@@ -12,12 +12,14 @@ export const Input = ({
   placeholder,
   disableUnderline = false,
   focusRef = undefined,
+  maxRows = undefined,
 }: {
   msg?: string;
   start?: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   onKeyDownAct?: (e: KeyboardEvent<HTMLDivElement>) => void | undefined;
   placeholder?: string | undefined;
+  maxRows?: number;
   disableUnderline?: boolean;
   focusRef?: RefObject<HTMLTextAreaElement> | undefined;
 }) => {
@@ -29,6 +31,7 @@ export const Input = ({
         multiline
         variant="standard"
         placeholder={placeholder}
+        maxRows={maxRows}
         autoFocus={true}
         sx={{
           '& .MuiInputBase-input': {
