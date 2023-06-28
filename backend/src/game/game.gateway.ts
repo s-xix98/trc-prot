@@ -1,5 +1,8 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { UseFilters } from '@nestjs/common';
+
+import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
@@ -13,6 +16,7 @@ enum PlaySide {
 type PlayerData = { client: Socket; data: UserInfo };
 
 @WebSocketGateway()
+@UseFilters(new WsExceptionsFilter())
 export class GameGateway {
   private matchedUsers = new Map<string, UserInfo>();
   private userSockMap = new Map<string, Socket>();
