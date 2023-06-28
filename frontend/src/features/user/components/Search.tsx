@@ -27,18 +27,16 @@ export const UserSearch = () => {
   };
 
   return (
-    <div>
-      <Container flexDirection="column">
-        <h2>User Search</h2>
-        <ContainerItem overflowY="scroll">
-          <SearchedResult searchedList={searchedList} />
-        </ContainerItem>
-        <Input
-          focusRef={focusRef}
-          onChangeAct={onChange}
-          placeholder={'username'}
-        />
-      </Container>
-    </div>
+    <Container flexDirection="column">
+      <h2>User Search</h2>
+      <ContainerItem overflowY="scroll">
+        <SearchedResult searchedList={searchedList} />
+      </ContainerItem>
+      <Input
+        focusRef={focusRef}
+        onChangeAct={onChange}
+        placeholder={'username'}
+      />
+    </Container>
   );
 };

@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import Modal from '@mui/material/Modal';
 
-import { Container } from '@/components/Layout/Container';
-
 export const ModalView = ({
   children,
   modalIsOpen,
@@ -31,9 +29,7 @@ export const ModalView = ({
 
   return (
     <Modal open={modalIsOpen} onClose={closeModal}>
-      <Container style={style} flexDirection="column">
-        {children}
-      </Container>
+      <div style={style}>{children}</div>
     </Modal>
   );
 };
