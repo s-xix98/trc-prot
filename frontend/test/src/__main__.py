@@ -1,5 +1,5 @@
-from src.test_basic import test_basic
 from src.playwright_runner import playwright_test_runner
+from src.test_basic import test_basic
 
 
 def main() -> None:
