@@ -50,6 +50,9 @@ export class ChatService {
           contains: searchWord,
           mode: 'insensitive',
         },
+        isPrivate: {
+          equals: false,
+        },
       },
     });
 
