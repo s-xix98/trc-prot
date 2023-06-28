@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle } from '../types';
+import { Ball, Paddle, Scores } from '../types';
 import {
   canvas,
   CreateBall,
@@ -19,6 +19,7 @@ export class GameLogic {
   private ball: Ball;
   private leftPaddle: Paddle;
   private rightPaddle: Paddle;
+  private scores: Scores;
   private p1: Socket;
   private p2: Socket;
   private intervalId: any;
@@ -30,6 +31,7 @@ export class GameLogic {
     this.p2 = p2;
     this.leftPaddle = CreateLeftPaddle();
     this.rightPaddle = CreateRightPaddle();
+    this.scores = { left: 0, right: 0 };
   }
 
   StartGame() {
