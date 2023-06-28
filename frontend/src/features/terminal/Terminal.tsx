@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
+import { KeyboardEvent } from 'react';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
@@ -30,13 +31,16 @@ export const Terminal = ({
   const router = useRouter();
 
   const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === '\n') {
+    setInput(e.target.value);
+  };
+
+  const onKeyDownAct = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter') {
       return;
     }
-    if (e.target.value.slice(-1) !== '\n') {
-      setInput(e.target.value);
-      return;
-    }
+
+    e.preventDefault(); // 改行を入力しない
+
     if (input === 'logout') {
       setUserInfo(undefined);
       tokenStorage.remove();
@@ -73,6 +77,7 @@ export const Terminal = ({
           msg={input}
           start={`${userInfo?.username ?? ''} > `}
           onChangeAct={onChangeAct}
+          onKeyDownAct={onKeyDownAct}
           disableUnderline={true}
         />
       </div>
