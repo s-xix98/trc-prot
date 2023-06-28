@@ -43,6 +43,7 @@ export class GameLogic {
         ball: this.ball,
         leftPaddle: this.leftPaddle,
         rightPaddle: this.rightPaddle,
+        scores: this.scores,
       };
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
@@ -137,6 +138,7 @@ export class GameLogic {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
+      scores: this.scores,
     });
     setTimeout(this.StartGame.bind(this), 500);
   }
