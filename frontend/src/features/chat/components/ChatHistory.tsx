@@ -21,7 +21,7 @@ const ChatMsg = ({
   onClickAct: (msgDto: handleMessageDto) => void;
 }) => {
   return (
-    <Container>
+    <Container height={'auto'}>
       <ContainerItem flexRatio={1}>
         <p
           onClick={() => {
@@ -67,9 +67,7 @@ export const ChatHistory = ({
           </ModalView>
         )}
         {chatHistMsgs.map((msgDto, idx) => (
-          <div key={idx}>
-            <ChatMsg key={idx} msgDto={msgDto} onClickAct={onClickAct} />
-          </div>
+          <ChatMsg key={idx} msgDto={msgDto} onClickAct={onClickAct} />
         ))}
         <div ref={scrollBottomRef}></div>
       </ContainerItem>
