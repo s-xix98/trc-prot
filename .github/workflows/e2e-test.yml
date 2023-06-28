@@ -65,5 +65,5 @@ jobs:
       - name: run test
         run: |
           cd frontend
-          python3 test/e2e.py
+          cd test && make run-test
           git diff --exit-code test/img
