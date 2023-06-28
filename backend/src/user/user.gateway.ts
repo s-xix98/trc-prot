@@ -14,7 +14,10 @@ import { UserService } from './user.service';
   },
 })
 export class UserGateway {
-  constructor(private prisma: PrismaService, private userService:UserService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
 
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
@@ -91,17 +94,29 @@ export class UserGateway {
       throw new Error('cannot send friend request to yourself');
     }
 
-    const {outgoingFriendship, incomingFriendship} = await this.userService.getFriendship(dto.userId, dto.targetId);
+    const { outgoingFriendship, incomingFriendship } =
+      await this.userService.getFriendship(dto.userId, dto.targetId);
 
-    if (outgoingFriendship?.status === 'Blocked' || incomingFriendship?.status === 'Blocked') {
+    if (
+      outgoingFriendship?.status === 'Blocked' ||
+      incomingFriendship?.status === 'Blocked'
+    ) {
       throw new Error('cannot send friend request to blocked user');
     } else if (incomingFriendship?.status === 'Accepted') {
       throw new Error('already friend');
     } else if (outgoingFriendship?.status === 'Requested') {
       throw new Error('already requested');
     } else if (incomingFriendship?.status === 'Requested') {
-      await this.userService.upsertFriendship(dto.userId, dto.targetId, 'Accepted');
-      await this.userService.upsertFriendship(dto.targetId, dto.userId, 'Accepted');
+      await this.userService.upsertFriendship(
+        dto.userId,
+        dto.targetId,
+        'Accepted',
+      );
+      await this.userService.upsertFriendship(
+        dto.targetId,
+        dto.userId,
+        'Accepted',
+      );
     } else if (outgoingFriendship === null) {
       await this.userService.upsertFriendship(
         dto.userId,

@@ -55,7 +55,7 @@ export class UserService {
     return partialMatchUsers;
   }
 
-  async getFriendship(userId:string, targetId:string){
+  async getFriendship(userId: string, targetId: string) {
     const outgoingFriendship = await this.prisma.friendship.findUnique({
       where: {
         srcUserId_destUserId: {
@@ -74,10 +74,14 @@ export class UserService {
       },
     });
 
-    return {outgoingFriendship, incomingFriendship};
+    return { outgoingFriendship, incomingFriendship };
   }
 
-  async upsertFriendship(userId:string, targetId:string, status: 'Accepted' | 'Blocked' | 'Requested'){
+  async upsertFriendship(
+    userId: string,
+    targetId: string,
+    status: 'Accepted' | 'Blocked' | 'Requested',
+  ) {
     const friendship = await this.prisma.friendship.upsert({
       where: {
         srcUserId_destUserId: {
