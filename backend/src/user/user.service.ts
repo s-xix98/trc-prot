@@ -76,4 +76,24 @@ export class UserService {
 
     return {outgoingFriendship, incomingFriendship};
   }
+
+  async upsertFriendship(userId:string, targetId:string, status: 'Accepted' | 'Blocked' | 'Requested'){
+    const friendship = await this.prisma.friendship.upsert({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: userId,
+          destUserId: targetId,
+        },
+      },
+      update: {
+        status: status,
+      },
+      create: {
+        srcUserId: userId,
+        destUserId: targetId,
+        status: status,
+      },
+    });
+    return friendship;
+  }
 }
