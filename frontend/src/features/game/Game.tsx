@@ -10,6 +10,8 @@ import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
 import { Keys } from './Keys';
 import { useKeyInput } from './useKeyinput';
+import { ContainerItem } from '@/components/Layout/ContainerItem';
+import { Container } from '@/components/Layout/Container';
 
 const CreateBall = (
   ballDto: BallDto,
@@ -159,7 +161,10 @@ export const Game = () => {
   }, []);
 
   return (
-    <GameCanvas />
+    // TODO : 本来はいらない気がする、とりあえず適当にUI用
+    <Container>
+      <GameCanvas />
+    </Container>
     // <>
     //   {isGameOver && <h1>GameOver</h1>}
     //   {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
