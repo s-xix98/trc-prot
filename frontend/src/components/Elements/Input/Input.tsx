@@ -2,11 +2,13 @@ import { RefObject } from 'react';
 import { ChangeEvent } from 'react';
 import TextField from '@mui/material/TextField';
 import { InputAdornment } from '@mui/material';
+import { KeyboardEvent } from 'react';
 
 export const Input = ({
   msg,
   start = undefined,
   onChangeAct,
+  onKeyDownAct = undefined,
   placeholder,
   disableUnderline = false,
   focusRef = undefined,
@@ -14,6 +16,7 @@ export const Input = ({
   msg?: string;
   start?: string;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
+  onKeyDownAct?: (e: KeyboardEvent<HTMLDivElement>) => void;
   placeholder?: string | undefined;
   disableUnderline?: boolean;
   focusRef?: RefObject<HTMLTextAreaElement> | undefined;
@@ -49,6 +52,7 @@ export const Input = ({
         }}
         value={msg}
         onChange={onChangeAct}
+        onKeyDown={onKeyDownAct}
         style={{ width: '100%' }}
         inputRef={focusRef}
       />
