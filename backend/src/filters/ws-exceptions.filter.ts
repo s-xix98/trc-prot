@@ -8,5 +8,7 @@ export class WsExceptionsFilter extends BaseWsExceptionFilter {
 
     console.log('error', exception);
 
+    const client = host.switchToWs().getClient();
+    client.emit('error', 'error');
   }
 }
