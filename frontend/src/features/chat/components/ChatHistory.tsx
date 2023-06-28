@@ -34,16 +34,23 @@ export const ChatHistory = ({
           </ModalView>
         )}
         {chatHistMsgs.map((msgDto, idx) => (
-          <p
-            key={idx}
-            style={{ overflowWrap: 'break-word' }}
-            onClick={() => {
-              setSelectUser(() => msgDto.user);
-              openModal();
-            }}
-          >
-            {`${msgDto.user.username}> ${msgDto.content}`}
-          </p>
+          <div key={idx}>
+            <Container>
+              <ContainerItem flexRatio={1}>
+                <p
+                  onClick={() => {
+                    setSelectUser(() => msgDto.user);
+                    openModal();
+                  }}
+                >
+                  {`${msgDto.user.username}>`}
+                </p>
+              </ContainerItem>
+              <ContainerItem flexRatio={9}>
+                <pre>{msgDto.content}</pre>
+              </ContainerItem>
+            </Container>
+          </div>
         ))}
         <div ref={scrollBottomRef}></div>
       </ContainerItem>
