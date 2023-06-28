@@ -43,15 +43,19 @@ export class UserService {
     return user;
   }
 
-  async search(searchWord: string) {
+  async search(searchWord: string, userId: string) {
     const partialMatchUsers = await this.prisma.user.findMany({
       where: {
         username: {
           contains: searchWord,
           mode: 'insensitive',
         },
+        id: {
+          not: userId,
+        },
       },
     });
+
     return partialMatchUsers;
   }
 }
