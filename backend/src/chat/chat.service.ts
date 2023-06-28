@@ -72,6 +72,7 @@ export class ChatService {
         hashedPassword: dto.password
           ? await bcrypt.hash(dto.password, 10)
           : undefined,
+        isPrivate: dto.isPrivate,
       },
     });
 
