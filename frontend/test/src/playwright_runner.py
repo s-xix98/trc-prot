@@ -2,7 +2,7 @@ from typing import Callable
 
 from playwright.sync_api import Page, Playwright, expect, sync_playwright
 
-TEST_FUNC_TYPE = Callable[[Page], None]
+TEST_FUNC_TYPE = Callable[[Page, str], None]
 
 
 def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
@@ -13,7 +13,7 @@ def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
     # console
     page.on("console", lambda msg: print(msg.text))
 
-    func(page)
+    func(page, func.__name__)
 
     # ---------------------
     context.close()
