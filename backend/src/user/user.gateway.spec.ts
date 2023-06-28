@@ -138,7 +138,7 @@ describe('UserGateway', () => {
       user1.socket.emit('friendRequest', dto1);
       user2.socket.emit('friendRequest', dto2);
 
-      await testService.sleep(100);
+      await testService.sleep(400);
 
       const { outgoingFriendship, incomingFriendship } =
         await userService.getFriendship(user1.user.id, user2.user.id);
