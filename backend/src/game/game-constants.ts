@@ -9,10 +9,17 @@ export const canvas = {
 
 export const CreateBall = (): Ball => structuredClone(ballConstants);
 
-export const CreatePaddle = (x: number): Paddle => {
-  const rightEdge = canvas.xMax - paddleConstants.width;
+export const CreateLeftPaddle = () => {
+  return CreatePaddle(canvas.xMin);
+};
+
+export const CreateRightPaddle = () => {
+  return CreatePaddle(canvas.xMax - paddleConstants.width);
+};
+
+const CreatePaddle = (x: number): Paddle => {
   return {
-    x: x >= rightEdge ? rightEdge : x,
+    x: x,
     y: canvas.yMax / 2 - paddleConstants.height / 2,
     height: paddleConstants.height,
     width: paddleConstants.width,
