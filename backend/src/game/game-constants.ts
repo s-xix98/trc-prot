@@ -17,10 +17,10 @@ const ballConstants = {
   y: 0.5,
   dx: 0.0025,
   dy: 0.00125,
-};
+} as const;
 
 const paddleConstants = {
   height: 0.25,
   width: 0.025,
   speed: 0.02,
-};
+} as const;
