@@ -17,4 +17,5 @@ export type GameObjects = {
   ball: Ball;
   leftPaddle: Paddle;
   rightPaddle: Paddle;
+  scores: Scores;
 };
