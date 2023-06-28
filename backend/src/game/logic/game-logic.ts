@@ -142,4 +142,12 @@ export class GameLogic {
     });
     setTimeout(this.StartGame.bind(this), 500);
   }
+
+  private UpdateScore() {
+    if (this.ball.x <= 0) {
+      this.scores.right++;
+    } else if (this.ball.x >= 1) {
+      this.scores.left++;
+    }
+  }
 }
