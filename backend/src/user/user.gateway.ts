@@ -86,6 +86,9 @@ export class UserGateway {
     console.log('friendRequest', client.id);
     console.log(dto);
 
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot send friend request to yourself');
+    }
     await this.prisma.friendship.create({
       data: {
         srcUserId: dto.userId,
