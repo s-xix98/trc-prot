@@ -54,4 +54,26 @@ export class UserService {
     });
     return partialMatchUsers;
   }
+
+  async getFriendship(userId:string, targetId:string){
+    const outgoingFriendship = await this.prisma.friendship.findUnique({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: userId,
+          destUserId: targetId,
+        },
+      },
+    });
+
+    const incomingFriendship = await this.prisma.friendship.findUnique({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: targetId,
+          destUserId: userId,
+        },
+      },
+    });
+
+    return {outgoingFriendship, incomingFriendship};
+  }
 }
