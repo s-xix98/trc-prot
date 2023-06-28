@@ -278,7 +278,8 @@ describe('UserGateway', () => {
       testUsers[0].socket.emit('blockUser', dto1);
       await testService.sleep(100);
 
-      const {outgoingFriendship, incomingFriendship} = await userService.getFriendship(dto1.userId, dto1.targetId);
+      const { outgoingFriendship, incomingFriendship } =
+        await userService.getFriendship(dto1.userId, dto1.targetId);
 
       expect(incomingFriendship).toBeNull();
       expect(outgoingFriendship?.status).toEqual('Blocked');
