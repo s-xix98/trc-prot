@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { socket } from '@/socket';
 import { useSocket } from '@/hooks/useSocket';
+import { Container } from '@/components/Layout/Container';
 
 import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
@@ -159,7 +160,10 @@ export const Game = () => {
   }, []);
 
   return (
-    <GameCanvas />
+    // TODO : 本来はいらない気がする、とりあえず適当にUI用
+    <Container>
+      <GameCanvas />
+    </Container>
     // <>
     //   {isGameOver && <h1>GameOver</h1>}
     //   {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
