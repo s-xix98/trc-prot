@@ -148,28 +148,16 @@ export class UserGateway {
     console.log(relation);
 
     // 相手がフレンドorリクエストの場合はレコードから削除する
-    const targetRelation = await this.prisma.friendship.findUnique({
+    const { count } = await this.prisma.friendship.deleteMany({
       where: {
-        srcUserId_destUserId: {
-          srcUserId: dto.targetId,
-          destUserId: dto.userId,
+        srcUserId: dto.targetId,
+        destUserId: dto.userId,
+        status: {
+          in: ['Requested', 'Accepted'],
         },
       },
     });
+    console.log(count);
 
-    if (
-      targetRelation?.status === 'Accepted' ||
-      targetRelation?.status === 'Requested'
-    ) {
-      await this.prisma.friendship.delete({
-        where: {
-          srcUserId_destUserId: {
-            srcUserId: dto.targetId,
-            destUserId: dto.userId,
-          },
-        },
-      });
-    }
-    // TODO targetがフレンドだった場合targetのフレンドリストからdbとフロントから削除しチャットmsgを非表示にする
   }
 }
