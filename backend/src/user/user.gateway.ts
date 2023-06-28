@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
+import { UserService } from './user.service';
 
 @WebSocketGateway({
   cors: {
@@ -13,7 +14,7 @@ import { friendshipDto } from './dto/friendship.dto';
   },
 })
 export class UserGateway {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private userService:UserService) {}
 
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
@@ -89,15 +90,28 @@ export class UserGateway {
     if (dto.userId === dto.targetId) {
       throw new Error('cannot send friend request to yourself');
     }
-    await this.prisma.friendship.create({
-      data: {
-        srcUserId: dto.userId,
-        destUserId: dto.targetId,
-        status: 'Requested',
-      },
-    });
-    // TODO targetユーザーに通知を送る
-    // client.to(target client id).emit('friendRequest', userid , username);
+
+    const {outgoingFriendship, incomingFriendship} = await this.userService.getFriendship(dto.userId, dto.targetId);
+
+    if (outgoingFriendship?.status === 'Blocked' || incomingFriendship?.status === 'Blocked') {
+      throw new Error('cannot send friend request to blocked user');
+    } else if (incomingFriendship?.status === 'Accepted') {
+      throw new Error('already friend');
+    } else if (outgoingFriendship?.status === 'Requested') {
+      throw new Error('already requested');
+    } else if (incomingFriendship?.status === 'Requested') {
+      // acceptedにする
+    } else if (outgoingFriendship === null) {
+      await this.prisma.friendship.create({
+        data: {
+          srcUserId: dto.userId,
+          destUserId: dto.targetId,
+          status: 'Requested',
+        },
+      });
+      // TODO targetユーザーに通知を送る
+      // client.to(target client id).emit('friendRequest', userid , username);
+    }
   }
 
   @SubscribeMessage('blockUser')
