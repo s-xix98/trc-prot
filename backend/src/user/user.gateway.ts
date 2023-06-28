@@ -103,13 +103,11 @@ export class UserGateway {
       await this.userService.upsertFriendship(dto.userId, dto.targetId, 'Accepted');
       await this.userService.upsertFriendship(dto.targetId, dto.userId, 'Accepted');
     } else if (outgoingFriendship === null) {
-      await this.prisma.friendship.create({
-        data: {
-          srcUserId: dto.userId,
-          destUserId: dto.targetId,
-          status: 'Requested',
-        },
-      });
+      await this.userService.upsertFriendship(
+        dto.userId,
+        dto.targetId,
+        'Requested',
+      );
       // TODO targetユーザーに通知を送る
       // client.to(target client id).emit('friendRequest', userid , username);
     }
