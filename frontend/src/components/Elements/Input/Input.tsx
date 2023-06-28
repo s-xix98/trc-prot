@@ -12,7 +12,7 @@ export const Input = ({
   placeholder,
   disableUnderline = false,
   focusRef = undefined,
-  maxRows = undefined,
+  maxRows = 1,
 }: {
   msg?: string;
   start?: string;

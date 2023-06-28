@@ -70,7 +70,6 @@ export const Terminal = ({
         <Input
           msg={input}
           start={`${userInfo?.username ?? ''} > `}
-          maxRows={1}
           onChangeAct={(e) => {
             setInput(e.target.value);
           }}
