@@ -10,6 +10,7 @@ import { TestModule } from '../test/test.module';
 
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
+import { UserService } from './user.service';
 
 const USERNUM = 10;
 
@@ -28,13 +29,14 @@ describe('UserGateway', () => {
   let prismaService: PrismaService;
   let testService: TestService;
   let app: INestApplication;
+  let userService: UserService;
 
   let testUsers: testUser[] = [];
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule],
-      providers: [UserGateway, PrismaService, TestService],
+      providers: [UserGateway, PrismaService, TestService, UserService],
     }).compile();
 
     app = module.createNestApplication();
@@ -44,6 +46,7 @@ describe('UserGateway', () => {
     gateway = module.get<UserGateway>(UserGateway);
     prismaService = module.get<PrismaService>(PrismaService);
     testService = module.get<TestService>(TestService);
+    userService = module.get<UserService>(UserService);
 
     testUsers = await testService.createTestUsersWithSockets(USERNUM);
   });
@@ -118,6 +121,34 @@ describe('UserGateway', () => {
       expect(friendship?.srcUserId).toEqual(testUsers[0].user.id);
       expect(friendship?.destUserId).toEqual(testUsers[1].user.id);
       expect(friendship?.status).toEqual('Requested');
+    });
+
+    test('1と2がfriend登録されてるか', async () => {
+      const user1 = testUsers[1];
+      const user2 = testUsers[2];
+      const dto1: friendshipDto = {
+        userId: user1.user.id,
+        targetId: user2.user.id,
+      };
+      const dto2: friendshipDto = {
+        userId: user2.user.id,
+        targetId: user1.user.id,
+      };
+
+      user1.socket.emit('friendRequest', dto1);
+      user2.socket.emit('friendRequest', dto2);
+
+      await testService.sleep(100);
+
+      const {outgoingFriendship, incomingFriendship} = await userService.getFriendship(user1.user.id, user2.user.id);
+
+      expect(outgoingFriendship?.srcUserId).toEqual(user1.user.id);
+      expect(outgoingFriendship?.destUserId).toEqual(user2.user.id);
+      expect(outgoingFriendship?.status).toEqual('Accepted');
+
+      expect(incomingFriendship?.srcUserId).toEqual(user2.user.id);
+      expect(incomingFriendship?.destUserId).toEqual(user1.user.id);
+      expect(incomingFriendship?.status).toEqual('Accepted');
     });
   });
 
