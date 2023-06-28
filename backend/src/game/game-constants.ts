@@ -1,5 +1,12 @@
 import { Ball, Paddle } from './types';
 
+export const canvas = {
+  xMin: 0,
+  xMax: 1,
+  yMin: 0,
+  yMax: 1,
+} as const;
+
 export const CreateBall = (): Ball => structuredClone(ballConstants);
 
 export const CreatePaddle = (x: number): Paddle => {
