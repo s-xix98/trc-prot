@@ -135,22 +135,11 @@ export class UserGateway {
   async blockUser(client: Socket, dto: friendshipDto) {
     console.log('blockUser', client.id, dto);
 
-    const relation = await this.prisma.friendship.upsert({
-      where: {
-        srcUserId_destUserId: {
-          srcUserId: dto.userId,
-          destUserId: dto.targetId,
-        },
-      },
-      update: {
-        status: 'Blocked',
-      },
-      create: {
-        srcUserId: dto.userId,
-        destUserId: dto.targetId,
-        status: 'Blocked',
-      },
-    });
+    const relation = await this.userService.upsertFriendship(
+      dto.userId,
+      dto.targetId,
+      'Blocked',
+    );
 
     console.log(relation);
 
