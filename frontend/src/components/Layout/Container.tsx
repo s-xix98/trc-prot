@@ -9,5 +9,5 @@ export const Container = styled.div<{
   flex-direction: ${({ flexDirection }) => flexDirection};
   overflow: hidden;
   height: ${({ height }) => (height ? height : '100%')};
-  justify - content: center;
+  justify-content: center;
 `;
