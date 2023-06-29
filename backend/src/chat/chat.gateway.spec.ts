@@ -266,4 +266,37 @@ describe('ChatGateway', () => {
       expect(MemberList.length).toEqual(2);
     });
   });
+
+  describe('非公開channel', () => {
+    const roomName = 'privateRoom';
+
+    test('非公開channelを作成できるか', async () => {
+      const user = testUsers[0];
+      const createChannelDto: CreateChannelDto = {
+        roomName: roomName,
+        userId: user.user.id,
+        isPrivate: true,
+      };
+
+      await testService.emitAndWaitForEvent<CreateChannelDto>(
+        'createChannel',
+        'addRoom',
+        user.socket,
+        createChannelDto,
+      );
+
+      const createdRoom = await prismaService.chatRoom.findFirst({
+        where: {
+          roomName,
+        },
+      });
+
+      expect(createdRoom?.isPrivate).toEqual(true);
+    });
+
+    test('非公開channelをsearchできないか', async () => {
+      const channels = await chatService.search(roomName);
+      expect(channels.length).toEqual(0);
+    });
+  });
 });
