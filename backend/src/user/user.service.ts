@@ -60,7 +60,7 @@ export class UserService {
   }
 
   async getFriendship(userId: string, targetId: string) {
-    const outgoingFriendship = await this.prisma.friendship.findUnique({
+    const srcFriendship = await this.prisma.friendship.findUnique({
       where: {
         srcUserId_destUserId: {
           srcUserId: userId,
@@ -69,7 +69,7 @@ export class UserService {
       },
     });
 
-    const incomingFriendship = await this.prisma.friendship.findUnique({
+    const targetFriendship = await this.prisma.friendship.findUnique({
       where: {
         srcUserId_destUserId: {
           srcUserId: targetId,
@@ -78,7 +78,7 @@ export class UserService {
       },
     });
 
-    return { outgoingFriendship, incomingFriendship };
+    return { srcFriendship, targetFriendship };
   }
 
   async upsertFriendship(

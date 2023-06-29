@@ -97,19 +97,19 @@ export class UserGateway {
       throw new Error('cannot send friend request to yourself');
     }
 
-    const { outgoingFriendship, incomingFriendship } =
+    const { srcFriendship, targetFriendship } =
       await this.userService.getFriendship(dto.userId, dto.targetId);
 
     if (
-      outgoingFriendship?.status === 'Blocked' ||
-      incomingFriendship?.status === 'Blocked'
+      srcFriendship?.status === 'Blocked' ||
+      targetFriendship?.status === 'Blocked'
     ) {
       throw new Error('cannot send friend request to blocked user');
-    } else if (incomingFriendship?.status === 'Accepted') {
+    } else if (targetFriendship?.status === 'Accepted') {
       throw new Error('already friend');
-    } else if (outgoingFriendship?.status === 'Requested') {
+    } else if (srcFriendship?.status === 'Requested') {
       throw new Error('already requested');
-    } else if (incomingFriendship?.status === 'Requested') {
+    } else if (targetFriendship?.status === 'Requested') {
       await this.userService.upsertFriendship(
         dto.userId,
         dto.targetId,
@@ -120,7 +120,7 @@ export class UserGateway {
         dto.userId,
         'Accepted',
       );
-    } else if (outgoingFriendship === null) {
+    } else if (srcFriendship === null) {
       await this.userService.upsertFriendship(
         dto.userId,
         dto.targetId,

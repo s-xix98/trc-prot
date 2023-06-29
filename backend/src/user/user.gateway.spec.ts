@@ -170,16 +170,16 @@ describe('UserGateway', () => {
 
       await testService.sleep(200);
 
-      const { outgoingFriendship, incomingFriendship } =
+      const { srcFriendship, targetFriendship } =
         await userService.getFriendship(user1.user.id, user2.user.id);
 
-      expect(outgoingFriendship?.srcUserId).toEqual(user1.user.id);
-      expect(outgoingFriendship?.destUserId).toEqual(user2.user.id);
-      expect(outgoingFriendship?.status).toEqual('Accepted');
+      expect(srcFriendship?.srcUserId).toEqual(user1.user.id);
+      expect(srcFriendship?.destUserId).toEqual(user2.user.id);
+      expect(srcFriendship?.status).toEqual('Accepted');
 
-      expect(incomingFriendship?.srcUserId).toEqual(user2.user.id);
-      expect(incomingFriendship?.destUserId).toEqual(user1.user.id);
-      expect(incomingFriendship?.status).toEqual('Accepted');
+      expect(targetFriendship?.srcUserId).toEqual(user2.user.id);
+      expect(targetFriendship?.destUserId).toEqual(user1.user.id);
+      expect(targetFriendship?.status).toEqual('Accepted');
     });
   });
 
