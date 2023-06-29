@@ -1,13 +1,18 @@
 import { WebSocketGateway } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
+import { UseFilters } from '@nestjs/common';
+
+import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { generatePrefixedId, roomType } from './utils';
+
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
+@UseFilters(new WsExceptionsFilter())
 export class WsocketGateway {
   @WebSocketServer()
   server: Server;

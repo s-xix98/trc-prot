@@ -1,8 +1,10 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { map, pick } from 'lodash';
+import { UseFilters } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
@@ -12,6 +14,7 @@ import { friendshipDto } from './dto/friendship.dto';
     origin: '*',
   },
 })
+@UseFilters(new WsExceptionsFilter())
 export class UserGateway {
   constructor(private prisma: PrismaService) {}
 

@@ -50,6 +50,9 @@ export class ChatService {
           contains: searchWord,
           mode: 'insensitive',
         },
+        isPrivate: {
+          equals: false,
+        },
       },
     });
 
@@ -72,6 +75,7 @@ export class ChatService {
         hashedPassword: dto.password
           ? await bcrypt.hash(dto.password, 10)
           : undefined,
+        isPrivate: dto.isPrivate,
       },
     });
 

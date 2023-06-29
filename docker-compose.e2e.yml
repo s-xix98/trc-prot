@@ -3,4 +3,6 @@ services:
     depends_on:
       - backend
     stop_grace_period: 1s
+    environment:
+      PYTHONUNBUFFERED: 1
     command: ["make", "test-e2e"]

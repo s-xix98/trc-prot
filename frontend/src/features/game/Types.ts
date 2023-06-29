@@ -11,8 +11,11 @@ export type Paddle = {
   height: number;
 };
 
+export type Scores = { left: number; right: number };
+
 export type GameObjects = {
   ball: Ball;
   leftPaddle: Paddle;
   rightPaddle: Paddle;
+  scores: Scores;
 };

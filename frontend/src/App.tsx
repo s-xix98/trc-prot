@@ -37,6 +37,10 @@ function App() {
     console.log('friendRequest', data);
   });
 
+  useSocket('error', (data) => {
+    console.log(data);
+  });
+
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
 
