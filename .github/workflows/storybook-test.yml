@@ -23,6 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: install playwright
-        run: cd frontend && npx playwright install
+        run: npx playwright install
       - name: npx playwright install-deps
         run: npx playwright install-deps
