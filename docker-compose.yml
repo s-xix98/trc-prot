@@ -10,7 +10,6 @@ services:
     container_name: frontend
     ports:
       - 3000:3000
-      - 6006:6006
     volumes:
       - ./frontend:/workdir
       - frontend_node_modules:/workdir/node_modules
