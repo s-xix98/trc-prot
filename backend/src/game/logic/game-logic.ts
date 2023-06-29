@@ -1,7 +1,12 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle } from '../types';
-import { CreateBall, CreatePaddle } from '../game-constants';
+import { Ball, Paddle, Scores } from '../types';
+import {
+  canvas,
+  CreateBall,
+  CreateLeftPaddle,
+  CreateRightPaddle,
+} from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
@@ -14,6 +19,7 @@ export class GameLogic {
   private ball: Ball;
   private leftPaddle: Paddle;
   private rightPaddle: Paddle;
+  private scores: Scores;
   private p1: Socket;
   private p2: Socket;
   private intervalId: any;
@@ -23,26 +29,30 @@ export class GameLogic {
     this.ball = ball;
     this.p1 = p1;
     this.p2 = p2;
-    this.leftPaddle = CreatePaddle(0);
-    this.rightPaddle = CreatePaddle(1);
+    this.leftPaddle = CreateLeftPaddle();
+    this.rightPaddle = CreateRightPaddle();
+    this.scores = { left: 0, right: 0 };
   }
 
   StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
+      if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
+        this.UpdateScore();
+        this.Restart();
+        return;
+      }
       this.HandleKeyActions();
       this.UpdateBallPosition();
       const gameDto: GameDto = {
         ball: this.ball,
         leftPaddle: this.leftPaddle,
         rightPaddle: this.rightPaddle,
+        scores: this.scores,
       };
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
-      if (!IsInRange(this.ball.x, 0, 1)) {
-        this.Restart();
-      }
     }, 10);
   }
 
@@ -69,7 +79,7 @@ export class GameLogic {
 
     const isLeftPaddleHitByBall = () => {
       return (
-        newX <= 0 &&
+        newX <= canvas.xMin &&
         IsInRange(
           this.ball.y,
           this.leftPaddle.y,
@@ -80,7 +90,7 @@ export class GameLogic {
 
     const isRightPaddleHitByBall = () => {
       return (
-        newX >= 1 &&
+        newX >= canvas.xMax &&
         IsInRange(
           this.ball.y,
           this.rightPaddle.y,
@@ -93,15 +103,15 @@ export class GameLogic {
       newX = -newX;
       this.ball.dx = -this.ball.dx;
     } else if (isRightPaddleHitByBall()) {
-      newX = 1 - (newX - 1);
+      newX = canvas.xMax - (newX - canvas.xMax);
       this.ball.dx = -this.ball.dx;
     }
 
-    if (newY <= 0) {
+    if (newY <= canvas.yMin) {
       newY = -newY;
       this.ball.dy = -this.ball.dy;
-    } else if (newY >= 1) {
-      newY = 1 - (newY - 1);
+    } else if (newY >= canvas.yMax) {
+      newY = canvas.yMax - (newY - canvas.yMax);
       this.ball.dy = -this.ball.dy;
     }
 
@@ -124,13 +134,22 @@ export class GameLogic {
   private Restart() {
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreatePaddle(0);
-    this.rightPaddle = CreatePaddle(1);
+    this.leftPaddle = CreateLeftPaddle();
+    this.rightPaddle = CreateRightPaddle();
     this.p1.emit('game data', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
+      scores: this.scores,
     });
     setTimeout(this.StartGame.bind(this), 500);
+  }
+
+  private UpdateScore() {
+    if (this.ball.x <= 0) {
+      this.scores.right++;
+    } else if (this.ball.x >= 1) {
+      this.scores.left++;
+    }
   }
 }

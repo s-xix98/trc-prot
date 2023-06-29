@@ -43,15 +43,61 @@ export class UserService {
     return user;
   }
 
-  async search(searchWord: string) {
+  async search(searchWord: string, userId: string) {
     const partialMatchUsers = await this.prisma.user.findMany({
       where: {
         username: {
           contains: searchWord,
           mode: 'insensitive',
         },
+        id: {
+          not: userId,
+        },
       },
     });
+
     return partialMatchUsers;
+  }
+
+  async getFriends(userId: string) {
+    const friends = await this.prisma.friendship.findMany({
+      where: {
+        srcUserId: userId,
+        status: {
+          equals: 'Accepted',
+        },
+      },
+      include: {
+        destUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return friends;
+  }
+
+  async getBlockUsers(userId: string) {
+    const blocks = await this.prisma.friendship.findMany({
+      where: {
+        srcUserId: userId,
+        status: {
+          equals: 'Blocked',
+        },
+      },
+      include: {
+        destUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return blocks;
   }
 }

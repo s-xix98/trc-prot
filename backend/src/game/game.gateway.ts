@@ -122,6 +122,7 @@ export class GameGateway {
 
   @SubscribeMessage('start game')
   StartGame(client: Socket) {
+    console.log('create game');
     if (this.game) {
       return;
     }
@@ -132,6 +133,7 @@ export class GameGateway {
 
   @SubscribeMessage('end game')
   EndGame() {
+    console.log('end game');
     this.game?.EndGame();
     this.game = undefined;
   }

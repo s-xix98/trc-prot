@@ -60,13 +60,14 @@ const CreateGameObjects = (
     ball,
     leftPaddle,
     rightPaddle,
+    scores: gameDto.scores,
   };
 };
 
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = 'white';
   ctx.fill();
   ctx.closePath();
 };
@@ -77,6 +78,31 @@ const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
   ctx.fillStyle = 'white';
   ctx.fill();
   ctx.closePath();
+};
+
+const DrawScores = (
+  ctx: CanvasRenderingContext2D,
+  scores: { left: number; right: number },
+  canvasWidth: number,
+  canvasHeight: number,
+) => {
+  ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
+  ctx.fillText(`${scores.left}`, canvasWidth / 4, canvasHeight / 4);
+  ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
+};
+
+const DrawCenterLine = (
+  ctx: CanvasRenderingContext2D,
+  canvasWidth: number,
+  canvasHeight: number,
+) => {
+  ctx.beginPath();
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = canvasWidth / 100;
+  ctx.setLineDash([canvasHeight / 10, canvasHeight / 20]);
+  ctx.moveTo(canvasWidth / 2, 0);
+  ctx.lineTo(canvasWidth / 2, canvasHeight);
+  ctx.stroke();
 };
 
 const StyledCanvas = styled.canvas`
@@ -99,6 +125,8 @@ const GameCanvas = () => {
     }
     const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
     DrawBall(ctx, game.ball);
     DrawPaddle(ctx, game.rightPaddle);
     DrawPaddle(ctx, game.leftPaddle);

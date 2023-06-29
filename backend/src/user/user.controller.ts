@@ -36,8 +36,20 @@ export class UserController {
   }
 
   @Get('search')
-  async search(@Query('searchWord') searchWord: string) {
+  async search(@Query('searchWord') searchWord: string, @Request() req: any) {
     console.log(searchWord);
-    return this.userService.search(searchWord);
+    return this.userService.search(searchWord, req.user.userId);
+  }
+
+  @Get('friends')
+  // eslint-disable-next-line
+  async getFriends(@Request() req: any) {
+    return this.userService.getFriends(req.user.userId);
+  }
+
+  @Get('blocks')
+  // eslint-disable-next-line
+  async getBlockUsers(@Request() req: any) {
+    return this.userService.getBlockUsers(req.user.userId);
   }
 }
