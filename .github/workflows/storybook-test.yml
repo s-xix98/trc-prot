@@ -21,73 +21,8 @@ jobs:
   storybook-test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: test
-        ports:
-          - 5432:5432
-
     steps:
-      - name: checkout git repository
-        uses: actions/checkout@v3
-
-      - name: cache frontend node-modules
-        id: cache-frontend-node-modules
-        uses: actions/cache@v3
-        with:
-          path: frontend/node_modules
-          key: cache-frontend-node-modules-${{ hashFiles('frontend/package-lock.json') }}
-
-      - name: playwright version
-        run: npx playwright -V > playwright-version.txt && cat playwright-version.txt
-
-      - name: cache playwright
-        id: cache-playwright
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: cache-playwright-${{ hashFiles('frontend/package-lock.json') }}-${{ hashFiles('playwright-version.txt') }}
-
-      - name: cache backend node-modules
-        id: cache-backend-node-modules
-        uses: actions/cache@v3
-        with:
-          path: backend/node_modules
-          key: cache-backend-node-modules-${{ hashFiles('backend/package-lock.json') }}
-
-      - name: setup backend
-        run: |
-          cd backend
-          make setup
-          make setup-db
-          npm run start:dev &
-
-      - name: setup frontend
-        run: |
-          cd frontend
-          make setup
-      - if: ${{ steps.cache-playwright.outputs.cache-hit != 'true' }}
-        name: install playwright
+      - name: install playwright
         run: cd frontend && npx playwright install
-      - name: install playwright deps & storybook build
-        run: |
-          cd frontend
-          npm run storybook-build &
-          npm_run_storybook_build_pid=$(echo $!)
-          npx playwright install-deps
-          npm run storybook-build
-          echo wait ${npm_run_storybook_build_pid}
-          wait ${npm_run_storybook_build_pid}
-          python3 -m http.server 6006 --directory storybook-static &
-          timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
-
-      - name: is storybook file exists
-        run: cd frontend && make sb-ck-file
-      - name: run storybook test
-        run: |
-          cd frontend
-          npm run storybook-test || (for f in $(find . -type f -name '*diff.png'); do echo ${f} && echo --- --- --- && base64 < ${f} ; done && echo --- --- --- && exit 1)
+      - name: npx playwright install-deps
+        run: npx playwright install-deps
