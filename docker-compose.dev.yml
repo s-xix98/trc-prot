@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  frontend:
+    command: ["bash", "docker-entrypoint-dev.sh"]
+
+  backend:
+    command: ["bash", "docker-entrypoint-dev.sh"]
