@@ -8,6 +8,7 @@ import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
+import { UserService } from './user.service';
 
 @WebSocketGateway({
   cors: {
@@ -16,7 +17,10 @@ import { friendshipDto } from './dto/friendship.dto';
 })
 @UseFilters(new WsExceptionsFilter())
 export class UserGateway {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
 
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
@@ -89,15 +93,42 @@ export class UserGateway {
     console.log('friendRequest', client.id);
     console.log(dto);
 
-    await this.prisma.friendship.create({
-      data: {
-        srcUserId: dto.userId,
-        destUserId: dto.targetId,
-        status: 'Requested',
-      },
-    });
-    // TODO targetユーザーに通知を送る
-    // client.to(target client id).emit('friendRequest', userid , username);
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot send friend request to yourself');
+    }
+
+    const { srcFriendship, targetFriendship } =
+      await this.userService.getFriendship(dto.userId, dto.targetId);
+
+    if (
+      srcFriendship?.status === 'Blocked' ||
+      targetFriendship?.status === 'Blocked'
+    ) {
+      throw new Error('cannot send friend request to blocked user');
+    } else if (targetFriendship?.status === 'Accepted') {
+      throw new Error('already friend');
+    } else if (srcFriendship?.status === 'Requested') {
+      throw new Error('already requested');
+    } else if (targetFriendship?.status === 'Requested') {
+      await this.userService.upsertFriendship(
+        dto.userId,
+        dto.targetId,
+        'Accepted',
+      );
+      await this.userService.upsertFriendship(
+        dto.targetId,
+        dto.userId,
+        'Accepted',
+      );
+    } else if (srcFriendship === null) {
+      await this.userService.upsertFriendship(
+        dto.userId,
+        dto.targetId,
+        'Requested',
+      );
+      // TODO targetユーザーに通知を送る
+      // client.to(target client id).emit('friendRequest', userid , username);
+    }
   }
 
   @SubscribeMessage('blockUser')
