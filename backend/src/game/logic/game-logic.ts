@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io';
 
 import { Ball, Paddle } from '../types';
-import { CreateBall, CreatePaddle } from '../game-constants';
+import { canvas, CreateBall, CreatePaddle } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
@@ -23,8 +23,8 @@ export class GameLogic {
     this.ball = ball;
     this.p1 = p1;
     this.p2 = p2;
-    this.leftPaddle = CreatePaddle(0);
-    this.rightPaddle = CreatePaddle(1);
+    this.leftPaddle = CreatePaddle(canvas.xMin);
+    this.rightPaddle = CreatePaddle(canvas.xMax);
   }
 
   StartGame() {
@@ -40,7 +40,7 @@ export class GameLogic {
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
-      if (!IsInRange(this.ball.x, 0, 1)) {
+      if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
         this.Restart();
       }
     }, 10);
@@ -69,7 +69,7 @@ export class GameLogic {
 
     const isLeftPaddleHitByBall = () => {
       return (
-        newX <= 0 &&
+        newX <= canvas.xMin &&
         IsInRange(
           this.ball.y,
           this.leftPaddle.y,
@@ -80,7 +80,7 @@ export class GameLogic {
 
     const isRightPaddleHitByBall = () => {
       return (
-        newX >= 1 &&
+        newX >= canvas.xMax &&
         IsInRange(
           this.ball.y,
           this.rightPaddle.y,
@@ -93,15 +93,15 @@ export class GameLogic {
       newX = -newX;
       this.ball.dx = -this.ball.dx;
     } else if (isRightPaddleHitByBall()) {
-      newX = 1 - (newX - 1);
+      newX = canvas.xMax - (newX - canvas.xMax);
       this.ball.dx = -this.ball.dx;
     }
 
-    if (newY <= 0) {
+    if (newY <= canvas.yMin) {
       newY = -newY;
       this.ball.dy = -this.ball.dy;
-    } else if (newY >= 1) {
-      newY = 1 - (newY - 1);
+    } else if (newY >= canvas.yMax) {
+      newY = canvas.yMax - (newY - canvas.yMax);
       this.ball.dy = -this.ball.dy;
     }
 
@@ -124,8 +124,8 @@ export class GameLogic {
   private Restart() {
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreatePaddle(0);
-    this.rightPaddle = CreatePaddle(1);
+    this.leftPaddle = CreatePaddle(canvas.xMin);
+    this.rightPaddle = CreatePaddle(canvas.xMax);
     this.p1.emit('game data', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
