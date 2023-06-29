@@ -10,7 +10,7 @@ PHONY	:=	all
 all: $(DOCKER_BUILD_TXT)
 	$(MAKE) local-npm-i
 	$(MAKE) local-prisma-generate
-	docker compose up
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 
 $(DOCKER_BUILD_TXT): $(DOCKER_FILES)
 	date > $(DOCKER_BUILD_TXT)

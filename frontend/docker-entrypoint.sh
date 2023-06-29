@@ -2,6 +2,6 @@
 
 make setup
 
-npm run storybook &
+make build
 
-exec npm run dev
+exec npm run start
