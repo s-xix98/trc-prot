@@ -60,6 +60,7 @@ const CreateGameObjects = (
     ball,
     leftPaddle,
     rightPaddle,
+    scores: gameDto.scores,
   };
 };
 
@@ -77,6 +78,17 @@ const DrawPaddle = (ctx: CanvasRenderingContext2D, paddle: Paddle) => {
   ctx.fillStyle = 'white';
   ctx.fill();
   ctx.closePath();
+};
+
+const DrawScores = (
+  ctx: CanvasRenderingContext2D,
+  scores: { left: number; right: number },
+  canvasWidth: number,
+  canvasHeight: number,
+) => {
+  ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
+  ctx.fillText(`${scores.left}`, canvasWidth / 4, canvasHeight / 4);
+  ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
 };
 
 const StyledCanvas = styled.canvas`
@@ -99,6 +111,7 @@ const GameCanvas = () => {
     }
     const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
     DrawBall(ctx, game.ball);
     DrawPaddle(ctx, game.rightPaddle);
     DrawPaddle(ctx, game.leftPaddle);

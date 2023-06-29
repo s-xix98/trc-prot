@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle } from '../types';
+import { Ball, Paddle, Scores } from '../types';
 import {
   canvas,
   CreateBall,
@@ -19,6 +19,7 @@ export class GameLogic {
   private ball: Ball;
   private leftPaddle: Paddle;
   private rightPaddle: Paddle;
+  private scores: Scores;
   private p1: Socket;
   private p2: Socket;
   private intervalId: any;
@@ -30,24 +31,28 @@ export class GameLogic {
     this.p2 = p2;
     this.leftPaddle = CreateLeftPaddle();
     this.rightPaddle = CreateRightPaddle();
+    this.scores = { left: 0, right: 0 };
   }
 
   StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
+      if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
+        this.UpdateScore();
+        this.Restart();
+        return;
+      }
       this.HandleKeyActions();
       this.UpdateBallPosition();
       const gameDto: GameDto = {
         ball: this.ball,
         leftPaddle: this.leftPaddle,
         rightPaddle: this.rightPaddle,
+        scores: this.scores,
       };
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
       //   this.p2.emit('game data', gameDto);
-      if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
-        this.Restart();
-      }
     }, 10);
   }
 
@@ -135,7 +140,16 @@ export class GameLogic {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
+      scores: this.scores,
     });
     setTimeout(this.StartGame.bind(this), 500);
+  }
+
+  private UpdateScore() {
+    if (this.ball.x <= 0) {
+      this.scores.right++;
+    } else if (this.ball.x >= 1) {
+      this.scores.left++;
+    }
   }
 }
