@@ -1,7 +1,12 @@
 import { Socket } from 'socket.io';
 
 import { Ball, Paddle } from '../types';
-import { canvas, CreateBall, CreatePaddle } from '../game-constants';
+import {
+  canvas,
+  CreateBall,
+  CreateLeftPaddle,
+  CreateRightPaddle,
+} from '../game-constants';
 import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
@@ -23,8 +28,8 @@ export class GameLogic {
     this.ball = ball;
     this.p1 = p1;
     this.p2 = p2;
-    this.leftPaddle = CreatePaddle(canvas.xMin);
-    this.rightPaddle = CreatePaddle(canvas.xMax);
+    this.leftPaddle = CreateLeftPaddle();
+    this.rightPaddle = CreateRightPaddle();
   }
 
   StartGame() {
@@ -124,8 +129,8 @@ export class GameLogic {
   private Restart() {
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreatePaddle(canvas.xMin);
-    this.rightPaddle = CreatePaddle(canvas.xMax);
+    this.leftPaddle = CreateLeftPaddle();
+    this.rightPaddle = CreateRightPaddle();
     this.p1.emit('game data', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
