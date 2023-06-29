@@ -43,15 +43,19 @@ export class UserService {
     return user;
   }
 
-  async search(searchWord: string) {
+  async search(searchWord: string, userId: string) {
     const partialMatchUsers = await this.prisma.user.findMany({
       where: {
         username: {
           contains: searchWord,
           mode: 'insensitive',
         },
+        id: {
+          not: userId,
+        },
       },
     });
+
     return partialMatchUsers;
   }
 
@@ -73,7 +77,12 @@ export class UserService {
       },
     });
 
-    return friends;
+    const friendsUserInfo = friends.map((f) => {
+      const { username, id } = f.destUser;
+      return { username, id };
+    });
+
+    return friendsUserInfo;
   }
 
   async getBlockUsers(userId: string) {
@@ -94,6 +103,11 @@ export class UserService {
       },
     });
 
-    return blocks;
+    const blocksUserInfo = blocks.map((b) => {
+      const { username, id } = b.destUser;
+      return { username, id };
+    });
+
+    return blocksUserInfo;
   }
 }

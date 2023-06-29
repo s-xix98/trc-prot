@@ -1,18 +1,22 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { UseFilters } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { roomType } from '../wsocket/utils';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { MessageDto } from './dto/message.dto';
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
+
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
+@UseFilters(new WsExceptionsFilter())
 export class ChatGateway {
   constructor(
     private prisma: PrismaService,
