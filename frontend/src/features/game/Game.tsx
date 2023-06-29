@@ -67,7 +67,7 @@ const CreateGameObjects = (
 const DrawBall = (ctx: CanvasRenderingContext2D, ball: Ball) => {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = 'red';
+  ctx.fillStyle = 'white';
   ctx.fill();
   ctx.closePath();
 };
@@ -91,6 +91,20 @@ const DrawScores = (
   ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
 };
 
+const DrawCenterLine = (
+  ctx: CanvasRenderingContext2D,
+  canvasWidth: number,
+  canvasHeight: number,
+) => {
+  ctx.beginPath();
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = canvasWidth / 100;
+  ctx.setLineDash([canvasHeight / 10, canvasHeight / 20]);
+  ctx.moveTo(canvasWidth / 2, 0);
+  ctx.lineTo(canvasWidth / 2, canvasHeight);
+  ctx.stroke();
+};
+
 const StyledCanvas = styled.canvas`
   border: 4px solid;
   color: black;
@@ -111,6 +125,7 @@ const GameCanvas = () => {
     }
     const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
     DrawBall(ctx, game.ball);
     DrawPaddle(ctx, game.rightPaddle);
