@@ -76,11 +76,12 @@ jobs:
       - name: install playwright deps & storybook build
         run: |
           cd frontend
-          npx playwright install-deps &
-          npx_playwright_install_deps_pid=$(echo $!)
+          npm run storybook-build &
+          npm_run_storybook_build_pid=$(echo $!)
+          npx playwright install-deps
           npm run storybook-build
-          echo wait ${npx_playwright_install_deps_pid}
-          wait ${npx_playwright_install_deps_pid}
+          echo wait ${npm_run_storybook_build_pid}
+          wait ${npm_run_storybook_build_pid}
           python3 -m http.server 6006 --directory storybook-static &
           timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
 
