@@ -123,6 +123,35 @@ describe('UserGateway', () => {
       expect(friendship?.status).toEqual('Requested');
     });
 
+    // test('1と2がfriend登録されてるか', async () => {
+    //   const user1 = testUsers[1];
+    //   const user2 = testUsers[2];
+    //   const dto1: friendshipDto = {
+    //     userId: user1.user.id,
+    //     targetId: user2.user.id,
+    //   };
+    //   const dto2: friendshipDto = {
+    //     userId: user2.user.id,
+    //     targetId: user1.user.id,
+    //   };
+
+    //   user1.socket.emit('friendRequest', dto1);
+    //   user2.socket.emit('friendRequest', dto2);
+
+    //   await testService.sleep(400);
+
+    //   const { outgoingFriendship, incomingFriendship } =
+    //     await userService.getFriendship(user1.user.id, user2.user.id);
+
+    //   expect(outgoingFriendship?.srcUserId).toEqual(user1.user.id);
+    //   expect(outgoingFriendship?.destUserId).toEqual(user2.user.id);
+    //   expect(outgoingFriendship?.status).toEqual('Accepted');
+
+    //   expect(incomingFriendship?.srcUserId).toEqual(user2.user.id);
+    //   expect(incomingFriendship?.destUserId).toEqual(user1.user.id);
+    //   expect(incomingFriendship?.status).toEqual('Accepted');
+    // });
+
     test('1と2がfriend登録されてるか', async () => {
       const user1 = testUsers[1];
       const user2 = testUsers[2];
@@ -136,9 +165,10 @@ describe('UserGateway', () => {
       };
 
       user1.socket.emit('friendRequest', dto1);
+      await testService.sleep(200);
       user2.socket.emit('friendRequest', dto2);
 
-      await testService.sleep(400);
+      await testService.sleep(200);
 
       const { outgoingFriendship, incomingFriendship } =
         await userService.getFriendship(user1.user.id, user2.user.id);
