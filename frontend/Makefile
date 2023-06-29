@@ -68,7 +68,7 @@ test-e2e:
 	export NEXT_PUBLIC_BACKEND="http://backend:8000" && make build
 	npm run start &
 	timeout 30 bash -c 'while ! >/dev/tcp/localhost/3000; do sleep 3; done'
-	python3 test/e2e.py
+	cd test && make run-test
 
 # etc...
 # ------------------------------------------------------------------------------------------
