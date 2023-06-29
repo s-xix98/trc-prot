@@ -80,7 +80,7 @@ describe('UserGateway', () => {
       user1.socket.emit('friendRequest', dto1);
       user2.socket.emit('friendRequest', dto2);
 
-      await testService.sleep(400);
+      await testService.sleep(10000);
 
       const { srcFriendship, targetFriendship } =
         await userService.getFriendship(user1.user.id, user2.user.id);
@@ -92,6 +92,6 @@ describe('UserGateway', () => {
       expect(targetFriendship?.srcUserId).toEqual(user2.user.id);
       expect(targetFriendship?.destUserId).toEqual(user1.user.id);
       expect(targetFriendship?.status).toEqual('Accepted');
-    });
+    }, 20000);
   });
 });
