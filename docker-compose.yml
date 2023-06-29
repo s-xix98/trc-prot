@@ -11,8 +11,6 @@ services:
     ports:
       - 3000:3000
       - 6006:6006
-    environment:
-      - WATCHPACK_POLLING=true
     volumes:
       - ./frontend:/workdir
       - frontend_node_modules:/workdir/node_modules
