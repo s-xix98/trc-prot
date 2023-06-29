@@ -15,11 +15,11 @@
     "start:prod": "node dist/main",
     "lint": "eslint --max-warnings=0 \"{src,apps,libs,test}/**/*.ts\"",
     "lint-fix": "eslint --fix \"{src,apps,libs,test}/**/*.ts\"",
-    "test": "jest --maxWorkers=1",
-    "test:watch": "jest --watch --maxWorkers=1",
-    "test:cov": "jest --coverage --maxWorkers=1",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --maxWorkers=1",
-    "test:e2e": "jest --config ./test/jest-e2e.json --maxWorkers=1"
+    "test": "jest --maxWorkers=1 --forceExit",
+    "test:watch": "jest --watch --maxWorkers=1 --forceExit",
+    "test:cov": "jest --coverage --maxWorkers=1 --forceExit",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --maxWorkers=1 --forceExit",
+    "test:e2e": "jest --config ./test/jest-e2e.json --maxWorkers=1 --forceExit"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
