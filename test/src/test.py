@@ -5,13 +5,7 @@ from playwright.sync_api import Page
 
 from src.constants import TOP_PAGE_URL
 from src.playwright_runner_utils import take_screenshot
-
-
-@dataclass
-class User:
-    name: str
-    email: str
-    password: str
+from src.user import User
 
 
 @dataclass
