@@ -9,9 +9,14 @@ export const useGetBlocks = () => {
   const [blocks, setBlocks] = useState<UserInfo[]>([]);
 
   useEffect(() => {
-    sessionAxios.get<UserInfo[]>('/user/blocks').then((res) => {
-      setBlocks(() => res.data);
-    });
+    sessionAxios
+      .get<UserInfo[]>('/user/blocks')
+      .then((res) => {
+        setBlocks(() => res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [sessionAxios]);
 
   return { blocks };
