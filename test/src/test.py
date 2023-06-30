@@ -34,3 +34,17 @@ class UserPageController:
     def goto_top_page(self) -> None:
         page = self.page
         page.goto(TOP_PAGE_URL)
+
+    def signup(self) -> None:
+        page = self.page
+        user = self.user
+
+        page.get_by_role("tab", name="SignUp").click()
+        page.get_by_placeholder("username").fill(user.name)
+        page.get_by_placeholder("email").fill(user.email)
+        page.get_by_placeholder("password").fill(user.password)
+
+        self.screenshot("signup-before")
+        page.get_by_role("button", name="SignUp").click()
+        time.sleep(1)
+        self.screenshot("signup-after")
