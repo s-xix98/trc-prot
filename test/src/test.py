@@ -81,3 +81,20 @@ class UserPageController:
         page.get_by_role("textbox").press("Enter")
 
         self.screenshot("send_msg after")
+
+    def send_some_msg(self, room_name: str, times: int) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_text(room_name).click()
+        self.screenshot("send_some_msg before")
+
+        for i in range(times):
+            msg = f"{i} " * i
+            page.get_by_role("textbox").fill(msg)
+            page.get_by_role("textbox").press("Enter")
+            time.sleep(0.05)
+
+        self.screenshot("send_some_msg after")
