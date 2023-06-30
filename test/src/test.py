@@ -20,6 +20,7 @@ class UserPageController:
     test_name: str
     user: User
     page: Page
+    screenshot_counter: int = 1
 
     def screenshot(self, act_name: str) -> None:
         time.sleep(0.3)
