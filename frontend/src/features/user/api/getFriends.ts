@@ -9,9 +9,14 @@ export const useGetFriends = () => {
   const [friends, setFriends] = useState<UserInfo[]>([]);
 
   useEffect(() => {
-    sessionAxios.get<UserInfo[]>('/user/friends').then((res) => {
-      setFriends(() => res.data);
-    });
+    sessionAxios
+      .get<UserInfo[]>('/user/friends')
+      .then((res) => {
+        setFriends(() => res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [sessionAxios]);
 
   return { friends };
