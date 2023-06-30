@@ -4,6 +4,15 @@ from src.user import E2E
 from src.user_action import UserInteractionManager
 
 
+def test_create_channel(page: Page, test_name: str) -> None:
+    e2e = UserInteractionManager(test_name, E2E, page)
+
+    e2e.goto_top_page()
+    e2e.login()
+
+    e2e.create_chat_room("test-room")
+
+
 def test_chat_send_msg(page: Page, test_name: str) -> None:
     e2e = UserInteractionManager(test_name, E2E, page)
 

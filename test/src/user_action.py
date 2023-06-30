@@ -61,6 +61,20 @@ class UserInteractionManager:
         page.locator("#outlined-multiline-static").fill("logout")
         page.locator("#outlined-multiline-static").press("Enter")
 
+    def create_chat_room(self, room_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        self.screenshot("create_chat_room before")
+
+        page.get_by_text("ChannelCreate").click()
+        page.get_by_placeholder("ChannelName").fill(room_name)
+        page.get_by_role("button", name="create").click()
+
+        self.screenshot("create_chat_room after")
+
     def visit_chat_room(self, room_name: str) -> None:
         page = self.page
 
