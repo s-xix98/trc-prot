@@ -9,7 +9,7 @@ from src.user import User
 
 
 @dataclass
-class UserPageController:
+class UserInteractionManager:
     test_name: str
     user: User
     page: Page
