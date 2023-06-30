@@ -1,8 +1,17 @@
 services:
   frontend:
-    depends_on:
-      - backend
-    stop_grace_period: 1s
     environment:
-      PYTHONUNBUFFERED: 1
+      - NEXT_PUBLIC_BACKEND=http://backend:8000
+
+  test-e2e:
+    build: test
+    container_name: test-e2e
+    depends_on:
+      - frontend
+      - backend
+    volumes:
+      - ./test:/workdir
+    environment:
+      - TOP_PAGE_URL=http://frontend:3000
+      - PYTHONUNBUFFERED=1
     command: ["make", "test-e2e"]
