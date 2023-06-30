@@ -83,6 +83,7 @@ export class ChatService {
       data: {
         userId: dto.userId,
         chatRoomId: createdRoom.id,
+        role: 'OWNER',
       },
     });
 
