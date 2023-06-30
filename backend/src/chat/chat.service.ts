@@ -145,33 +145,32 @@ export class ChatService {
     }
   }
 
+  async findRoomMember(chatRoomId: string, userId: string) {
+    const roomMember = await this.prismaService.roomMember.findUnique({
+      where: {
+        userId_chatRoomId: {
+          userId,
+          chatRoomId,
+        },
+      },
+    });
+
+    return roomMember;
+  }
+
   async updateRoomMemberRole(
     roomId: string,
     targetId: string,
     userId: string,
     dto: UpdateRoomMemberRoleDto,
   ) {
-    const owner = await this.prismaService.roomMember.findUnique({
-      where: {
-        userId_chatRoomId: {
-          userId,
-          chatRoomId: roomId,
-        },
-      },
-    });
+    const owner = await this.findRoomMember(roomId, userId);
 
     if (owner === null || owner.role !== 'OWNER') {
       throw new ForbiddenException('You are not owner');
     }
 
-    const target = await this.prismaService.roomMember.findUnique({
-      where: {
-        userId_chatRoomId: {
-          userId: targetId,
-          chatRoomId: roomId,
-        },
-      },
-    });
+    const target = await this.findRoomMember(roomId, targetId);
 
     if (target === null) {
       throw new ForbiddenException('Target not found');
