@@ -61,3 +61,9 @@ class UserPageController:
 
         page.get_by_role("button", name="Login", exact=True).click()
         time.sleep(0.5)
+
+    def logout(self) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("logout")
+        page.locator("#outlined-multiline-static").press("Enter")
