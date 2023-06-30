@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
@@ -151,6 +151,42 @@ export class ChatService {
     userId: string,
     dto: UpdateRoomMemberRoleDto,
   ) {
-    return;
+    const owner = await this.prismaService.roomMember.findUnique({
+      where: {
+        userId_chatRoomId: {
+          userId,
+          chatRoomId: roomId,
+        },
+      },
+    });
+
+    if (owner === null || owner.role !== 'OWNER') {
+      throw new ForbiddenException('You are not owner');
+    }
+
+    const target = await this.prismaService.roomMember.findUnique({
+      where: {
+        userId_chatRoomId: {
+          userId: targetId,
+          chatRoomId: roomId,
+        },
+      },
+    });
+
+    if (target === null) {
+      throw new ForbiddenException('Target not found');
+    }
+
+    return this.prismaService.roomMember.update({
+      where: {
+        userId_chatRoomId: {
+          userId: targetId,
+          chatRoomId: roomId,
+        },
+      },
+      data: {
+        role: dto.role,
+      },
+    });
   }
 }
