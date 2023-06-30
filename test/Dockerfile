@@ -10,8 +10,5 @@ RUN set -eux \
   python3-pip \
   && apt-get clean
 
-COPY --chown=node:node package*.json ./
-
-RUN npm i
-
-RUN npx playwright install && npx playwright install-deps
+RUN pip install playwright
+RUN playwright install && playwright install-deps
