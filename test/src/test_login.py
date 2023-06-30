@@ -1,0 +1,10 @@
+from src.test import User, UserPageController
+from playwright.sync_api import Page
+
+E2E = User(name="e2e-name", email="e2e@example.com", password="e2e-password")
+
+
+def test_signup(page: Page, test_name: str) -> None:
+    e2e = UserPageController(test_name, E2E, page)
+    e2e.goto_top_page()
+    e2e.signup()
