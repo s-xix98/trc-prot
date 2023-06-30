@@ -1,9 +1,7 @@
 from playwright.sync_api import Page
 
 from src.test import UserPageController
-from src.user import User
-
-E2E = User(name="e2e-name", email="e2e@example.com", password="e2e-password")
+from src.user import E2E
 
 
 def test_signup(page: Page, test_name: str) -> None:
