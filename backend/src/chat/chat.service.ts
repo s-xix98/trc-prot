@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-import { CreateChannelDto } from './dto/Channel.dto';
+import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 
@@ -149,7 +149,7 @@ export class ChatService {
     roomId: string,
     targetId: string,
     userId: string,
-    role: string,
+    dto: UpdateRoomMemberRoleDto,
   ) {
     return;
   }

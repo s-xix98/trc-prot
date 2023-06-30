@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -13,6 +14,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 import { ChatService } from './chat.service';
+import { UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 @ApiTags('/chat')
@@ -40,21 +42,21 @@ export class ChatController {
     @Param('roomId') roomId: string,
     @Param('targetId') targetId: string,
     @Request() req: any,
-    role: 'ADMIN' | 'USER',
+    @Body() dto: UpdateRoomMemberRoleDto,
   ) {
     console.log(
       'updateRoomMemberRole',
       roomId,
       targetId,
       req.user.userId,
-      role,
+      dto,
     );
 
     return this.chatService.updateRoomMemberRole(
       roomId,
       targetId,
       req.user.userId,
-      role,
+      dto,
     );
   }
 }
