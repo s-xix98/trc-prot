@@ -48,3 +48,16 @@ class UserPageController:
 
         page.get_by_role("button", name="SignUp").click()
         self.screenshot("signup-after")
+
+    def login(self, take_screenshot=False) -> None:
+        page = self.page
+        user = self.user
+
+        page.get_by_placeholder("email").fill(user.email)
+        page.get_by_placeholder("password").fill(user.password)
+
+        if take_screenshot:
+            self.screenshot("login before")
+
+        page.get_by_role("button", name="Login", exact=True).click()
+        time.sleep(0.5)
