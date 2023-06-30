@@ -1,11 +1,10 @@
 import time
-
 from dataclasses import dataclass
 
 from playwright.sync_api import Page
 
-from src.playwright_runner_utils import take_screenshot
 from src.constants import TOP_PAGE_URL
+from src.playwright_runner_utils import take_screenshot
 
 
 @dataclass
@@ -49,7 +48,7 @@ class UserPageController:
         page.get_by_role("button", name="SignUp").click()
         self.screenshot("signup-after")
 
-    def login(self, take_screenshot=False) -> None:
+    def login(self, take_screenshot: bool = False) -> None:
         page = self.page
         user = self.user
 

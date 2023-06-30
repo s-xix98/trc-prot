@@ -1,5 +1,4 @@
 import os
-
 from typing import Final
 
 TEST_IMG_DIR: Final = "img"
