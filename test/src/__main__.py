@@ -2,10 +2,11 @@ from src.playwright_runner import playwright_test_runner
 from src.test_basic import test_basic
 
 from src.constants import TOP_PAGE_URL
+from src.logger import logger
 
 
 def main() -> None:
-    print(f"TOP_PAGE_URL : {TOP_PAGE_URL}")
+    logger.info(f"TOP_PAGE_URL : {TOP_PAGE_URL}")
     playwright_test_runner([test_basic])
 
 
