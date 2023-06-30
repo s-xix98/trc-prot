@@ -278,11 +278,11 @@ describe('UserGateway', () => {
       testUsers[0].socket.emit('blockUser', dto1);
       await testService.sleep(100);
 
-      const { outgoingFriendship, incomingFriendship } =
+      const { srcFriendship, targetFriendship } =
         await userService.getFriendship(dto1.userId, dto1.targetId);
 
-      expect(incomingFriendship).toBeNull();
-      expect(outgoingFriendship?.status).toEqual('Blocked');
+      expect(targetFriendship).toBeNull();
+      expect(srcFriendship?.status).toEqual('Blocked');
 
       await prismaService.friendship.deleteMany({
         where: {
