@@ -64,6 +64,5 @@ jobs:
 
       - name: run test
         run: |
-          cd frontend
           cd test && make run-test
           git diff --exit-code img
