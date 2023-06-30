@@ -44,13 +44,7 @@ export class ChatController {
     @Request() req: any,
     @Body() dto: UpdateRoomMemberRoleDto,
   ) {
-    console.log(
-      'updateRoomMemberRole',
-      roomId,
-      targetId,
-      req.user.userId,
-      dto,
-    );
+    console.log('updateRoomMemberRole', roomId, targetId, req.user.userId, dto);
 
     return this.chatService.updateRoomMemberRole(
       roomId,

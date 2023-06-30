@@ -1,12 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { TestModule } from '../test/test.module';
-
-import { ChatService } from './chat.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestService } from '../test/test.service';
 import { testUser } from '../test/types/test.types';
-import { CreateChannelDto, JoinChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
+
+import { ChatService } from './chat.service';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  UpdateRoomMemberRoleDto,
+} from './dto/Channel.dto';
 
 const USERNUM = 10;
 
