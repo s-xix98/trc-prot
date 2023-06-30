@@ -144,4 +144,13 @@ export class ChatService {
       throw new Error('Password is incorrect');
     }
   }
+
+  async updateRoomMemberRole(
+    roomId: string,
+    targetId: string,
+    userId: string,
+    role: string,
+  ) {
+    return;
+  }
 }

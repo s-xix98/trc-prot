@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -25,5 +33,28 @@ export class ChatController {
   @Get('search')
   async search(@Query('searchWord') searchWord: string) {
     return this.chatService.search(searchWord);
+  }
+
+  @Patch('rooms/:roomId/members/:targetId/role')
+  async updateRoomMemberRole(
+    @Param('roomId') roomId: string,
+    @Param('targetId') targetId: string,
+    @Request() req: any,
+    role: 'ADMIN' | 'USER',
+  ) {
+    console.log(
+      'updateRoomMemberRole',
+      roomId,
+      targetId,
+      req.user.userId,
+      role,
+    );
+
+    return this.chatService.updateRoomMemberRole(
+      roomId,
+      targetId,
+      req.user.userId,
+      role,
+    );
   }
 }
