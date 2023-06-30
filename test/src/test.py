@@ -67,3 +67,17 @@ class UserPageController:
 
         page.locator("#outlined-multiline-static").fill("logout")
         page.locator("#outlined-multiline-static").press("Enter")
+
+    def send_msg(self, room_name: str, msg: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_text(room_name).click()
+        self.screenshot("send_msg before")
+
+        page.get_by_role("textbox").fill(msg)
+        page.get_by_role("textbox").press("Enter")
+
+        self.screenshot("send_msg after")
