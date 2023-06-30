@@ -64,6 +64,7 @@ jobs:
 
       - name: run test
         run: |
-          cd test && make run-test
+          cd test
+          make run-test
           git add -N img
           git diff --exit-code img
