@@ -26,7 +26,7 @@ class UserPageController:
         take_screenshot(
             self.page,
             self.test_name,
-            f"{str(self.screenshot_counter)}-{act_name.replace(' ', '-').replace('_', '-')}",
+            f"{str(self.screenshot_counter)}-{act_name}",
         )
         time.sleep(0.3)
         self.screenshot_counter += 1
