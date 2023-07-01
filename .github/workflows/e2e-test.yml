@@ -60,7 +60,7 @@ jobs:
       - name: setup python playwright
         run: |
           pip install playwright
-          playwright install
+          playwright install-deps
 
       - name: run test
         run: |
