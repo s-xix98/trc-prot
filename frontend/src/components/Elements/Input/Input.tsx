@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField';
 import { InputAdornment } from '@mui/material';
 import { KeyboardEvent } from 'react';
 
+import { sx } from '@/lib/mui';
+
 export const Input = ({
   msg,
   start = undefined,
@@ -30,15 +32,7 @@ export const Input = ({
         variant="standard"
         placeholder={placeholder}
         autoFocus={true}
-        sx={{
-          '& .MuiInputBase-input': {
-            color: '#33ff33', // Text color
-            // backgroundColor: '#303030', // 背景色
-          },
-          '& .MuiInput-underline:after': {
-            borderBottomColor: '#33ff33', // 通常時のボーダー色
-          },
-        }}
+        sx={sx}
         InputProps={{
           disableUnderline: disableUnderline,
           startAdornment: start ? (
