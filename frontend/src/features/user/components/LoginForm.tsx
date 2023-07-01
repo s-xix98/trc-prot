@@ -5,6 +5,7 @@ import {
   FormProvider,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mui/material';
 
 import { FormInput } from '@/components/Elements/Input/FormInput';
 
@@ -30,7 +31,7 @@ export const LoginForm = () => {
             type="password"
             start="password : "
           />
-          <input type="submit" value="Login" />
+          <Button type="submit">Login</Button>
         </form>
       </FormProvider>
     </>
