@@ -31,9 +31,12 @@ export const FormInput = ({
           InputProps={{
             startAdornment: start ? (
               <InputAdornment position="start">
-                <p style={{ color: '#33ff33' }}>{start}</p>
+                <p style={{ color: '#33ff33', whiteSpace: 'pre' }}>{start}</p>
               </InputAdornment>
             ) : undefined,
+            style: {
+              fontFamily: 'Courier New',
+            },
           }}
           autoComplete="off"
           error={fieldState.error ? true : false}

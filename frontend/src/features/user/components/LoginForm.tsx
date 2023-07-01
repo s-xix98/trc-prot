@@ -23,7 +23,7 @@ export const LoginForm = () => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(handleLogin)}>
-          <FormInput name="email" type="text" start="email : " />
+          <FormInput name="email" type="text" start="email    : " />
           <br />
           <FormInput
             name="hashedPassword"
