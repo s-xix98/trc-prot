@@ -21,9 +21,9 @@ export const SignUpForm = () => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(handleSignUp)}>
-          <FormInput name="username" type="text" start="username : " />
+          <FormInput name="username" type="text" start="username :" />
           <br />
-          <FormInput name="email" type="text" start="email    : " />
+          <FormInput name="email" type="text" start="email    :" />
           <br />
           <FormInput
             name="hashedPassword"
