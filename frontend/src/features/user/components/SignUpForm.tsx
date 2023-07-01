@@ -1,16 +1,15 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@mui/material';
+
+import { FormInput } from '@/components/Elements/Input/FormInput';
 
 import { useSignUp } from '../api/userSignUp';
 import { SignUpDto, SignUpDtoSchema } from '../types/UserDto';
 
 export const SignUpForm = () => {
   const signUp = useSignUp();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignUpDto>({
+  const methods = useForm<SignUpDto>({
     resolver: zodResolver(SignUpDtoSchema),
   });
 
@@ -20,31 +19,20 @@ export const SignUpForm = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit(handleSignUp)}>
-        <span>username : </span>
-        <input {...register('username')} placeholder="username" />
-        {errors.username?.message ? (
-          <p style={{ color: 'red' }}>{errors.username.message}</p>
-        ) : (
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(handleSignUp)}>
+          <FormInput name="username" type="text" start="username : " />
           <br />
-        )}
-
-        <span>email &nbsp;&nbsp;&nbsp;: </span>
-        <input {...register('email')} placeholder="email" />
-        {errors.email?.message ? (
-          <p style={{ color: 'red' }}>{errors.email.message}</p>
-        ) : (
+          <FormInput name="email" type="text" start="email    : " />
           <br />
-        )}
-
-        <span>password : </span>
-        <input {...register('hashedPassword')} placeholder="password" />
-        <span>&nbsp;</span>
-        <input type="submit" value="SignUp" />
-        {errors.hashedPassword && (
-          <p style={{ color: 'red' }}>{errors.hashedPassword.message}</p>
-        )}
-      </form>
+          <FormInput
+            name="hashedPassword"
+            type="password"
+            start="password : "
+          />
+          <Button type="submit">SignUp</Button>
+        </form>
+      </FormProvider>
     </>
   );
 };
