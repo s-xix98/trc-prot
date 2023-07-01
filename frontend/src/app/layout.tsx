@@ -4,6 +4,8 @@ import './globals.css';
 // storybook addon-coverage を入れたら、test でエラーが出るようになった。
 // Inter コメントアウトしても、特に影響がなかったので一旦コメントアウト
 // import { Inter } from 'next/font/google';
+import { SnackbarProvider, closeSnackbar } from 'notistack';
+
 import { useSession } from '@/hooks/useSession';
 
 import StyledComponentsRegistry from '../lib/registry';
@@ -27,7 +29,17 @@ export default function RootLayout({
     <html lang="en">
       {/* <body className={inter.className}> */}
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <StyledComponentsRegistry>
+          <SnackbarProvider
+            maxSnack={3}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            action={(snackbarId) => (
+              <p onClick={() => closeSnackbar(snackbarId)}>Dismiss</p>
+            )}
+          >
+            {children}
+          </SnackbarProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );
