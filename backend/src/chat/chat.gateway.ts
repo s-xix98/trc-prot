@@ -8,7 +8,7 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { MessageDto } from './dto/message.dto';
-import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
+import { CreateChannelDto, JoinChannelDto, RoomMemberRestrictionDto } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({
@@ -95,5 +95,11 @@ export class ChatGateway {
     this.server
       .to(roomType.Chat, msg.chatRoomId)
       .emit('receiveMessage', roomMsgs);
+  }
+
+  @SubscribeMessage('banOrMuteRoomMember')
+  async banOrMuteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('banOrMuteRoomMember', dto);
+
   }
 }
