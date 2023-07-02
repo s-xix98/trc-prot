@@ -271,6 +271,8 @@ describe('UserGateway', () => {
 
       // フレンド登録
       user.socket.emit('friendRequest', dto1);
+      await testService.sleep(100);
+
       user1.socket.emit('friendRequest', dto2);
       await testService.sleep(100);
 
