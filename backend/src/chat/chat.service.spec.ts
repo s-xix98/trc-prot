@@ -1,22 +1,77 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { TestModule } from '../test/test.module';
+import { PrismaService } from '../prisma/prisma.service';
+import { TestService } from '../test/test.service';
+import { testUser } from '../test/types/test.types';
 
 import { ChatService } from './chat.service';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  UpdateRoomMemberRoleDto,
+} from './dto/Channel.dto';
+
+const USERNUM = 10;
 
 describe('ChatService', () => {
-  let service: ChatService;
+  let chatService: ChatService;
+  let testService: TestService;
+  let testUser: testUser[] = [];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule],
-      providers: [ChatService],
+      providers: [ChatService, PrismaService, TestService],
     }).compile();
 
-    service = module.get<ChatService>(ChatService);
+    chatService = module.get<ChatService>(ChatService);
+    testService = module.get<TestService>(TestService);
+
+    testUser = await testService.createTestUsersWithSockets(USERNUM);
+  });
+
+  afterAll(async () => {
+    await testService.cleanupDatabase(['chatRoom', 'user']);
   });
 
   test('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(chatService).toBeDefined();
+  });
+
+  describe('roomMember', () => {
+    test('roomMemberのroleが更新されるか', async () => {
+      const owner = testUser[0];
+      const user = testUser[1];
+
+      const createChannelDto: CreateChannelDto = {
+        roomName: 'testRoom',
+        userId: owner.user.id,
+      };
+
+      const room = await chatService.createChannel({
+        ...createChannelDto,
+      });
+
+      const joinChannelDto: JoinChannelDto = {
+        chatRoomId: room.id,
+        userId: user.user.id,
+      };
+
+      await chatService.JoinChannel(joinChannelDto);
+
+      const updateRoleDto: UpdateRoomMemberRoleDto = {
+        role: 'ADMIN',
+      };
+
+      const updatedMember = await chatService.updateRoomMemberRole(
+        room.id,
+        user.user.id,
+        owner.user.id,
+        updateRoleDto,
+      );
+
+      expect(updatedMember.role).toEqual('ADMIN');
+    });
   });
 });
