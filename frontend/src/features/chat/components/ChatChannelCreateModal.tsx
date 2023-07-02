@@ -25,7 +25,7 @@ export const ChatChannelCreateModal = () => {
 
   const handleChannelCreate: SubmitHandler<CreateChannelDto> = (data) => {
     console.log(data);
-    createChannel.emit(data.roomName);
+    createChannel.emit(data.roomName, data.password, data.isPrivate);
     closeModal();
     methods.reset();
   };
