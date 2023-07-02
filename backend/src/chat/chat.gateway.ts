@@ -101,5 +101,23 @@ export class ChatGateway {
   async banOrMuteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banOrMuteRoomMember', dto);
 
+    const state = await this.prisma.userChatState.upsert({
+      where: {
+        chatRoomId_userId_userState: {
+          chatRoomId: dto.chatRoomId,
+          userId: dto.userId,
+          userState: dto.state,
+        },
+      },
+      update: {
+        endedAt: dto.endedAt,
+      },
+      create: {
+        chatRoomId: dto.chatRoomId,
+        userId: dto.targetId,
+        endedAt: dto.endedAt,
+        userState: dto.state,
+      },
+    });
   }
 }
