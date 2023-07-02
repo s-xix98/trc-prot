@@ -1,5 +1,6 @@
 import time
 from dataclasses import dataclass
+from typing import Union
 
 from playwright.sync_api import Page
 
@@ -16,13 +17,12 @@ class UserInteractionManager:
     screenshot_counter: int = 1
 
     def screenshot(self, act_name: str) -> None:
-        time.sleep(0.3)
+        time.sleep(1)
         take_screenshot(
             self.page,
             self.test_name,
             f"{str(self.screenshot_counter)}-{act_name}",
         )
-        time.sleep(0.3)
         self.screenshot_counter += 1
 
     def goto_top_page(self) -> None:
@@ -34,27 +34,34 @@ class UserInteractionManager:
         user = self.user
 
         page.get_by_role("tab", name="SignUp").click()
-        page.get_by_placeholder("username").fill(user.name)
-        page.get_by_placeholder("email").fill(user.email)
-        page.get_by_placeholder("password").fill(user.password)
-        time.sleep(1)
+        page.locator('input[name="username"]').fill(user.name)
+        page.locator('input[name="email"]').fill(user.email)
+        page.locator('input[name="hashedPassword"]').fill(user.password)
         self.screenshot("signup-before")
 
         page.get_by_role("button", name="SignUp").click()
         self.screenshot("signup-after")
 
-    def login(self, take_screenshot: bool = False) -> None:
+    def login(
+        self,
+        email: Union[str, None] = None,
+        password: Union[str, None] = None,
+        take_screenshot: bool = False,
+    ) -> None:
         page = self.page
         user = self.user
+        email = email if email else self.user.email
+        password = password if password else self.user.password
 
-        page.get_by_placeholder("email").fill(user.email)
-        page.get_by_placeholder("password").fill(user.password)
+        page.locator('input[name="email"]').fill(email)
+        page.locator('input[name="hashedPassword"]').fill(password)
 
         if take_screenshot:
             self.screenshot("login before")
 
         page.get_by_role("button", name="Login", exact=True).click()
-        time.sleep(0.5)
+        if take_screenshot:
+            self.screenshot("login after")
 
     def logout(self) -> None:
         page = self.page
