@@ -37,6 +37,7 @@ class UserInteractionManager:
         page.get_by_placeholder("username").fill(user.name)
         page.get_by_placeholder("email").fill(user.email)
         page.get_by_placeholder("password").fill(user.password)
+        time.sleep(1)
         self.screenshot("signup-before")
 
         page.get_by_role("button", name="SignUp").click()
