@@ -106,6 +106,15 @@ export class ChatGateway {
     if (admin === null || admin.role === 'USER') {
       throw new Error('You are not ADMIN || OWNER');
     }
+
+    const target = await this.chatService.findRoomMember(dto.chatRoomId, dto.targetId);
+
+    if (target === null) {
+      throw new Error('Target is not found');
+    } else if (target.role === 'OWNER') {
+      throw new Error('You can not ban or mute OWNER');
+    }
+
     const state = await this.prisma.userChatState.upsert({
       where: {
         chatRoomId_userId_userState: {
