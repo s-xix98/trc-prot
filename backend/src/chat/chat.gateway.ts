@@ -76,6 +76,14 @@ export class ChatGateway {
 
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, dto: JoinChannelDto) {
+    const userState = await this.chatService.findRoomMemberState(dto.chatRoomId, dto.userId, 'BANNED');
+
+    const now = new Date();
+
+    if (userState && userState.endedAt > now) {
+      throw new Error('You are banned');
+    }
+
     const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
