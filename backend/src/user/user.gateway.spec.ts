@@ -228,6 +228,11 @@ describe('UserGateway', () => {
         userId: testUsers[0].user.id,
         targetId: testUsers[1].user.id,
       };
+
+      testUsers[0].socket.on('deleteFriendRequest', (blockedUserId: string) => {
+        expect(blockedUserId).toEqual(testUsers[1].user.id);
+      });
+
       // 0が1をブロックする
       testUsers[0].socket.emit('blockUser', dto);
       await testService.sleep(100);
@@ -247,6 +252,44 @@ describe('UserGateway', () => {
         where: {
           srcUserId: testUsers[0].user.id,
           destUserId: testUsers[1].user.id,
+        },
+      });
+    });
+
+    test('blockしたらフレンドが削除されるか', async () => {
+      const user = testUsers[0];
+      const user1 = testUsers[1];
+
+      const dto1: friendshipDto = {
+        userId: user.user.id,
+        targetId: user1.user.id,
+      };
+      const dto2: friendshipDto = {
+        userId: user1.user.id,
+        targetId: user.user.id,
+      };
+
+      // フレンド登録
+      user.socket.emit('friendRequest', dto1);
+      await testService.sleep(100);
+
+      user1.socket.emit('friendRequest', dto2);
+      await testService.sleep(100);
+
+      // 0が1をブロックする
+      testUsers[0].socket.emit('blockUser', dto1);
+      await testService.sleep(100);
+
+      const { srcFriendship, targetFriendship } =
+        await userService.getFriendship(dto1.userId, dto1.targetId);
+
+      expect(targetFriendship).toBeNull();
+      expect(srcFriendship?.status).toEqual('Blocked');
+
+      await prismaService.friendship.deleteMany({
+        where: {
+          srcUserId: dto1.userId,
+          destUserId: dto1.targetId,
         },
       });
     });
