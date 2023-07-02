@@ -1,5 +1,6 @@
 import time
 from dataclasses import dataclass
+from typing import Union
 
 from playwright.sync_api import Page
 
@@ -43,17 +44,26 @@ class UserInteractionManager:
         page.get_by_role("button", name="SignUp").click()
         self.screenshot("signup-after")
 
-    def login(self, take_screenshot: bool = False) -> None:
+    def login(
+        self,
+        email: Union[str, None] = None,
+        password: Union[str, None] = None,
+        take_screenshot: bool = False,
+    ) -> None:
         page = self.page
         user = self.user
+        email = email if email else self.user.email
+        password = password if password else self.user.password
 
-        page.locator('input[name="email"]').fill(user.email)
-        page.locator('input[name="hashedPassword"]').fill(user.password)
+        page.locator('input[name="email"]').fill(email)
+        page.locator('input[name="hashedPassword"]').fill(password)
 
         if take_screenshot:
             self.screenshot("login before")
 
         page.get_by_role("button", name="Login", exact=True).click()
+        if take_screenshot:
+            self.screenshot("login after")
         time.sleep(0.5)
 
     def logout(self) -> None:
