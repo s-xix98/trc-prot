@@ -11,7 +11,7 @@ import { TestService } from '../test/test.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
-import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
+import { CreateChannelDto, JoinChannelDto, RoomMemberRestrictionDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
@@ -297,6 +297,58 @@ describe('ChatGateway', () => {
     test('非公開channelをsearchできないか', async () => {
       const channels = await chatService.search(roomName);
       expect(channels.length).toEqual(0);
+    });
+  });
+
+  describe('ban mute', () => {
+    const roomName = 'banTestRoom';
+
+    test('banしたらdbに保存されるか', async () => {
+      const owner = testUsers[0];
+      const user = testUsers[1];
+
+      const createChannelDto: CreateChannelDto = {
+        roomName: roomName,
+        userId: owner.user.id,
+      };
+
+      owner.socket.emit('createChannel', createChannelDto);
+      await testService.sleep(100);
+
+      const room = await prismaService.chatRoom.findFirst({
+        where: {
+          roomName: roomName,
+        },
+      });
+
+      const joinChannelDto: JoinChannelDto = {
+        chatRoomId: room?.id || '',
+        userId: user.user.id,
+      };
+
+      user.socket.emit('joinChannel', joinChannelDto);
+      await testService.sleep(100);
+
+      const endedAt = new Date();
+      endedAt.setHours(endedAt.getHours() + 1);
+
+      const updateRoomMemberStateDto: RoomMemberRestrictionDto = {
+        chatRoomId: room?.id || '',
+        userId: owner.user.id,
+        targetId: user.user.id,
+        state: 'BANNED',
+        endedAt: endedAt,
+      };
+
+      owner.socket.emit('banOrMuteRoomMember', updateRoomMemberStateDto);
+      await testService.sleep(100);
+
+      const bannedMember = await chatService.findRoomMemberState(room?.id, user.user.id, 'BANNED');
+
+      expect(bannedMember?.userState).toEqual('BANNED');
+      expect(bannedMember?.endedAt).toEqual(endedAt);
+      expect(bannedMember?.chatRoomId).toEqual(room?.id);
+      expect(bannedMember?.userId).toEqual(user.user.id);
     });
   });
 });
