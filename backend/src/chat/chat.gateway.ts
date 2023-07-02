@@ -94,6 +94,14 @@ export class ChatGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, dto: MessageDto) {
+    const userState = await this.chatService.findRoomMemberState(dto.chatRoomId, dto.userId, 'MUTED');
+
+    const now = new Date();
+
+    if (userState && userState.endedAt > now) {
+      throw new Error('You are muted');
+    }
+
     const msg = await this.chatService.createMessage(dto);
 
     const roomMsgs = await this.chatService.getChannelHistoryById(
