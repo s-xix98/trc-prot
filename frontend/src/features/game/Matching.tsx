@@ -5,14 +5,14 @@ import { socket } from '@/socket';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Container } from '@/components/Layout/Container';
 
+import { Game } from './Game';
+
 export const Matching = () => {
   const [isMatched, setMatched] = useState(false);
-  const [name, setName] = useState('');
   const { userInfo } = useCurrentUser();
 
   useSocket('matched', (side: number, enemyName: string) => {
     console.log(side, enemyName);
-    setName(enemyName);
     setMatched(true);
   });
   useSocket('already playing', () => {
@@ -36,7 +36,7 @@ export const Matching = () => {
     <Container flexDirection={'column'}>
       <div>
         <button onClick={onClickAct}>button</button>
-        {isMatched && <h1> {name} </h1>}
+        {isMatched && <Game />}
         {!isMatched && <h1> WAITING... </h1>}
       </div>
     </Container>
