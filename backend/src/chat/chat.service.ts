@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-import { CreateChannelDto } from './dto/Channel.dto';
+import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 
@@ -83,6 +83,7 @@ export class ChatService {
       data: {
         userId: dto.userId,
         chatRoomId: createdRoom.id,
+        role: 'OWNER',
       },
     });
 
@@ -143,5 +144,49 @@ export class ChatService {
     if (!isMatch) {
       throw new Error('Password is incorrect');
     }
+  }
+
+  async findRoomMember(chatRoomId: string, userId: string) {
+    const roomMember = await this.prismaService.roomMember.findUnique({
+      where: {
+        userId_chatRoomId: {
+          userId,
+          chatRoomId,
+        },
+      },
+    });
+
+    return roomMember;
+  }
+
+  async updateRoomMemberRole(
+    roomId: string,
+    targetId: string,
+    userId: string,
+    dto: UpdateRoomMemberRoleDto,
+  ) {
+    const owner = await this.findRoomMember(roomId, userId);
+
+    if (owner === null || owner.role !== 'OWNER') {
+      throw new ForbiddenException('You are not owner');
+    }
+
+    const target = await this.findRoomMember(roomId, targetId);
+
+    if (target === null) {
+      throw new ForbiddenException('Target not found');
+    }
+
+    return this.prismaService.roomMember.update({
+      where: {
+        userId_chatRoomId: {
+          userId: targetId,
+          chatRoomId: roomId,
+        },
+      },
+      data: {
+        role: dto.role,
+      },
+    });
   }
 }

@@ -60,9 +60,12 @@ jobs:
       - name: setup python playwright
         run: |
           pip install playwright
-          playwright install
+          playwright install && playwright install-deps
 
       - name: run test
         run: |
-          cd test && make run-test
-          git diff --exit-code img
+          cd test
+          make run-test
+          git add -N img
+          git diff --name-only img
+          git diff --exit-code img || (cd .. && for f in $(git diff --name-only test/img); do echo "--- ${f} ---" && base64 < ${f} && echo "--- --- ---"; done && exit 1)

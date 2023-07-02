@@ -1,10 +1,20 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 import { ChatService } from './chat.service';
+import { UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 @ApiTags('/chat')
@@ -25,5 +35,22 @@ export class ChatController {
   @Get('search')
   async search(@Query('searchWord') searchWord: string) {
     return this.chatService.search(searchWord);
+  }
+
+  @Patch('rooms/:roomId/members/:targetId/role')
+  async updateRoomMemberRole(
+    @Param('roomId') roomId: string,
+    @Param('targetId') targetId: string,
+    @Request() req: any,
+    @Body() dto: UpdateRoomMemberRoleDto,
+  ) {
+    console.log('updateRoomMemberRole', roomId, targetId, req.user.userId, dto);
+
+    return this.chatService.updateRoomMemberRole(
+      roomId,
+      targetId,
+      req.user.userId,
+      dto,
+    );
   }
 }
