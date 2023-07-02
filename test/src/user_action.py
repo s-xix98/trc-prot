@@ -34,9 +34,9 @@ class UserInteractionManager:
         user = self.user
 
         page.get_by_role("tab", name="SignUp").click()
-        page.get_by_placeholder("username").fill(user.name)
-        page.get_by_placeholder("email").fill(user.email)
-        page.get_by_placeholder("password").fill(user.password)
+        page.locator('input[name="username"]').fill(user.name)
+        page.locator('input[name="email"]').fill(user.email)
+        page.locator('input[name="hashedPassword"]').fill(user.password)
         time.sleep(1)
         self.screenshot("signup-before")
 
@@ -47,8 +47,8 @@ class UserInteractionManager:
         page = self.page
         user = self.user
 
-        page.get_by_placeholder("email").fill(user.email)
-        page.get_by_placeholder("password").fill(user.password)
+        page.locator('input[name="email"]').fill(user.email)
+        page.locator('input[name="hashedPassword"]').fill(user.password)
 
         if take_screenshot:
             self.screenshot("login before")
