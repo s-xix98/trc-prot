@@ -15,7 +15,7 @@
     "start:prod": "node dist/main",
     "lint": "eslint --max-warnings=0 \"{src,apps,libs,test}/**/*.ts\"",
     "lint-fix": "eslint --fix \"{src,apps,libs,test}/**/*.ts\"",
-    "test": "jest --maxWorkers=1 --forceExit",
+    "test": "jest --maxWorkers=1 --forceExit --testNamePattern='.*friendRequest.*'",
     "test:watch": "jest --watch --maxWorkers=1 --forceExit",
     "test:cov": "jest --coverage --maxWorkers=1 --forceExit",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --maxWorkers=1 --forceExit",

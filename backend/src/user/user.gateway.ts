@@ -96,39 +96,96 @@ export class UserGateway {
     if (dto.userId === dto.targetId) {
       throw new Error('cannot send friend request to yourself');
     }
+    const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    console.log('tramae', client.id);
+    await this.prisma.$transaction(async (tx) => {
+      await sleep(1000);
+      console.log('trastart', client.id);
 
-    const { srcFriendship, targetFriendship } =
-      await this.userService.getFriendship(dto.userId, dto.targetId);
+      const srcFriendship = await tx.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: dto.userId,
+            destUserId: dto.targetId,
+          },
+        },
+      });
+      const targetFriendship = await tx.friendship.findUnique({
+        where: {
+          srcUserId_destUserId: {
+            srcUserId: dto.targetId,
+            destUserId: dto.userId,
+          },
+        },
+      });
 
-    if (
-      srcFriendship?.status === 'Blocked' ||
-      targetFriendship?.status === 'Blocked'
-    ) {
-      throw new Error('cannot send friend request to blocked user');
-    } else if (targetFriendship?.status === 'Accepted') {
-      throw new Error('already friend');
-    } else if (srcFriendship?.status === 'Requested') {
-      throw new Error('already requested');
-    } else if (targetFriendship?.status === 'Requested') {
-      await this.userService.upsertFriendship(
-        dto.userId,
-        dto.targetId,
-        'Accepted',
-      );
-      await this.userService.upsertFriendship(
-        dto.targetId,
-        dto.userId,
-        'Accepted',
-      );
-    } else if (srcFriendship === null) {
-      await this.userService.upsertFriendship(
-        dto.userId,
-        dto.targetId,
-        'Requested',
-      );
-      // TODO targetユーザーに通知を送る
-      // client.to(target client id).emit('friendRequest', userid , username);
-    }
+      if (
+        srcFriendship?.status === 'Blocked' ||
+        targetFriendship?.status === 'Blocked'
+      ) {
+        throw new Error('cannot send friend request to blocked user');
+      } else if (targetFriendship?.status === 'Accepted') {
+        throw new Error('already friend');
+      } else if (srcFriendship?.status === 'Requested') {
+        throw new Error('already requested');
+      } else if (targetFriendship?.status === 'Requested') {
+        await tx.friendship.upsert({
+          where: {
+            srcUserId_destUserId: {
+              srcUserId: dto.targetId,
+              destUserId: dto.userId,
+            },
+          },
+          update: {
+            status: 'Accepted',
+          },
+          create: {
+            srcUserId: dto.targetId,
+            destUserId: dto.userId,
+            status: 'Accepted',
+          },
+        });
+
+        await tx.friendship.upsert({
+          where: {
+            srcUserId_destUserId: {
+              srcUserId: dto.userId,
+              destUserId: dto.targetId,
+            },
+          },
+          update: {
+            status: 'Accepted',
+          },
+          create: {
+            srcUserId: dto.userId,
+            destUserId: dto.targetId,
+            status: 'Accepted',
+          },
+        });
+
+      } else if (srcFriendship === null) {
+        await tx.friendship.upsert({
+          where: {
+            srcUserId_destUserId: {
+              srcUserId: dto.userId,
+              destUserId: dto.targetId,
+            },
+          },
+          update: {
+            status: 'Requested',
+          },
+          create: {
+            srcUserId: dto.userId,
+            destUserId: dto.targetId,
+            status: 'Requested',
+          },
+        });
+        console.log('traend', client.id);
+        // TODO targetユーザーに通知を送る
+        // client.to(target client id).emit('friendRequest', userid , username);
+      }
+      console.log('traato', client.id);
+    });
   }
 
   @SubscribeMessage('blockUser')
