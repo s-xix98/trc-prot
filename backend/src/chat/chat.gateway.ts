@@ -8,7 +8,11 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { MessageDto } from './dto/message.dto';
-import { CreateChannelDto, JoinChannelDto, RoomMemberRestrictionDto } from './dto/Channel.dto';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  RoomMemberRestrictionDto,
+} from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({
@@ -76,7 +80,11 @@ export class ChatGateway {
 
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, dto: JoinChannelDto) {
-    const userState = await this.chatService.findRoomMemberState(dto.chatRoomId, dto.userId, 'BANNED');
+    const userState = await this.chatService.findRoomMemberState(
+      dto.chatRoomId,
+      dto.userId,
+      'BANNED',
+    );
 
     const now = new Date();
 
@@ -94,7 +102,11 @@ export class ChatGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, dto: MessageDto) {
-    const userState = await this.chatService.findRoomMemberState(dto.chatRoomId, dto.userId, 'MUTED');
+    const userState = await this.chatService.findRoomMemberState(
+      dto.chatRoomId,
+      dto.userId,
+      'MUTED',
+    );
 
     const now = new Date();
 
@@ -117,13 +129,19 @@ export class ChatGateway {
   async banOrMuteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banOrMuteRoomMember', dto);
 
-    const admin = await this.chatService.findRoomMember(dto.chatRoomId, dto.userId);
+    const admin = await this.chatService.findRoomMember(
+      dto.chatRoomId,
+      dto.userId,
+    );
 
     if (admin === null || admin.role === 'USER') {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(dto.chatRoomId, dto.targetId);
+    const target = await this.chatService.findRoomMember(
+      dto.chatRoomId,
+      dto.targetId,
+    );
 
     if (target === null) {
       throw new Error('Target is not found');

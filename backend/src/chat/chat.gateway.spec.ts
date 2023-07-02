@@ -11,7 +11,11 @@ import { TestService } from '../test/test.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
-import { CreateChannelDto, JoinChannelDto, RoomMemberRestrictionDto } from './dto/Channel.dto';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  RoomMemberRestrictionDto,
+} from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
@@ -343,7 +347,11 @@ describe('ChatGateway', () => {
       owner.socket.emit('banOrMuteRoomMember', updateRoomMemberStateDto);
       await testService.sleep(100);
 
-      const bannedMember = await chatService.findRoomMemberState(room?.id, user.user.id, 'BANNED');
+      const bannedMember = await chatService.findRoomMemberState(
+        room?.id || '',
+        user.user.id,
+        'BANNED',
+      );
 
       expect(bannedMember?.userState).toEqual('BANNED');
       expect(bannedMember?.endedAt).toEqual(endedAt);
