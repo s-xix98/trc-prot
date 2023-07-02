@@ -1,16 +1,34 @@
-import { useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, FormControlLabel, FormGroup } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 
 import { useSocket } from '@/hooks/useSocket';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
-import { Input } from '@/components/Elements/Input/Input';
+import { FormInput } from '@/components/Elements/Input/FormInput';
 
 import { useCreateChannel } from '../api/createChannel';
+import {
+  CreateChannelDto,
+  CreateChannelSchema,
+} from '../types/CreateChannelDto';
 
 export const ChatChannelCreateModal = () => {
   const { modalIsOpen, openModal, closeModal } = useModal();
-  const [roomName, setRoomName] = useState('');
   const createChannel = useCreateChannel();
+  const methods = useForm<CreateChannelDto>({
+    resolver: zodResolver(CreateChannelSchema),
+    // 何かしら値をセットする必要があるので設定
+    defaultValues: { userId: '' },
+  });
+
+  const handleChannelCreate: SubmitHandler<CreateChannelDto> = (data) => {
+    console.log(data);
+    createChannel.emit(data.roomName);
+    closeModal();
+    methods.reset();
+  };
 
   // TODO roomの情報が返ってきてらチャットリストの更新をする必要があるから
   // chatの一番上の階層で一番上の階層で宣言するのがいいかも
@@ -18,11 +36,6 @@ export const ChatChannelCreateModal = () => {
   useSocket('createChannel', (createdRoom: any) => {
     console.log(createdRoom);
   });
-
-  const onSubmit = () => {
-    createChannel.emit(roomName);
-    closeModal();
-  };
 
   return (
     <>
@@ -33,29 +46,27 @@ export const ChatChannelCreateModal = () => {
         width="200px"
         height="250px"
       >
-        <div>
-          <h5>ChannelCreate</h5>
-          <br />
-          <Input
-            msg={roomName}
-            placeholder="ChannelName"
-            onChangeAct={(e) => setRoomName(e.target.value)}
-          />
-          <br />
-          <br />
-          <button
-            style={{ color: '#33ff33', background: '#353535' }}
-            onClick={closeModal}
-          >
-            cancel
-          </button>
-          <button
-            style={{ color: '#33ff33', background: '#353535' }}
-            onClick={onSubmit}
-          >
-            create
-          </button>
-        </div>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(handleChannelCreate)}>
+            <h3>ChannelCreate</h3>
+            <hr />
+            <FormInput name="roomName" type="text" placeholder="roomName" />
+            <br />
+            <FormInput name="password" type="text" placeholder="password" />
+            <FormGroup>
+              <FormControlLabel control={<Checkbox />} label="isPrivate" />
+            </FormGroup>
+            <Button type="submit">Create</Button>
+            <Button
+              type="reset"
+              onClick={() => {
+                closeModal();
+              }}
+            >
+              Cancel
+            </Button>
+          </form>
+        </FormProvider>
       </ModalView>
     </>
   );
