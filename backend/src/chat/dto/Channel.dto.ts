@@ -9,3 +9,7 @@ export class CreateChannelDto {
   password?: string;
   isPrivate?: boolean;
 }
+
+export class UpdateRoomMemberRoleDto {
+  role: 'ADMIN' | 'USER';
+}
