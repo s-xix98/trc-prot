@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Final
 
 
-@dataclass
+@dataclass(frozen=True)
 class User:
     name: str
     email: str
