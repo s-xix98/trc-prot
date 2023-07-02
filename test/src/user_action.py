@@ -17,13 +17,12 @@ class UserInteractionManager:
     screenshot_counter: int = 1
 
     def screenshot(self, act_name: str) -> None:
-        time.sleep(0.3)
+        time.sleep(1)
         take_screenshot(
             self.page,
             self.test_name,
             f"{str(self.screenshot_counter)}-{act_name}",
         )
-        time.sleep(0.3)
         self.screenshot_counter += 1
 
     def goto_top_page(self) -> None:
@@ -38,7 +37,6 @@ class UserInteractionManager:
         page.locator('input[name="username"]').fill(user.name)
         page.locator('input[name="email"]').fill(user.email)
         page.locator('input[name="hashedPassword"]').fill(user.password)
-        time.sleep(1)
         self.screenshot("signup-before")
 
         page.get_by_role("button", name="SignUp").click()
@@ -62,7 +60,6 @@ class UserInteractionManager:
             self.screenshot("login before")
 
         page.get_by_role("button", name="Login", exact=True).click()
-        time.sleep(0.5)
         if take_screenshot:
             self.screenshot("login after")
 
