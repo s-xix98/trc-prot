@@ -101,6 +101,11 @@ export class ChatGateway {
   async banOrMuteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banOrMuteRoomMember', dto);
 
+    const admin = await this.chatService.findRoomMember(dto.chatRoomId, dto.userId);
+
+    if (admin === null || admin.role === 'USER') {
+      throw new Error('You are not ADMIN || OWNER');
+    }
     const state = await this.prisma.userChatState.upsert({
       where: {
         chatRoomId_userId_userState: {
