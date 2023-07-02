@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
-
+import { RoomMemberRestrictionDto } from './dto/Channel.dto';
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -188,5 +188,28 @@ export class ChatService {
         role: dto.role,
       },
     });
+  }
+
+  async upsertRoomMemberState(dto: RoomMemberRestrictionDto) {
+    const memberState = this.prismaService.userChatState.upsert({
+      where: {
+        chatRoomId_userId_userState: {
+          chatRoomId: dto.chatRoomId,
+          userId: dto.targetId,
+          userState: dto.state,
+        },
+      },
+      update: {
+        endedAt: dto.endedAt,
+      },
+      create: {
+        chatRoomId: dto.chatRoomId,
+        userId: dto.targetId,
+        userState: dto.state,
+        endedAt: dto.endedAt,
+      },
+    });
+
+    return memberState;
   }
 }

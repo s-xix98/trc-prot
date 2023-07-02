@@ -115,24 +115,7 @@ export class ChatGateway {
       throw new Error('You can not ban or mute OWNER');
     }
 
-    const targetState = await this.prisma.userChatState.upsert({
-      where: {
-        chatRoomId_userId_userState: {
-          chatRoomId: dto.chatRoomId,
-          userId: dto.userId,
-          userState: dto.state,
-        },
-      },
-      update: {
-        endedAt: dto.endedAt,
-      },
-      create: {
-        chatRoomId: dto.chatRoomId,
-        userId: dto.targetId,
-        endedAt: dto.endedAt,
-        userState: dto.state,
-      },
-    });
+    const targetState = await this.chatService.upsertRoomMemberState(dto);
 
     if (targetState.userState === 'BANNED') {
       const { count } = await this.prisma.roomMember.deleteMany({
