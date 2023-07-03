@@ -12,10 +12,11 @@ import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { UserInfo } from '../user/types/userInfo';
 
 import { ChatService } from './chat.service';
 import { UpdateRoomMemberRoleDto } from './dto/Channel.dto';
-import { UserInfo } from '../user/types/userInfo';
+
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 @ApiTags('/chat')
