@@ -32,6 +32,11 @@ export class ChatController {
     return this.chatService.getChannelHistoryById(roomId);
   }
 
+  @Get('rooms/:id/members')
+  async getRoomMembersById(@Param('id') roomId: string) {
+    return this.chatService.getRoomMembersById(roomId);
+  }
+
   @Get('search')
   async search(@Query('searchWord') searchWord: string) {
     return this.chatService.search(searchWord);

@@ -34,6 +34,10 @@ export class ChatService {
     return roomMsgs;
   }
 
+  async getRoomMembersById(roomId: string) {
+    return roomId;
+  }
+
   async findChannelById(roomId: string) {
     const room = await this.prismaService.chatRoom.findUnique({
       where: {
