@@ -35,7 +35,13 @@ export class ChatService {
   }
 
   async getRoomMembersById(roomId: string) {
-    return roomId;
+    const roomMembers = await this.prismaService.roomMember.findMany({
+      where: {
+        chatRoomId: roomId,
+      },
+    });
+
+    return roomMembers;
   }
 
   async findChannelById(roomId: string) {
