@@ -3,6 +3,7 @@ import { ChatRoom } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { UserInfo } from '../user/types/userInfo';
 
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
@@ -34,14 +35,22 @@ export class ChatService {
     return roomMsgs;
   }
 
-  async getRoomMembersById(roomId: string) {
+  async getRoomMembersById(roomId: string): Promise<UserInfo[]> {
     const roomMembers = await this.prismaService.roomMember.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
       where: {
         chatRoomId: roomId,
       },
     });
 
-    return roomMembers;
+    return roomMembers.map((member) => member.user);
   }
 
   async findChannelById(roomId: string) {

@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 import { ChatService } from './chat.service';
 import { UpdateRoomMemberRoleDto } from './dto/Channel.dto';
+import { UserInfo } from '../user/types/userInfo';
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 @ApiTags('/chat')
@@ -33,7 +34,7 @@ export class ChatController {
   }
 
   @Get('rooms/:id/members')
-  async getRoomMembersById(@Param('id') roomId: string) {
+  async getRoomMembersById(@Param('id') roomId: string): Promise<UserInfo[]> {
     return this.chatService.getRoomMembersById(roomId);
   }
 
