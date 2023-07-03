@@ -1,12 +1,12 @@
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, FormControlLabel, FormGroup } from '@mui/material';
-import Checkbox from '@mui/material/Checkbox';
+import { Button } from '@mui/material';
 
 import { useSocket } from '@/hooks/useSocket';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { FormInput } from '@/components/Elements/Input/FormInput';
+import { FormCheckbox } from '@/components/Elements/Checkbox/FormCheckbox';
 
 import { useCreateChannel } from '../api/createChannel';
 import {
@@ -53,9 +53,7 @@ export const ChatChannelCreateModal = () => {
             <FormInput name="roomName" type="text" placeholder="roomName" />
             <br />
             <FormInput name="password" type="text" placeholder="password" />
-            <FormGroup>
-              <FormControlLabel control={<Checkbox />} label="isPrivate" />
-            </FormGroup>
+            <FormCheckbox name="isPrivate" label="isPrivate" />
             <Button type="submit">Create</Button>
             <Button
               type="reset"
