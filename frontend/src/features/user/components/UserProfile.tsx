@@ -7,7 +7,6 @@ import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
 
-
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <Stack direction="row" spacing={2}>
@@ -23,7 +22,8 @@ const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <div>
       <ShowIcon userInfo={userInfo} />
-      <h1>My : {userInfo.username}</h1>
+      <br />
+      <p>this is me</p>
     </div>
   );
 };
@@ -43,7 +43,6 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <div>
       <ShowIcon userInfo={userInfo} />
-      <hr />
       <br />
       <button onClick={sendFriendReq}>Friend Req</button>
       <button onClick={sendBlockReq}>Block Req</button>
