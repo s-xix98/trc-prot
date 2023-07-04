@@ -9,9 +9,14 @@ export const useRoomMembers = (channelId: string) => {
 
   useEffect(() => {
     console.log(`/chat/rooms/${channelId}/members`);
-    axios.get(`/chat/rooms/${channelId}/members`).then((r) => {
-      setRoomMembers(r.data);
-    });
+    axios
+      .get(`/chat/rooms/${channelId}/members`)
+      .then((r) => {
+        setRoomMembers(r.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [axios, channelId]);
 
   return { roomMembers };
