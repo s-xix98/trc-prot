@@ -12,9 +12,11 @@ import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { UserInfo } from '../user/types/userInfo';
 
 import { ChatService } from './chat.service';
 import { UpdateRoomMemberRoleDto } from './dto/Channel.dto';
+
 @UseGuards(JwtAuthGuard)
 @Controller('chat')
 @ApiTags('/chat')
@@ -30,6 +32,11 @@ export class ChatController {
   @Get('rooms/:id/history')
   async getChannelHistoryById(@Param('id') roomId: string) {
     return this.chatService.getChannelHistoryById(roomId);
+  }
+
+  @Get('rooms/:id/members')
+  async getRoomMembersById(@Param('id') roomId: string): Promise<UserInfo[]> {
+    return this.chatService.getRoomMembersById(roomId);
   }
 
   @Get('search')
