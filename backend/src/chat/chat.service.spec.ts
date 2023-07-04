@@ -73,5 +73,29 @@ describe('ChatService', () => {
 
       expect(updatedMember.role).toEqual('ADMIN');
     });
+
+    test('roomMemberリストを取得できるか', async () => {
+      const [owner, ...roomMembers] = testUser;
+
+      const createChannelDto: CreateChannelDto = {
+        roomName: 'roomMemberTest',
+        userId: owner.user.id,
+      };
+
+      const room = await chatService.createChannel(createChannelDto);
+
+      for (let i = 0; i < roomMembers.length; i++) {
+        const joinChannelDto: JoinChannelDto = {
+          chatRoomId: room.id,
+          userId: roomMembers[i].user.id,
+        };
+
+        await chatService.JoinChannel(joinChannelDto);
+      }
+
+      const joinedMembers = await chatService.getRoomMembersById(room.id);
+
+      expect(joinedMembers.length).toEqual(10);
+    });
   });
 });
