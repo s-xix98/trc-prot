@@ -1,13 +1,29 @@
+import { Avatar, Stack } from '@mui/material';
+import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
+
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
 
+const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
+  return (
+    <Stack direction="row" spacing={2}>
+      <Avatar sx={{ color: '#33ff33', bgcolor: 'black' }}>
+        <FaceRetouchingOffIcon />
+      </Avatar>
+      <h1>{userInfo.username}</h1>
+    </Stack>
+  );
+};
+
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <div>
-      <h1>My : {userInfo.username}</h1>
+      <ShowIcon userInfo={userInfo} />
+      <br />
+      <p>this is me</p>
     </div>
   );
 };
@@ -26,8 +42,7 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
 
   return (
     <div>
-      <h1>{userInfo.username}</h1>
-      <hr />
+      <ShowIcon userInfo={userInfo} />
       <br />
       <button onClick={sendFriendReq}>Friend Req</button>
       <button onClick={sendBlockReq}>Block Req</button>
