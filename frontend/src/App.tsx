@@ -53,6 +53,7 @@ function App() {
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
+  commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);
   commandElemMap.set('./search', <UserSearch />);

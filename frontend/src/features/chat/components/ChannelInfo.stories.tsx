@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ChatTalkArea } from './ChatTalkArea';
+import { ChannelInfo } from './ChannelInfo';
 
 const meta = {
-  component: ChatTalkArea,
+  component: ChannelInfo,
   tags: ['autodocs'],
-} satisfies Meta<typeof ChatTalkArea>;
+} satisfies Meta<typeof ChannelInfo>;
 
 export default meta;
 
-type Story = StoryObj<typeof ChatTalkArea>;
+type Story = StoryObj<typeof ChannelInfo>;
 
 export const Basic: Story = {
   args: {
