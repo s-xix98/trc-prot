@@ -37,7 +37,7 @@ export const ChatTalkArea = ({
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader roomName={selectedChannel?.roomName} />
+      <ChatTalkAreaHeader selectedChannel={selectedChannel} />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}
