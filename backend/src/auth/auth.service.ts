@@ -8,6 +8,10 @@ import { PrismaService } from '../prisma/prisma.service';
 import { accessToken, authUser } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
+import { authenticator } from 'otplib';
+import { toDataURL } from 'qrcode';
+import { QRCode } from './types/qrcode.types';
+import { UserInfo } from '../game/dto/UserDto';
 
 @Injectable()
 export class AuthService {
@@ -126,5 +130,31 @@ export class AuthService {
       throw new Error('huga not found');
     }
     return { jwt: await this.generateJwt(huga.id, huga.username) };
+  }
+
+  async generateTwoFaSecret(user: UserInfo): Promise<QRCode> {
+    const serviceName = 'trc';
+    const secret = authenticator.generateSecret();
+    const otpAuthUrl = authenticator.keyuri(user.username, serviceName, secret);
+
+    await this.setTwoFaSecret(user.id, secret);
+    const qrCode = await toDataURL(otpAuthUrl);
+
+    console.log(otpAuthUrl);
+    console.log('secret:', secret);
+    console.log(qrCode);
+
+    return {base64: qrCode};
+  }
+
+  private async setTwoFaSecret(userId: string, secret: string) {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFaSecret: secret,
+      },
+    });
   }
 }

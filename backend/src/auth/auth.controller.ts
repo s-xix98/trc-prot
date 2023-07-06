@@ -17,6 +17,7 @@ import { loginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { FtAuthGuard } from './guard/ft-auth.guard';
+import { QRCode } from './types/qrcode.types';
 
 @Controller('auth')
 @ApiTags('/auth')
@@ -69,5 +70,12 @@ export class AuthController {
   @UseGuards(FtAuthGuard)
   async ftRedirect(@Request() req: any): Promise<accessToken> {
     return this.authService.providerLogin(req.user);
+  }
+
+  @Get('2fa/generate')
+  @UseGuards(JwtAuthGuard)
+  async generateTwoFa(@Request() req: any): Promise<QRCode> {
+    console.log('2fa/generate', req.user);
+    return this.authService.generateTwoFaSecret({username: req.user.username, id: req.user.userId });
   }
 }
