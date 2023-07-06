@@ -62,7 +62,6 @@ function App() {
 
   return (
     <MainLayout>
-      {!userInfo && <h1>GO LOGIN PAGE</h1>}
       {userInfo && <Terminal commandElemMap={commandElemMap} />}
     </MainLayout>
   );
