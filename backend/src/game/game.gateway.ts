@@ -56,6 +56,9 @@ export class GameGateway {
 
     this.sockUserMap.delete(client.id);
     this.sockUserMap.delete(enemySocket.id);
+
+    this.game?.EndGame();
+    this.game = undefined;
   }
 
   @SubscribeMessage('matchmake')
