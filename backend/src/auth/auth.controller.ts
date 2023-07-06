@@ -76,6 +76,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async generateTwoFa(@Request() req: any): Promise<QRCode> {
     console.log('2fa/generate', req.user);
-    return this.authService.generateTwoFaSecret({username: req.user.username, id: req.user.userId });
+    return this.authService.generateTwoFaSecret({
+      username: req.user.username,
+      id: req.user.userId,
+    });
   }
 }

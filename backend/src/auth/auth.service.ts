@@ -2,16 +2,16 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { authenticator } from 'otplib';
+import { toDataURL } from 'qrcode';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { UserInfo } from '../game/dto/UserDto';
 
 import { accessToken, authUser } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
-import { authenticator } from 'otplib';
-import { toDataURL } from 'qrcode';
 import { QRCode } from './types/qrcode.types';
-import { UserInfo } from '../game/dto/UserDto';
 
 @Injectable()
 export class AuthService {
@@ -144,7 +144,7 @@ export class AuthService {
     console.log('secret:', secret);
     console.log(qrCode);
 
-    return {base64: qrCode};
+    return { base64: qrCode };
   }
 
   private async setTwoFaSecret(userId: string, secret: string) {
