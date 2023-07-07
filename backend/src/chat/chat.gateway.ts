@@ -160,8 +160,9 @@ export class ChatGateway {
       });
 
       if (count > 0) {
-        client.emit('deleteRoom', targetState);
-        this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+        // TODO targetを消す
+        // client.emit('deleteRoom', targetState);
+        // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
       }
     }
   }
