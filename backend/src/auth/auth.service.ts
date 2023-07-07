@@ -62,10 +62,15 @@ export class AuthService {
     return { jwt: await this.generateJwt(newUser.id, newUser.username) };
   }
 
-  async generateJwt(userId: string, username: string): Promise<string> {
+  async generateJwt(
+    userId: string,
+    username: string,
+    isTwoFactorAuthenticated = false,
+  ): Promise<string> {
     const payload = {
       userId,
       username,
+      isTwoFactorAuthenticated,
     };
 
     return this.jwtService.signAsync(payload, { expiresIn: '1h' });
