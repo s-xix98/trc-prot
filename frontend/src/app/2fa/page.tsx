@@ -56,6 +56,17 @@ export default function Fa() {
       });
   };
 
+  const sendCheck = () => {
+    axios
+      .get('/auth/2fa/check')
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       {qrcode && <Image src={qrcode} alt="QR Code" width={200} height={200} />}
@@ -69,6 +80,8 @@ export default function Fa() {
 
       <input value={auth} onChange={(event) => setAuth(event.target.value)} />
       <button onClick={sendAuth}>authentication</button>
+
+      <button onClick={sendCheck}>check</button>
     </div>
   );
 }
