@@ -314,8 +314,10 @@ describe('UserGateway', () => {
 
       await testService.sleep(200);
 
-      let { srcFriendship, targetFriendship } =
-        await userService.getFriendship(user4.user.id, user5.user.id);
+      let { srcFriendship, targetFriendship } = await userService.getFriendship(
+        user4.user.id,
+        user5.user.id,
+      );
 
       expect(srcFriendship?.status).toEqual('Accepted');
       expect(targetFriendship?.status).toEqual('Accepted');
@@ -323,7 +325,10 @@ describe('UserGateway', () => {
       user4.socket.emit('unfriendUser', dto1);
       await testService.sleep(200);
 
-     ({srcFriendship , targetFriendship} = await userService.getFriendship(user4.user.id, user5.user.id));
+      ({ srcFriendship, targetFriendship } = await userService.getFriendship(
+        user4.user.id,
+        user5.user.id,
+      ));
 
       expect(srcFriendship).toBeNull();
       expect(targetFriendship).toBeNull();
