@@ -340,7 +340,6 @@ describe('ChatGateway', () => {
         chatRoomId: room?.id || '',
         userId: owner.user.id,
         targetId: user.user.id,
-        state: 'BANNED',
         endedAt: endedAt,
       };
 
