@@ -216,7 +216,7 @@ export class ChatService {
   async findRoomMemberState(
     roomId: string,
     userId: string,
-    state: 'BANNED' | 'MUTED',
+    state: 'BANNED' | 'MUTED' | 'KICKED',
   ) {
     const memberState = this.prismaService.userChatState.findUnique({
       where: {

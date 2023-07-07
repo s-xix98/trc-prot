@@ -151,4 +151,24 @@ export class ChatGateway {
 
     await this.chatService.roomMemberRestriction(dto);
   }
+
+  @SubscribeMessage('kickRoomMember')
+  async kickRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('kickRoomMember', dto);
+
+    const target = await this.chatService.roomMemberRestriction(dto);
+
+    const { count } = await this.prisma.roomMember.deleteMany({
+      where: {
+        userId: target.userId,
+        chatRoomId: dto.chatRoomId,
+      },
+    });
+
+    if (count > 0) {
+      // TODO targetを消す
+      // client.emit('deleteRoom', targetState);
+      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    }
+  }
 }

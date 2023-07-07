@@ -12,5 +12,5 @@ export type RoomMemberRestrictionDto = {
   userId: string;
   targetId: string;
   endedAt: Date;
-  state: 'BANNED' | 'MUTED';
+  state: 'BANNED' | 'MUTED' | 'KICKED';
 };
