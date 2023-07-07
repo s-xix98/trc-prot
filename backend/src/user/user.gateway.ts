@@ -164,4 +164,29 @@ export class UserGateway {
     }
     // TODO チャットmsgを非表示にする
   }
+
+  @SubscribeMessage('unblockUser')
+  async unblockUser(client: Socket, dto: friendshipDto) {
+    console.log('unblockUser', client.id, dto);
+
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot unblock yourself');
+    }
+
+    const { count } = await this.prisma.friendship.deleteMany({
+      where: {
+        srcUserId: dto.userId,
+        destUserId: dto.targetId,
+        status: {
+          in: ['Blocked'],
+        },
+      },
+    });
+
+    if (count > 0) {
+      const blockUsers = await this.userService.getBlockUsers(dto.userId);
+      // TODO 非表示だったmsgを表示する
+      client.emit('blockUsers', blockUsers);
+    }
+  }
 }
