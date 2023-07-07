@@ -89,4 +89,11 @@ export class AuthController {
     console.log('2fa/authentication', req.user, dto);
     return this.authService.authentication(req.user.userId, dto.twoFaCode);
   }
+
+  @Post('2fa/confirm')
+  @UseGuards(JwtAuthGuard)
+  async confirmTwoFa(@Request() req: any, @Body() dto:TwoFaDto): Promise<void> {
+    console.log('2fa/confirm', req.user, dto);
+    await this.authService.confirmTwoFa(req.user.userId, dto.twoFaCode);
+  }
 }

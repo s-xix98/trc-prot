@@ -148,6 +148,19 @@ export class AuthService {
     return { base64: qrCode };
   }
 
+  async confirmTwoFa(userId: string, secret: string): Promise<void> {
+    await this.authentication(userId, secret);
+
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFaEnabled: true,
+      },
+    });
+  }
+
   async authentication(userId:string, secret: string): Promise<accessToken>{
     const user = await this.prismaService.user.findUnique({
       where: {
