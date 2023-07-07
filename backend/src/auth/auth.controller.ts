@@ -120,7 +120,7 @@ export class AuthController {
       throw new ForbiddenException();
     }
 
-    const token =  await this.authService.generateJwt(req.user.userId, req.user.username, true);
+    const token =  await this.authService.generateJwt(req.user.userId, req.user.username, user.twoFaEnabled, true);
 
     return { jwt: token };
   }
