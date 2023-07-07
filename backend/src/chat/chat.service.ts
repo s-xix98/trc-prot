@@ -231,20 +231,14 @@ export class ChatService {
     return memberState;
   }
 
-  async roomMemberRestriction(dto: RoomMemberRestrictionDto){
-    const admin = await this.findRoomMember(
-      dto.chatRoomId,
-      dto.userId,
-    );
+  async roomMemberRestriction(dto: RoomMemberRestrictionDto) {
+    const admin = await this.findRoomMember(dto.chatRoomId, dto.userId);
 
     if (admin === null || admin.role === 'USER') {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const target = await this.findRoomMember(
-      dto.chatRoomId,
-      dto.targetId,
-    );
+    const target = await this.findRoomMember(dto.chatRoomId, dto.targetId);
 
     if (target === null) {
       throw new Error('Target is not found');
