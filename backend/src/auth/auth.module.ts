@@ -9,6 +9,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { GoogleStrategy } from './strategy/google.strategy';
 import { FtStrategy } from './strategy/ft.strategy';
+import { JwtTwoFaStrategy } from './strategy/jwt-two-fa.strategy';
 
 @Module({
   imports: [
@@ -25,6 +26,6 @@ import { FtStrategy } from './strategy/ft.strategy';
   ],
 
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, FtStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, FtStrategy, JwtTwoFaStrategy],
 })
 export class AuthModule {}
