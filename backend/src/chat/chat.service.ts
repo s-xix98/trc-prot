@@ -190,7 +190,10 @@ export class ChatService {
     });
   }
 
-  async upsertRoomMemberState(dto: RoomMemberRestrictionDto, state: 'BANNED' | 'MUTED') {
+  async upsertRoomMemberState(
+    dto: RoomMemberRestrictionDto,
+    state: 'BANNED' | 'MUTED',
+  ) {
     const memberState = this.prismaService.userChatState.upsert({
       where: {
         chatRoomId_userId_userState: {
@@ -231,7 +234,11 @@ export class ChatService {
     return memberState;
   }
 
-  async findRoomMemberWithAdminCheck(chatRoomId: string, userId: string, targetId: string) {
+  async findRoomMemberWithAdminCheck(
+    chatRoomId: string,
+    userId: string,
+    targetId: string,
+  ) {
     const admin = await this.findRoomMember(chatRoomId, userId);
 
     if (admin === null || admin.role === 'USER') {
