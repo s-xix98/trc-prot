@@ -189,4 +189,40 @@ export class UserGateway {
       client.emit('blockUsers', blockUsers);
     }
   }
+
+  @SubscribeMessage('unfriendUser')
+  async unfriendUser(client: Socket, dto: friendshipDto) {
+    console.log('unfriendUser', client.id, dto);
+
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot unblock yourself');
+    }
+
+    const { count } = await this.prisma.friendship.deleteMany({
+      where: {
+        OR: [
+          {
+            srcUserId: dto.userId,
+            destUserId: dto.targetId,
+            status: {
+              in: ['Accepted'],
+            },
+          },
+          {
+            srcUserId: dto.targetId,
+            destUserId: dto.userId,
+            status: {
+              in: ['Accepted'],
+            },
+          },
+        ],
+      },
+    });
+
+    if (count > 0) {
+      const friends = await this.userService.getFriends(dto.userId);
+      // TODO 相手のフレンドリストからも削除する
+      client.emit('friends', friends);
+    }
+  }
 }
