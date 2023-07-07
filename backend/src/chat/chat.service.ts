@@ -190,13 +190,13 @@ export class ChatService {
     });
   }
 
-  async upsertRoomMemberState(dto: RoomMemberRestrictionDto) {
+  async upsertRoomMemberState(dto: RoomMemberRestrictionDto, state: 'BANNED' | 'MUTED') {
     const memberState = this.prismaService.userChatState.upsert({
       where: {
         chatRoomId_userId_userState: {
           chatRoomId: dto.chatRoomId,
           userId: dto.targetId,
-          userState: dto.state,
+          userState: state,
         },
       },
       update: {
@@ -205,7 +205,7 @@ export class ChatService {
       create: {
         chatRoomId: dto.chatRoomId,
         userId: dto.targetId,
-        userState: dto.state,
+        userState: state,
         endedAt: dto.endedAt,
       },
     });
@@ -216,7 +216,7 @@ export class ChatService {
   async findRoomMemberState(
     roomId: string,
     userId: string,
-    state: 'BANNED' | 'MUTED' | 'KICKED',
+    state: 'BANNED' | 'MUTED',
   ) {
     const memberState = this.prismaService.userChatState.findUnique({
       where: {
@@ -231,14 +231,14 @@ export class ChatService {
     return memberState;
   }
 
-  async roomMemberRestriction(dto: RoomMemberRestrictionDto) {
-    const admin = await this.findRoomMember(dto.chatRoomId, dto.userId);
+  async findRoomMemberWithAdminCheck(chatRoomId: string, userId: string, targetId: string) {
+    const admin = await this.findRoomMember(chatRoomId, userId);
 
     if (admin === null || admin.role === 'USER') {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const target = await this.findRoomMember(dto.chatRoomId, dto.targetId);
+    const target = await this.findRoomMember(chatRoomId, targetId);
 
     if (target === null) {
       throw new Error('Target is not found');
@@ -246,6 +246,6 @@ export class ChatService {
       throw new Error('You can not ban or mute OWNER');
     }
 
-    return this.upsertRoomMemberState(dto);
+    return target;
   }
 }
