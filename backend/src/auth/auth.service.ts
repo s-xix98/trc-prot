@@ -147,6 +147,42 @@ export class AuthService {
     return { base64: qrCode };
   }
 
+  async confirmTwoFa(userId: string, twoFaCode: string): Promise<void> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    if (user.twoFaSecret === null) {
+      throw new ForbiddenException('TwoFa secret is not set');
+    }
+
+    if (!this.isValidTwoFaCode(user.twoFaSecret, twoFaCode)) {
+      throw new ForbiddenException('Wrong authentication code');
+    }
+
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFaEnabled: true,
+      },
+    });
+  }
+
+  private isValidTwoFaCode(sharedSecret: string, inputCode: string) {
+    return authenticator.verify({
+      token: inputCode,
+      secret: sharedSecret,
+    });
+  }
+
   private async setTwoFaSecret(userId: string, secret: string) {
     await this.prismaService.user.update({
       where: {

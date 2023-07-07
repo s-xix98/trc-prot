@@ -18,6 +18,7 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { FtAuthGuard } from './guard/ft-auth.guard';
 import { QRCode } from './types/qrcode.types';
+import { TwoFaDto } from './dto/twoFa.dto';
 
 @Controller('auth')
 @ApiTags('/auth')
@@ -80,5 +81,15 @@ export class AuthController {
       username: req.user.username,
       id: req.user.userId,
     });
+  }
+
+  @Post('2fa/confirm')
+  @UseGuards(JwtAuthGuard)
+  async confirmTwoFa(
+    @Request() req: any,
+    @Body() dto: TwoFaDto,
+  ): Promise<void> {
+    console.log('2fa/confirm', req.user, dto);
+    await this.authService.confirmTwoFa(req.user.userId, dto.twoFaCode);
   }
 }
