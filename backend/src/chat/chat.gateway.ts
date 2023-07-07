@@ -125,25 +125,30 @@ export class ChatGateway {
       .emit('receiveMessage', roomMsgs);
   }
 
-  @SubscribeMessage('banOrMuteRoomMember')
-  async banOrMuteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
-    console.log('banOrMuteRoomMember', dto);
+  @SubscribeMessage('banRoomMember')
+  async banRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('banRoomMember', dto);
 
     const target = await this.chatService.roomMemberRestriction(dto);
 
-    if (target.userState === 'BANNED') {
-      const { count } = await this.prisma.roomMember.deleteMany({
-        where: {
-          userId: target.userId,
-          chatRoomId: dto.chatRoomId,
-        },
-      });
+    const { count } = await this.prisma.roomMember.deleteMany({
+      where: {
+        userId: target.userId,
+        chatRoomId: dto.chatRoomId,
+      },
+    });
 
-      if (count > 0) {
-        // TODO targetを消す
-        // client.emit('deleteRoom', targetState);
-        // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
-      }
+    if (count > 0) {
+      // TODO targetを消す
+      // client.emit('deleteRoom', targetState);
+      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
     }
+  }
+
+  @SubscribeMessage('muteRoomMember')
+  async muteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('muteRoomMember', dto);
+
+    await this.chatService.roomMemberRestriction(dto);
   }
 }

@@ -344,7 +344,7 @@ describe('ChatGateway', () => {
         endedAt: endedAt,
       };
 
-      owner.socket.emit('banOrMuteRoomMember', updateRoomMemberStateDto);
+      owner.socket.emit('banRoomMember', updateRoomMemberStateDto);
       await testService.sleep(100);
 
       const bannedMember = await chatService.findRoomMemberState(
