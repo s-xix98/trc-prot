@@ -11,6 +11,8 @@ import { UserSearch } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
 import { Matching } from './features/game/Matching';
 import { useCurrentUser } from './hooks/useCurrentUser';
+import { Friends } from './features/user/components/Friends';
+import { Blocks } from './features/user/components/Blocks';
 
 const onConnect = () => {
   console.log('socket connect');
@@ -35,6 +37,10 @@ function App() {
     console.log('friendRequest', data);
   });
 
+  useSocket('error', (data) => {
+    console.log(data);
+  });
+
   useSocket('connect', onConnect);
   useSocket('disconnect', onDisconnect);
 
@@ -47,13 +53,15 @@ function App() {
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
+  commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);
   commandElemMap.set('./search', <UserSearch />);
+  commandElemMap.set('./friends', <Friends />);
+  commandElemMap.set('./blocks', <Blocks />);
 
   return (
     <MainLayout>
-      {!userInfo && <h1>GO LOGIN PAGE</h1>}
       {userInfo && <Terminal commandElemMap={commandElemMap} />}
     </MainLayout>
   );

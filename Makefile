@@ -10,7 +10,7 @@ PHONY	:=	all
 all: $(DOCKER_BUILD_TXT)
 	$(MAKE) local-npm-i
 	$(MAKE) local-prisma-generate
-	docker compose up
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 
 $(DOCKER_BUILD_TXT): $(DOCKER_FILES)
 	date > $(DOCKER_BUILD_TXT)
@@ -79,7 +79,10 @@ sb-update:
 PHONY	+=	test-e2e
 test-e2e:
 	docker compose down || :
-	docker compose -f docker-compose.yml -f docker-compose.e2e.yml up
+	docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --abort-on-container-exit
+# docker compose down の際に、docker-compose.yml にない、サービスが落ちてくれないので、COMPOSE_FILE でファイル指定して down
+# docker compose down になぜか `-f` オプションがない
+	export COMPOSE_FILE=docker-compose.yml:docker-compose.e2e.yml && docker compose down
 
 # etc...
 # ------------------------------------------------------------------------------------------

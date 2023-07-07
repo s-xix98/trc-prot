@@ -49,21 +49,21 @@ jobs:
           make setup-db
           npm run start:dev &
 
-      - name: setup frontend
+      - name: setup frontend and install playwright
         run: |
           cd frontend
           make setup
-          make build
+          make build &
+          make_build_pid=$(echo $!)
+          pip install playwright && playwright install && playwright install-deps
+          echo wait ${make_build_pid} && wait ${make_build_pid}
           npm run start &
           timeout 30 bash -c 'while ! >/dev/tcp/localhost/3000; do sleep 3; done'
 
-      - name: setup python playwright
-        run: |
-          pip install playwright
-          playwright install
-
       - name: run test
         run: |
-          cd frontend
-          python3 test/e2e.py
-          git diff --exit-code test/img
+          cd test
+          make run-test
+          git add -N img
+          git diff --name-only img
+          git diff --exit-code img || (cd .. && for f in $(git diff --name-only test/img); do echo "--- ${f} ---" && base64 < ${f} && echo "--- --- ---"; done && exit 1)

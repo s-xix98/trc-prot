@@ -1,19 +1,26 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { map, pick } from 'lodash';
+import { UseFilters } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
+import { UserService } from './user.service';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
+@UseFilters(new WsExceptionsFilter())
 export class UserGateway {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
 
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
@@ -86,63 +93,75 @@ export class UserGateway {
     console.log('friendRequest', client.id);
     console.log(dto);
 
-    await this.prisma.friendship.create({
-      data: {
-        srcUserId: dto.userId,
-        destUserId: dto.targetId,
-        status: 'Requested',
-      },
-    });
-    // TODO targetユーザーに通知を送る
-    // client.to(target client id).emit('friendRequest', userid , username);
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot send friend request to yourself');
+    }
+
+    const { srcFriendship, targetFriendship } =
+      await this.userService.getFriendship(dto.userId, dto.targetId);
+
+    if (
+      srcFriendship?.status === 'Blocked' ||
+      targetFriendship?.status === 'Blocked'
+    ) {
+      throw new Error('cannot send friend request to blocked user');
+    } else if (targetFriendship?.status === 'Accepted') {
+      throw new Error('already friend');
+    } else if (srcFriendship?.status === 'Requested') {
+      throw new Error('already requested');
+    } else if (targetFriendship?.status === 'Requested') {
+      await this.userService.upsertFriendship(
+        dto.userId,
+        dto.targetId,
+        'Accepted',
+      );
+      await this.userService.upsertFriendship(
+        dto.targetId,
+        dto.userId,
+        'Accepted',
+      );
+    } else if (srcFriendship === null) {
+      await this.userService.upsertFriendship(
+        dto.userId,
+        dto.targetId,
+        'Requested',
+      );
+      // TODO targetユーザーに通知を送る
+      // client.to(target client id).emit('friendRequest', userid , username);
+    }
   }
 
   @SubscribeMessage('blockUser')
   async blockUser(client: Socket, dto: friendshipDto) {
     console.log('blockUser', client.id, dto);
 
-    const relation = await this.prisma.friendship.upsert({
-      where: {
-        srcUserId_destUserId: {
-          srcUserId: dto.userId,
-          destUserId: dto.targetId,
-        },
-      },
-      update: {
-        status: 'Blocked',
-      },
-      create: {
-        srcUserId: dto.userId,
-        destUserId: dto.targetId,
-        status: 'Blocked',
-      },
-    });
+    if (dto.userId === dto.targetId) {
+      throw new Error('cannot block yourself');
+    }
+
+    const relation = await this.userService.upsertFriendship(
+      dto.userId,
+      dto.targetId,
+      'Blocked',
+    );
 
     console.log(relation);
 
     // 相手がフレンドorリクエストの場合はレコードから削除する
-    const targetRelation = await this.prisma.friendship.findUnique({
+    const { count } = await this.prisma.friendship.deleteMany({
       where: {
-        srcUserId_destUserId: {
-          srcUserId: dto.targetId,
-          destUserId: dto.userId,
+        srcUserId: dto.targetId,
+        destUserId: dto.userId,
+        status: {
+          in: ['Requested', 'Accepted'],
         },
       },
     });
+    console.log(count);
 
-    if (
-      targetRelation?.status === 'Accepted' ||
-      targetRelation?.status === 'Requested'
-    ) {
-      await this.prisma.friendship.delete({
-        where: {
-          srcUserId_destUserId: {
-            srcUserId: dto.targetId,
-            destUserId: dto.userId,
-          },
-        },
-      });
+    if (count > 0) {
+      client.emit('deleteFriendRequest', dto.targetId);
     }
-    // TODO targetがフレンドだった場合targetのフレンドリストからdbとフロントから削除しチャットmsgを非表示にする
+    // TODO チャットmsgを非表示にする
   }
 }

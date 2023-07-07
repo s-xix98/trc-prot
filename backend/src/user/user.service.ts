@@ -45,16 +45,66 @@ export class UserService {
     return user;
   }
 
-  async search(searchWord: string) {
+  async search(searchWord: string, userId: string) {
     const partialMatchUsers = await this.prisma.user.findMany({
       where: {
         username: {
           contains: searchWord,
           mode: 'insensitive',
         },
+        id: {
+          not: userId,
+        },
       },
     });
+
     return partialMatchUsers;
+  }
+
+  async getFriendship(userId: string, targetId: string) {
+    const srcFriendship = await this.prisma.friendship.findUnique({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: userId,
+          destUserId: targetId,
+        },
+      },
+    });
+
+    const targetFriendship = await this.prisma.friendship.findUnique({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: targetId,
+          destUserId: userId,
+        },
+      },
+    });
+
+    return { srcFriendship, targetFriendship };
+  }
+
+  async upsertFriendship(
+    userId: string,
+    targetId: string,
+    status: 'Accepted' | 'Blocked' | 'Requested',
+  ) {
+    const friendship = await this.prisma.friendship.upsert({
+      where: {
+        srcUserId_destUserId: {
+          srcUserId: userId,
+          destUserId: targetId,
+        },
+      },
+      update: {
+        status: status,
+      },
+      create: {
+        srcUserId: userId,
+        destUserId: targetId,
+        status: status,
+      },
+    });
+    return friendship;
   }
 
   async getFriends(userId: string) {
@@ -76,7 +126,12 @@ export class UserService {
       },
     });
 
-    return friends;
+    const friendsUserInfo = friends.map((f) => {
+      const { username, id } = f.destUser;
+      return { username, id };
+    });
+
+    return friendsUserInfo;
   }
 
   async getBlockUsers(userId: string) {
@@ -98,6 +153,11 @@ export class UserService {
       },
     });
 
-    return blocks;
+    const blocksUserInfo = blocks.map((b) => {
+      const { username, id } = b.destUser;
+      return { username, id };
+    });
+
+    return blocksUserInfo;
   }
 }

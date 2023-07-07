@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  frontend:
+    ports:
+      - 6006:6006
+    environment:
+      - WATCHPACK_POLLING=true
+    command: ["bash", "docker-entrypoint-dev.sh"]
+
+  backend:
+    command: ["bash", "docker-entrypoint-dev.sh"]

@@ -11,4 +11,11 @@ export default meta;
 
 type Story = StoryObj<typeof ChatTalkArea>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+  args: {
+    selectedChannel: {
+      id: 'id',
+      roomName: 'roomName',
+    },
+  },
+};

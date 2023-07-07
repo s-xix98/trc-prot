@@ -12,3 +12,5 @@ export type Paddle = {
   readonly height: number;
   readonly speed: number;
 };
+
+export type Scores = { left: number; right: number };
