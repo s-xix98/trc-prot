@@ -54,10 +54,11 @@ export class AuthService {
     return { jwt: await this.generateJwt(newUser.id, newUser.username) };
   }
 
-  async generateJwt(userId: string, username: string): Promise<string> {
+  async generateJwt(userId: string, username: string, isTwoFactorAuthenticated = false): Promise<string> {
     const payload = {
       userId,
       username,
+      isTwoFactorAuthenticated,
     };
 
     return this.jwtService.signAsync(payload, { expiresIn: '1h' });
@@ -145,6 +146,35 @@ export class AuthService {
     console.log(qrCode);
 
     return { base64: qrCode };
+  }
+
+  async authentication(userId:string, secret: string): Promise<accessToken>{
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    if (user.twoFaSecret === null) {
+      throw new ForbiddenException('TwoFa secret is not set');
+    }
+
+    if (!this.isValidTwoFaCode(user.twoFaSecret, secret)) {
+      throw new ForbiddenException('Wrong authentication code');
+    }
+
+    return {jwt: await this.generateJwt(user.id, user.username, true)};
+  }
+
+  private isValidTwoFaCode(sharedSecret: string, inputCode: string) {
+    return authenticator.verify({
+      token: inputCode,
+      secret: sharedSecret,
+    });
   }
 
   private async setTwoFaSecret(userId: string, secret: string) {
