@@ -129,32 +129,12 @@ export class ChatGateway {
   async banOrMuteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banOrMuteRoomMember', dto);
 
-    const admin = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.userId,
-    );
+    const target = await this.chatService.roomMemberRestriction(dto);
 
-    if (admin === null || admin.role === 'USER') {
-      throw new Error('You are not ADMIN || OWNER');
-    }
-
-    const target = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.targetId,
-    );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
-    }
-
-    const targetState = await this.chatService.upsertRoomMemberState(dto);
-
-    if (targetState.userState === 'BANNED') {
+    if (target.userState === 'BANNED') {
       const { count } = await this.prisma.roomMember.deleteMany({
         where: {
-          userId: targetState.userId,
+          userId: target.userId,
           chatRoomId: dto.chatRoomId,
         },
       });
