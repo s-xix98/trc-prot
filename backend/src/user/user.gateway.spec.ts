@@ -294,4 +294,39 @@ describe('UserGateway', () => {
       });
     });
   });
+
+  describe('unfriend unblock', () => {
+    test('unfriendしたらdbからレコードが削除されるか', async () => {
+      const user4 = testUsers[4];
+      const user5 = testUsers[5];
+      const dto1: friendshipDto = {
+        userId: user4.user.id,
+        targetId: user5.user.id,
+      };
+      const dto2: friendshipDto = {
+        userId: user5.user.id,
+        targetId: user4.user.id,
+      };
+
+      user4.socket.emit('friendRequest', dto1);
+      await testService.sleep(200);
+      user5.socket.emit('friendRequest', dto2);
+
+      await testService.sleep(200);
+
+      let { srcFriendship, targetFriendship } =
+        await userService.getFriendship(user4.user.id, user5.user.id);
+
+      expect(srcFriendship?.status).toEqual('Accepted');
+      expect(targetFriendship?.status).toEqual('Accepted');
+
+      user4.socket.emit('unfriendUser', dto1);
+      await testService.sleep(200);
+
+     ({srcFriendship , targetFriendship} = await userService.getFriendship(user4.user.id, user5.user.id));
+
+      expect(srcFriendship).toBeNull();
+      expect(targetFriendship).toBeNull();
+    });
+  });
 });
