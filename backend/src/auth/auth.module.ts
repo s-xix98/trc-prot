@@ -26,6 +26,12 @@ import { JwtTwoFaStrategy } from './strategy/jwt-two-fa.strategy';
   ],
 
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, FtStrategy, JwtTwoFaStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    GoogleStrategy,
+    FtStrategy,
+    JwtTwoFaStrategy,
+  ],
 })
 export class AuthModule {}

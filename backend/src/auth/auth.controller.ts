@@ -86,21 +86,27 @@ export class AuthController {
 
   @Post('2fa/authentication')
   @UseGuards(JwtAuthGuard)
-  async authentication(@Request() req: any, @Body() dto:TwoFaDto): Promise<accessToken> {
+  async authentication(
+    @Request() req: any,
+    @Body() dto: TwoFaDto,
+  ): Promise<accessToken> {
     console.log('2fa/authentication', req.user, dto);
     return this.authService.authentication(req.user.userId, dto.twoFaCode);
   }
 
   @Post('2fa/confirm')
   @UseGuards(JwtAuthGuard)
-  async confirmTwoFa(@Request() req: any, @Body() dto:TwoFaDto): Promise<void> {
+  async confirmTwoFa(
+    @Request() req: any,
+    @Body() dto: TwoFaDto,
+  ): Promise<void> {
     console.log('2fa/confirm', req.user, dto);
     await this.authService.confirmTwoFa(req.user.userId, dto.twoFaCode);
   }
 
   @Get('2fa/check')
   @UseGuards(JwtTwoFaAuthGuard)
-  async checkTwoFa(@Request() req: any){
+  async checkTwoFa(@Request() req: any) {
     console.log('2fa/check ok', req.user);
   }
 }
