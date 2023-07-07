@@ -136,5 +136,4 @@ enum UserRole {
 enum UserChatStateCode {
   BANNED
   MUTED
-  KICKED
 }
