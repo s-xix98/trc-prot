@@ -178,7 +178,7 @@ export class UserGateway {
         srcUserId: dto.userId,
         destUserId: dto.targetId,
         status: {
-          in: ['Blocked'],
+          equals: 'Blocked',
         },
       },
     });
@@ -205,14 +205,14 @@ export class UserGateway {
             srcUserId: dto.userId,
             destUserId: dto.targetId,
             status: {
-              in: ['Accepted'],
+              equals: 'Accepted',
             },
           },
           {
             srcUserId: dto.targetId,
             destUserId: dto.userId,
             status: {
-              in: ['Accepted'],
+              equals: 'Accepted',
             },
           },
         ],
