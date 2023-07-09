@@ -67,6 +67,27 @@ export const UserProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   );
 };
 
+export const UserProfileModal = ({
+  userInfo,
+  modalIsOpen,
+  closeModal,
+}: {
+  userInfo: UserInfo;
+  modalIsOpen: boolean;
+  closeModal: () => void;
+}) => {
+  return (
+    <ModalView
+      modalIsOpen={modalIsOpen}
+      closeModal={closeModal}
+      height="50%"
+      width="30%"
+    >
+      <UserProfile userInfo={userInfo} />
+    </ModalView>
+  );
+};
+
 export const UserList = ({ userList }: { userList: UserInfo[] }) => {
   const [selectUser, setSelectUser] = useState<UserInfo>();
   const { modalIsOpen, openModal, closeModal } = useModal();
@@ -74,14 +95,11 @@ export const UserList = ({ userList }: { userList: UserInfo[] }) => {
   return (
     <>
       {selectUser && (
-        <ModalView
+        <UserProfileModal
+          userInfo={selectUser}
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
-          height="50%"
-          width="30%"
-        >
-          <UserProfile userInfo={selectUser} />
-        </ModalView>
+        />
       )}
       {userList.map((user, idx) => (
         <p
