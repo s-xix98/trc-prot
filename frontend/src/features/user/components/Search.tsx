@@ -8,15 +8,7 @@ import { useFocus } from '@/hooks/useFocus';
 import { UserInfo } from '../types/UserDto';
 
 import { useSearch } from '../../../hooks/useSearch';
-const SearchedResult = ({ searchedList }: { searchedList: UserInfo[] }) => {
-  return (
-    <>
-      {searchedList.map((user, idx) => (
-        <p key={idx}> {user.username}</p>
-      ))}
-    </>
-  );
-};
+import { UserList } from './UserProfile';
 
 export const UserSearch = () => {
   const { focusRef } = useFocus();
@@ -30,7 +22,7 @@ export const UserSearch = () => {
     <Container flexDirection="column">
       <h2>User Search</h2>
       <ContainerItem overflowY="scroll">
-        <SearchedResult searchedList={searchedList} />
+        <UserList userList={searchedList} />
       </ContainerItem>
       <Input
         focusRef={focusRef}

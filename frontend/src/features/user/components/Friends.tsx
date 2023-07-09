@@ -1,4 +1,5 @@
 import { useGetFriends } from '../api/getFriends';
+import { UserList } from './UserProfile';
 
 export const Friends = () => {
   const { friends } = useGetFriends();
@@ -6,9 +7,7 @@ export const Friends = () => {
   return (
     <>
       <h1>Friends</h1>
-      {friends.map((user, idx) => (
-        <p key={idx}>{user.username}</p>
-      ))}
+      <UserList userList={friends} />
     </>
   );
 };
