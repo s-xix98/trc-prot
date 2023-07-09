@@ -6,6 +6,9 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
+import { useState } from 'react';
+import { useModal } from '@/hooks/useModal';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
@@ -60,6 +63,37 @@ export const UserProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       ) : (
         <OtherProfile userInfo={userInfo} />
       )}
+    </>
+  );
+};
+
+export const UserList = ({ userList }: { userList: UserInfo[] }) => {
+  const [selectUser, setSelectUser] = useState<UserInfo>();
+  const { modalIsOpen, openModal, closeModal } = useModal();
+
+  return (
+    <>
+      {selectUser && (
+        <ModalView
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          height="50%"
+          width="30%"
+        >
+          <UserProfile userInfo={selectUser} />
+        </ModalView>
+      )}
+      {userList.map((user, idx) => (
+        <p
+          key={idx}
+          onClick={() => {
+            setSelectUser(user);
+            openModal();
+          }}
+        >
+          {user.username}
+        </p>
+      ))}
     </>
   );
 };
