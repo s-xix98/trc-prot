@@ -9,5 +9,6 @@ import { UserGateway } from './user.gateway';
   imports: [PrismaModule],
   controllers: [UserController],
   providers: [UserService, UserGateway],
+  exports: [UserService],
 })
 export class UserModule {}

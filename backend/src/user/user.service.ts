@@ -1,6 +1,9 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { FriendshipStatus } from '@prisma/client';
+import { UserInfo } from './types/userInfo';
+
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -155,5 +158,20 @@ export class UserService {
     });
 
     return blocksUserInfo;
+  }
+
+  extractFriendshipStatus(user: {
+    id: string;
+    username: string;
+    friendship2: {
+      status: FriendshipStatus;
+    }[];
+  }): UserInfo {
+    const { friendship2, ...userWithoutFriendship } = user;
+
+    return {
+      ...userWithoutFriendship,
+      status: friendship2.length > 0 ? friendship2[0].status : undefined,
+    };
   }
 }

@@ -8,22 +8,31 @@ import { UserInfo } from '../user/types/userInfo';
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService, private readonly userService:UserService) {}
 
   async getAllChannels(): Promise<ChatRoom[]> {
     return this.prismaService.chatRoom.findMany();
   }
 
-  async getChannelHistoryById(roomId: string) {
+  async getChannelHistoryById(roomId: string, userId: string) {
     const roomMsgs = await this.prismaService.message.findMany({
       include: {
         user: {
           select: {
             id: true,
             username: true,
+            friendship2: {
+              select: {
+                status: true,
+              },
+              where: {
+                srcUserId: userId,
+              },
+            },
           },
         },
       },
@@ -32,16 +41,35 @@ export class ChatService {
       },
     });
 
-    return roomMsgs;
+    const msgsWithFriendship = roomMsgs.map((msg) => {
+      const { user, ...msgWithoutUser } = msg;
+      const userWithFriendshipStatus =
+        this.userService.extractFriendshipStatus(user);
+
+      return {
+        ...msgWithoutUser,
+        user: userWithFriendshipStatus,
+      };
+    });
+
+    return msgsWithFriendship;
   }
 
-  async getRoomMembersById(roomId: string): Promise<UserInfo[]> {
+  async getRoomMembersById(roomId: string, userId: string): Promise<UserInfo[]> {
     const roomMembers = await this.prismaService.roomMember.findMany({
       include: {
         user: {
           select: {
             id: true,
             username: true,
+            friendship2: {
+              select: {
+                status: true,
+              },
+              where: {
+                srcUserId: userId,
+              },
+            },
           },
         },
       },
@@ -50,7 +78,14 @@ export class ChatService {
       },
     });
 
-    return roomMembers.map((member) => member.user);
+    const membersWithFriendship = roomMembers.map((member) => {
+      const userWithFriendshipStatus =
+        this.userService.extractFriendshipStatus(member.user);
+
+      return userWithFriendshipStatus;
+    });
+
+    return membersWithFriendship;
   }
 
   async findChannelById(roomId: string) {

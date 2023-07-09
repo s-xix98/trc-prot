@@ -30,13 +30,13 @@ export class ChatController {
   }
 
   @Get('rooms/:id/history')
-  async getChannelHistoryById(@Param('id') roomId: string) {
-    return this.chatService.getChannelHistoryById(roomId);
+  async getChannelHistoryById(@Request() req: any, @Param('id') roomId: string) {
+    return this.chatService.getChannelHistoryById(roomId, req.user.userId);
   }
 
   @Get('rooms/:id/members')
-  async getRoomMembersById(@Param('id') roomId: string): Promise<UserInfo[]> {
-    return this.chatService.getRoomMembersById(roomId);
+  async getRoomMembersById(@Request() req: any, @Param('id') roomId: string): Promise<UserInfo[]> {
+    return this.chatService.getRoomMembersById(roomId, req.user.userId);
   }
 
   @Get('search')

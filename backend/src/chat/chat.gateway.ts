@@ -90,6 +90,7 @@ export class ChatGateway {
 
     const roomMsgs = await this.chatService.getChannelHistoryById(
       msg.chatRoomId,
+      dto.userId,
     );
 
     this.server
