@@ -18,6 +18,7 @@ model User {
   username       String          @unique @default(uuid())
   email          String          @unique
   hashedPassword String?
+  twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
