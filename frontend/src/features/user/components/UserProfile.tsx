@@ -1,14 +1,14 @@
 import { Avatar, Stack } from '@mui/material';
 import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
+import { useState } from 'react';
 
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useModal } from '@/hooks/useModal';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
-import { useState } from 'react';
-import { useModal } from '@/hooks/useModal';
-import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (

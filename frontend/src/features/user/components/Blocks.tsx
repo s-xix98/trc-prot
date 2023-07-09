@@ -1,4 +1,5 @@
 import { useGetBlocks } from '../api/getBlocks';
+
 import { UserList } from './UserProfile';
 
 export const Blocks = () => {

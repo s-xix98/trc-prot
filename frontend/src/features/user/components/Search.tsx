@@ -7,8 +7,9 @@ import { useFocus } from '@/hooks/useFocus';
 
 import { UserInfo } from '../types/UserDto';
 
-import { useSearch } from '../../../hooks/useSearch';
 import { UserList } from './UserProfile';
+
+import { useSearch } from '../../../hooks/useSearch';
 
 export const UserSearch = () => {
   const { focusRef } = useFocus();

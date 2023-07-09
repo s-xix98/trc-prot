@@ -1,4 +1,5 @@
 import { useGetFriends } from '../api/getFriends';
+
 import { UserList } from './UserProfile';
 
 export const Friends = () => {
