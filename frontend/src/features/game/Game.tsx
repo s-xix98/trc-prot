@@ -91,6 +91,17 @@ const DrawScores = (
   ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
 };
 
+const DrawResult = (
+  ctx: CanvasRenderingContext2D,
+  result: 'WIN' | 'LOSE',
+  canvasWidth: number,
+  canvasHeight: number,
+) => {
+  ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
+  const width = ctx.measureText(result).width;
+  ctx.fillText(result, (canvasWidth - width) / 2, canvasHeight / 2);
+};
+
 const DrawCenterLine = (
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
@@ -130,6 +141,37 @@ const GameCanvas = () => {
     DrawBall(ctx, game.ball);
     DrawPaddle(ctx, game.rightPaddle);
     DrawPaddle(ctx, game.leftPaddle);
+  });
+
+  // TODO refactor するかわかんないけど
+  useSocket('game win', (gameDto: GameDto) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) {
+      return;
+    }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
+    DrawResult(ctx, 'WIN', canvas.width, canvas.height);
+  });
+
+  useSocket('game lose', (gameDto: GameDto) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) {
+      return;
+    }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
+    DrawResult(ctx, 'LOSE', canvas.width, canvas.height);
   });
 
   return (
