@@ -1,6 +1,6 @@
 import { useGetBlocks } from '../api/getBlocks';
 
-import { UserList } from './UserProfile';
+import { UserListWithModal } from './UserProfile';
 
 export const Blocks = () => {
   const { blocks } = useGetBlocks();
@@ -8,7 +8,7 @@ export const Blocks = () => {
   return (
     <>
       <h1>Blocks</h1>
-      <UserList userList={blocks} />
+      <UserListWithModal userList={blocks} />
     </>
   );
 };

@@ -88,7 +88,7 @@ export const UserProfileModal = ({
   );
 };
 
-export const UserList = ({ userList }: { userList: UserInfo[] }) => {
+export const UserListWithModal = ({ userList }: { userList: UserInfo[] }) => {
   const [selectUser, setSelectUser] = useState<UserInfo>();
   const { modalIsOpen, openModal, closeModal } = useModal();
 

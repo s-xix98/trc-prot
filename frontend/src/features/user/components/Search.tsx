@@ -7,7 +7,7 @@ import { useFocus } from '@/hooks/useFocus';
 
 import { UserInfo } from '../types/UserDto';
 
-import { UserList } from './UserProfile';
+import { UserListWithModal } from './UserProfile';
 
 import { useSearch } from '../../../hooks/useSearch';
 
@@ -23,7 +23,7 @@ export const UserSearch = () => {
     <Container flexDirection="column">
       <h2>User Search</h2>
       <ContainerItem overflowY="scroll">
-        <UserList userList={searchedList} />
+        <UserListWithModal userList={searchedList} />
       </ContainerItem>
       <Input
         focusRef={focusRef}

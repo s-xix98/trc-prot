@@ -1,6 +1,6 @@
 import { useGetFriends } from '../api/getFriends';
 
-import { UserList } from './UserProfile';
+import { UserListWithModal } from './UserProfile';
 
 export const Friends = () => {
   const { friends } = useGetFriends();
@@ -8,7 +8,7 @@ export const Friends = () => {
   return (
     <>
       <h1>Friends</h1>
-      <UserList userList={friends} />
+      <UserListWithModal userList={friends} />
     </>
   );
 };
