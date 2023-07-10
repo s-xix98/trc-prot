@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-import { socket } from '@/socket';
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 import { sendMessageDto } from '../types/MessageDto';
 
@@ -9,6 +9,8 @@ const emitSendMessage = (
   userId: string,
   chatRoomId: string,
   content: string,
+  // eslint-disable-next-line
+  emit: (eventName: string, ...data: any[]) => void,
 ) => {
   const dto: sendMessageDto = {
     userId: userId,
@@ -16,18 +18,19 @@ const emitSendMessage = (
     content: content,
   };
 
-  socket.emit('sendMessage', dto);
+  emit('sendMessage', dto);
 };
 
 export const useSendMessage = () => {
   const userinfo = useAtomValue(userInfoAtom);
+  const sEmit = useSafeEmit();
 
   const emit = (chatRoomId: string, content: string) => {
     if (userinfo === undefined) {
       console.log('userinfo is undef');
       return;
     }
-    emitSendMessage(userinfo.id, chatRoomId, content);
+    emitSendMessage(userinfo.id, chatRoomId, content, sEmit);
   };
 
   return { emit };
