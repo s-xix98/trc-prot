@@ -4,12 +4,12 @@ import styled from 'styled-components';
 
 import { useSocket } from '@/hooks/useSocket';
 import { Container } from '@/components/Layout/Container';
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
 import { Keys } from './Keys';
 import { useKeyInput } from './useKeyinput';
-import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 const CreateBall = (
   ballDto: BallDto,
@@ -264,14 +264,14 @@ export const Game = () => {
     } else if (
       !keyInputs[Keys.Down] &&
       (e.key === 'Down' || e.key === 'ArrowDown')
-      ) {
-        console.log('press d');
-        keyInputs[Keys.Down] = true;
-        emit('key press', Keys.Down);
-      }
-    };
+    ) {
+      console.log('press d');
+      keyInputs[Keys.Down] = true;
+      emit('key press', Keys.Down);
+    }
+  };
 
-    const keyReleaseHandler = (e: KeyboardEvent) => {
+  const keyReleaseHandler = (e: KeyboardEvent) => {
     if (keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
       console.log('release u');
       keyInputs[Keys.Up] = false;

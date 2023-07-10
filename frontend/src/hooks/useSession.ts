@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSetAtom } from 'jotai';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { io } from 'socket.io-client';
 
 import { useSessionAxios } from '@/hooks/useSessionAxios';
 import { BACKEND } from '@/constants';
@@ -9,7 +10,6 @@ import { socketAtom, userInfoAtom } from '@/stores/jotai';
 import { tokenStorage } from '@/utils/tokenStorage';
 
 import { UserInfo } from '../features/user/types/UserDto';
-import { io } from 'socket.io-client';
 
 export const useSession = () => {
   const axios = useSessionAxios();
@@ -28,15 +28,13 @@ export const useSession = () => {
       return;
     }
     axios
-    .get<UserInfo>(BACKEND + '/user/me')
-    .then((res) => {
-      setUserInfo(res.data);
-      setSocket(io(BACKEND, {auth: {token: tokenStorage.get()}}));
-
+      .get<UserInfo>(BACKEND + '/user/me')
+      .then((res) => {
+        setUserInfo(res.data);
+        setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
       })
       .catch((err) => {
         console.log(err);
       });
-
   }, [axios, setUserInfo, setSocket, pathname, router]);
 };

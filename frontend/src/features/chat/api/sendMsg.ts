@@ -1,16 +1,16 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 import { sendMessageDto } from '../types/MessageDto';
-import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 const emitSendMessage = (
   userId: string,
   chatRoomId: string,
   content: string,
   // eslint-disable-next-line
-  emit:(eventName: string, ...data: any[]) => void,
+  emit: (eventName: string, ...data: any[]) => void,
 ) => {
   const dto: sendMessageDto = {
     userId: userId,

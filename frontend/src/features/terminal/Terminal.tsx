@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { KeyboardEvent } from 'react';
 import { useSnackbar } from 'notistack';

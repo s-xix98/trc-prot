@@ -1,12 +1,16 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-
 import { useSafeEmit } from '@/hooks/useSafeEmit';
+
 import { joinChannelDto } from '../types/joinChannelDto';
 
-// eslint-disable-next-line
-const emitJoinChannel = (userId: string, chatRoomId: string, emit: (eventName: string, ...data: any[]) => void) => {
+const emitJoinChannel = (
+  userId: string,
+  chatRoomId: string,
+  // eslint-disable-next-line
+  emit: (eventName: string, ...data: any[]) => void,
+) => {
   const dto: joinChannelDto = {
     userId,
     chatRoomId,

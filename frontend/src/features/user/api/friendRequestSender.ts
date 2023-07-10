@@ -1,13 +1,16 @@
 import { useAtomValue } from 'jotai';
-import { useSafeEmit } from '@/hooks/useSafeEmit';
 
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 import { userInfoAtom } from '@/stores/jotai';
 
 import { friendshipDto } from '../types/FriendshipDto';
 
-// eslint-disable-next-line
-const emitSendFriendRequest = (userId: string, targetUserId: string, emit: (eventName: string, ...data: any[]) => void) => {
-
+const emitSendFriendRequest = (
+  userId: string,
+  targetUserId: string,
+  // eslint-disable-next-line
+  emit: (eventName: string, ...data: any[]) => void,
+) => {
   const dto: friendshipDto = { userId: userId, targetId: targetUserId };
   emit('friendRequest', dto);
 };

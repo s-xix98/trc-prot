@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-
 import { useSafeEmit } from '@/hooks/useSafeEmit';
+
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
 const emitCreateChannel = (

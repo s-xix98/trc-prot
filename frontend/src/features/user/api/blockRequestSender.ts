@@ -1,12 +1,16 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-
-import { friendshipDto } from '../types/FriendshipDto';
 import { useSafeEmit } from '@/hooks/useSafeEmit';
 
-// eslint-disable-next-line
-const emitSendBlockRequest = (userId: string, targetUserId: string, emit:(eventName: string, ...data: any[]) => void) => {
+import { friendshipDto } from '../types/FriendshipDto';
+
+const emitSendBlockRequest = (
+  userId: string,
+  targetUserId: string,
+  // eslint-disable-next-line
+  emit: (eventName: string, ...data: any[]) => void,
+) => {
   const dto: friendshipDto = { userId: userId, targetId: targetUserId };
   emit('blockUser', dto);
 };
