@@ -77,7 +77,7 @@ export class GameLogic {
       };
       // console.log(gameDto);
       this.p1.emit('game data', gameDto);
-      //   this.p2.emit('game data', gameDto);
+      this.p2.emit('game data', gameDto);
     }, 10);
   }
 
@@ -214,6 +214,12 @@ export class GameLogic {
     this.leftPaddle = CreateLeftPaddle();
     this.rightPaddle = CreateRightPaddle();
     this.p1.emit('game data', {
+      ball: this.ball,
+      leftPaddle: this.leftPaddle,
+      rightPaddle: this.rightPaddle,
+      scores: this.scores,
+    });
+    this.p2.emit('game data', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
