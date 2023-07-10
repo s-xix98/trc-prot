@@ -17,6 +17,14 @@ const IsInRange = (pos: number, start: number, end: number) => {
 
 const MatchPoint = 3; // TODO 可変すにするかも
 
+type Player = {
+  socket: Socket;
+  isReady: boolean;
+  paddle: Paddle;
+  keyInputs: boolean[];
+  score: number;
+};
+
 export class GameLogic {
   private ball: Ball;
   private leftPaddle: Paddle;
