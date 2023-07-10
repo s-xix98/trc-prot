@@ -2,7 +2,6 @@
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { socket } from '@/socket';
 import { useSocket } from '@/hooks/useSocket';
 import { Container } from '@/components/Layout/Container';
 
@@ -10,6 +9,7 @@ import { Ball, GameObjects, Paddle } from './Types';
 import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
 import { Keys } from './Keys';
 import { useKeyInput } from './useKeyinput';
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 const CreateBall = (
   ballDto: BallDto,
@@ -252,6 +252,7 @@ const GameCanvas = () => {
 };
 
 export const Game = () => {
+  const emit = useSafeEmit();
   const keyInputs: boolean[] = [];
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
@@ -259,37 +260,37 @@ export const Game = () => {
     if (!keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
       console.log('press u');
       keyInputs[Keys.Up] = true;
-      socket.emit('key press', Keys.Up);
+      emit('key press', Keys.Up);
     } else if (
       !keyInputs[Keys.Down] &&
       (e.key === 'Down' || e.key === 'ArrowDown')
-    ) {
-      console.log('press d');
-      keyInputs[Keys.Down] = true;
-      socket.emit('key press', Keys.Down);
-    }
-  };
+      ) {
+        console.log('press d');
+        keyInputs[Keys.Down] = true;
+        emit('key press', Keys.Down);
+      }
+    };
 
-  const keyReleaseHandler = (e: KeyboardEvent) => {
+    const keyReleaseHandler = (e: KeyboardEvent) => {
     if (keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
       console.log('release u');
       keyInputs[Keys.Up] = false;
-      socket.emit('key release', Keys.Up);
+      emit('key release', Keys.Up);
     } else if (
       keyInputs[Keys.Down] &&
       (e.key === 'Down' || e.key === 'ArrowDown')
     ) {
       console.log('release d');
       keyInputs[Keys.Down] = false;
-      socket.emit('key release', Keys.Down);
+      emit('key release', Keys.Down);
     }
   };
 
   useKeyInput(keyPressHandler, keyReleaseHandler);
 
   useEffect(() => {
-    socket.emit('start game');
-  }, []);
+    emit('start game');
+  }, [emit]);
 
   return (
     // TODO : 本来はいらない気がする、とりあえず適当にUI用

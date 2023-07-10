@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 
 import { useSocket } from '@/hooks/useSocket';
-import { socket } from '@/socket';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Container } from '@/components/Layout/Container';
 
 import { Game } from './Game';
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 export const Matching = () => {
   const [isMatched, setMatched] = useState(false);
   const { userInfo } = useCurrentUser();
+  const emit = useSafeEmit();
 
   useSocket('matched', (side: number, enemyName: string) => {
     console.log(side, enemyName);
@@ -24,12 +25,12 @@ export const Matching = () => {
 
   useEffect(() => {
     return () => {
-      socket.emit('clear match', userInfo?.id);
+      emit('clear match', userInfo?.id);
     };
-  }, [userInfo]);
+  }, [userInfo, emit]);
 
   const onClickAct = () => {
-    socket.emit('matchmake', userInfo);
+    emit('matchmake', userInfo);
   };
   // console.log("ui", userInfo);
   return (
