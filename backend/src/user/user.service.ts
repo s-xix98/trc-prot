@@ -1,7 +1,8 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
+import { FriendshipStatus } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
-import { FriendshipStatus } from '@prisma/client';
+
 import { UserInfo } from './types/userInfo';
 
 @Injectable()

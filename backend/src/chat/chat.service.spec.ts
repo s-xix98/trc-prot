@@ -4,6 +4,7 @@ import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestService } from '../test/test.service';
 import { testUser } from '../test/types/test.types';
+import { UserService } from '../user/user.service';
 
 import { ChatService } from './chat.service';
 import {
@@ -11,7 +12,6 @@ import {
   JoinChannelDto,
   UpdateRoomMemberRoleDto,
 } from './dto/Channel.dto';
-import { UserService } from '../user/user.service';
 
 const USERNUM = 10;
 
@@ -94,7 +94,10 @@ describe('ChatService', () => {
         await chatService.JoinChannel(joinChannelDto);
       }
 
-      const joinedMembers = await chatService.getRoomMembersById(room.id, owner.user.id);
+      const joinedMembers = await chatService.getRoomMembersById(
+        room.id,
+        owner.user.id,
+      );
 
       expect(joinedMembers.length).toEqual(10);
     });

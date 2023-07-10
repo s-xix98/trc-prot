@@ -4,15 +4,18 @@ import * as bcrypt from 'bcrypt';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
+import { UserService } from '../user/user.service';
 
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly prismaService: PrismaService, private readonly userService:UserService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly userService: UserService,
+  ) {}
 
   async getAllChannels(): Promise<ChatRoom[]> {
     return this.prismaService.chatRoom.findMany();
@@ -55,7 +58,10 @@ export class ChatService {
     return msgsWithFriendship;
   }
 
-  async getRoomMembersById(roomId: string, userId: string): Promise<UserInfo[]> {
+  async getRoomMembersById(
+    roomId: string,
+    userId: string,
+  ): Promise<UserInfo[]> {
     const roomMembers = await this.prismaService.roomMember.findMany({
       include: {
         user: {
@@ -79,8 +85,9 @@ export class ChatService {
     });
 
     const membersWithFriendship = roomMembers.map((member) => {
-      const userWithFriendshipStatus =
-        this.userService.extractFriendshipStatus(member.user);
+      const userWithFriendshipStatus = this.userService.extractFriendshipStatus(
+        member.user,
+      );
 
       return userWithFriendshipStatus;
     });

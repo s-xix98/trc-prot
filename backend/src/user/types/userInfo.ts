@@ -1,4 +1,4 @@
-import { FriendshipStatus } from "@prisma/client";
+import { FriendshipStatus } from '@prisma/client';
 
 export type UserInfo = {
   id: string;

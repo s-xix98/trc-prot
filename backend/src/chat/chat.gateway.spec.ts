@@ -10,12 +10,12 @@ import { testUser } from '../test/types/test.types';
 import { TestService } from '../test/test.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { UserService } from '../user/user.service';
 
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
-import { UserService } from '../user/user.service';
 
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
@@ -32,7 +32,13 @@ describe('ChatGateway', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule, WsocketModule],
-      providers: [ChatGateway, PrismaService, WsocketGateway, ChatService, UserService],
+      providers: [
+        ChatGateway,
+        PrismaService,
+        WsocketGateway,
+        ChatService,
+        UserService,
+      ],
     }).compile();
 
     gateway = module.get<ChatGateway>(ChatGateway);
