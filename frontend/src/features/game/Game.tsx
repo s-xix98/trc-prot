@@ -1,5 +1,4 @@
 'use client';
-// import { useEffect, useRef, useState } from 'react';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -121,7 +120,6 @@ const StyledCanvas = styled.canvas`
   color: black;
 `;
 
-// const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = 400;
@@ -185,8 +183,6 @@ const GameCanvas = () => {
 };
 
 export const Game = () => {
-  // const [isGameOver, setGameOver] = useState(false);
-
   const keyInputs: boolean[] = [];
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
@@ -234,9 +230,5 @@ export const Game = () => {
     <Container>
       <GameCanvas />
     </Container>
-    // <>
-    //   {isGameOver && <h1>GameOver</h1>}
-    //   {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
-    // </>
   );
 };
