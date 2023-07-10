@@ -19,6 +19,7 @@ type PlayerData = { client: Socket; data: UserInfo };
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
   private matchedUsers = new Map<string, UserInfo>();
+  private userGameMap = new Map<string, GameLogic>();
   private userSockMap = new Map<string, Socket>();
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
