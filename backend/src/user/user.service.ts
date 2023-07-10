@@ -57,9 +57,21 @@ export class UserService {
           not: userId,
         },
       },
+      select: {
+        id: true,
+        username: true,
+        friendship2: {
+          select: {
+            status: true,
+          },
+          where: {
+            srcUserId: userId,
+          },
+        },
+      },
     });
 
-    return partialMatchUsers;
+    return partialMatchUsers.map(this.extractFriendshipStatus);
   }
 
   async getFriendship(userId: string, targetId: string) {
