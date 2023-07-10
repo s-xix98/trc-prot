@@ -33,8 +33,6 @@ export class GameLogic {
   private rightPaddle: Paddle;
   private scores: Scores;
   private intervalId: any;
-  private p1KeyInputs: boolean[] = [];
-  private p2KeyInputs: boolean[] = [];
   private matchPoint = MatchPoint;
 
   constructor(sock1: Socket, sock2: Socket, ball: Ball = CreateBall()) {
@@ -102,20 +100,20 @@ export class GameLogic {
   HandleKeyPress(client: Socket, key: Keys) {
     console.log('handle press', key);
     if (client.id === this.p1.socket.id) {
-      this.p1KeyInputs[key] = true;
+      this.p1.keyInputs[key] = true;
     }
     if (client.id === this.p2.socket.id) {
-      this.p2KeyInputs[key] = true;
+      this.p2.keyInputs[key] = true;
     }
   }
 
   HandleKeyRelease(client: Socket, key: Keys) {
     console.log('handle release', key);
     if (client.id === this.p1.socket.id) {
-      this.p1KeyInputs[key] = false;
+      this.p1.keyInputs[key] = false;
     }
     if (client.id === this.p2.socket.id) {
-      this.p2KeyInputs[key] = false;
+      this.p2.keyInputs[key] = false;
     }
   }
 
@@ -174,16 +172,16 @@ export class GameLogic {
 
   private HandleKeyActions() {
     // 一旦どっちも動かす
-    if (this.p1KeyInputs[Keys.Up]) {
+    if (this.p1.keyInputs[Keys.Up]) {
       keyActions[Keys.Up](this.leftPaddle);
     }
-    if (this.p1KeyInputs[Keys.Down]) {
+    if (this.p1.keyInputs[Keys.Down]) {
       keyActions[Keys.Down](this.leftPaddle);
     }
-    if (this.p2KeyInputs[Keys.Up]) {
+    if (this.p2.keyInputs[Keys.Up]) {
       keyActions[Keys.Up](this.rightPaddle);
     }
-    if (this.p2KeyInputs[Keys.Down]) {
+    if (this.p2.keyInputs[Keys.Down]) {
       keyActions[Keys.Down](this.rightPaddle);
     }
   }
