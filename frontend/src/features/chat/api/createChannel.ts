@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-import { socket } from '@/socket';
 
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
 const emitCreateChannel = (
@@ -10,6 +10,8 @@ const emitCreateChannel = (
   roomName: string,
   password: string | undefined,
   isPrivate: boolean | undefined,
+  // eslint-disable-next-line
+  emit: (eventName: string, ...data: any[]) => void,
 ) => {
   const dto: CreateChannelDto = {
     roomName: roomName,
@@ -17,11 +19,12 @@ const emitCreateChannel = (
     password: password,
     isPrivate: isPrivate,
   };
-  socket.emit('createChannel', dto);
+  emit('createChannel', dto);
 };
 
 export const useCreateChannel = () => {
   const userinfo = useAtomValue(userInfoAtom);
+  const sEmit = useSafeEmit();
 
   const emit = (
     roomName: string,
@@ -32,7 +35,7 @@ export const useCreateChannel = () => {
       console.log('userinfo is undef');
       return;
     }
-    emitCreateChannel(userinfo.id, roomName, password, isPrivate);
+    emitCreateChannel(userinfo.id, roomName, password, isPrivate, sEmit);
   };
 
   return { emit };
