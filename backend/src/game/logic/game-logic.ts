@@ -79,7 +79,6 @@ export class GameLogic {
       }
       this.HandleKeyActions();
       this.UpdateBallPosition();
-      // console.log(gameDto);
       this.p1.socket.emit('game data', this.ConvertToGameDto());
       this.p2.socket.emit('game data', this.ConvertToGameDto());
     }, 10);
@@ -159,7 +158,6 @@ export class GameLogic {
   }
 
   private HandleKeyActions() {
-    // 一旦どっちも動かす
     if (this.p1.keyInputs[Keys.Up]) {
       keyActions[Keys.Up](this.p1.paddle);
     }
