@@ -27,11 +27,11 @@ type Player = {
 
 export class GameLogic {
   private ball: Ball;
+  private p1: Player;
+  private p2: Player;
   private leftPaddle: Paddle;
   private rightPaddle: Paddle;
   private scores: Scores;
-  private p1: Socket;
-  private p2: Socket;
   private intervalId: any;
   private p1KeyInputs: boolean[] = [];
   private p2KeyInputs: boolean[] = [];
@@ -39,10 +39,22 @@ export class GameLogic {
   private isP2Ready: boolean;
   private matchPoint = MatchPoint;
 
-  constructor(p1: Socket, p2: Socket, ball: Ball = CreateBall()) {
+  constructor(sock1: Socket, sock2: Socket, ball: Ball = CreateBall()) {
     this.ball = ball;
-    this.p1 = p1;
-    this.p2 = p2;
+    this.p1 = {
+      socket: sock1,
+      isReady: false,
+      paddle: CreateLeftPaddle(),
+      keyInputs: [],
+      score: 0,
+    };
+    this.p2 = {
+      socket: sock2,
+      isReady: false,
+      paddle: CreateRightPaddle(),
+      keyInputs: [],
+      score: 0,
+    };
     this.leftPaddle = CreateLeftPaddle();
     this.rightPaddle = CreateRightPaddle();
     this.scores = { left: 0, right: 0 };
@@ -52,10 +64,10 @@ export class GameLogic {
     if (this.isP1Ready && this.isP2Ready) {
       return;
     }
-    if (client.id === this.p1.id) {
+    if (client.id === this.p1.socket.id) {
       this.isP1Ready = true;
     }
-    if (client.id === this.p2.id) {
+    if (client.id === this.p2.socket.id) {
       this.isP2Ready = true;
     }
     if (this.isP1Ready && this.isP2Ready) {
@@ -84,27 +96,27 @@ export class GameLogic {
         scores: this.scores,
       };
       // console.log(gameDto);
-      this.p1.emit('game data', gameDto);
-      this.p2.emit('game data', gameDto);
+      this.p1.socket.emit('game data', gameDto);
+      this.p2.socket.emit('game data', gameDto);
     }, 10);
   }
 
   HandleKeyPress(client: Socket, key: Keys) {
     console.log('handle press', key);
-    if (client.id === this.p1.id) {
+    if (client.id === this.p1.socket.id) {
       this.p1KeyInputs[key] = true;
     }
-    if (client.id === this.p2.id) {
+    if (client.id === this.p2.socket.id) {
       this.p2KeyInputs[key] = true;
     }
   }
 
   HandleKeyRelease(client: Socket, key: Keys) {
     console.log('handle release', key);
-    if (client.id === this.p1.id) {
+    if (client.id === this.p1.socket.id) {
       this.p1KeyInputs[key] = false;
     }
-    if (client.id === this.p2.id) {
+    if (client.id === this.p2.socket.id) {
       this.p2KeyInputs[key] = false;
     }
   }
@@ -193,11 +205,11 @@ export class GameLogic {
     let loser: Socket;
 
     if (this.scores.left == this.matchPoint) {
-      winner = this.p1;
-      loser = this.p2;
+      winner = this.p1.socket;
+      loser = this.p2.socket;
     } else {
-      winner = this.p2;
-      loser = this.p1;
+      winner = this.p2.socket;
+      loser = this.p1.socket;
     }
     this.EndGame();
     this.ball = CreateBall();
@@ -223,13 +235,13 @@ export class GameLogic {
     this.ball = CreateBall();
     this.leftPaddle = CreateLeftPaddle();
     this.rightPaddle = CreateRightPaddle();
-    this.p1.emit('game data', {
+    this.p1.socket.emit('game data', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
       scores: this.scores,
     });
-    this.p2.emit('game data', {
+    this.p2.socket.emit('game data', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
