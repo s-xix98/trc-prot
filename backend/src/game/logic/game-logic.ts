@@ -29,8 +29,6 @@ export class GameLogic {
   private ball: Ball;
   private p1: Player;
   private p2: Player;
-  private leftPaddle: Paddle;
-  private rightPaddle: Paddle;
   private scores: Scores;
   private intervalId: any;
   private matchPoint = MatchPoint;
@@ -51,8 +49,6 @@ export class GameLogic {
       keyInputs: [],
       score: 0,
     };
-    this.leftPaddle = CreateLeftPaddle();
-    this.rightPaddle = CreateRightPaddle();
     this.scores = { left: 0, right: 0 };
   }
 
@@ -87,8 +83,8 @@ export class GameLogic {
       this.UpdateBallPosition();
       const gameDto: GameDto = {
         ball: this.ball,
-        leftPaddle: this.leftPaddle,
-        rightPaddle: this.rightPaddle,
+        leftPaddle: this.p1.paddle,
+        rightPaddle: this.p2.paddle,
         scores: this.scores,
       };
       // console.log(gameDto);
@@ -133,8 +129,8 @@ export class GameLogic {
         newX <= canvas.xMin &&
         IsInRange(
           this.ball.y,
-          this.leftPaddle.y,
-          this.leftPaddle.y + this.leftPaddle.height,
+          this.p1.paddle.y,
+          this.p1.paddle.y + this.p1.paddle.height,
         )
       );
     };
@@ -144,8 +140,8 @@ export class GameLogic {
         newX >= canvas.xMax &&
         IsInRange(
           this.ball.y,
-          this.rightPaddle.y,
-          this.rightPaddle.y + this.rightPaddle.height,
+          this.p2.paddle.y,
+          this.p2.paddle.y + this.p2.paddle.height,
         )
       );
     };
@@ -173,16 +169,16 @@ export class GameLogic {
   private HandleKeyActions() {
     // 一旦どっちも動かす
     if (this.p1.keyInputs[Keys.Up]) {
-      keyActions[Keys.Up](this.leftPaddle);
+      keyActions[Keys.Up](this.p1.paddle);
     }
     if (this.p1.keyInputs[Keys.Down]) {
-      keyActions[Keys.Down](this.leftPaddle);
+      keyActions[Keys.Down](this.p1.paddle);
     }
     if (this.p2.keyInputs[Keys.Up]) {
-      keyActions[Keys.Up](this.rightPaddle);
+      keyActions[Keys.Up](this.p2.paddle);
     }
     if (this.p2.keyInputs[Keys.Down]) {
-      keyActions[Keys.Down](this.rightPaddle);
+      keyActions[Keys.Down](this.p2.paddle);
     }
   }
 
@@ -209,18 +205,18 @@ export class GameLogic {
     }
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreateLeftPaddle();
-    this.rightPaddle = CreateRightPaddle();
+    this.p1.paddle = CreateLeftPaddle();
+    this.p2.paddle = CreateRightPaddle();
     winner.emit('game win', {
       ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
+      leftPaddle: this.p1.paddle,
+      rightPaddle: this.p2.paddle,
       scores: this.scores,
     });
     loser.emit('game lose', {
       ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
+      leftPaddle: this.p1.paddle,
+      rightPaddle: this.p2.paddle,
       scores: this.scores,
     });
     this.scores = { left: 0, right: 0 };
@@ -229,18 +225,18 @@ export class GameLogic {
   private Restart() {
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreateLeftPaddle();
-    this.rightPaddle = CreateRightPaddle();
+    this.p1.paddle = CreateLeftPaddle();
+    this.p2.paddle = CreateRightPaddle();
     this.p1.socket.emit('game data', {
       ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
+      leftPaddle: this.p1.paddle,
+      rightPaddle: this.p2.paddle,
       scores: this.scores,
     });
     this.p2.socket.emit('game data', {
       ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
+      leftPaddle: this.p1.paddle,
+      rightPaddle: this.p2.paddle,
       scores: this.scores,
     });
     setTimeout(this.StartGame.bind(this), 500);
