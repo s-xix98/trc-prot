@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { socketAtom } from '@/stores/jotai';
 import { useAtomValue } from 'jotai';
+
+import { socketAtom } from '@/stores/jotai';
 
 // eslint-disable-next-line
 export const useSocket = (ev: string, listener: (...args: any[]) => void) => {
   const socket = useAtomValue(socketAtom);
 
   useEffect(() => {
-    if (socket === undefined){
+    if (socket === undefined) {
       return;
     }
 

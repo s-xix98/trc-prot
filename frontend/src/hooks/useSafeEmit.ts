@@ -1,5 +1,6 @@
-import { socketAtom } from '@/stores/jotai';
 import { useAtomValue } from 'jotai';
+
+import { socketAtom } from '@/stores/jotai';
 
 export const useSafeEmit = () => {
   const socket = useAtomValue(socketAtom);

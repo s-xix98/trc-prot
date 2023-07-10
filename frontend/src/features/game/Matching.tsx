@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useSocket } from '@/hooks/useSocket';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Container } from '@/components/Layout/Container';
+import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 import { Game } from './Game';
-import { useSafeEmit } from '@/hooks/useSafeEmit';
 
 export const Matching = () => {
   const [isMatched, setMatched] = useState(false);
