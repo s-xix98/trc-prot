@@ -85,6 +85,7 @@ const DrawScores = (
   canvasWidth: number,
   canvasHeight: number,
 ) => {
+  ctx.fillStyle = 'white';
   ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
   ctx.fillText(`${scores.left}`, canvasWidth / 4, canvasHeight / 4);
   ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
@@ -96,6 +97,7 @@ const DrawResult = (
   canvasWidth: number,
   canvasHeight: number,
 ) => {
+  ctx.fillStyle = 'white';
   ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
   const width = ctx.measureText(result).width;
   ctx.fillText(result, (canvasWidth - width) / 2, canvasHeight / 2);
