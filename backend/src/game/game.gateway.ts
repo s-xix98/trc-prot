@@ -24,8 +24,6 @@ export class GameGateway {
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
 
-  private game: GameLogic | undefined;
-
   handleConnection() {
     console.log('game connection');
   }
@@ -63,9 +61,6 @@ export class GameGateway {
 
     this.sockUserMap.delete(client.id);
     this.sockUserMap.delete(enemySocket.id);
-
-    this.game?.EndGame();
-    this.game = undefined;
   }
 
   @SubscribeMessage('matchmake')
