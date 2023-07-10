@@ -220,9 +220,6 @@ export const Game = () => {
 
   useEffect(() => {
     socket.emit('start game');
-    return () => {
-      socket.emit('end game');
-    };
   }, []);
 
   return (

@@ -144,13 +144,6 @@ export class GameGateway {
     this.userGameMap.get(userid)?.ReadyGame(client);
   }
 
-  @SubscribeMessage('end game')
-  EndGame() {
-    console.log('end game');
-    this.game?.EndGame();
-    this.game = undefined;
-  }
-
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
