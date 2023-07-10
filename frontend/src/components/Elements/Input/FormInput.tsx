@@ -14,16 +14,16 @@ export const FormInput = ({
   start?: string;
   placeholder?: string;
 }) => {
-  const { control, register } = useFormContext();
+  const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
       rules={{ required: true }}
-      render={({ fieldState }) => (
+      render={({ field, fieldState }) => (
         <TextField
-          {...register(name)}
+          {...field}
           type={type}
           variant="standard"
           placeholder={placeholder}
