@@ -25,7 +25,8 @@ export class GameLogic {
   private p1: Socket;
   private p2: Socket;
   private intervalId: any;
-  private keyInputs: boolean[] = [];
+  private p1KeyInputs: boolean[] = [];
+  private p2KeyInputs: boolean[] = [];
   private isP1Ready: boolean;
   private isP2Ready: boolean;
   private matchPoint = MatchPoint;
@@ -80,14 +81,24 @@ export class GameLogic {
     }, 10);
   }
 
-  HandleKeyPress(key: Keys) {
+  HandleKeyPress(client: Socket, key: Keys) {
     console.log('handle press', key);
-    this.keyInputs[key] = true;
+    if (client.id === this.p1.id) {
+      this.p1KeyInputs[key] = true;
+    }
+    if (client.id === this.p2.id) {
+      this.p2KeyInputs[key] = true;
+    }
   }
 
-  HandleKeyRelease(key: Keys) {
+  HandleKeyRelease(client: Socket, key: Keys) {
     console.log('handle release', key);
-    this.keyInputs[key] = false;
+    if (client.id === this.p1.id) {
+      this.p1KeyInputs[key] = false;
+    }
+    if (client.id === this.p2.id) {
+      this.p2KeyInputs[key] = false;
+    }
   }
 
   EndGame() {
@@ -145,12 +156,16 @@ export class GameLogic {
 
   private HandleKeyActions() {
     // 一旦どっちも動かす
-    if (this.keyInputs[Keys.Up]) {
+    if (this.p1KeyInputs[Keys.Up]) {
       keyActions[Keys.Up](this.leftPaddle);
+    }
+    if (this.p1KeyInputs[Keys.Down]) {
+      keyActions[Keys.Down](this.leftPaddle);
+    }
+    if (this.p2KeyInputs[Keys.Up]) {
       keyActions[Keys.Up](this.rightPaddle);
     }
-    if (this.keyInputs[Keys.Down]) {
-      keyActions[Keys.Down](this.leftPaddle);
+    if (this.p2KeyInputs[Keys.Down]) {
       keyActions[Keys.Down](this.rightPaddle);
     }
   }

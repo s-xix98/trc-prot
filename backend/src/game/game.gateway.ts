@@ -154,12 +154,20 @@ export class GameGateway {
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
-    this.game?.HandleKeyPress(key);
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
+      return;
+    }
+    this.userGameMap.get(userid)?.HandleKeyPress(client, key);
   }
 
   @SubscribeMessage('key release')
   handleKeyRelease(client: Socket, key: Keys) {
     console.log('release', key);
-    this.game?.HandleKeyRelease(key);
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
+      return;
+    }
+    this.userGameMap.get(userid)?.HandleKeyRelease(client, key);
   }
 }
