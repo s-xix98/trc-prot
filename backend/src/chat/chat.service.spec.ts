@@ -11,6 +11,7 @@ import {
   JoinChannelDto,
   UpdateRoomMemberRoleDto,
 } from './dto/Channel.dto';
+import { UserService } from '../user/user.service';
 
 const USERNUM = 10;
 
@@ -22,7 +23,7 @@ describe('ChatService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [TestModule],
-      providers: [ChatService, PrismaService, TestService],
+      providers: [ChatService, PrismaService, TestService, UserService],
     }).compile();
 
     chatService = module.get<ChatService>(ChatService);
@@ -93,7 +94,7 @@ describe('ChatService', () => {
         await chatService.JoinChannel(joinChannelDto);
       }
 
-      const joinedMembers = await chatService.getRoomMembersById(room.id);
+      const joinedMembers = await chatService.getRoomMembersById(room.id, owner.user.id);
 
       expect(joinedMembers.length).toEqual(10);
     });
