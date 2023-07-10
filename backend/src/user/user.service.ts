@@ -120,7 +120,7 @@ export class UserService {
     return friendship;
   }
 
-  async getFriends(userId: string) {
+  async getFriends(userId: string): Promise<UserInfo[]> {
     const friends = await this.prisma.friendship.findMany({
       where: {
         srcUserId: userId,
@@ -140,13 +140,13 @@ export class UserService {
 
     const friendsUserInfo = friends.map((f) => {
       const { username, id } = f.destUser;
-      return { username, id };
+      return { username, id, status: FriendshipStatus.Accepted };
     });
 
     return friendsUserInfo;
   }
 
-  async getBlockUsers(userId: string) {
+  async getBlockUsers(userId: string): Promise<UserInfo[]> {
     const blocks = await this.prisma.friendship.findMany({
       where: {
         srcUserId: userId,
@@ -166,7 +166,7 @@ export class UserService {
 
     const blocksUserInfo = blocks.map((b) => {
       const { username, id } = b.destUser;
-      return { username, id };
+      return { username, id, status: FriendshipStatus.Blocked };
     });
 
     return blocksUserInfo;
