@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle, Scores } from '../types';
+import { Ball, Paddle } from '../types';
 import {
   canvas,
   CreateBall,
@@ -29,7 +29,6 @@ export class GameLogic {
   private ball: Ball;
   private p1: Player;
   private p2: Player;
-  private scores: Scores;
   private intervalId: any;
   private matchPoint = MatchPoint;
 
@@ -49,7 +48,6 @@ export class GameLogic {
       keyInputs: [],
       score: 0,
     };
-    this.scores = { left: 0, right: 0 };
   }
 
   ReadyGame(client: Socket) {
@@ -85,7 +83,7 @@ export class GameLogic {
         ball: this.ball,
         leftPaddle: this.p1.paddle,
         rightPaddle: this.p2.paddle,
-        scores: this.scores,
+        scores: { left: this.p1.score, right: this.p2.score },
       };
       // console.log(gameDto);
       this.p1.socket.emit('game data', gameDto);
@@ -183,10 +181,7 @@ export class GameLogic {
   }
 
   private isGameOver(): boolean {
-    return (
-      this.scores.left == this.matchPoint ||
-      this.scores.right == this.matchPoint
-    );
+    return this.p1.score == this.matchPoint || this.p2.score == this.matchPoint;
   }
 
   private HandleGameOver() {
@@ -196,7 +191,7 @@ export class GameLogic {
     let winner: Socket;
     let loser: Socket;
 
-    if (this.scores.left == this.matchPoint) {
+    if (this.p1.score == this.matchPoint) {
       winner = this.p1.socket;
       loser = this.p2.socket;
     } else {
@@ -211,15 +206,15 @@ export class GameLogic {
       ball: this.ball,
       leftPaddle: this.p1.paddle,
       rightPaddle: this.p2.paddle,
-      scores: this.scores,
+      scores: { left: this.p1.score, right: this.p2.score },
     });
     loser.emit('game lose', {
       ball: this.ball,
       leftPaddle: this.p1.paddle,
       rightPaddle: this.p2.paddle,
-      scores: this.scores,
+      scores: { left: this.p1.score, right: this.p2.score },
     });
-    this.scores = { left: 0, right: 0 };
+    this.p1.score = this.p2.score = 0;
   }
 
   private Restart() {
@@ -231,22 +226,22 @@ export class GameLogic {
       ball: this.ball,
       leftPaddle: this.p1.paddle,
       rightPaddle: this.p2.paddle,
-      scores: this.scores,
+      scores: { left: this.p1.score, right: this.p2.score },
     });
     this.p2.socket.emit('game data', {
       ball: this.ball,
       leftPaddle: this.p1.paddle,
       rightPaddle: this.p2.paddle,
-      scores: this.scores,
+      scores: { left: this.p1.score, right: this.p2.score },
     });
     setTimeout(this.StartGame.bind(this), 500);
   }
 
   private UpdateScore() {
     if (this.ball.x <= 0) {
-      this.scores.right++;
+      this.p2.score++;
     } else if (this.ball.x >= 1) {
-      this.scores.left++;
+      this.p2.score++;
     }
   }
 }
