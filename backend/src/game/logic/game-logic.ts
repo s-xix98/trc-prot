@@ -26,6 +26,8 @@ export class GameLogic {
   private p2: Socket;
   private intervalId: any;
   private keyInputs: boolean[] = [];
+  private isP1Ready: boolean;
+  private isP2Ready: boolean;
   private matchPoint = MatchPoint;
 
   constructor(p1: Socket, p2: Socket, ball: Ball = CreateBall()) {
@@ -37,7 +39,22 @@ export class GameLogic {
     this.scores = { left: 0, right: 0 };
   }
 
-  StartGame() {
+  ReadyGame(client: Socket) {
+    if (this.isP1Ready && this.isP2Ready) {
+      return;
+    }
+    if (client.id === this.p1.id) {
+      this.isP1Ready = true;
+    }
+    if (client.id === this.p2.id) {
+      this.isP2Ready = true;
+    }
+    if (this.isP1Ready && this.isP2Ready) {
+      this.StartGame();
+    }
+  }
+
+  private StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
       if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {

@@ -136,13 +136,12 @@ export class GameGateway {
 
   @SubscribeMessage('start game')
   StartGame(client: Socket) {
-    console.log('create game');
-    if (this.game) {
+    console.log('start game');
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
       return;
     }
-    // 一旦同じクライアントを登録。マルチプレイ対応したら直す
-    this.game = new GameLogic(client, client);
-    this.game.StartGame();
+    this.userGameMap.get(userid)?.ReadyGame(client);
   }
 
   @SubscribeMessage('end game')
