@@ -11,18 +11,18 @@ import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
 
-const IsInRange = (pos: number, start: number, end: number) => {
-  return start < pos && pos < end;
-};
-
-const MatchPoint = 3; // TODO 可変すにするかも
-
 type Player = {
   socket: Socket;
   isReady: boolean;
   paddle: Paddle;
   keyInputs: boolean[];
   score: number;
+};
+
+const MatchPoint = 3; // TODO 可変すにするかも
+
+const IsInRange = (pos: number, start: number, end: number) => {
+  return start < pos && pos < end;
 };
 
 export class GameLogic {
