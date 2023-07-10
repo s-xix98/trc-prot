@@ -181,25 +181,27 @@ export class GameLogic {
     if (!this.isGameOver()) {
       return;
     }
-    let winner: Socket | undefined;
-    let loser: Socket | undefined;
+    let winner: Socket;
+    let loser: Socket;
 
     if (this.scores.left == this.matchPoint) {
       winner = this.p1;
+      loser = this.p2;
     } else {
+      winner = this.p2;
       loser = this.p1;
     }
     this.EndGame();
     this.ball = CreateBall();
     this.leftPaddle = CreateLeftPaddle();
     this.rightPaddle = CreateRightPaddle();
-    winner?.emit('game win', {
+    winner.emit('game win', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
       scores: this.scores,
     });
-    loser?.emit('game lose', {
+    loser.emit('game lose', {
       ball: this.ball,
       leftPaddle: this.leftPaddle,
       rightPaddle: this.rightPaddle,
