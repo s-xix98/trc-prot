@@ -77,6 +77,10 @@ export class GameGateway {
     this.matchedUsers.set(this.waitingUser.data.id, user);
     this.matchedUsers.set(user.id, this.waitingUser.data);
 
+    const game = new GameLogic(this.waitingUser.client, client);
+    this.userGameMap.set(this.waitingUser.data.id, game);
+    this.userGameMap.set(user.id, game);
+
     this.userSockMap.set(this.waitingUser.data.id, this.waitingUser.client);
     this.sockUserMap.set(this.waitingUser.client.id, this.waitingUser.data.id);
 
