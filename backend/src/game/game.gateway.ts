@@ -52,6 +52,12 @@ export class GameGateway {
     this.matchedUsers.delete(selfUserId);
     this.matchedUsers.delete(enemyUser.id);
 
+    // TODO とりあえずどちらか一方でもDCしたら即終了して削除してる
+    //  あとあとディスコネした方のペナルティとかに変えたい　変えないかもだけど
+    this.userGameMap.get(selfUserId)?.EndGame();
+    this.userGameMap.delete(selfUserId);
+    this.userGameMap.delete(enemyUser.id);
+
     this.userSockMap.delete(selfUserId);
     this.userSockMap.delete(enemyUser.id);
 
