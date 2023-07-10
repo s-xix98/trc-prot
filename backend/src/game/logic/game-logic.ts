@@ -79,15 +79,9 @@ export class GameLogic {
       }
       this.HandleKeyActions();
       this.UpdateBallPosition();
-      const gameDto: GameDto = {
-        ball: this.ball,
-        leftPaddle: this.p1.paddle,
-        rightPaddle: this.p2.paddle,
-        scores: { left: this.p1.score, right: this.p2.score },
-      };
       // console.log(gameDto);
-      this.p1.socket.emit('game data', gameDto);
-      this.p2.socket.emit('game data', gameDto);
+      this.p1.socket.emit('game data', this.ConvertToGameDto());
+      this.p2.socket.emit('game data', this.ConvertToGameDto());
     }, 10);
   }
 
@@ -202,18 +196,8 @@ export class GameLogic {
     this.ball = CreateBall();
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
-    winner.emit('game win', {
-      ball: this.ball,
-      leftPaddle: this.p1.paddle,
-      rightPaddle: this.p2.paddle,
-      scores: { left: this.p1.score, right: this.p2.score },
-    });
-    loser.emit('game lose', {
-      ball: this.ball,
-      leftPaddle: this.p1.paddle,
-      rightPaddle: this.p2.paddle,
-      scores: { left: this.p1.score, right: this.p2.score },
-    });
+    winner.emit('game win', this.ConvertToGameDto());
+    loser.emit('game lose', this.ConvertToGameDto());
     this.p1.score = this.p2.score = 0;
   }
 
@@ -222,18 +206,8 @@ export class GameLogic {
     this.ball = CreateBall();
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
-    this.p1.socket.emit('game data', {
-      ball: this.ball,
-      leftPaddle: this.p1.paddle,
-      rightPaddle: this.p2.paddle,
-      scores: { left: this.p1.score, right: this.p2.score },
-    });
-    this.p2.socket.emit('game data', {
-      ball: this.ball,
-      leftPaddle: this.p1.paddle,
-      rightPaddle: this.p2.paddle,
-      scores: { left: this.p1.score, right: this.p2.score },
-    });
+    this.p1.socket.emit('game data', this.ConvertToGameDto());
+    this.p2.socket.emit('game data', this.ConvertToGameDto());
     setTimeout(this.StartGame.bind(this), 500);
   }
 
@@ -243,5 +217,14 @@ export class GameLogic {
     } else if (this.ball.x >= 1) {
       this.p2.score++;
     }
+  }
+
+  private ConvertToGameDto(): GameDto {
+    return {
+      ball: this.ball,
+      leftPaddle: this.p1.paddle,
+      rightPaddle: this.p2.paddle,
+      scores: { left: this.p1.score, right: this.p2.score },
+    };
   }
 }
