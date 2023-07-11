@@ -87,8 +87,18 @@ const DrawScores = (
 ) => {
   ctx.fillStyle = 'white';
   ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
-  ctx.fillText(`${scores.left}`, canvasWidth / 4, canvasHeight / 4);
-  ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
+  const leftWidth = ctx.measureText(`${scores.left}`).width;
+  const rightWidth = ctx.measureText(`${scores.right}`).width;
+  ctx.fillText(
+    `${scores.left}`,
+    canvasWidth / 4 - leftWidth / 2,
+    canvasHeight / 4,
+  );
+  ctx.fillText(
+    `${scores.right}`,
+    (canvasWidth * 3) / 4 - rightWidth / 2,
+    canvasHeight / 4,
+  );
 };
 
 const DrawResult = (
