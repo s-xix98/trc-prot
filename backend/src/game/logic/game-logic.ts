@@ -15,6 +15,8 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+const MatchPoint = 3; // TODO 可変すにするかも
+
 export class GameLogic {
   private ball: Ball;
   private leftPaddle: Paddle;
@@ -24,6 +26,7 @@ export class GameLogic {
   private p2: Socket;
   private intervalId: any;
   private keyInputs: boolean[] = [];
+  private matchPoint = MatchPoint;
 
   constructor(p1: Socket, p2: Socket, ball: Ball = CreateBall()) {
     this.ball = ball;
@@ -39,7 +42,11 @@ export class GameLogic {
     this.intervalId = setInterval(() => {
       if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
         this.UpdateScore();
-        this.Restart();
+        if (this.isGameOver()) {
+          this.HandleGameOver();
+        } else {
+          this.Restart();
+        }
         return;
       }
       this.HandleKeyActions();
@@ -129,6 +136,44 @@ export class GameLogic {
       keyActions[Keys.Down](this.leftPaddle);
       keyActions[Keys.Down](this.rightPaddle);
     }
+  }
+
+  private isGameOver(): boolean {
+    return (
+      this.scores.left == this.matchPoint ||
+      this.scores.right == this.matchPoint
+    );
+  }
+
+  private HandleGameOver() {
+    if (!this.isGameOver()) {
+      return;
+    }
+    let winner: Socket | undefined;
+    let loser: Socket | undefined;
+
+    if (this.scores.left == this.matchPoint) {
+      winner = this.p1;
+    } else {
+      loser = this.p1;
+    }
+    this.EndGame();
+    this.ball = CreateBall();
+    this.leftPaddle = CreateLeftPaddle();
+    this.rightPaddle = CreateRightPaddle();
+    winner?.emit('game win', {
+      ball: this.ball,
+      leftPaddle: this.leftPaddle,
+      rightPaddle: this.rightPaddle,
+      scores: this.scores,
+    });
+    loser?.emit('game lose', {
+      ball: this.ball,
+      leftPaddle: this.leftPaddle,
+      rightPaddle: this.rightPaddle,
+      scores: this.scores,
+    });
+    this.scores = { left: 0, right: 0 };
   }
 
   private Restart() {
