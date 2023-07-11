@@ -30,7 +30,7 @@ const GameCanvas = () => {
   const canvasHeight = 400;
   const canvasId = 'canvas';
 
-  const ReadyGame = (gameDto: GameDto, side: 'LEFT' | 'RIGHT') => {
+  const DrawGameWithPlayerSide = (gameDto: GameDto, side: 'LEFT' | 'RIGHT') => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
@@ -46,11 +46,11 @@ const GameCanvas = () => {
   };
 
   useSocket('game ready left', (gameDto: GameDto) => {
-    ReadyGame(gameDto, 'LEFT');
+    DrawGameWithPlayerSide(gameDto, 'LEFT');
   });
 
   useSocket('game ready right', (gameDto: GameDto) => {
-    ReadyGame(gameDto, 'RIGHT');
+    DrawGameWithPlayerSide(gameDto, 'RIGHT');
   });
 
   useSocket('game data', (gameDto: GameDto) => {
