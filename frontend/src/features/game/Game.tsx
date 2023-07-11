@@ -45,6 +45,21 @@ const GameCanvas = () => {
     DrawPlayerSide(ctx, side, canvas.width, canvas.height);
   };
 
+  const DrawGameResult = (gameDto: GameDto, result: 'WIN' | 'LOSE') => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) {
+      return;
+    }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
+    DrawResult(ctx, result, canvas.width, canvas.height);
+  };
+
   useSocket('game ready left', (gameDto: GameDto) => {
     DrawGameWithPlayerSide(gameDto, 'LEFT');
   });
@@ -68,35 +83,12 @@ const GameCanvas = () => {
     DrawPaddle(ctx, game.leftPaddle);
   });
 
-  // TODO refactor するかわかんないけど
   useSocket('game win', (gameDto: GameDto) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) {
-      return;
-    }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    DrawCenterLine(ctx, canvas.width, canvas.height);
-    DrawScores(ctx, game.scores, canvas.width, canvas.height);
-    DrawPaddle(ctx, game.rightPaddle);
-    DrawPaddle(ctx, game.leftPaddle);
-    DrawResult(ctx, 'WIN', canvas.width, canvas.height);
+    DrawGameResult(gameDto, 'WIN');
   });
 
   useSocket('game lose', (gameDto: GameDto) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) {
-      return;
-    }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    DrawCenterLine(ctx, canvas.width, canvas.height);
-    DrawScores(ctx, game.scores, canvas.width, canvas.height);
-    DrawPaddle(ctx, game.rightPaddle);
-    DrawPaddle(ctx, game.leftPaddle);
-    DrawResult(ctx, 'LOSE', canvas.width, canvas.height);
+    DrawGameResult(gameDto, 'LOSE');
   });
 
   return (
