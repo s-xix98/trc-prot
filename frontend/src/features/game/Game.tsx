@@ -16,7 +16,7 @@ import {
   DrawPaddle,
   DrawPlayerSide,
   DrawResult,
-  DrawScores
+  DrawScores,
 } from './Draw';
 
 const StyledCanvas = styled.canvas`
@@ -68,6 +68,14 @@ const GameCanvas = () => {
     DrawGameWithPlayerSide(gameDto, 'RIGHT');
   });
 
+  useSocket('game win', (gameDto: GameDto) => {
+    DrawGameResult(gameDto, 'WIN');
+  });
+
+  useSocket('game lose', (gameDto: GameDto) => {
+    DrawGameResult(gameDto, 'LOSE');
+  });
+
   useSocket('game data', (gameDto: GameDto) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
@@ -81,14 +89,6 @@ const GameCanvas = () => {
     DrawBall(ctx, game.ball);
     DrawPaddle(ctx, game.rightPaddle);
     DrawPaddle(ctx, game.leftPaddle);
-  });
-
-  useSocket('game win', (gameDto: GameDto) => {
-    DrawGameResult(gameDto, 'WIN');
-  });
-
-  useSocket('game lose', (gameDto: GameDto) => {
-    DrawGameResult(gameDto, 'LOSE');
   });
 
   return (
