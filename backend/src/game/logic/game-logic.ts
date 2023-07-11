@@ -182,6 +182,11 @@ export class GameLogic {
     if (!this.isGameOver()) {
       return;
     }
+    this.EndGame();
+    this.ball = CreateBall();
+    this.p1.paddle = CreateLeftPaddle();
+    this.p2.paddle = CreateRightPaddle();
+
     let winner: Socket;
     let loser: Socket;
 
@@ -192,10 +197,6 @@ export class GameLogic {
       winner = this.p2.socket;
       loser = this.p1.socket;
     }
-    this.EndGame();
-    this.ball = CreateBall();
-    this.p1.paddle = CreateLeftPaddle();
-    this.p2.paddle = CreateRightPaddle();
     winner.emit('game win', this.ConvertToGameDto());
     loser.emit('game lose', this.ConvertToGameDto());
     this.p1.score = this.p2.score = 0;
