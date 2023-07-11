@@ -108,7 +108,7 @@ const DrawPlayerSide = (
   side: 'LEFT' | 'RIGHT',
   canvasWidth: number,
   canvasHeight: number,
-  ) => {
+) => {
   ctx.fillStyle = 'white';
   ctx.font = '30px serif'; // TODO ピクセル数動的に変わるべきかも
   const width = ctx.measureText('YOU →').width;
@@ -143,6 +143,29 @@ const GameCanvas = () => {
   const canvasWidth = 400;
   const canvasHeight = 400;
   const canvasId = 'canvas';
+
+  const ReadyGame = (gameDto: GameDto, side: 'LEFT' | 'RIGHT') => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) {
+      return;
+    }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
+    DrawPlayerSide(ctx, side, canvas.width, canvas.height);
+  };
+
+  useSocket('game ready left', (gameDto: GameDto) => {
+    ReadyGame(gameDto, 'LEFT');
+  });
+
+  useSocket('game ready right', (gameDto: GameDto) => {
+    ReadyGame(gameDto, 'RIGHT');
+  });
 
   useSocket('game data', (gameDto: GameDto) => {
     const canvas = canvasRef.current;
