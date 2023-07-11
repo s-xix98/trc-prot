@@ -103,6 +103,22 @@ const DrawResult = (
   ctx.fillText(result, (canvasWidth - width) / 2, canvasHeight / 2);
 };
 
+const DrawPlayerSide = (
+  ctx: CanvasRenderingContext2D,
+  side: 'LEFT' | 'RIGHT',
+  canvasWidth: number,
+  canvasHeight: number,
+  ) => {
+  ctx.fillStyle = 'white';
+  ctx.font = '30px serif'; // TODO ピクセル数動的に変わるべきかも
+  const width = ctx.measureText('YOU →').width;
+  if (side == 'LEFT') {
+    ctx.fillText('← YOU', canvasWidth / 4 - width / 2, canvasHeight / 2);
+  } else {
+    ctx.fillText('YOU →', (canvasWidth * 3) / 4 - width / 2, canvasHeight / 2);
+  }
+};
+
 const DrawCenterLine = (
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
