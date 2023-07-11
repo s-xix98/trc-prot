@@ -109,8 +109,15 @@ const DrawResult = (
 ) => {
   ctx.fillStyle = 'white';
   ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
-  const width = ctx.measureText(result).width;
-  ctx.fillText(result, (canvasWidth - width) / 2, canvasHeight / 2);
+  const mesure = ctx.measureText(result);
+  const width = mesure.width;
+  const height =
+    mesure.actualBoundingBoxAscent + mesure.actualBoundingBoxDescent;
+  ctx.fillText(
+    result,
+    (canvasWidth - width) / 2,
+    canvasHeight / 2 + height / 2,
+  );
 };
 
 const DrawPlayerSide = (
@@ -121,11 +128,22 @@ const DrawPlayerSide = (
 ) => {
   ctx.fillStyle = 'white';
   ctx.font = '30px serif'; // TODO ピクセル数動的に変わるべきかも
-  const width = ctx.measureText('YOU →').width;
+  const mesure = ctx.measureText('YOU →');
+  const width = mesure.width;
+  const height =
+    mesure.actualBoundingBoxAscent + mesure.actualBoundingBoxDescent;
   if (side == 'LEFT') {
-    ctx.fillText('← YOU', canvasWidth / 4 - width / 2, canvasHeight / 2);
+    ctx.fillText(
+      '← YOU',
+      canvasWidth / 4 - width / 2,
+      canvasHeight / 2 + height / 2,
+    );
   } else {
-    ctx.fillText('YOU →', (canvasWidth * 3) / 4 - width / 2, canvasHeight / 2);
+    ctx.fillText(
+      'YOU →',
+      (canvasWidth * 3) / 4 - width / 2,
+      canvasHeight / 2 + height / 2,
+    );
   }
 };
 
