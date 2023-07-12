@@ -1,5 +1,4 @@
 'use client';
-// import { useEffect, useRef, useState } from 'react';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -91,6 +90,17 @@ const DrawScores = (
   ctx.fillText(`${scores.right}`, (canvasWidth * 3) / 4, canvasHeight / 4);
 };
 
+const DrawResult = (
+  ctx: CanvasRenderingContext2D,
+  result: 'WIN' | 'LOSE',
+  canvasWidth: number,
+  canvasHeight: number,
+) => {
+  ctx.font = '48px serif'; // TODO ピクセル数動的に変わるべきかも
+  const width = ctx.measureText(result).width;
+  ctx.fillText(result, (canvasWidth - width) / 2, canvasHeight / 2);
+};
+
 const DrawCenterLine = (
   ctx: CanvasRenderingContext2D,
   canvasWidth: number,
@@ -110,7 +120,6 @@ const StyledCanvas = styled.canvas`
   color: black;
 `;
 
-// const GameCanvas = ({ setGameOver }: { setGameOver: () => void }) => {
 const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = 400;
@@ -132,6 +141,37 @@ const GameCanvas = () => {
     DrawPaddle(ctx, game.leftPaddle);
   });
 
+  // TODO refactor するかわかんないけど
+  useSocket('game win', (gameDto: GameDto) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) {
+      return;
+    }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
+    DrawResult(ctx, 'WIN', canvas.width, canvas.height);
+  });
+
+  useSocket('game lose', (gameDto: GameDto) => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) {
+      return;
+    }
+    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    DrawCenterLine(ctx, canvas.width, canvas.height);
+    DrawScores(ctx, game.scores, canvas.width, canvas.height);
+    DrawPaddle(ctx, game.rightPaddle);
+    DrawPaddle(ctx, game.leftPaddle);
+    DrawResult(ctx, 'LOSE', canvas.width, canvas.height);
+  });
+
   return (
     <StyledCanvas
       ref={canvasRef}
@@ -143,8 +183,6 @@ const GameCanvas = () => {
 };
 
 export const Game = () => {
-  // const [isGameOver, setGameOver] = useState(false);
-
   const keyInputs: boolean[] = [];
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
@@ -192,9 +230,5 @@ export const Game = () => {
     <Container>
       <GameCanvas />
     </Container>
-    // <>
-    //   {isGameOver && <h1>GameOver</h1>}
-    //   {!isGameOver && <GameCanvas setGameOver={() => setGameOver(true)} />}
-    // </>
   );
 };
