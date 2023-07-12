@@ -24,8 +24,6 @@ export class GameGateway {
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
 
-  private game: GameLogic | undefined;
-
   handleConnection() {
     console.log('game connection');
   }
@@ -63,9 +61,6 @@ export class GameGateway {
 
     this.sockUserMap.delete(client.id);
     this.sockUserMap.delete(enemySocket.id);
-
-    this.game?.EndGame();
-    this.game = undefined;
   }
 
   @SubscribeMessage('matchmake')
@@ -136,31 +131,31 @@ export class GameGateway {
 
   @SubscribeMessage('start game')
   StartGame(client: Socket) {
-    console.log('create game');
-    if (this.game) {
+    console.log('start game');
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
       return;
     }
-    // 一旦同じクライアントを登録。マルチプレイ対応したら直す
-    this.game = new GameLogic(client, client);
-    this.game.StartGame();
-  }
-
-  @SubscribeMessage('end game')
-  EndGame() {
-    console.log('end game');
-    this.game?.EndGame();
-    this.game = undefined;
+    this.userGameMap.get(userid)?.ReadyGame(client);
   }
 
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
-    this.game?.HandleKeyPress(key);
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
+      return;
+    }
+    this.userGameMap.get(userid)?.HandleKeyPress(client, key);
   }
 
   @SubscribeMessage('key release')
   handleKeyRelease(client: Socket, key: Keys) {
     console.log('release', key);
-    this.game?.HandleKeyRelease(key);
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
+      return;
+    }
+    this.userGameMap.get(userid)?.HandleKeyRelease(client, key);
   }
 }
