@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle, Scores } from '../types';
+import { Ball, Paddle } from '../types';
 import {
   canvas,
   CreateBall,
@@ -11,46 +11,56 @@ import { GameDto } from '../dto/GameDto';
 
 import { keyActions, Keys } from './KeyAction';
 
-const IsInRange = (pos: number, start: number, end: number) => {
-  return start < pos && pos < end;
+type Player = {
+  socket: Socket;
+  isReady: boolean;
+  paddle: Paddle;
+  keyInputs: boolean[];
+  score: number;
 };
 
 const MatchPoint = 3; // TODO 可変すにするかも
 
+const IsInRange = (pos: number, start: number, end: number) => {
+  return start < pos && pos < end;
+};
+
 export class GameLogic {
   private ball: Ball;
-  private leftPaddle: Paddle;
-  private rightPaddle: Paddle;
-  private scores: Scores;
-  private p1: Socket;
-  private p2: Socket;
+  private p1: Player;
+  private p2: Player;
   private intervalId: any;
-  private p1KeyInputs: boolean[] = [];
-  private p2KeyInputs: boolean[] = [];
-  private isP1Ready: boolean;
-  private isP2Ready: boolean;
   private matchPoint = MatchPoint;
 
-  constructor(p1: Socket, p2: Socket, ball: Ball = CreateBall()) {
+  constructor(sock1: Socket, sock2: Socket, ball: Ball = CreateBall()) {
     this.ball = ball;
-    this.p1 = p1;
-    this.p2 = p2;
-    this.leftPaddle = CreateLeftPaddle();
-    this.rightPaddle = CreateRightPaddle();
-    this.scores = { left: 0, right: 0 };
+    this.p1 = {
+      socket: sock1,
+      isReady: false,
+      paddle: CreateLeftPaddle(),
+      keyInputs: [],
+      score: 0,
+    };
+    this.p2 = {
+      socket: sock2,
+      isReady: false,
+      paddle: CreateRightPaddle(),
+      keyInputs: [],
+      score: 0,
+    };
   }
 
   ReadyGame(client: Socket) {
-    if (this.isP1Ready && this.isP2Ready) {
+    if (this.p1.isReady && this.p2.isReady) {
       return;
     }
-    if (client.id === this.p1.id) {
-      this.isP1Ready = true;
+    if (client.id === this.p1.socket.id) {
+      this.p1.isReady = true;
     }
-    if (client.id === this.p2.id) {
-      this.isP2Ready = true;
+    if (client.id === this.p2.socket.id) {
+      this.p2.isReady = true;
     }
-    if (this.isP1Ready && this.isP2Ready) {
+    if (this.p1.isReady && this.p2.isReady) {
       this.StartGame();
     }
   }
@@ -69,35 +79,28 @@ export class GameLogic {
       }
       this.HandleKeyActions();
       this.UpdateBallPosition();
-      const gameDto: GameDto = {
-        ball: this.ball,
-        leftPaddle: this.leftPaddle,
-        rightPaddle: this.rightPaddle,
-        scores: this.scores,
-      };
-      // console.log(gameDto);
-      this.p1.emit('game data', gameDto);
-      this.p2.emit('game data', gameDto);
+      this.p1.socket.emit('game data', this.ConvertToGameDto());
+      this.p2.socket.emit('game data', this.ConvertToGameDto());
     }, 10);
   }
 
   HandleKeyPress(client: Socket, key: Keys) {
     console.log('handle press', key);
-    if (client.id === this.p1.id) {
-      this.p1KeyInputs[key] = true;
+    if (client.id === this.p1.socket.id) {
+      this.p1.keyInputs[key] = true;
     }
-    if (client.id === this.p2.id) {
-      this.p2KeyInputs[key] = true;
+    if (client.id === this.p2.socket.id) {
+      this.p2.keyInputs[key] = true;
     }
   }
 
   HandleKeyRelease(client: Socket, key: Keys) {
     console.log('handle release', key);
-    if (client.id === this.p1.id) {
-      this.p1KeyInputs[key] = false;
+    if (client.id === this.p1.socket.id) {
+      this.p1.keyInputs[key] = false;
     }
-    if (client.id === this.p2.id) {
-      this.p2KeyInputs[key] = false;
+    if (client.id === this.p2.socket.id) {
+      this.p2.keyInputs[key] = false;
     }
   }
 
@@ -117,8 +120,8 @@ export class GameLogic {
         newX <= canvas.xMin &&
         IsInRange(
           this.ball.y,
-          this.leftPaddle.y,
-          this.leftPaddle.y + this.leftPaddle.height,
+          this.p1.paddle.y,
+          this.p1.paddle.y + this.p1.paddle.height,
         )
       );
     };
@@ -128,8 +131,8 @@ export class GameLogic {
         newX >= canvas.xMax &&
         IsInRange(
           this.ball.y,
-          this.rightPaddle.y,
-          this.rightPaddle.y + this.rightPaddle.height,
+          this.p2.paddle.y,
+          this.p2.paddle.y + this.p2.paddle.height,
         )
       );
     };
@@ -155,26 +158,22 @@ export class GameLogic {
   }
 
   private HandleKeyActions() {
-    // 一旦どっちも動かす
-    if (this.p1KeyInputs[Keys.Up]) {
-      keyActions[Keys.Up](this.leftPaddle);
+    if (this.p1.keyInputs[Keys.Up]) {
+      keyActions[Keys.Up](this.p1.paddle);
     }
-    if (this.p1KeyInputs[Keys.Down]) {
-      keyActions[Keys.Down](this.leftPaddle);
+    if (this.p1.keyInputs[Keys.Down]) {
+      keyActions[Keys.Down](this.p1.paddle);
     }
-    if (this.p2KeyInputs[Keys.Up]) {
-      keyActions[Keys.Up](this.rightPaddle);
+    if (this.p2.keyInputs[Keys.Up]) {
+      keyActions[Keys.Up](this.p2.paddle);
     }
-    if (this.p2KeyInputs[Keys.Down]) {
-      keyActions[Keys.Down](this.rightPaddle);
+    if (this.p2.keyInputs[Keys.Down]) {
+      keyActions[Keys.Down](this.p2.paddle);
     }
   }
 
   private isGameOver(): boolean {
-    return (
-      this.scores.left == this.matchPoint ||
-      this.scores.right == this.matchPoint
-    );
+    return this.p1.score == this.matchPoint || this.p2.score == this.matchPoint;
   }
 
   private HandleGameOver() {
@@ -184,57 +183,46 @@ export class GameLogic {
     let winner: Socket;
     let loser: Socket;
 
-    if (this.scores.left == this.matchPoint) {
-      winner = this.p1;
-      loser = this.p2;
+    if (this.p1.score == this.matchPoint) {
+      winner = this.p1.socket;
+      loser = this.p2.socket;
     } else {
-      winner = this.p2;
-      loser = this.p1;
+      winner = this.p2.socket;
+      loser = this.p1.socket;
     }
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreateLeftPaddle();
-    this.rightPaddle = CreateRightPaddle();
-    winner.emit('game win', {
-      ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
-      scores: this.scores,
-    });
-    loser.emit('game lose', {
-      ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
-      scores: this.scores,
-    });
-    this.scores = { left: 0, right: 0 };
+    this.p1.paddle = CreateLeftPaddle();
+    this.p2.paddle = CreateRightPaddle();
+    winner.emit('game win', this.ConvertToGameDto());
+    loser.emit('game lose', this.ConvertToGameDto());
+    this.p1.score = this.p2.score = 0;
   }
 
   private Restart() {
     this.EndGame();
     this.ball = CreateBall();
-    this.leftPaddle = CreateLeftPaddle();
-    this.rightPaddle = CreateRightPaddle();
-    this.p1.emit('game data', {
-      ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
-      scores: this.scores,
-    });
-    this.p2.emit('game data', {
-      ball: this.ball,
-      leftPaddle: this.leftPaddle,
-      rightPaddle: this.rightPaddle,
-      scores: this.scores,
-    });
+    this.p1.paddle = CreateLeftPaddle();
+    this.p2.paddle = CreateRightPaddle();
+    this.p1.socket.emit('game data', this.ConvertToGameDto());
+    this.p2.socket.emit('game data', this.ConvertToGameDto());
     setTimeout(this.StartGame.bind(this), 500);
   }
 
   private UpdateScore() {
     if (this.ball.x <= 0) {
-      this.scores.right++;
+      this.p2.score++;
     } else if (this.ball.x >= 1) {
-      this.scores.left++;
+      this.p2.score++;
     }
+  }
+
+  private ConvertToGameDto(): GameDto {
+    return {
+      ball: this.ball,
+      leftPaddle: this.p1.paddle,
+      rightPaddle: this.p2.paddle,
+      scores: { left: this.p1.score, right: this.p2.score },
+    };
   }
 }
