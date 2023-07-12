@@ -35,9 +35,13 @@ export const Matching = () => {
   return (
     <Container flexDirection={'column'}>
       <div>
-        <button onClick={onClickAct}>button</button>
         {isMatched && <Game />}
-        {!isMatched && <h1> WAITING... </h1>}
+        {!isMatched && (
+          <>
+            <button onClick={onClickAct}>button</button>
+            <h1> WAITING... </h1>
+          </>
+        )}
       </div>
     </Container>
   );
