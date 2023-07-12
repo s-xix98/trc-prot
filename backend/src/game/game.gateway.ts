@@ -19,6 +19,7 @@ type PlayerData = { client: Socket; data: UserInfo };
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
   private matchedUsers = new Map<string, UserInfo>();
+  private userGameMap = new Map<string, GameLogic>();
   private userSockMap = new Map<string, Socket>();
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
@@ -51,6 +52,12 @@ export class GameGateway {
     this.matchedUsers.delete(selfUserId);
     this.matchedUsers.delete(enemyUser.id);
 
+    // TODO とりあえずどちらか一方でもDCしたら即終了して削除してる
+    //  あとあとディスコネした方のペナルティとかに変えたい　変えないかもだけど
+    this.userGameMap.get(selfUserId)?.EndGame();
+    this.userGameMap.delete(selfUserId);
+    this.userGameMap.delete(enemyUser.id);
+
     this.userSockMap.delete(selfUserId);
     this.userSockMap.delete(enemyUser.id);
 
@@ -75,6 +82,10 @@ export class GameGateway {
     }
     this.matchedUsers.set(this.waitingUser.data.id, user);
     this.matchedUsers.set(user.id, this.waitingUser.data);
+
+    const game = new GameLogic(this.waitingUser.client, client);
+    this.userGameMap.set(this.waitingUser.data.id, game);
+    this.userGameMap.set(user.id, game);
 
     this.userSockMap.set(this.waitingUser.data.id, this.waitingUser.client);
     this.sockUserMap.set(this.waitingUser.client.id, this.waitingUser.data.id);

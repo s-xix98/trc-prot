@@ -19,6 +19,7 @@ model User {
   email          String          @unique
   hashedPassword String?
   base64Image    Bytes?
+  twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
@@ -26,6 +27,7 @@ model User {
   friendship1    Friendship[]    @relation("src")
   friendship2    Friendship[]    @relation("dest")
   auth           Auth?
+  Rating         Rating[]
 }
 
 model Auth {
@@ -136,4 +138,12 @@ enum UserRole {
 enum UserChatStateCode {
   BANNED
   MUTED
+}
+
+model Rating {
+  userId   String @id
+  rating   Int    @default(0)
+  userData User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([rating(sort: Desc)], name: "rating_desc")
 }
