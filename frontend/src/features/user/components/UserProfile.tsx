@@ -1,7 +1,10 @@
 import { Avatar, Stack } from '@mui/material';
 import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
+import { useState } from 'react';
 
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useModal } from '@/hooks/useModal';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -60,6 +63,55 @@ export const UserProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       ) : (
         <OtherProfile userInfo={userInfo} />
       )}
+    </>
+  );
+};
+
+export const UserProfileModal = ({
+  userInfo,
+  modalIsOpen,
+  closeModal,
+}: {
+  userInfo: UserInfo;
+  modalIsOpen: boolean;
+  closeModal: () => void;
+}) => {
+  return (
+    <ModalView
+      modalIsOpen={modalIsOpen}
+      closeModal={closeModal}
+      height="50%"
+      width="30%"
+    >
+      <UserProfile userInfo={userInfo} />
+    </ModalView>
+  );
+};
+
+export const UserListWithModal = ({ userList }: { userList: UserInfo[] }) => {
+  const [selectUser, setSelectUser] = useState<UserInfo>();
+  const { modalIsOpen, openModal, closeModal } = useModal();
+
+  return (
+    <>
+      {selectUser && (
+        <UserProfileModal
+          userInfo={selectUser}
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+        />
+      )}
+      {userList.map((user, idx) => (
+        <p
+          key={idx}
+          onClick={() => {
+            setSelectUser(user);
+            openModal();
+          }}
+        >
+          {user.username}
+        </p>
+      ))}
     </>
   );
 };
