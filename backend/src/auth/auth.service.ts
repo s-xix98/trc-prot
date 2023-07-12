@@ -8,7 +8,7 @@ import { toDataURL } from 'qrcode';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../game/dto/UserDto';
 
-import { accessToken, authUser } from './types/auth.types';
+import { accessToken, authUser, jwtPayload } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
 import { QRCode } from './types/qrcode.types';
@@ -34,7 +34,13 @@ export class AuthService {
     });
     // 既に登録されている場合
     if (user) {
-      return { jwt: await this.generateJwt(user.user.id, user.user.username) };
+      return {
+        jwt: await this.generateJwt(
+          user.user.id,
+          user.user.username,
+          user.user.twoFaEnabled,
+        ),
+      };
     }
 
     // まだ登録されていない場合
@@ -51,13 +57,26 @@ export class AuthService {
       },
     });
 
-    return { jwt: await this.generateJwt(newUser.id, newUser.username) };
+    return {
+      jwt: await this.generateJwt(
+        newUser.id,
+        newUser.username,
+        newUser.twoFaEnabled,
+      ),
+    };
   }
 
-  async generateJwt(userId: string, username: string): Promise<string> {
-    const payload = {
+  async generateJwt(
+    userId: string,
+    username: string,
+    isTwoFaEnabled: boolean,
+    isTwoFactorAuthenticated = false,
+  ): Promise<string> {
+    const payload: jwtPayload = {
       userId,
       username,
+      isTwoFaEnabled,
+      isTwoFactorAuthenticated,
     };
 
     return this.jwtService.signAsync(payload, { expiresIn: '1h' });
@@ -76,7 +95,9 @@ export class AuthService {
           hashedPassword: hashedPassword,
         },
       });
-      return { jwt: await this.generateJwt(user.id, user.username) };
+      return {
+        jwt: await this.generateJwt(user.id, user.username, user.twoFaEnabled),
+      };
     } catch (e) {
       console.log(e);
       // email,usernameが被った時のエラーは'P2002'が帰ってくる
@@ -117,7 +138,9 @@ export class AuthService {
       throw new ForbiddenException('Password incorrect');
     }
     console.log('OK');
-    return { jwt: await this.generateJwt(user.id, user.username) };
+    return {
+      jwt: await this.generateJwt(user.id, user.username, user.twoFaEnabled),
+    };
   }
 
   async jwtHuga(): Promise<accessToken> {
@@ -129,7 +152,9 @@ export class AuthService {
     if (!huga) {
       throw new Error('huga not found');
     }
-    return { jwt: await this.generateJwt(huga.id, huga.username) };
+    return {
+      jwt: await this.generateJwt(huga.id, huga.username, huga.twoFaEnabled),
+    };
   }
 
   async generateTwoFaSecret(user: UserInfo): Promise<QRCode> {
@@ -145,6 +170,55 @@ export class AuthService {
     console.log(qrCode);
 
     return { base64: qrCode };
+  }
+
+  async confirmTwoFa(userId: string, secret: string): Promise<void> {
+    await this.authentication(userId, secret);
+
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFaEnabled: true,
+      },
+    });
+  }
+
+  async authentication(userId: string, secret: string): Promise<accessToken> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+
+    if (user.twoFaSecret === null) {
+      throw new ForbiddenException('TwoFa secret is not set');
+    }
+
+    if (!this.isValidTwoFaCode(user.twoFaSecret, secret)) {
+      throw new ForbiddenException('Wrong authentication code');
+    }
+
+    return {
+      jwt: await this.generateJwt(
+        user.id,
+        user.username,
+        user.twoFaEnabled,
+        true,
+      ),
+    };
+  }
+
+  private isValidTwoFaCode(sharedSecret: string, inputCode: string) {
+    return authenticator.verify({
+      token: inputCode,
+      secret: sharedSecret,
+    });
   }
 
   private async setTwoFaSecret(userId: string, secret: string) {
