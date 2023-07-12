@@ -145,5 +145,5 @@ model Rating {
   rating   Int    @default(0)
   userData User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([rating], name: "rating_asc")
+  @@index([rating(sort: Desc)], name: "rating_desc")
 }
