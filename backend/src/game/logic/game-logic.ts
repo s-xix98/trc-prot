@@ -72,7 +72,7 @@ export class GameLogic {
     this.intervalId = setInterval(() => {
       if (!IsInRange(this.ball.x, canvas.xMin, canvas.xMax)) {
         this.UpdateScore();
-        if (this.isGameOver()) {
+        if (this.isGameFinished()) {
           this.HandleGameOver();
         } else {
           this.Restart();
@@ -174,12 +174,12 @@ export class GameLogic {
     }
   }
 
-  private isGameOver(): boolean {
+  private isGameFinished(): boolean {
     return this.p1.score == this.matchPoint || this.p2.score == this.matchPoint;
   }
 
   private HandleGameOver() {
-    if (!this.isGameOver()) {
+    if (!this.isGameFinished()) {
       return;
     }
     this.EndGame();
