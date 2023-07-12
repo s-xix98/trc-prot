@@ -8,7 +8,11 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { MessageDto } from './dto/message.dto';
-import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  RoomMemberRestrictionDto,
+} from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway({
@@ -76,6 +80,18 @@ export class ChatGateway {
 
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, dto: JoinChannelDto) {
+    const userState = await this.chatService.findRoomMemberState(
+      dto.chatRoomId,
+      dto.userId,
+      'BANNED',
+    );
+
+    const now = new Date();
+
+    if (userState && userState.endedAt > now) {
+      throw new Error('You are banned');
+    }
+
     const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
@@ -86,6 +102,18 @@ export class ChatGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, dto: MessageDto) {
+    const userState = await this.chatService.findRoomMemberState(
+      dto.chatRoomId,
+      dto.userId,
+      'MUTED',
+    );
+
+    const now = new Date();
+
+    if (userState && userState.endedAt > now) {
+      throw new Error('You are muted');
+    }
+
     const msg = await this.chatService.createMessage(dto);
 
     const roomMsgs = await this.chatService.getChannelHistoryById(
@@ -95,5 +123,68 @@ export class ChatGateway {
     this.server
       .to(roomType.Chat, msg.chatRoomId)
       .emit('receiveMessage', roomMsgs);
+  }
+
+  @SubscribeMessage('banRoomMember')
+  async banRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('banRoomMember', dto);
+
+    const target = await this.chatService.findRoomMemberWithAdminCheck(
+      dto.chatRoomId,
+      dto.userId,
+      dto.targetId,
+    );
+
+    await this.chatService.upsertRoomMemberState(dto, 'BANNED');
+
+    const { count } = await this.prisma.roomMember.deleteMany({
+      where: {
+        userId: target.userId,
+        chatRoomId: dto.chatRoomId,
+      },
+    });
+
+    if (count > 0) {
+      // TODO targetを消す
+      // client.emit('deleteRoom', targetState);
+      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    }
+  }
+
+  @SubscribeMessage('muteRoomMember')
+  async muteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('muteRoomMember', dto);
+
+    await this.chatService.findRoomMemberWithAdminCheck(
+      dto.chatRoomId,
+      dto.userId,
+      dto.targetId,
+    );
+
+    await this.chatService.upsertRoomMemberState(dto, 'MUTED');
+  }
+
+  @SubscribeMessage('kickRoomMember')
+  async kickRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
+    console.log('kickRoomMember', dto);
+
+    const target = await this.chatService.findRoomMemberWithAdminCheck(
+      dto.chatRoomId,
+      dto.userId,
+      dto.targetId,
+    );
+
+    const { count } = await this.prisma.roomMember.deleteMany({
+      where: {
+        userId: target.userId,
+        chatRoomId: dto.chatRoomId,
+      },
+    });
+
+    if (count > 0) {
+      // TODO targetを消す
+      // client.emit('deleteRoom', targetState);
+      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    }
   }
 }
