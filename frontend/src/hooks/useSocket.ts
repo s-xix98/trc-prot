@@ -24,3 +24,19 @@ export const useSessionSocket = (
     };
   }, [ev, listener, sessionSocket]);
 };
+
+export const useSessionSocketEmitter = () => {
+  const sessionSocket = useAtomValue(socketAtom);
+
+  // eslint-disable-next-line
+  const emit = (eventName: string, ...data: any[]) => {
+    if (sessionSocket === undefined) {
+      console.log('socket is undef');
+      return;
+    }
+
+    sessionSocket.emit(eventName, ...data);
+  };
+
+  return { emit };
+};
