@@ -114,9 +114,24 @@ export class GameLogic {
   }
 
   EndGame() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
+    if (!this.intervalId) {
+      return;
     }
+    clearInterval(this.intervalId);
+    let winner: Socket;
+    let loser: Socket;
+
+    if (this.p1.score == this.matchPoint) {
+      winner = this.p1.socket;
+      loser = this.p2.socket;
+    } else {
+      winner = this.p2.socket;
+      loser = this.p1.socket;
+    }
+    this.onShutdown(winner, loser, {
+      left: this.p1.score,
+      right: this.p2.score,
+    });
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む
