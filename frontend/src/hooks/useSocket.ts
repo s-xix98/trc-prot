@@ -5,8 +5,11 @@ import { useAtomValue } from 'jotai';
 
 import { socketAtom } from '@/stores/jotai';
 
-// eslint-disable-next-line
-export const useSocket = (ev: string, listener: (...args: any[]) => void) => {
+export const useSessionSocket = (
+  ev: string,
+  // eslint-disable-next-line
+  listener: (...args: any[]) => void,
+) => {
   const sessionSocket = useAtomValue(socketAtom);
 
   useEffect(() => {

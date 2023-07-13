@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { Container } from '@/components/Layout/Container';
-import { useSocket } from '@/hooks/useSocket';
+import { useSessionSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
 
 import { handleMessageDto } from '../types/MessageDto';
@@ -27,7 +27,7 @@ export const ChatTalkArea = ({
     setChatHistMsgs(data);
   };
 
-  useSocket('receiveMessage', onMessage);
+  useSessionSocket('receiveMessage', onMessage);
 
   // TODO : handleScrollがちょっと多めに呼ばれちゃってるの改善したい
   // チャンネルを選択した時一番下まで行く

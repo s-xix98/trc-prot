@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { socket } from '@/socket';
-import { useSocket } from '@/hooks/useSocket';
+import { useSessionSocket } from '@/hooks/useSocket';
 import { Container } from '@/components/Layout/Container';
 
 import { GameDto } from './dto/GameDto';
@@ -60,23 +60,23 @@ const GameCanvas = () => {
     DrawResult(ctx, result, canvas.width, canvas.height);
   };
 
-  useSocket('game ready left', (gameDto: GameDto) => {
+  useSessionSocket('game ready left', (gameDto: GameDto) => {
     DrawGameWithPlayerSide(gameDto, 'LEFT');
   });
 
-  useSocket('game ready right', (gameDto: GameDto) => {
+  useSessionSocket('game ready right', (gameDto: GameDto) => {
     DrawGameWithPlayerSide(gameDto, 'RIGHT');
   });
 
-  useSocket('game win', (gameDto: GameDto) => {
+  useSessionSocket('game win', (gameDto: GameDto) => {
     DrawGameResult(gameDto, 'WIN');
   });
 
-  useSocket('game lose', (gameDto: GameDto) => {
+  useSessionSocket('game lose', (gameDto: GameDto) => {
     DrawGameResult(gameDto, 'LOSE');
   });
 
-  useSocket('game data', (gameDto: GameDto) => {
+  useSessionSocket('game data', (gameDto: GameDto) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
