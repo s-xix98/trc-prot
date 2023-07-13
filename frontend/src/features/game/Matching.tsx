@@ -1,35 +1,35 @@
 import { useEffect, useState } from 'react';
 
-import { useSocket } from '@/hooks/useSocket';
-import { socket } from '@/socket';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Container } from '@/components/Layout/Container';
+import { useSessionSocketEmitter, useSessionSocket } from '@/hooks/useSocket';
 
 import { Game } from './Game';
 
 export const Matching = () => {
   const [isMatched, setMatched] = useState(false);
   const { userInfo } = useCurrentUser();
+  const sessionSocketEmitter = useSessionSocketEmitter();
 
-  useSocket('matched', (side: number, enemyName: string) => {
+  useSessionSocket('matched', (side: number, enemyName: string) => {
     console.log(side, enemyName);
     setMatched(true);
   });
-  useSocket('already playing', () => {
+  useSessionSocket('already playing', () => {
     console.log('already playing');
   });
-  useSocket('enemy diconnected', () => {
+  useSessionSocket('enemy diconnected', () => {
     console.log('enemy diconnected');
   });
 
   useEffect(() => {
     return () => {
-      socket.emit('clear match', userInfo?.id);
+      sessionSocketEmitter.emit('clear match', userInfo?.id);
     };
-  }, [userInfo]);
+  }, [userInfo, sessionSocketEmitter]);
 
   const onClickAct = () => {
-    socket.emit('matchmake', userInfo);
+    sessionSocketEmitter.emit('matchmake', userInfo);
   };
   // console.log("ui", userInfo);
   return (

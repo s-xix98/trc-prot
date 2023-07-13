@@ -1,24 +1,23 @@
 import { useAtomValue } from 'jotai';
 
-import { socket } from '@/socket';
 import { userInfoAtom } from '@/stores/jotai';
+import { useSessionSocketEmitter } from '@/hooks/useSocket';
 
 import { friendshipDto } from '../types/FriendshipDto';
 
-const emitSendBlockRequest = (userId: string, targetUserId: string) => {
-  const dto: friendshipDto = { userId: userId, targetId: targetUserId };
-  socket.emit('blockUser', dto);
-};
-
 export const useBlockRequestSender = () => {
   const userInfo = useAtomValue(userInfoAtom);
+  const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (targetUserId: string) => {
     if (userInfo === undefined) {
       console.log('userinfo is undef');
       return;
     }
-    emitSendBlockRequest(userInfo.id, targetUserId);
+
+    const dto: friendshipDto = { userId: userInfo.id, targetId: targetUserId };
+
+    sessionSocketEmitter.emit('blockUser', dto);
   };
 
   return { emit };

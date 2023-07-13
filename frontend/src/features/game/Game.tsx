@@ -2,9 +2,8 @@
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
-import { socket } from '@/socket';
-import { useSocket } from '@/hooks/useSocket';
 import { Container } from '@/components/Layout/Container';
+import { useSessionSocketEmitter, useSessionSocket } from '@/hooks/useSocket';
 
 import { GameDto } from './dto/GameDto';
 import { Keys } from './Keys';
@@ -60,23 +59,23 @@ const GameCanvas = () => {
     DrawResult(ctx, result, canvas.width, canvas.height);
   };
 
-  useSocket('game ready left', (gameDto: GameDto) => {
+  useSessionSocket('game ready left', (gameDto: GameDto) => {
     DrawGameWithPlayerSide(gameDto, 'LEFT');
   });
 
-  useSocket('game ready right', (gameDto: GameDto) => {
+  useSessionSocket('game ready right', (gameDto: GameDto) => {
     DrawGameWithPlayerSide(gameDto, 'RIGHT');
   });
 
-  useSocket('game win', (gameDto: GameDto) => {
+  useSessionSocket('game win', (gameDto: GameDto) => {
     DrawGameResult(gameDto, 'WIN');
   });
 
-  useSocket('game lose', (gameDto: GameDto) => {
+  useSessionSocket('game lose', (gameDto: GameDto) => {
     DrawGameResult(gameDto, 'LOSE');
   });
 
-  useSocket('game data', (gameDto: GameDto) => {
+  useSessionSocket('game data', (gameDto: GameDto) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) {
@@ -104,19 +103,21 @@ const GameCanvas = () => {
 export const Game = () => {
   const keyInputs: boolean[] = [];
 
+  const sessionSocketEmitter = useSessionSocketEmitter();
+
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
   const keyPressHandler = (e: KeyboardEvent) => {
     if (!keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
       console.log('press u');
       keyInputs[Keys.Up] = true;
-      socket.emit('key press', Keys.Up);
+      sessionSocketEmitter.emit('key press', Keys.Up);
     } else if (
       !keyInputs[Keys.Down] &&
       (e.key === 'Down' || e.key === 'ArrowDown')
     ) {
       console.log('press d');
       keyInputs[Keys.Down] = true;
-      socket.emit('key press', Keys.Down);
+      sessionSocketEmitter.emit('key press', Keys.Down);
     }
   };
 
@@ -124,22 +125,22 @@ export const Game = () => {
     if (keyInputs[Keys.Up] && (e.key === 'Up' || e.key === 'ArrowUp')) {
       console.log('release u');
       keyInputs[Keys.Up] = false;
-      socket.emit('key release', Keys.Up);
+      sessionSocketEmitter.emit('key release', Keys.Up);
     } else if (
       keyInputs[Keys.Down] &&
       (e.key === 'Down' || e.key === 'ArrowDown')
     ) {
       console.log('release d');
       keyInputs[Keys.Down] = false;
-      socket.emit('key release', Keys.Down);
+      sessionSocketEmitter.emit('key release', Keys.Down);
     }
   };
 
   useKeyInput(keyPressHandler, keyReleaseHandler);
 
   useEffect(() => {
-    socket.emit('start game');
-  }, []);
+    sessionSocketEmitter.emit('start game');
+  }, [sessionSocketEmitter]);
 
   return (
     // TODO : 本来はいらない気がする、とりあえず適当にUI用

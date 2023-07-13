@@ -1,27 +1,13 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-import { socket } from '@/socket';
+import { useSessionSocketEmitter } from '@/hooks/useSocket';
 
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
-const emitCreateChannel = (
-  userId: string,
-  roomName: string,
-  password: string | undefined,
-  isPrivate: boolean | undefined,
-) => {
-  const dto: CreateChannelDto = {
-    roomName: roomName,
-    userId: userId,
-    password: password,
-    isPrivate: isPrivate,
-  };
-  socket.emit('createChannel', dto);
-};
-
 export const useCreateChannel = () => {
   const userinfo = useAtomValue(userInfoAtom);
+  const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (
     roomName: string,
@@ -32,7 +18,15 @@ export const useCreateChannel = () => {
       console.log('userinfo is undef');
       return;
     }
-    emitCreateChannel(userinfo.id, roomName, password, isPrivate);
+
+    const dto: CreateChannelDto = {
+      roomName: roomName,
+      userId: userinfo.id,
+      password: password,
+      isPrivate: isPrivate,
+    };
+
+    sessionSocketEmitter.emit('createChannel', dto);
   };
 
   return { emit };
