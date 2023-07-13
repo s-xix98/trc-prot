@@ -199,7 +199,6 @@ export class GameLogic {
     }
     winner.emit('game win', this.ConvertToGameDto());
     loser.emit('game lose', this.ConvertToGameDto());
-    this.p1.score = this.p2.score = 0;
   }
 
   private Restart() {
