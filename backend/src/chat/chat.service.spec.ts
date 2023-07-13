@@ -11,6 +11,7 @@ import {
   JoinChannelDto,
   UpdateRoomMemberRoleDto,
 } from './dto/Channel.dto';
+import { AuthModule } from '../auth/auth.module';
 
 const USERNUM = 10;
 
@@ -21,7 +22,7 @@ describe('ChatService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
+      imports: [TestModule, AuthModule],
       providers: [ChatService, PrismaService, TestService],
     }).compile();
 

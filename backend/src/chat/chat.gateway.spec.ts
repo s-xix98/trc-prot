@@ -15,6 +15,7 @@ import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
+import { AuthModule } from '../auth/auth.module';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
@@ -29,7 +30,7 @@ describe('ChatGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, WsocketModule],
+      imports: [TestModule, WsocketModule, AuthModule],
       providers: [ChatGateway, PrismaService, WsocketGateway, ChatService],
     }).compile();
 

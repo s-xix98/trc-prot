@@ -6,6 +6,7 @@ import { TestService } from '../test/test.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 import { UserService } from './user.service';
+import { AuthModule } from '../auth/auth.module';
 
 const USERNUM = 10;
 
@@ -17,7 +18,7 @@ describe('UserService', () => {
   // 初期化
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
+      imports: [TestModule, AuthModule],
       providers: [UserService, TestService, PrismaService],
     }).compile();
 
