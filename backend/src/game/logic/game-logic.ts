@@ -118,17 +118,11 @@ export class GameLogic {
       return;
     }
     clearInterval(this.intervalId);
-    let winner: Socket;
-    let loser: Socket;
-
-    if (this.p1.score == this.matchPoint) {
-      winner = this.p1.socket;
-      loser = this.p2.socket;
-    } else {
-      winner = this.p2.socket;
-      loser = this.p1.socket;
+    const players = this.GetWinnerLoserPair();
+    if (players === null) {
+      return;
     }
-    this.onShutdown(winner, loser, {
+    this.onShutdown(players.winner.socket, players.loser.socket, {
       left: this.p1.score,
       right: this.p2.score,
     });
@@ -209,18 +203,9 @@ export class GameLogic {
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
 
-    let winner: Socket;
-    let loser: Socket;
-
-    if (this.p1.score == this.matchPoint) {
-      winner = this.p1.socket;
-      loser = this.p2.socket;
-    } else {
-      winner = this.p2.socket;
-      loser = this.p1.socket;
-    }
-    winner.emit('game win', this.ConvertToGameDto());
-    loser.emit('game lose', this.ConvertToGameDto());
+    const players = this.GetWinnerLoserPair();
+    players?.winner.socket.emit('game win', this.ConvertToGameDto());
+    players?.loser.socket.emit('game lose', this.ConvertToGameDto());
   }
 
   private Restart() {
@@ -231,6 +216,16 @@ export class GameLogic {
     this.p1.socket.emit('game data', this.ConvertToGameDto());
     this.p2.socket.emit('game data', this.ConvertToGameDto());
     setTimeout(this.StartGame.bind(this), 500);
+  }
+
+  private GetWinnerLoserPair() {
+    if (this.p1.score == this.matchPoint) {
+      return { winner: this.p1, loser: this.p2 };
+    } else if (this.p2.score == this.matchPoint) {
+      return { winner: this.p2, loser: this.p1 };
+    } else {
+      return null;
+    }
   }
 
   private UpdateScore() {
