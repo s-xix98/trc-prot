@@ -28,6 +28,9 @@ model User {
   friendship2    Friendship[]    @relation("dest")
   auth           Auth?
   Rating         Rating[]
+  MatchHistory1  MatchHistory[]  @relation("player1")
+  MatchHistory2  MatchHistory[]  @relation("player2")
+  MatchHistory3  MatchHistory[]  @relation("winner")
 }
 
 model Auth {
@@ -146,4 +149,15 @@ model Rating {
   userData User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([rating(sort: Desc)], name: "rating_desc")
+}
+
+model MatchHistory {
+  id        Int      @id @default(autoincrement())
+  player1Id String
+  player2Id String
+  winnerId  String?
+  player1   User     @relation("player1", fields: [player1Id], references: [id])
+  player2   User     @relation("player2", fields: [player2Id], references: [id])
+  winner    User?    @relation("winner", fields: [winnerId], references: [id])
+  createdAt DateTime @default(now())
 }
