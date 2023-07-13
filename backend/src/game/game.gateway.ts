@@ -2,13 +2,13 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { UseFilters } from '@nestjs/common';
 
+import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
-import { PrismaService } from '../prisma/prisma.service';
-import { OnShutdownCallback, Scores } from './types';
+import { OnShutdownCallback } from './types';
 
 enum PlaySide {
   LEFT = 0,
@@ -117,9 +117,8 @@ export class GameGateway {
     const onShutdown: OnShutdownCallback = async (
       winner: Socket,
       loser: Socket,
-      scores: Scores,
     ) => {
-      console.log("onshutdown")
+      console.log('onshutdown');
       const winnerId = this.sockUserMap.get(winner.id);
       const loserId = this.sockUserMap.get(loser.id);
       if (!winnerId || !loserId) {
