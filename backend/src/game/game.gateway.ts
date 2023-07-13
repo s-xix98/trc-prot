@@ -7,6 +7,7 @@ import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
+import { PrismaService } from '../prisma/prisma.service';
 
 enum PlaySide {
   LEFT = 0,
@@ -23,6 +24,8 @@ export class GameGateway {
   private userSockMap = new Map<string, Socket>();
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
+
+  constructor(private prisma: PrismaService) {}
 
   handleConnection() {
     console.log('game connection');
