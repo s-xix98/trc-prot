@@ -8,6 +8,7 @@ import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
 import { PrismaService } from '../prisma/prisma.service';
+import { OnShutdownCallback, Scores } from './types';
 
 enum PlaySide {
   LEFT = 0,
@@ -81,7 +82,12 @@ export class GameGateway {
     this.matchedUsers.set(this.waitingUser.data.id, user);
     this.matchedUsers.set(user.id, this.waitingUser.data);
 
-    const game = new GameLogic(this.waitingUser.client, client);
+    const onShutdown: OnShutdownCallback = (
+      winner: Socket,
+      loser: Socket,
+      scores: Scores,
+    ) => {}
+    const game = new GameLogic(this.waitingUser.client, client, onShutdown);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
 

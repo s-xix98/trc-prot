@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle } from '../types';
+import { Ball, OnShutdownCallback, Paddle } from '../types';
 import {
   canvas,
   CreateBall,
@@ -31,8 +31,14 @@ export class GameLogic {
   private p2: Player;
   private intervalId: any;
   private matchPoint = MatchPoint;
+  private onShutdown: OnShutdownCallback;
 
-  constructor(sock1: Socket, sock2: Socket, ball: Ball = CreateBall()) {
+  constructor(
+    sock1: Socket,
+    sock2: Socket,
+    onShutdown: OnShutdownCallback,
+    ball: Ball = CreateBall(),
+  ) {
     this.ball = ball;
     this.p1 = {
       socket: sock1,
@@ -48,6 +54,7 @@ export class GameLogic {
       keyInputs: [],
       score: 0,
     };
+    this.onShutdown = onShutdown;
   }
 
   ReadyGame(client: Socket) {
