@@ -25,12 +25,15 @@ export default function Fa() {
   const sendConfirm = () => {
     const dto = {
       twoFaCode: confirm,
-    }
-    axios.post('/auth/2fa/confirm', dto).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    });
+    };
+    axios
+      .post('/auth/2fa/confirm', dto)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -39,10 +42,10 @@ export default function Fa() {
       <button onClick={sendGenerate}>2fa/generate</button>
 
       <input
-          value={confirm}
-          onChange={(event) => setConfirm(event.target.value)}
-        />
-        <button onClick={sendConfirm}>confirm</button>
+        value={confirm}
+        onChange={(event) => setConfirm(event.target.value)}
+      />
+      <button onClick={sendConfirm}>confirm</button>
     </div>
   );
 }
