@@ -1,3 +1,5 @@
+import { Socket } from 'socket.io';
+
 export type Ball = {
   x: number;
   y: number;
@@ -14,3 +16,9 @@ export type Paddle = {
 };
 
 export type Scores = { left: number; right: number };
+
+export type OnShutdownCallback = (
+  winner: Socket,
+  loser: Socket,
+  scores: Scores,
+) => void;
