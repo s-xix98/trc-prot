@@ -17,6 +17,38 @@ enum PlaySide {
 
 type PlayerData = { client: Socket; data: UserInfo };
 
+const UpdateRatingTable = async (
+  winner: string,
+  loser: string,
+  prisma: PrismaService,
+) => {
+  await prisma.rating.upsert({
+    where: {
+      userId: winner,
+    },
+    update: {
+      rating: { increment: 1 },
+    },
+    create: {
+      userId: winner,
+      rating: 1,
+    },
+  });
+
+  await prisma.rating.upsert({
+    where: {
+      userId: loser,
+    },
+    update: {
+      rating: { increment: -1 },
+    },
+    create: {
+      userId: loser,
+      rating: -1,
+    },
+  });
+};
+
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
@@ -82,11 +114,19 @@ export class GameGateway {
     this.matchedUsers.set(this.waitingUser.data.id, user);
     this.matchedUsers.set(user.id, this.waitingUser.data);
 
-    const onShutdown: OnShutdownCallback = (
+    const onShutdown: OnShutdownCallback = async (
       winner: Socket,
       loser: Socket,
       scores: Scores,
-    ) => {}
+    ) => {
+      console.log("onshutdown")
+      const winnerId = this.sockUserMap.get(winner.id);
+      const loserId = this.sockUserMap.get(loser.id);
+      if (!winnerId || !loserId) {
+        return;
+      }
+      UpdateRatingTable(winnerId, loserId, this.prisma);
+    };
     const game = new GameLogic(this.waitingUser.client, client, onShutdown);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
