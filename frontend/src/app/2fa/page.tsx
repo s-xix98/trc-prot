@@ -7,7 +7,7 @@ import { useSessionAxios } from '@/hooks/useSessionAxios';
 
 export default function Fa() {
   const [qrcode, setqrcode] = useState<string>('');
-  const [confirm, setConfirm] = useState<string>('');
+  const [enable, setEnable] = useState<string>('');
 
   const axios = useSessionAxios();
   const sendGenerate = () => {
@@ -22,12 +22,12 @@ export default function Fa() {
       });
   };
 
-  const sendConfirm = () => {
+  const sendEnable = () => {
     const dto = {
-      twoFaCode: confirm,
+      twoFaCode: enable,
     };
     axios
-      .post('/auth/2fa/confirm', dto)
+      .post('/auth/2fa/enable', dto)
       .then((res) => {
         console.log(res);
       })
@@ -42,10 +42,10 @@ export default function Fa() {
       <button onClick={sendGenerate}>2fa/generate</button>
 
       <input
-        value={confirm}
-        onChange={(event) => setConfirm(event.target.value)}
+        value={enable}
+        onChange={(event) => setEnable(event.target.value)}
       />
-      <button onClick={sendConfirm}>confirm</button>
+      <button onClick={sendEnable}>enable</button>
     </div>
   );
 }

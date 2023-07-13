@@ -83,13 +83,10 @@ export class AuthController {
     });
   }
 
-  @Post('2fa/confirm')
+  @Post('2fa/enable')
   @UseGuards(JwtAuthGuard)
-  async confirmTwoFa(
-    @Request() req: any,
-    @Body() dto: TwoFaDto,
-  ): Promise<void> {
-    console.log('2fa/confirm', req.user, dto);
-    await this.authService.confirmTwoFa(req.user.userId, dto.twoFaCode);
+  async enableTwoFa(@Request() req: any, @Body() dto: TwoFaDto): Promise<void> {
+    console.log('2fa/enable', req.user, dto);
+    await this.authService.enableTwoFa(req.user.userId, dto.twoFaCode);
   }
 }
