@@ -129,11 +129,25 @@ export class ChatGateway {
   async banRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banRoomMember', dto);
 
-    const target = await this.chatService.findRoomMemberWithAdminCheck(
+    const admin = await this.chatService.findRoomMember(
       dto.chatRoomId,
       dto.userId,
+    );
+
+    if (admin === null || admin.role === 'USER') {
+      throw new Error('You are not ADMIN || OWNER');
+    }
+
+    const target = await this.chatService.findRoomMember(
+      dto.chatRoomId,
       dto.targetId,
     );
+
+    if (target === null) {
+      throw new Error('Target is not found');
+    } else if (target.role === 'OWNER') {
+      throw new Error('You can not ban or mute OWNER');
+    }
 
     await this.chatService.upsertRoomMemberState(dto, 'BANNED');
 
@@ -155,11 +169,25 @@ export class ChatGateway {
   async muteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('muteRoomMember', dto);
 
-    await this.chatService.findRoomMemberWithAdminCheck(
+    const admin = await this.chatService.findRoomMember(
       dto.chatRoomId,
       dto.userId,
+    );
+
+    if (admin === null || admin.role === 'USER') {
+      throw new Error('You are not ADMIN || OWNER');
+    }
+
+    const target = await this.chatService.findRoomMember(
+      dto.chatRoomId,
       dto.targetId,
     );
+
+    if (target === null) {
+      throw new Error('Target is not found');
+    } else if (target.role === 'OWNER') {
+      throw new Error('You can not ban or mute OWNER');
+    }
 
     await this.chatService.upsertRoomMemberState(dto, 'MUTED');
   }
@@ -168,11 +196,25 @@ export class ChatGateway {
   async kickRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('kickRoomMember', dto);
 
-    const target = await this.chatService.findRoomMemberWithAdminCheck(
+    const admin = await this.chatService.findRoomMember(
       dto.chatRoomId,
       dto.userId,
+    );
+
+    if (admin === null || admin.role === 'USER') {
+      throw new Error('You are not ADMIN || OWNER');
+    }
+
+    const target = await this.chatService.findRoomMember(
+      dto.chatRoomId,
       dto.targetId,
     );
+
+    if (target === null) {
+      throw new Error('Target is not found');
+    } else if (target.role === 'OWNER') {
+      throw new Error('You can not ban or mute OWNER');
+    }
 
     const { count } = await this.prisma.roomMember.deleteMany({
       where: {

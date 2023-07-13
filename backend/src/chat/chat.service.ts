@@ -233,26 +233,4 @@ export class ChatService {
 
     return memberState;
   }
-
-  async findRoomMemberWithAdminCheck(
-    chatRoomId: string,
-    userId: string,
-    targetId: string,
-  ) {
-    const admin = await this.findRoomMember(chatRoomId, userId);
-
-    if (admin === null || admin.role === 'USER') {
-      throw new Error('You are not ADMIN || OWNER');
-    }
-
-    const target = await this.findRoomMember(chatRoomId, targetId);
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
-    }
-
-    return target;
-  }
 }
