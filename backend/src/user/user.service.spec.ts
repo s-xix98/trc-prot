@@ -4,9 +4,9 @@ import { testUser } from 'src/test/types/test.types';
 import { TestModule } from '../test/test.module';
 import { TestService } from '../test/test.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthModule } from '../auth/auth.module';
 
 import { UserService } from './user.service';
-import { AuthModule } from '../auth/auth.module';
 
 const USERNUM = 10;
 

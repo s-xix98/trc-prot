@@ -3,9 +3,9 @@ import { User } from '@prisma/client';
 import { io, Socket } from 'socket.io-client';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthService } from '../auth/auth.service';
 
 import { testUser } from './types/test.types';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class TestService {

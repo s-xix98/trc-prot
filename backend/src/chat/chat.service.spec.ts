@@ -4,6 +4,7 @@ import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestService } from '../test/test.service';
 import { testUser } from '../test/types/test.types';
+import { AuthModule } from '../auth/auth.module';
 
 import { ChatService } from './chat.service';
 import {
@@ -11,7 +12,6 @@ import {
   JoinChannelDto,
   UpdateRoomMemberRoleDto,
 } from './dto/Channel.dto';
-import { AuthModule } from '../auth/auth.module';
 
 const USERNUM = 10;
 

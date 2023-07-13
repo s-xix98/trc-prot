@@ -10,12 +10,12 @@ import { testUser } from '../test/types/test.types';
 import { TestService } from '../test/test.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { AuthModule } from '../auth/auth.module';
 
 import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
-import { AuthModule } from '../auth/auth.module';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 

@@ -3,9 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthModule } from '../auth/auth.module';
 
 import { TestService } from './test.service';
-import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [PrismaModule, ConfigModule, AuthModule],

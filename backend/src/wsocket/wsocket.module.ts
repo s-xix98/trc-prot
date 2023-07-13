@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 
-import { WsocketGateway } from './wsocket.gateway';
 import { AuthModule } from '../auth/auth.module';
+
+import { WsocketGateway } from './wsocket.gateway';
 
 @Module({
   imports: [AuthModule],

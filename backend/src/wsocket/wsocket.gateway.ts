@@ -4,9 +4,9 @@ import { WebSocketServer } from '@nestjs/websockets';
 import { UseFilters } from '@nestjs/common';
 
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
+import { AuthService } from '../auth/auth.service';
 
 import { generatePrefixedId, roomType } from './utils';
-import { AuthService } from '../auth/auth.service';
 
 @WebSocketGateway({
   cors: {
