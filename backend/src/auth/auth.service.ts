@@ -20,6 +20,10 @@ export class AuthService {
     private readonly prismaService: PrismaService,
   ) {}
 
+  async verifyJwt(token: any) {
+    return this.jwtService.verifyAsync(token);
+  }
+
   async providerLogin(auser: authUser): Promise<accessToken> {
     const user = await this.prismaService.auth.findUnique({
       include: {
