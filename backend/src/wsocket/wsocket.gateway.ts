@@ -6,6 +6,7 @@ import { UseFilters } from '@nestjs/common';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { generatePrefixedId, roomType } from './utils';
+import { AuthService } from '../auth/auth.service';
 
 @WebSocketGateway({
   cors: {
@@ -16,6 +17,41 @@ import { generatePrefixedId, roomType } from './utils';
 export class WsocketGateway {
   @WebSocketServer()
   server: Server;
+  private socketMap: Map<Socket, string> = new Map();
+  private userMap: Map<string, Socket> = new Map();
+
+  constructor(private auth: AuthService) {}
+
+  async handleConnection(client: Socket) {
+    console.log('handleConnection ws gateway', client.id);
+
+    const token = client.handshake.auth.token;
+    if (token === undefined) {
+      client.disconnect();
+      return;
+    }
+
+    try {
+      const payload = await this.auth.verifyJwt(token);
+      this.socketMap.set(client, payload.userId);
+      this.userMap.set(payload.userId, client);
+    } catch (err) {
+      console.log(err);
+      client.disconnect();
+    }
+  }
+
+  handleDisconnect(client: Socket) {
+    console.log('handleDisconnect ws gateway', client.id);
+
+    const userId = this.socketMap.get(client);
+
+    this.socketMap.delete(client);
+
+    if (userId !== undefined) {
+      this.userMap.delete(userId);
+    }
+  }
 
   JoinRoom(client: Socket, prefix: roomType, id: string) {
     const prefixedId = generatePrefixedId(prefix, id);

@@ -26,5 +26,6 @@ import { FtStrategy } from './strategy/ft.strategy';
 
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, GoogleStrategy, FtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}
