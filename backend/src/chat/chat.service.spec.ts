@@ -4,6 +4,7 @@ import { TestModule } from '../test/test.module';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestService } from '../test/test.service';
 import { testUser } from '../test/types/test.types';
+import { AuthModule } from '../auth/auth.module';
 
 import { ChatService } from './chat.service';
 import {
@@ -21,7 +22,7 @@ describe('ChatService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
+      imports: [TestModule, AuthModule],
       providers: [ChatService, PrismaService, TestService],
     }).compile();
 

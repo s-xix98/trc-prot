@@ -3,18 +3,20 @@ import { User } from '@prisma/client';
 import { io, Socket } from 'socket.io-client';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthService } from '../auth/auth.service';
 
 import { testUser } from './types/test.types';
 
 @Injectable()
 export class TestService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private authService: AuthService,
+  ) {}
 
   async createTestUsersWithSockets(n: number): Promise<testUser[]> {
     const testUsers: testUser[] = [];
     for (let i = 0; i < n; i++) {
-      const socket: Socket = io('http://localhost:8001');
-
       const user: User = await this.prismaService.user.upsert({
         where: {
           email: `TestUser${i}@test.com`,
@@ -27,6 +29,8 @@ export class TestService {
         },
       });
 
+      const token = await this.authService.generateJwt(user.id, user.username);
+      const socket: Socket = io('http://localhost:8001', { auth: { token } });
       testUsers.push({ user, socket });
     }
     return testUsers;

@@ -4,6 +4,7 @@ import { testUser } from 'src/test/types/test.types';
 import { TestModule } from '../test/test.module';
 import { TestService } from '../test/test.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthModule } from '../auth/auth.module';
 
 import { UserService } from './user.service';
 
@@ -17,7 +18,7 @@ describe('UserService', () => {
   // 初期化
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
+      imports: [TestModule, AuthModule],
       providers: [UserService, TestService, PrismaService],
     }).compile();
 

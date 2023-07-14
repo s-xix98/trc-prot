@@ -7,6 +7,7 @@ import { TestService } from '../test/test.service';
 import { testUser } from '../test/types/test.types';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
+import { AuthModule } from '../auth/auth.module';
 
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
@@ -35,7 +36,7 @@ describe('UserGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
+      imports: [TestModule, AuthModule],
       providers: [UserGateway, PrismaService, TestService, UserService],
     }).compile();
 

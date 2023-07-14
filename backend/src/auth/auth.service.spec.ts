@@ -7,6 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 import { AuthService } from './auth.service';
 import { signUpDto } from './dto/signUp.dto';
+import { AuthModule } from './auth.module';
 
 const dto: signUpDto = {
   email: 'signUp@example.com',
@@ -19,7 +20,7 @@ describe('AuthService', () => {
   let prismaService: PrismaService;
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule],
+      imports: [TestModule, AuthModule],
       providers: [AuthService, JwtService],
     }).compile();
 
