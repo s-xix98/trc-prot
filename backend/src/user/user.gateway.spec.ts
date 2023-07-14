@@ -8,11 +8,11 @@ import { testUser } from '../test/types/test.types';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
 import { AuthModule } from '../auth/auth.module';
+import { WsocketModule } from '../wsocket/wsocket.module';
 
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { WsocketModule } from '../wsocket/wsocket.module';
 
 const USERNUM = 10;
 

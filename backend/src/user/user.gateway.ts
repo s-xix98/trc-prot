@@ -1,15 +1,14 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { map, pick } from 'lodash';
 import { UseFilters } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
+import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 @WebSocketGateway({
   cors: {
