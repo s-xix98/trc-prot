@@ -213,7 +213,7 @@ export class ChatService {
     dto: RoomMemberRestrictionDto,
     state: 'BANNED' | 'MUTED',
   ) {
-    const memberState = this.prismaService.userChatState.upsert({
+    const memberState = await this.prismaService.userChatState.upsert({
       where: {
         chatRoomId_userId_userState: {
           chatRoomId: dto.chatRoomId,
@@ -240,7 +240,7 @@ export class ChatService {
     userId: string,
     state: 'BANNED' | 'MUTED',
   ) {
-    const memberState = this.prismaService.userChatState.findUnique({
+    const memberState = await this.prismaService.userChatState.findUnique({
       where: {
         chatRoomId_userId_userState: {
           chatRoomId: roomId,
