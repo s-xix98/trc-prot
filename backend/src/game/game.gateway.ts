@@ -2,11 +2,13 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { UseFilters } from '@nestjs/common';
 
+import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
+import { OnShutdownCallback } from './types';
 
 enum PlaySide {
   LEFT = 0,
@@ -14,6 +16,38 @@ enum PlaySide {
 }
 
 type PlayerData = { client: Socket; data: UserInfo };
+
+const UpdateRatingTable = async (
+  winner: string,
+  loser: string,
+  prisma: PrismaService,
+) => {
+  await prisma.rating.upsert({
+    where: {
+      userId: winner,
+    },
+    update: {
+      rating: { increment: 1 },
+    },
+    create: {
+      userId: winner,
+      rating: 1,
+    },
+  });
+
+  await prisma.rating.upsert({
+    where: {
+      userId: loser,
+    },
+    update: {
+      rating: { increment: -1 },
+    },
+    create: {
+      userId: loser,
+      rating: -1,
+    },
+  });
+};
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
@@ -23,6 +57,8 @@ export class GameGateway {
   private userSockMap = new Map<string, Socket>();
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
+
+  constructor(private prisma: PrismaService) {}
 
   handleConnection() {
     console.log('game connection');
@@ -78,7 +114,19 @@ export class GameGateway {
     this.matchedUsers.set(this.waitingUser.data.id, user);
     this.matchedUsers.set(user.id, this.waitingUser.data);
 
-    const game = new GameLogic(this.waitingUser.client, client);
+    const onShutdown: OnShutdownCallback = async (
+      winner: Socket,
+      loser: Socket,
+    ) => {
+      console.log('onshutdown');
+      const winnerId = this.sockUserMap.get(winner.id);
+      const loserId = this.sockUserMap.get(loser.id);
+      if (!winnerId || !loserId) {
+        return;
+      }
+      UpdateRatingTable(winnerId, loserId, this.prisma);
+    };
+    const game = new GameLogic(this.waitingUser.client, client, onShutdown);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
 
