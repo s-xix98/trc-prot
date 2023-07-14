@@ -46,9 +46,8 @@ export class WsocketGateway {
 
     const userId = this.socketMap.get(client);
 
-    this.socketMap.delete(client);
-
     if (userId !== undefined) {
+      this.socketMap.delete(client);
       this.userMap.delete(userId);
     }
   }
