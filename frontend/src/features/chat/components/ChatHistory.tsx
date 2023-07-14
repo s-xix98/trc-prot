@@ -3,11 +3,10 @@ import { useState } from 'react';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { Container } from '@/components/Layout/Container';
 import { useModal } from '@/hooks/useModal';
-import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { handleMessageDto } from '../types/MessageDto';
 
-import { UserProfile } from '../../user/components/UserProfile';
+import { UserProfileModal } from '../../user/components/UserProfile';
 import { UserInfo } from '../../../features/user/types/UserDto';
 
 export const ChatHistory = ({
@@ -24,14 +23,11 @@ export const ChatHistory = ({
     <Container flexDirection={'column'}>
       <ContainerItem overflowY={'scroll'}>
         {selectUser && (
-          <ModalView
+          <UserProfileModal
+            userInfo={selectUser}
             modalIsOpen={modalIsOpen}
             closeModal={closeModal}
-            height="50%"
-            width="30%"
-          >
-            <UserProfile userInfo={selectUser} />
-          </ModalView>
+          />
         )}
         {chatHistMsgs.map((msgDto, idx) => (
           <p

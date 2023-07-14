@@ -1,16 +1,42 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useAtomValue } from 'jotai';
 
-import { socket } from '@/socket';
+import { socketAtom } from '@/stores/jotai';
 
-// eslint-disable-next-line
-export const useSocket = (ev: string, listener: (...args: any[]) => void) => {
+export const useSessionSocket = (
+  ev: string,
+  // eslint-disable-next-line
+  listener: (...args: any[]) => void,
+) => {
+  const sessionSocket = useAtomValue(socketAtom);
+
   useEffect(() => {
-    socket.on(ev, listener);
+    if (sessionSocket === undefined) {
+      return;
+    }
+
+    sessionSocket.on(ev, listener);
 
     return () => {
-      socket.off(ev, listener);
+      sessionSocket.off(ev, listener);
     };
-  }, [ev, listener]);
+  }, [ev, listener, sessionSocket]);
+};
+
+export const useSessionSocketEmitter = () => {
+  const sessionSocket = useAtomValue(socketAtom);
+
+  // eslint-disable-next-line
+  const emit = (eventName: string, ...data: any[]) => {
+    if (sessionSocket === undefined) {
+      console.log('socket is undef');
+      return;
+    }
+
+    sessionSocket.emit(eventName, ...data);
+  };
+
+  return { emit };
 };

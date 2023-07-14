@@ -18,6 +18,8 @@ model User {
   username       String          @unique @default(uuid())
   email          String          @unique
   hashedPassword String?
+  base64Image    Bytes?
+  twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
@@ -25,6 +27,10 @@ model User {
   friendship1    Friendship[]    @relation("src")
   friendship2    Friendship[]    @relation("dest")
   auth           Auth?
+  Rating         Rating[]
+  MatchHistory1  MatchHistory[]  @relation("player1")
+  MatchHistory2  MatchHistory[]  @relation("player2")
+  MatchHistory3  MatchHistory[]  @relation("winner")
 }
 
 model Auth {
@@ -46,7 +52,6 @@ model AuthProvider {
 model UserProfile {
   userId String @id
   // TODO デフォのバイナリを入れたいけどサイズやデフォ画像が決まってないので？をつけた
-  image  Bytes?
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -136,4 +141,23 @@ enum UserRole {
 enum UserChatStateCode {
   BANNED
   MUTED
+}
+
+model Rating {
+  userId   String @id
+  rating   Int    @default(0)
+  userData User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([rating(sort: Desc)], name: "rating_desc")
+}
+
+model MatchHistory {
+  id        Int      @id @default(autoincrement())
+  player1Id String
+  player2Id String
+  winnerId  String?
+  player1   User     @relation("player1", fields: [player1Id], references: [id])
+  player2   User     @relation("player2", fields: [player2Id], references: [id])
+  winner    User?    @relation("winner", fields: [winnerId], references: [id])
+  createdAt DateTime @default(now())
 }

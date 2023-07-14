@@ -1,27 +1,26 @@
 import { useAtomValue } from 'jotai';
 
 import { userInfoAtom } from '@/stores/jotai';
-import { socket } from '@/socket';
+import { useSessionSocketEmitter } from '@/hooks/useSocket';
 
 import { joinChannelDto } from '../types/joinChannelDto';
 
-const emitJoinChannel = (userId: string, chatRoomId: string) => {
-  const dto: joinChannelDto = {
-    userId,
-    chatRoomId,
-  };
-  socket.emit('joinChannel', dto);
-};
-
 export const useJoinChannel = () => {
   const userinfo = useAtomValue(userInfoAtom);
+  const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (chatRoomId: string) => {
     if (userinfo === undefined) {
       console.log('userinfo is undef');
       return;
     }
-    emitJoinChannel(userinfo.id, chatRoomId);
+
+    const dto: joinChannelDto = {
+      userId: userinfo.id,
+      chatRoomId: chatRoomId,
+    };
+
+    sessionSocketEmitter.emit('joinChannel', dto);
   };
 
   return { emit };

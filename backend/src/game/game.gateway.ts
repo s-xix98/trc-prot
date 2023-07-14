@@ -19,11 +19,10 @@ type PlayerData = { client: Socket; data: UserInfo };
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
   private matchedUsers = new Map<string, UserInfo>();
+  private userGameMap = new Map<string, GameLogic>();
   private userSockMap = new Map<string, Socket>();
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
-
-  private game: GameLogic | undefined;
 
   handleConnection() {
     console.log('game connection');
@@ -51,6 +50,12 @@ export class GameGateway {
     this.matchedUsers.delete(selfUserId);
     this.matchedUsers.delete(enemyUser.id);
 
+    // TODO とりあえずどちらか一方でもDCしたら即終了して削除してる
+    //  あとあとディスコネした方のペナルティとかに変えたい　変えないかもだけど
+    this.userGameMap.get(selfUserId)?.EndGame();
+    this.userGameMap.delete(selfUserId);
+    this.userGameMap.delete(enemyUser.id);
+
     this.userSockMap.delete(selfUserId);
     this.userSockMap.delete(enemyUser.id);
 
@@ -72,6 +77,10 @@ export class GameGateway {
     }
     this.matchedUsers.set(this.waitingUser.data.id, user);
     this.matchedUsers.set(user.id, this.waitingUser.data);
+
+    const game = new GameLogic(this.waitingUser.client, client);
+    this.userGameMap.set(this.waitingUser.data.id, game);
+    this.userGameMap.set(user.id, game);
 
     this.userSockMap.set(this.waitingUser.data.id, this.waitingUser.client);
     this.sockUserMap.set(this.waitingUser.client.id, this.waitingUser.data.id);
@@ -122,31 +131,31 @@ export class GameGateway {
 
   @SubscribeMessage('start game')
   StartGame(client: Socket) {
-    console.log('create game');
-    if (this.game) {
+    console.log('start game');
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
       return;
     }
-    // 一旦同じクライアントを登録。マルチプレイ対応したら直す
-    this.game = new GameLogic(client, client);
-    this.game.StartGame();
-  }
-
-  @SubscribeMessage('end game')
-  EndGame() {
-    console.log('end game');
-    this.game?.EndGame();
-    this.game = undefined;
+    this.userGameMap.get(userid)?.ReadyGame(client);
   }
 
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
-    this.game?.HandleKeyPress(key);
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
+      return;
+    }
+    this.userGameMap.get(userid)?.HandleKeyPress(client, key);
   }
 
   @SubscribeMessage('key release')
   handleKeyRelease(client: Socket, key: Keys) {
     console.log('release', key);
-    this.game?.HandleKeyRelease(key);
+    const userid = this.sockUserMap.get(client.id);
+    if (userid === undefined) {
+      return;
+    }
+    this.userGameMap.get(userid)?.HandleKeyRelease(client, key);
   }
 }

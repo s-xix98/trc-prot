@@ -78,7 +78,7 @@ class UserInteractionManager:
         self.screenshot("create_chat_room before")
 
         page.get_by_text("ChannelCreate").click()
-        page.get_by_placeholder("ChannelName").fill(room_name)
+        page.get_by_placeholder("roomName").fill(room_name)
         page.get_by_role("button", name="create").click()
 
         self.screenshot("create_chat_room after")

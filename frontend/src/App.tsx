@@ -5,7 +5,7 @@ import { useSetAtom } from 'jotai';
 import { Chat } from './features/chat/components/Chat';
 import { Game } from './features/game/Game';
 import { MainLayout } from './components/Layout/MainLayout';
-import { useSocket } from './hooks/useSocket';
+import { useSessionSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { UserSearch } from './features/user/components/Search';
 import { channelListAtom } from './stores/jotai';
@@ -27,24 +27,24 @@ function App() {
   const { userInfo } = useCurrentUser();
   const setChannelList = useSetAtom(channelListAtom);
 
-  useSocket('addRoom', (data) => {
+  useSessionSocket('addRoom', (data) => {
     console.log('addRoom', data);
     setChannelList((prev) => [...prev, data]);
   });
 
-  useSocket('friendRequest', (data) => {
+  useSessionSocket('friendRequest', (data) => {
     // friendRequestの処理を書く
     console.log('friendRequest', data);
   });
 
-  useSocket('error', (data) => {
+  useSessionSocket('error', (data) => {
     console.log(data);
   });
 
-  useSocket('connect', onConnect);
-  useSocket('disconnect', onDisconnect);
+  useSessionSocket('connect', onConnect);
+  useSessionSocket('disconnect', onDisconnect);
 
-  // useSocket()
+  //useSessionSocket()
 
   const commandElemMap = new Map<string, JSX.Element>();
 
@@ -53,6 +53,7 @@ function App() {
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
+  commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);
   commandElemMap.set('./search', <UserSearch />);
@@ -61,7 +62,6 @@ function App() {
 
   return (
     <MainLayout>
-      {!userInfo && <h1>GO LOGIN PAGE</h1>}
       {userInfo && <Terminal commandElemMap={commandElemMap} />}
     </MainLayout>
   );
