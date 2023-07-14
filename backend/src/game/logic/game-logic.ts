@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, Paddle } from '../types';
+import { Ball, OnShutdownCallback, Paddle } from '../types';
 import {
   canvas,
   CreateBall,
@@ -31,8 +31,14 @@ export class GameLogic {
   private p2: Player;
   private intervalId: any;
   private matchPoint = MatchPoint;
+  private onShutdown: OnShutdownCallback;
 
-  constructor(sock1: Socket, sock2: Socket, ball: Ball = CreateBall()) {
+  constructor(
+    sock1: Socket,
+    sock2: Socket,
+    onShutdown: OnShutdownCallback,
+    ball: Ball = CreateBall(),
+  ) {
     this.ball = ball;
     this.p1 = {
       socket: sock1,
@@ -48,6 +54,7 @@ export class GameLogic {
       keyInputs: [],
       score: 0,
     };
+    this.onShutdown = onShutdown;
   }
 
   ReadyGame(client: Socket) {
@@ -107,9 +114,18 @@ export class GameLogic {
   }
 
   EndGame() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
+    if (!this.intervalId) {
+      return;
     }
+    clearInterval(this.intervalId);
+    const players = this.GetWinnerLoserPair();
+    if (players === null) {
+      return;
+    }
+    this.onShutdown(players.winner.socket, players.loser.socket, {
+      left: this.p1.score,
+      right: this.p2.score,
+    });
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む
@@ -187,19 +203,9 @@ export class GameLogic {
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
 
-    let winner: Socket;
-    let loser: Socket;
-
-    if (this.p1.score == this.matchPoint) {
-      winner = this.p1.socket;
-      loser = this.p2.socket;
-    } else {
-      winner = this.p2.socket;
-      loser = this.p1.socket;
-    }
-    winner.emit('game win', this.ConvertToGameDto());
-    loser.emit('game lose', this.ConvertToGameDto());
-    this.p1.score = this.p2.score = 0;
+    const players = this.GetWinnerLoserPair();
+    players?.winner.socket.emit('game win', this.ConvertToGameDto());
+    players?.loser.socket.emit('game lose', this.ConvertToGameDto());
   }
 
   private Restart() {
@@ -212,11 +218,21 @@ export class GameLogic {
     setTimeout(this.StartGame.bind(this), 500);
   }
 
+  private GetWinnerLoserPair() {
+    if (this.p1.score == this.matchPoint) {
+      return { winner: this.p1, loser: this.p2 };
+    } else if (this.p2.score == this.matchPoint) {
+      return { winner: this.p2, loser: this.p1 };
+    } else {
+      return null;
+    }
+  }
+
   private UpdateScore() {
     if (this.ball.x <= 0) {
       this.p2.score++;
     } else if (this.ball.x >= 1) {
-      this.p2.score++;
+      this.p1.score++;
     }
   }
 
