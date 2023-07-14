@@ -20,6 +20,10 @@ export class AuthService {
     private readonly prismaService: PrismaService,
   ) {}
 
+  decodeJwt(token: any) {
+    return this.jwtService.decode(token);
+  }
+
   async verifyJwt(token: any) {
     return this.jwtService.verifyAsync(token);
   }
