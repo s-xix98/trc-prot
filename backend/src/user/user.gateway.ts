@@ -9,6 +9,7 @@ import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
+import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 @WebSocketGateway({
   cors: {
@@ -20,53 +21,30 @@ export class UserGateway {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
+    private server: WsocketGateway,
   ) {}
 
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
 
     // 接続時にfriendRequestをfrontに送る。
-    // 現状接続してきたuserのidを取得できないからhugaへのfriendRequestを送る
-    const huga = await this.prisma.user.findUnique({
-      where: { username: 'huga' },
-    });
-    const piyo = await this.prisma.user.findUnique({
-      where: { username: 'piyo' },
-    });
-
-    if (!huga || !piyo) {
+    const userId = this.server.extractUserIdFromToken(client);
+    if (!userId) {
       return;
     }
 
-    await this.prisma.friendship.upsert({
-      where: {
-        srcUserId_destUserId: {
-          srcUserId: piyo.id,
-          destUserId: huga.id,
-        },
-      },
-      update: {},
-      create: {
-        srcUserId: piyo.id,
-        destUserId: huga.id,
-        status: 'Requested',
-      },
-    });
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return;
+    }
 
-    const friendRequests = await this.prisma.friendship.findMany({
-      include: {
-        srcUser: true,
-      },
-      where: {
-        destUserId: huga.id,
-      },
-    });
+    const blockUsers = await this.userService.getBlockUsers(userId);
+    const friends = await this.userService.getFriends(userId);
+    const friendRequests = await this.userService.getFriendRequests(userId);
 
-    const sender = map(friendRequests, 'srcUser');
-    client.emit(
-      'friendRequest',
-      map(sender, (user) => pick(user, 'id', 'username')),
-    );
+    client.emit('blockUsers', blockUsers);
+    client.emit('friends', friends);
+    client.emit('friendRequests', friendRequests);
   }
 
   handleDisconnect(client: Socket) {
