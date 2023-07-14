@@ -7,6 +7,7 @@ import {
   Post,
   UseGuards,
   Request,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -87,6 +88,16 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async enableTwoFa(@Request() req: any, @Body() dto: TwoFaDto): Promise<void> {
     console.log('2fa/enable', req.user, dto);
-    await this.authService.enableTwoFa(req.user.userId, dto.twoFaCode);
+
+    const isValid = await this.authService.isTwoFaCodeValidForUser(
+      dto.twoFaCode,
+      req.user.userId,
+    );
+
+    if (!isValid) {
+      throw new ForbiddenException();
+    }
+
+    await this.authService.enableTwoFa(req.user.userId);
   }
 }
