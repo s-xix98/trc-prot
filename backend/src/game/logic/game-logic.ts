@@ -216,7 +216,7 @@ export class GameLogic {
     if (this.ball.x <= 0) {
       this.p2.score++;
     } else if (this.ball.x >= 1) {
-      this.p2.score++;
+      this.p1.score++;
     }
   }
 
