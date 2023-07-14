@@ -8,7 +8,7 @@ import { UserInfo } from '../user/types/userInfo';
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
-
+import { RoomMemberRestrictionDto } from './dto/Channel.dto';
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -207,5 +207,49 @@ export class ChatService {
         role: dto.role,
       },
     });
+  }
+
+  async upsertRoomMemberState(
+    dto: RoomMemberRestrictionDto,
+    state: 'BANNED' | 'MUTED',
+  ) {
+    const memberState = await this.prismaService.userChatState.upsert({
+      where: {
+        chatRoomId_userId_userState: {
+          chatRoomId: dto.chatRoomId,
+          userId: dto.targetId,
+          userState: state,
+        },
+      },
+      update: {
+        endedAt: dto.endedAt,
+      },
+      create: {
+        chatRoomId: dto.chatRoomId,
+        userId: dto.targetId,
+        userState: state,
+        endedAt: dto.endedAt,
+      },
+    });
+
+    return memberState;
+  }
+
+  async findRoomMemberState(
+    roomId: string,
+    userId: string,
+    state: 'BANNED' | 'MUTED',
+  ) {
+    const memberState = await this.prismaService.userChatState.findUnique({
+      where: {
+        chatRoomId_userId_userState: {
+          chatRoomId: roomId,
+          userId: userId,
+          userState: state,
+        },
+      },
+    });
+
+    return memberState;
   }
 }
