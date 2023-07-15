@@ -1,12 +1,10 @@
-import { useAtomValue } from 'jotai';
-
-import { userInfoAtom } from '@/stores/jotai';
 import { useSessionSocketEmitter } from '@/hooks/useSocket';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { friendshipDto } from '../types/FriendshipDto';
 
 export const useBlockRequestSender = () => {
-  const userInfo = useAtomValue(userInfoAtom);
+  const { userInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (targetUserId: string) => {
