@@ -66,4 +66,12 @@ export class WsocketGateway {
     const prefixedId = generatePrefixedId(prefix, id);
     return this.server.to(prefixedId);
   }
+
+  getSocket(userId: string) {
+    return this.userMap.get(userId);
+  }
+
+  getUserId(client: Socket) {
+    return this.socketMap.get(client);
+  }
 }
