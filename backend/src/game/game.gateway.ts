@@ -95,7 +95,7 @@ export class GameGateway {
   @SubscribeMessage('matchmake')
   matchmake(client: Socket, user: UserInfo) {
     console.log('matchmake', user.username);
-    if (this.matchedUsers.has(user.id)) {
+    if (this.userGameMap.has(user.id)) {
       client.emit('already playing');
       return;
     }
@@ -123,8 +123,8 @@ export class GameGateway {
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
 
-    this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
     client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
+    this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
     this.waitingUser = undefined;
   }
 
