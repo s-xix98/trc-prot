@@ -26,8 +26,13 @@ export class UserGateway {
   async handleConnection(client: Socket) {
     console.log('handleConnection', client.id);
 
+    const token = client.handshake.auth.token;
+    if (!token) {
+      return;
+    }
+
     // 接続時にfriendRequestをfrontに送る。
-    const userId = this.server.extractUserIdFromToken(client);
+    const userId = this.server.extractUserIdFromToken(token);
     if (!userId) {
       return;
     }

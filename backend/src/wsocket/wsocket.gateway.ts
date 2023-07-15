@@ -75,15 +75,15 @@ export class WsocketGateway {
     return this.socketMap.get(client);
   }
 
-  extractUserIdFromToken(client: Socket): string | null {
-    const token = client.handshake.auth.token;
-    const decodedToken = this.auth.decodeJwt(token);
+  extractUserIdFromToken(token: string): string | null {
+    const decoded = this.auth.decodeJwt(token);
+
     if (
-      decodedToken !== null &&
-      typeof decodedToken === 'object' &&
-      'userId' in decodedToken
+      decoded !== null &&
+      typeof decoded === 'object' &&
+      'userId' in decoded
     ) {
-      return decodedToken.userId;
+      return decoded.userId;
     }
 
     return null;
