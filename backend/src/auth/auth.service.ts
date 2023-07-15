@@ -155,6 +155,45 @@ export class AuthService {
     return { base64: qrCode };
   }
 
+  async enableTwoFa(userId: string): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        twoFaEnabled: true,
+      },
+    });
+  }
+
+  async isTwoFaCodeValidForUser(
+    twoFaCode: string,
+    userId: string,
+  ): Promise<boolean> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (
+      !user ||
+      !user.twoFaSecret ||
+      !this.isValidTwoFaCode(user.twoFaSecret, twoFaCode)
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private isValidTwoFaCode(sharedSecret: string, inputCode: string) {
+    return authenticator.verify({
+      token: inputCode,
+      secret: sharedSecret,
+    });
+  }
+
   private async setTwoFaSecret(userId: string, secret: string) {
     await this.prismaService.user.update({
       where: {
