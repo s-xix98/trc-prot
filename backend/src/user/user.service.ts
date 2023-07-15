@@ -160,4 +160,25 @@ export class UserService {
 
     return blocksUserInfo;
   }
+
+  async getFriendRequests(userId: string) {
+    const requests = await this.prisma.friendship.findMany({
+      where: {
+        destUserId: userId,
+        status: {
+          equals: 'Requested',
+        },
+      },
+      include: {
+        srcUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return requests.map((r) => r.srcUser);
+  }
 }
