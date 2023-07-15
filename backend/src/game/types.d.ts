@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io';
+import { UserInfo } from './dto/UserDto';
 
 export type Ball = {
   x: number;
@@ -28,3 +29,5 @@ export type Rate = {
   username: string;
   rating: number;
 };
+
+export type PlayerData = { client: Socket; data: UserInfo };

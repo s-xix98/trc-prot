@@ -9,14 +9,12 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
-import { OnShutdownCallback } from './types';
+import { OnShutdownCallback, PlayerData } from './types';
 
 enum PlaySide {
   LEFT = 0,
   RIGHT = 1,
 }
-
-type PlayerData = { client: Socket; data: UserInfo };
 
 const UpdateRatingTable = async (
   winner: string,
