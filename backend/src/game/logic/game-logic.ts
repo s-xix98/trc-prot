@@ -125,7 +125,7 @@ export class GameLogic {
     if (players === null) {
       return;
     }
-    this.onShutdown(players.winner.socket, players.loser.socket, {
+    this.onShutdown(players.winner.userId, players.loser.userId, {
       left: this.p1.score,
       right: this.p2.score,
     });

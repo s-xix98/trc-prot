@@ -106,16 +106,11 @@ export class GameGateway {
     this.matchedUsers.set(user.id, this.waitingUser.data);
 
     const onShutdown: OnShutdownCallback = async (
-      winner: Socket,
-      loser: Socket,
+      winnerUserId: string,
+      loserUserId: string,
     ) => {
       console.log('onshutdown');
-      const winnerId = this.server.getUserId(winner);
-      const loserId = this.server.getUserId(loser);
-      if (!winnerId || !loserId) {
-        return;
-      }
-      UpdateRatingTable(winnerId, loserId, this.prisma);
+      UpdateRatingTable(winnerUserId, loserUserId, this.prisma);
     };
 
     const game = new GameLogic(this.waitingUser, { client: client, data: user }, onShutdown,);

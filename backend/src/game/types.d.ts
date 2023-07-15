@@ -19,8 +19,8 @@ export type Paddle = {
 export type Scores = { left: number; right: number };
 
 export type OnShutdownCallback = (
-  winner: Socket,
-  loser: Socket,
+  winnerUserId: string,
+  loserUserId: string,
   scores: Scores,
 ) => void;
 
