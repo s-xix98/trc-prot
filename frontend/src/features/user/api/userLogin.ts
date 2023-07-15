@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
-import { userInfoAtom } from '@/stores/jotai';
+import { socketAtom, userInfoAtom } from '@/stores/jotai';
 
 import { LoginDto, UserInfo } from '../types/UserDto';
 
@@ -33,4 +34,20 @@ export const useLogin = () => {
   };
 
   return login;
+};
+
+export const useLogout = () => {
+  const router = useRouter();
+  const [socket, setSocket] = useAtom(socketAtom);
+  const [, setUserInfo] = useAtom(userInfoAtom);
+
+  const logout = () => {
+    socket?.disconnect();
+    setUserInfo(undefined);
+    setSocket(undefined);
+    tokenStorage.remove();
+    router.push('/login');
+  };
+
+  return logout;
 };
