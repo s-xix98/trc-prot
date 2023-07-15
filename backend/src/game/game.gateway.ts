@@ -82,12 +82,6 @@ export class GameGateway {
     console.log('delete match data');
     this.matchedUsers.delete(selfUserId);
     this.matchedUsers.delete(enemyUser.id);
-
-    // TODO とりあえずどちらか一方でもDCしたら即終了して削除してる
-    //  あとあとディスコネした方のペナルティとかに変えたい　変えないかもだけど
-    this.userGameMap.get(selfUserId)?.EndGame();
-    this.userGameMap.delete(selfUserId);
-    this.userGameMap.delete(enemyUser.id);
   }
 
   @SubscribeMessage('matchmake')
@@ -110,6 +104,8 @@ export class GameGateway {
       loserUserId: string,
     ) => {
       console.log('onshutdown');
+      this.userGameMap.delete(winnerUserId);
+      this.userGameMap.delete(loserUserId);
       UpdateRatingTable(winnerUserId, loserUserId, this.prisma);
     };
 
