@@ -4,16 +4,16 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { friendshipDto } from '../types/FriendshipDto';
 
 export const useFriendRequestSender = () => {
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (targetUserId: string) => {
-    if (userInfo === undefined) {
-      console.log('userinfo is undef');
+    if (currentUserInfo === undefined) {
+      console.log('currentUserInfo is undef');
       return;
     }
 
-    const dto: friendshipDto = { userId: userInfo.id, targetId: targetUserId };
+    const dto: friendshipDto = { userId: currentUserInfo.id, targetId: targetUserId };
     sessionSocketEmitter.emit('friendRequest', dto);
   };
 

@@ -30,11 +30,11 @@ const ChooseRoom = () => {
 };
 
 export const Chat = () => {
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const [selectedChannel, setSelectedChannel] = useState<chatChannelDto>();
   const channels = useAtomValue(channelListAtom);
 
-  if (userInfo === undefined) {
+  if (currentUserInfo === undefined) {
     return <PleaseLogin />;
   }
   return (

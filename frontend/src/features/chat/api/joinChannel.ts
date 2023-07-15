@@ -4,17 +4,17 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { joinChannelDto } from '../types/joinChannelDto';
 
 export const useJoinChannel = () => {
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (chatRoomId: string) => {
-    if (userInfo === undefined) {
-      console.log('userInfo is undef');
+    if (currentUserInfo === undefined) {
+      console.log('currentUserInfo is undef');
       return;
     }
 
     const dto: joinChannelDto = {
-      userId: userInfo.id,
+      userId: currentUserInfo.id,
       chatRoomId: chatRoomId,
     };
 

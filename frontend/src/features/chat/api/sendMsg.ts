@@ -4,17 +4,17 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { sendMessageDto } from '../types/MessageDto';
 
 export const useSendMessage = () => {
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (chatRoomId: string, content: string) => {
-    if (userInfo === undefined) {
-      console.log('userInfo is undef');
+    if (currentUserInfo === undefined) {
+      console.log('currentUserInfo is undef');
       return;
     }
 
     const dto: sendMessageDto = {
-      userId: userInfo.id,
+      userId: currentUserInfo.id,
       chatRoomId: chatRoomId,
       content: content,
     };

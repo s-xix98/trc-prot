@@ -4,7 +4,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
 export const useCreateChannel = () => {
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (
@@ -12,14 +12,14 @@ export const useCreateChannel = () => {
     password: string | undefined,
     isPrivate: boolean | undefined,
   ) => {
-    if (userInfo === undefined) {
-      console.log('userInfo is undef');
+    if (currentUserInfo === undefined) {
+      console.log('currentUserInfo is undef');
       return;
     }
 
     const dto: CreateChannelDto = {
       roomName: roomName,
-      userId: userInfo.id,
+      userId: currentUserInfo.id,
       password: password,
       isPrivate: isPrivate,
     };
