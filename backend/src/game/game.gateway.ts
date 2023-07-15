@@ -4,6 +4,7 @@ import { UseFilters } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
+import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
@@ -58,7 +59,7 @@ export class GameGateway {
   private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private server: WsocketGateway) {}
 
   handleConnection() {
     console.log('game connection');
