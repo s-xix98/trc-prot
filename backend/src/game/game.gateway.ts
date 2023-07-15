@@ -123,8 +123,8 @@ export class GameGateway {
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
 
-    this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
     client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
+    this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
     this.waitingUser = undefined;
   }
 
