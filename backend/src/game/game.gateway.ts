@@ -51,7 +51,6 @@ const UpdateRatingTable = async (
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
-  private matchedUsers = new Map<string, UserInfo>();
   private userGameMap = new Map<string, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;
 
@@ -61,27 +60,9 @@ export class GameGateway {
     console.log('game connection');
   }
 
-  handleDisconnect(client: Socket) {
-    console.log('game handleDisconnect');
-    const selfUserId = this.server.getUserId(client);
-    if (selfUserId === undefined) {
-      return;
-    }
-    const enemyUser = this.matchedUsers.get(selfUserId);
-    if (enemyUser === undefined) {
-      // NotReach
-      return;
-    }
-    const enemySocket = this.server.getSocket(enemyUser.id);
-    if (enemySocket === undefined) {
-      // NotReach
-      return;
-    }
-    enemySocket.emit('enemy disconnected');
-
-    console.log('delete match data');
-    this.matchedUsers.delete(selfUserId);
-    this.matchedUsers.delete(enemyUser.id);
+  handleDisconnect() {
+    console.log('game handleDisconnect'
+    );
   }
 
   @SubscribeMessage('matchmake')
@@ -96,9 +77,7 @@ export class GameGateway {
       this.waitingUser = { client: client, data: user };
       return;
     }
-    this.matchedUsers.set(this.waitingUser.data.id, user);
-    this.matchedUsers.set(user.id, this.waitingUser.data);
-
+  
     const onShutdown: OnShutdownCallback = async (
       winnerUserId: string,
       loserUserId: string,
