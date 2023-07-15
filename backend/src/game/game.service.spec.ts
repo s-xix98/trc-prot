@@ -5,8 +5,11 @@ import { TestModule } from '../test/test.module';
 import { AuthModule } from '../auth/auth.module';
 import { TestService } from '../test/test.service';
 import { testUser } from '../test/types/test.types';
+import { WsocketModule } from '../wsocket/wsocket.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 import { GameService } from './game.service';
+import { GameModule } from './game.module';
 
 const USERNUM = 3;
 
@@ -18,8 +21,13 @@ describe('GameService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, AuthModule],
-      providers: [GameService, PrismaService, TestService],
+      imports: [
+        GameModule,
+        PrismaModule,
+        TestModule,
+        AuthModule,
+        WsocketModule,
+      ],
     }).compile();
 
     prisma = module.get<PrismaService>(PrismaService);

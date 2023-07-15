@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { WsocketModule } from '../wsocket/wsocket.module';
 
 import { GameGateway } from './game.gateway';
 
@@ -10,6 +11,7 @@ describe('GameGateway', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [WsocketModule],
       providers: [GameGateway, PrismaService, ConfigService],
     }).compile();
 
