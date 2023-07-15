@@ -170,7 +170,7 @@ export class AuthService {
 
     if (
       !user ||
-      user.twoFaSecret === null ||
+      !user.twoFaSecret ||
       !this.isValidTwoFaCode(user.twoFaSecret, twoFaCode)
     ) {
       return false;
