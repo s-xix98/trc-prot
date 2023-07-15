@@ -136,7 +136,7 @@ export class UserGateway {
 
     await this.sendBlockUsers(client, dto.userId);
     await this.sendFriends(client, dto.userId);
-    await this.sendFriendRequests(client, dto.targetId);
+    await this.sendFriendRequests(client, dto.userId);
 
     // 相手がフレンドorリクエストの場合はレコードから削除する
     const { count } = await this.prisma.friendship.deleteMany({
