@@ -117,7 +117,8 @@ export class GameGateway {
       }
       UpdateRatingTable(winnerId, loserId, this.prisma);
     };
-    const game = new GameLogic(this.waitingUser.client, client, onShutdown);
+
+    const game = new GameLogic(this.waitingUser, { client: client, data: user }, onShutdown,);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
 

@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { Ball, OnShutdownCallback, Paddle } from '../types';
+import { Ball, OnShutdownCallback, Paddle, PlayerData } from '../types';
 import {
   canvas,
   CreateBall,
@@ -13,6 +13,7 @@ import { keyActions, Keys } from './KeyAction';
 
 type Player = {
   socket: Socket;
+  userId: string;
   isReady: boolean;
   paddle: Paddle;
   keyInputs: boolean[];
@@ -34,21 +35,23 @@ export class GameLogic {
   private onShutdown: OnShutdownCallback;
 
   constructor(
-    sock1: Socket,
-    sock2: Socket,
+    p1: PlayerData,
+    p2: PlayerData,
     onShutdown: OnShutdownCallback,
     ball: Ball = CreateBall(),
   ) {
     this.ball = ball;
     this.p1 = {
-      socket: sock1,
+      socket: p1.client,
+      userId: p1.data.id,
       isReady: false,
       paddle: CreateLeftPaddle(),
       keyInputs: [],
       score: 0,
     };
     this.p2 = {
-      socket: sock2,
+      socket: p2.client,
+      userId: p2.data.id,
       isReady: false,
       paddle: CreateRightPaddle(),
       keyInputs: [],
