@@ -55,8 +55,6 @@ const UpdateRatingTable = async (
 export class GameGateway {
   private matchedUsers = new Map<string, UserInfo>();
   private userGameMap = new Map<string, GameLogic>();
-  private userSockMap = new Map<string, Socket>();
-  private sockUserMap = new Map<string, string>();
   private waitingUser: PlayerData | undefined = undefined;
 
   constructor(private prisma: PrismaService, private server: WsocketGateway) {}
@@ -67,7 +65,7 @@ export class GameGateway {
 
   handleDisconnect(client: Socket) {
     console.log('game handleDisconnect');
-    const selfUserId = this.sockUserMap.get(client.id);
+    const selfUserId = this.server.getUserId(client);
     if (selfUserId === undefined) {
       return;
     }
@@ -76,7 +74,7 @@ export class GameGateway {
       // NotReach
       return;
     }
-    const enemySocket = this.userSockMap.get(enemyUser.id);
+    const enemySocket = this.server.getSocket(enemyUser.id);
     if (enemySocket === undefined) {
       // NotReach
       return;
@@ -92,12 +90,6 @@ export class GameGateway {
     this.userGameMap.get(selfUserId)?.EndGame();
     this.userGameMap.delete(selfUserId);
     this.userGameMap.delete(enemyUser.id);
-
-    this.userSockMap.delete(selfUserId);
-    this.userSockMap.delete(enemyUser.id);
-
-    this.sockUserMap.delete(client.id);
-    this.sockUserMap.delete(enemySocket.id);
   }
 
   @SubscribeMessage('matchmake')
@@ -120,8 +112,8 @@ export class GameGateway {
       loser: Socket,
     ) => {
       console.log('onshutdown');
-      const winnerId = this.sockUserMap.get(winner.id);
-      const loserId = this.sockUserMap.get(loser.id);
+      const winnerId = this.server.getUserId(winner);
+      const loserId = this.server.getUserId(loser);
       if (!winnerId || !loserId) {
         return;
       }
@@ -130,12 +122,6 @@ export class GameGateway {
     const game = new GameLogic(this.waitingUser.client, client, onShutdown);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
-
-    this.userSockMap.set(this.waitingUser.data.id, this.waitingUser.client);
-    this.sockUserMap.set(this.waitingUser.client.id, this.waitingUser.data.id);
-
-    this.userSockMap.set(user.id, client);
-    this.sockUserMap.set(client.id, user.id);
 
     this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
     client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
@@ -146,42 +132,16 @@ export class GameGateway {
   clearMatch(client: Socket, userId: string) {
     console.log('clearMatch');
     if (this.waitingUser?.data.id === userId) {
-      this.waitingUser = undefined;
       console.log('to undefined waiter');
+      this.waitingUser = undefined;
       return;
     }
-    if (!this.matchedUsers.has(userId)) {
-      return;
-    }
-    const sock = this.userSockMap.get(userId);
-    if (sock === undefined) {
-      // NotReach
-      return;
-    }
-    const enemyUser = this.matchedUsers.get(userId);
-    if (enemyUser === undefined) {
-      // NotReach
-      return;
-    }
-    const enemySocket = this.userSockMap.get(enemyUser.id);
-    if (enemySocket === undefined) {
-      // NotReach
-      return;
-    }
-    console.log(this.matchedUsers.delete(userId));
-    console.log(this.matchedUsers.delete(enemyUser.id));
-
-    console.log(this.userSockMap.delete(userId));
-    console.log(this.userSockMap.delete(enemyUser.id));
-
-    console.log(this.sockUserMap.delete(sock.id));
-    console.log(this.sockUserMap.delete(enemySocket.id));
   }
 
   @SubscribeMessage('start game')
   StartGame(client: Socket) {
     console.log('start game');
-    const userid = this.sockUserMap.get(client.id);
+    const userid = this.server.getUserId(client);
     if (userid === undefined) {
       return;
     }
@@ -191,7 +151,7 @@ export class GameGateway {
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
-    const userid = this.sockUserMap.get(client.id);
+    const userid = this.server.getUserId(client);
     if (userid === undefined) {
       return;
     }
@@ -201,7 +161,7 @@ export class GameGateway {
   @SubscribeMessage('key release')
   handleKeyRelease(client: Socket, key: Keys) {
     console.log('release', key);
-    const userid = this.sockUserMap.get(client.id);
+    const userid = this.server.getUserId(client);
     if (userid === undefined) {
       return;
     }
