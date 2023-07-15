@@ -32,13 +32,21 @@ function App() {
     setChannelList((prev) => [...prev, data]);
   });
 
-  useSessionSocket('friendRequest', (data) => {
-    // friendRequestの処理を書く
-    console.log('friendRequest', data);
-  });
-
   useSessionSocket('error', (data) => {
     console.log(data);
+  });
+
+  useSessionSocket('friendRequests', (data) => {
+    // friendRequestの処理を書く
+    console.log('friendRequests', data);
+  });
+
+  useSessionSocket('friends', (data) => {
+    console.log('friends', data);
+  });
+
+  useSessionSocket('blockUsers', (data) => {
+    console.log('blockUsers', data);
   });
 
   useSessionSocket('connect', onConnect);
