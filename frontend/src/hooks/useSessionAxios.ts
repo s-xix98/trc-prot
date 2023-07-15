@@ -1,11 +1,10 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
-import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { BACKEND } from '@/constants';
-import { userInfoAtom } from '@/stores/jotai';
+import { useLogout } from '@/features/user/api/userLogin';
 
 const setAccessTokenForRequest = (req: InternalAxiosRequestConfig) => {
   const token = tokenStorage.get();
@@ -22,7 +21,7 @@ const customAxios = axios.create({
 
 export const useSessionAxios = () => {
   const router = useRouter();
-  const setUserInfo = useSetAtom(userInfoAtom);
+  const logout = useLogout();
 
   useEffect(() => {
     customAxios.interceptors.request.use(setAccessTokenForRequest);
@@ -33,16 +32,13 @@ export const useSessionAxios = () => {
       (error) => {
         // 401 の時のみ login に飛ばす
         if (error?.response?.status === 401) {
-          // TODO : login に飛ばす処理統一させる
-          setUserInfo(undefined);
-          tokenStorage.remove();
-          router.push('/login');
+          logout();
         }
 
         return Promise.reject(error);
       },
     );
-  }, [setUserInfo, router]);
+  }, [router, logout]);
 
   return customAxios;
 };
