@@ -74,4 +74,18 @@ export class WsocketGateway {
   getUserId(client: Socket) {
     return this.socketMap.get(client);
   }
+
+  extractUserIdFromToken(token: string): string | null {
+    const decoded = this.auth.decodeJwt(token);
+
+    if (
+      decoded !== null &&
+      typeof decoded === 'object' &&
+      'userId' in decoded
+    ) {
+      return decoded.userId;
+    }
+
+    return null;
+  }
 }
