@@ -19,6 +19,7 @@ model User {
   email          String          @unique
   hashedPassword String?
   base64Image    Bytes?
+  twoFaEnabled   Boolean         @default(false)
   twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
