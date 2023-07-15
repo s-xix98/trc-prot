@@ -95,7 +95,7 @@ export class GameGateway {
   @SubscribeMessage('matchmake')
   matchmake(client: Socket, user: UserInfo) {
     console.log('matchmake', user.username);
-    if (this.matchedUsers.has(user.id)) {
+    if (this.userGameMap.has(user.id)) {
       client.emit('already playing');
       return;
     }
