@@ -42,9 +42,9 @@ export class UserGateway {
       return;
     }
 
-    await this.sendBlockUsers(client, userId);
-    await this.sendFriends(client, userId);
-    await this.sendFriendRequests(client, userId);
+    await this.sendBlockUsers(userId);
+    await this.sendFriends(userId);
+    await this.sendFriendRequests(userId);
   }
 
   handleDisconnect(client: Socket) {
@@ -98,12 +98,9 @@ export class UserGateway {
         dto.userId,
         'Accepted',
       );
-      await this.sendFriends(client, dto.userId);
 
-      const targetSocket = this.server.getSocket(dto.targetId);
-      if (targetSocket !== undefined) {
-        await this.sendFriends(targetSocket, dto.targetId);
-      }
+      await this.sendFriends(dto.userId);
+      await this.sendFriends(dto.targetId);
     } else if (srcFriendship === null) {
       await this.userService.upsertFriendship(
         dto.userId,
@@ -111,10 +108,7 @@ export class UserGateway {
         'Requested',
       );
 
-      const targetSocket = this.server.getSocket(dto.targetId);
-      if (targetSocket !== undefined) {
-        await this.sendFriendRequests(targetSocket, dto.targetId);
-      }
+      await this.sendFriendRequests(dto.targetId);
     }
   }
 
@@ -134,9 +128,9 @@ export class UserGateway {
 
     console.log(relation);
 
-    await this.sendBlockUsers(client, dto.userId);
-    await this.sendFriends(client, dto.userId);
-    await this.sendFriendRequests(client, dto.userId);
+    await this.sendBlockUsers(dto.userId);
+    await this.sendFriends(dto.userId);
+    await this.sendFriendRequests(dto.userId);
 
     // 相手がフレンドorリクエストの場合はレコードから削除する
     const { count } = await this.prisma.friendship.deleteMany({
@@ -151,10 +145,7 @@ export class UserGateway {
     console.log(count);
 
     if (count > 0) {
-      const targetSocket = this.server.getSocket(dto.targetId);
-      if (targetSocket !== undefined) {
-        await this.sendFriends(targetSocket, dto.targetId);
-      }
+      await this.sendFriends(dto.targetId);
     }
     // TODO チャットmsgを非表示にする
   }
@@ -178,7 +169,7 @@ export class UserGateway {
     });
 
     if (count > 0) {
-      await this.sendBlockUsers(client, dto.userId);
+      await this.sendBlockUsers(dto.userId);
       // TODO 非表示だったmsgを表示する
     }
   }
@@ -213,27 +204,38 @@ export class UserGateway {
     });
 
     if (count > 0) {
-      await this.sendFriends(client, dto.userId);
-
-      const targetSocket = this.server.getSocket(dto.targetId);
-      if (targetSocket !== undefined) {
-        await this.sendFriends(targetSocket, dto.targetId);
-      }
+      await this.sendFriends(dto.userId);
+      await this.sendFriends(dto.targetId);
     }
   }
 
-  private async sendFriendRequests(client: Socket, userId: string) {
+  private async sendFriendRequests(userId: string) {
+    const sock = this.server.getSocket(userId);
+    if (sock === undefined) {
+      return;
+    }
+
     const friendRequests = await this.userService.getFriendRequests(userId);
-    client.emit('friendRequests', friendRequests);
+    sock.emit('friendRequests', friendRequests);
   }
 
-  private async sendFriends(client: Socket, userId: string) {
+  private async sendFriends(userId: string) {
+    const sock = this.server.getSocket(userId);
+    if (sock === undefined) {
+      return;
+    }
+
     const friends = await this.userService.getFriends(userId);
-    client.emit('friends', friends);
+    sock.emit('friends', friends);
   }
 
-  private async sendBlockUsers(client: Socket, userId: string) {
+  private async sendBlockUsers(userId: string) {
+    const sock = this.server.getSocket(userId);
+    if (sock === undefined) {
+      return;
+    }
+
     const blockUsers = await this.userService.getBlockUsers(userId);
-    client.emit('blockUsers', blockUsers);
+    sock.emit('blockUsers', blockUsers);
   }
 }
