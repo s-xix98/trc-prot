@@ -22,3 +22,9 @@ export type OnShutdownCallback = (
   loser: Socket,
   scores: Scores,
 ) => void;
+
+export type Rate = {
+  userId: string;
+  username: string;
+  rating: number;
+};
