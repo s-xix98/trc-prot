@@ -13,7 +13,10 @@ export const useFriendRequestSender = () => {
       return;
     }
 
-    const dto: friendshipDto = { userId: currentUserInfo.id, targetId: targetUserId };
+    const dto: friendshipDto = {
+      userId: currentUserInfo.id,
+      targetId: targetUserId,
+    };
     sessionSocketEmitter.emit('friendRequest', dto);
   };
 

@@ -13,7 +13,10 @@ export const useBlockRequestSender = () => {
       return;
     }
 
-    const dto: friendshipDto = { userId: currentUserInfo.id, targetId: targetUserId };
+    const dto: friendshipDto = {
+      userId: currentUserInfo.id,
+      targetId: targetUserId,
+    };
 
     sessionSocketEmitter.emit('blockUser', dto);
   };
