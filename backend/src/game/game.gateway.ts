@@ -61,8 +61,7 @@ export class GameGateway {
   }
 
   handleDisconnect() {
-    console.log('game handleDisconnect'
-    );
+    console.log('game handleDisconnect');
   }
 
   @SubscribeMessage('matchmake')
@@ -77,7 +76,7 @@ export class GameGateway {
       this.waitingUser = { client: client, data: user };
       return;
     }
-  
+
     const onShutdown: OnShutdownCallback = async (
       winnerUserId: string,
       loserUserId: string,
@@ -88,7 +87,11 @@ export class GameGateway {
       UpdateRatingTable(winnerUserId, loserUserId, this.prisma);
     };
 
-    const game = new GameLogic(this.waitingUser, { client: client, data: user }, onShutdown,);
+    const game = new GameLogic(
+      this.waitingUser,
+      { client: client, data: user },
+      onShutdown,
+    );
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(user.id, game);
 
