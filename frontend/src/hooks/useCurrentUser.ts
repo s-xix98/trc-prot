@@ -36,5 +36,12 @@ export const useCurrentUserStateUpdates = () => {
 export const useCurrentUser = () => {
   const currentUser = useAtomValue(currentUserAtom);
 
-  return { currentUserInfo: currentUser?.userInfo };
+  // TODO : 微妙な気がするが、変更箇所多くなるので一旦
+  return {
+    currentUserInfo: currentUser?.userInfo,
+    friends: currentUser?.friends,
+    friendRequests: currentUser?.friendRequests,
+    blockUsers: currentUser?.blockUsers,
+    joinedRooms: currentUser?.joinedRooms,
+  };
 };
