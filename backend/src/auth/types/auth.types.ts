@@ -7,3 +7,10 @@ export type authUser = {
   email: string;
   provider: string;
 };
+
+export type jwtPayload = {
+  userId: string;
+  username: string;
+  isTwoFaEnabled: boolean;
+  isTwoFactorAuthenticated: boolean;
+};
