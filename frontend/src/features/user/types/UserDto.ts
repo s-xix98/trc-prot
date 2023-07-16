@@ -1,3 +1,4 @@
+import { chatChannelSchema } from '@/features/chat/types/chatChannelDto';
 import { z } from 'zod';
 
 export const SignUpDtoSchema = z.object({
@@ -18,3 +19,12 @@ export const UserInfoSchema = z.object({
   username: z.string(),
 });
 export type UserInfo = z.infer<typeof UserInfoSchema>;
+
+export const CurrentUserSchema = z.object({
+  userInfo: UserInfoSchema,
+  friends: UserInfoSchema.array(),
+  friendRequests: UserInfoSchema.array(),
+  blockUsers: UserInfoSchema.array(),
+  joinedRooms: chatChannelSchema.array(),
+});
+export type CurrentUser = z.infer<typeof CurrentUserSchema>;
