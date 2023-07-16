@@ -31,5 +31,5 @@ export const useSignUp = () => {
       });
   };
 
-  return signUp;
+  return { signUp };
 };
