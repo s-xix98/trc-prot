@@ -267,7 +267,7 @@ export class ChatService {
         roomName: true,
       },
       orderBy: {
-        updatedAt: 'desc',
+        createdAt: 'desc',
       },
     });
 
