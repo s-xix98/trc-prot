@@ -78,6 +78,11 @@ export class GameGateway {
       this.userGameMap.delete(player2UserId);
       this.gameService.UpdateRating(winnerUserId, 'WIN');
       this.gameService.UpdateRating(loserUserId, 'LOSE');
+      this.gameService.UpdateMatchHistory(
+        player1UserId,
+        player2UserId,
+        winnerUserId,
+      );
     };
 
     const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
