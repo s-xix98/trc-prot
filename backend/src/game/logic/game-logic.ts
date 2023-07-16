@@ -60,6 +60,14 @@ export class GameLogic {
     this.onShutdown = onShutdown;
   }
 
+  RebindSocket(userId: string, socket: Socket) {
+    if (userId == this.p1.userId) {
+      this.p1.socket = socket;
+    } else if (userId == this.p2.userId) {
+      this.p2.socket = socket;
+    }
+  }
+
   ReadyGame(client: Socket) {
     if (this.p1.isReady && this.p2.isReady) {
       return;
