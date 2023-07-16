@@ -27,9 +27,9 @@ function App() {
   const { currentUserInfo } = useCurrentUser();
   const setChannelList = useSetAtom(channelListAtom);
 
-  useSessionSocket('addRoom', (data) => {
-    console.log('addRoom', data);
-    setChannelList((prev) => [...prev, data]);
+  useSessionSocket('joinedRooms', (data) => {
+    console.log('joinedRooms', data);
+    setChannelList(data);
   });
 
   useSessionSocket('error', (data) => {
