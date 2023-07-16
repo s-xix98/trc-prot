@@ -67,13 +67,14 @@ export class GameGateway {
   @SubscribeMessage('matchmake')
   matchmake(client: Socket, user: UserInfo) {
     console.log('matchmake', user.username);
+    const reqUser: PlayerData = { client: client, data: user };
     if (this.userGameMap.has(user.id)) {
       client.emit('already playing');
       return;
     }
-    if (!this.waitingUser || this.waitingUser.data.id === user.id) {
-      console.log('waiting', user.username);
-      this.waitingUser = { client: client, data: user };
+    if (!this.waitingUser || this.waitingUser.data.id === reqUser.data.id) {
+      console.log('waiting', reqUser.data.username);
+      this.waitingUser = reqUser;
       return;
     }
 
@@ -89,14 +90,14 @@ export class GameGateway {
 
     const game = new GameLogic(
       this.waitingUser,
-      { client: client, data: user },
+      reqUser,
       onShutdown,
     );
     this.userGameMap.set(this.waitingUser.data.id, game);
-    this.userGameMap.set(user.id, game);
+    this.userGameMap.set(reqUser.data.id, game);
 
-    client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
-    this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
+    reqUser.client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
+    this.waitingUser.client.emit('matched', PlaySide.LEFT, reqUser.data.username);
     this.waitingUser = undefined;
   }
 
