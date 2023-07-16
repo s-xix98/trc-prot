@@ -91,16 +91,20 @@ export class GameGateway {
       UpdateRatingTable(winnerUserId, loserUserId, this.prisma);
     };
 
-    const game = new GameLogic(
-      this.waitingUser,
-      reqUser,
-      onShutdown,
-    );
+    const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(reqUser.data.id, game);
 
-    reqUser.client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
-    this.waitingUser.client.emit('matched', PlaySide.LEFT, reqUser.data.username);
+    reqUser.client.emit(
+      'matched',
+      PlaySide.RIGHT,
+      this.waitingUser.data.username,
+    );
+    this.waitingUser.client.emit(
+      'matched',
+      PlaySide.LEFT,
+      reqUser.data.username,
+    );
     this.waitingUser = undefined;
   }
 
