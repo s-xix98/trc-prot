@@ -252,4 +252,25 @@ export class ChatService {
 
     return memberState;
   }
+
+  async getJoinedRooms(userId: string) {
+    const joinedRooms = await this.prismaService.chatRoom.findMany({
+      where: {
+        roomMembers: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        roomName: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return joinedRooms;
+  }
 }
