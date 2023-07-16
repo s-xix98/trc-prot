@@ -74,7 +74,7 @@ describe('ChatGateway', () => {
       };
       await testService.emitAndWaitForEvent<CreateChannelDto>(
         'createChannel',
-        'addRoom',
+        'joinedRooms',
         user.socket,
         createChannelDto,
       );
@@ -202,7 +202,7 @@ describe('ChatGateway', () => {
       };
       await testService.emitAndWaitForEvent<CreateChannelDto>(
         'createChannel',
-        'addRoom',
+        'joinedRooms',
         user.socket,
         createChannelDto,
       );
@@ -235,7 +235,7 @@ describe('ChatGateway', () => {
 
       await testService.emitAndWaitForEvent<CreateChannelDto>(
         'createChannel',
-        'addRoom',
+        'joinedRooms',
         user.socket,
         createChannelDto,
       );
@@ -285,7 +285,7 @@ describe('ChatGateway', () => {
 
       await testService.emitAndWaitForEvent<CreateChannelDto>(
         'createChannel',
-        'addRoom',
+        'joinedRooms',
         user.socket,
         createChannelDto,
       );
