@@ -56,12 +56,32 @@ export class GameGateway {
 
   constructor(private prisma: PrismaService, private server: WsocketGateway) {}
 
-  handleConnection() {
+  handleConnection(client: Socket) {
     console.log('game connection');
+    if (!client.handshake.auth.token) {
+      return;
+    }
+    const userId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!userId) {
+      return;
+    }
+    this.userGameMap.get(userId)?.RebindSocket(userId, client);
   }
 
-  handleDisconnect() {
+  handleDisconnect(client: Socket) {
     console.log('game handleDisconnect');
+    if (!client.handshake.auth.token) {
+      return;
+    }
+    const userId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!userId || this.waitingUser?.data.id !== userId) {
+      return;
+    }
+    this.waitingUser = undefined;
   }
 
   @SubscribeMessage('matchmake')
