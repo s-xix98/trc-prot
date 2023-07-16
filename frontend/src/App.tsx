@@ -1,14 +1,11 @@
 'use client';
 
-import { useSetAtom } from 'jotai';
-
 import { Chat } from './features/chat/components/Chat';
 import { Game } from './features/game/Game';
 import { MainLayout } from './components/Layout/MainLayout';
 import { useSessionSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { UserSearch } from './features/user/components/Search';
-import { channelListAtom } from './stores/jotai';
 import { Matching } from './features/game/Matching';
 import { useCurrentUser } from './hooks/useCurrentUser';
 import { Friends } from './features/user/components/Friends';
@@ -25,29 +22,6 @@ const onDisconnect = () => {
 function App() {
   // TODO : 消す、login ページに飛ぶ前に、ページ見えちゃうの嫌なので一旦
   const { currentUserInfo } = useCurrentUser();
-  const setChannelList = useSetAtom(channelListAtom);
-
-  useSessionSocket('addRoom', (data) => {
-    console.log('addRoom', data);
-    setChannelList((prev) => [...prev, data]);
-  });
-
-  useSessionSocket('error', (data) => {
-    console.log(data);
-  });
-
-  useSessionSocket('friendRequests', (data) => {
-    // friendRequestの処理を書く
-    console.log('friendRequests', data);
-  });
-
-  useSessionSocket('friends', (data) => {
-    console.log('friends', data);
-  });
-
-  useSessionSocket('blockUsers', (data) => {
-    console.log('blockUsers', data);
-  });
 
   useSessionSocket('connect', onConnect);
   useSessionSocket('disconnect', onDisconnect);

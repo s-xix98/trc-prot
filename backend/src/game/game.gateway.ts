@@ -9,14 +9,12 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
-import { OnShutdownCallback } from './types';
+import { OnShutdownCallback, PlayerData } from './types';
 
 enum PlaySide {
   LEFT = 0,
   RIGHT = 1,
 }
-
-type PlayerData = { client: Socket; data: UserInfo };
 
 const UpdateRatingTable = async (
   winner: string,
@@ -53,7 +51,6 @@ const UpdateRatingTable = async (
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
-  private matchedUsers = new Map<string, UserInfo>();
   private userGameMap = new Map<string, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;
 
@@ -63,68 +60,51 @@ export class GameGateway {
     console.log('game connection');
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect() {
     console.log('game handleDisconnect');
-    const selfUserId = this.server.getUserId(client);
-    if (selfUserId === undefined) {
-      return;
-    }
-    const enemyUser = this.matchedUsers.get(selfUserId);
-    if (enemyUser === undefined) {
-      // NotReach
-      return;
-    }
-    const enemySocket = this.server.getSocket(enemyUser.id);
-    if (enemySocket === undefined) {
-      // NotReach
-      return;
-    }
-    enemySocket.emit('enemy disconnected');
-
-    console.log('delete match data');
-    this.matchedUsers.delete(selfUserId);
-    this.matchedUsers.delete(enemyUser.id);
-
-    // TODO とりあえずどちらか一方でもDCしたら即終了して削除してる
-    //  あとあとディスコネした方のペナルティとかに変えたい　変えないかもだけど
-    this.userGameMap.get(selfUserId)?.EndGame();
-    this.userGameMap.delete(selfUserId);
-    this.userGameMap.delete(enemyUser.id);
   }
 
   @SubscribeMessage('matchmake')
   matchmake(client: Socket, user: UserInfo) {
     console.log('matchmake', user.username);
+    const reqUser: PlayerData = { client: client, data: user };
     if (this.userGameMap.has(user.id)) {
       client.emit('already playing');
       return;
     }
-    if (!this.waitingUser || this.waitingUser.data.id === user.id) {
-      console.log('waiting', user.username);
-      this.waitingUser = { client: client, data: user };
+    if (!this.waitingUser) {
+      console.log('waiting', reqUser.data.username);
+      this.waitingUser = reqUser;
       return;
     }
-    this.matchedUsers.set(this.waitingUser.data.id, user);
-    this.matchedUsers.set(user.id, this.waitingUser.data);
+    if (this.waitingUser.data.id === reqUser.data.id) {
+      return;
+    }
 
     const onShutdown: OnShutdownCallback = async (
-      winner: Socket,
-      loser: Socket,
+      winnerUserId: string,
+      loserUserId: string,
     ) => {
       console.log('onshutdown');
-      const winnerId = this.server.getUserId(winner);
-      const loserId = this.server.getUserId(loser);
-      if (!winnerId || !loserId) {
-        return;
-      }
-      UpdateRatingTable(winnerId, loserId, this.prisma);
+      this.userGameMap.delete(winnerUserId);
+      this.userGameMap.delete(loserUserId);
+      UpdateRatingTable(winnerUserId, loserUserId, this.prisma);
     };
-    const game = new GameLogic(this.waitingUser.client, client, onShutdown);
-    this.userGameMap.set(this.waitingUser.data.id, game);
-    this.userGameMap.set(user.id, game);
 
-    client.emit('matched', PlaySide.RIGHT, this.waitingUser.data.username);
-    this.waitingUser.client.emit('matched', PlaySide.LEFT, user.username);
+    const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
+    this.userGameMap.set(this.waitingUser.data.id, game);
+    this.userGameMap.set(reqUser.data.id, game);
+
+    reqUser.client.emit(
+      'matched',
+      PlaySide.RIGHT,
+      this.waitingUser.data.username,
+    );
+    this.waitingUser.client.emit(
+      'matched',
+      PlaySide.LEFT,
+      reqUser.data.username,
+    );
     this.waitingUser = undefined;
   }
 
