@@ -11,8 +11,8 @@ export const Matching = () => {
   const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
-  useSessionSocket('matched', (side: number, enemyName: string) => {
-    console.log(side, enemyName);
+  useSessionSocket('matched', (enemyName: string) => {
+    console.log(enemyName);
     setMatched(true);
   });
   useSessionSocket('already playing', () => {

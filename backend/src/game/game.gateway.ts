@@ -11,11 +11,6 @@ import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
 import { OnShutdownCallback, PlayerData } from './types';
 
-enum PlaySide {
-  LEFT = 0,
-  RIGHT = 1,
-}
-
 const UpdateRatingTable = async (
   winner: string,
   loser: string,
@@ -117,12 +112,10 @@ export class GameGateway {
 
     reqUser.client.emit(
       'matched',
-      PlaySide.RIGHT,
       this.waitingUser.data.username,
     );
     this.waitingUser.client.emit(
       'matched',
-      PlaySide.LEFT,
       reqUser.data.username,
     );
     this.waitingUser = undefined;
