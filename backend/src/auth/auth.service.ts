@@ -104,7 +104,11 @@ export class AuthService {
         },
       });
       return {
-        jwt: await this.generateJwt(user.id, user.username, user.isTwoFaEnabled),
+        jwt: await this.generateJwt(
+          user.id,
+          user.username,
+          user.isTwoFaEnabled,
+        ),
       };
     } catch (e) {
       console.log(e);
