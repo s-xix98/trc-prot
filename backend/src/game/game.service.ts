@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class GameService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getRanking() {
+  async GetRanking() {
     const ranking = await this.prismaService.rating.findMany({
       select: {
         userData: {
