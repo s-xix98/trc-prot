@@ -133,10 +133,14 @@ export class GameLogic {
     if (players === null) {
       return;
     }
-    this.onShutdown(players.winner.userId, players.loser.userId, {
-      left: this.p1.score,
-      right: this.p2.score,
-    });
+    this.onShutdown(
+      players.winner.userId,
+      players.loser.userId,
+      this.p1.userId,
+      this.p2.userId,
+      this.p1.score,
+      this.p2.score,
+    );
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む

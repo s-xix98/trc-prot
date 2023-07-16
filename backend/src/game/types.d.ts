@@ -22,7 +22,10 @@ export type Scores = { left: number; right: number };
 export type OnShutdownCallback = (
   winnerUserId: string,
   loserUserId: string,
-  scores: Scores,
+  player1UserId: string,
+  player2UserId: string,
+  player1score: number,
+  player2score: number,
 ) => void;
 
 export type Rate = {

@@ -70,10 +70,12 @@ export class GameGateway {
     const onShutdown: OnShutdownCallback = async (
       winnerUserId: string,
       loserUserId: string,
+      player1UserId: string,
+      player2UserId: string,
     ) => {
       console.log('onshutdown');
-      this.userGameMap.delete(winnerUserId);
-      this.userGameMap.delete(loserUserId);
+      this.userGameMap.delete(player1UserId);
+      this.userGameMap.delete(player2UserId);
       this.gameService.UpdateRating(winnerUserId, 'WIN');
       this.gameService.UpdateRating(loserUserId, 'LOSE');
     };
