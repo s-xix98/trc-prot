@@ -8,11 +8,11 @@ import { useLogin } from '../api/userLogin';
 import { LoginDtoSchema, LoginDto } from '../types/UserDto';
 
 export const LoginForm = () => {
-  const login = useLogin();
+  const { manualLogin } = useLogin();
   const methods = useForm<LoginDto>({ resolver: zodResolver(LoginDtoSchema) });
 
   const handleLogin: SubmitHandler<LoginDto> = (data) => {
-    login(data.email, data.hashedPassword);
+    manualLogin(data.email, data.hashedPassword);
   };
 
   return (
