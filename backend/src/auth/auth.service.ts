@@ -46,7 +46,7 @@ export class AuthService {
         jwt: await this.generateJwt(
           user.user.id,
           user.user.username,
-          user.user.twoFaEnabled,
+          user.user.isTwoFaEnabled,
         ),
       };
     }
@@ -69,7 +69,7 @@ export class AuthService {
       jwt: await this.generateJwt(
         newUser.id,
         newUser.username,
-        newUser.twoFaEnabled,
+        newUser.isTwoFaEnabled,
       ),
     };
   }
@@ -104,7 +104,7 @@ export class AuthService {
         },
       });
       return {
-        jwt: await this.generateJwt(user.id, user.username, user.twoFaEnabled),
+        jwt: await this.generateJwt(user.id, user.username, user.isTwoFaEnabled),
       };
     } catch (e) {
       console.log(e);
@@ -147,7 +147,7 @@ export class AuthService {
     }
     console.log('OK');
     return {
-      jwt: await this.generateJwt(user.id, user.username, user.twoFaEnabled),
+      jwt: await this.generateJwt(user.id, user.username, user.isTwoFaEnabled),
     };
   }
 
@@ -161,7 +161,7 @@ export class AuthService {
       throw new Error('huga not found');
     }
     return {
-      jwt: await this.generateJwt(huga.id, huga.username, huga.twoFaEnabled),
+      jwt: await this.generateJwt(huga.id, huga.username, huga.isTwoFaEnabled),
     };
   }
 
@@ -186,7 +186,7 @@ export class AuthService {
         id: userId,
       },
       data: {
-        twoFaEnabled: true,
+        isTwoFaEnabled: true,
       },
     });
   }

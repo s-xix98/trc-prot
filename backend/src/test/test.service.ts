@@ -32,7 +32,7 @@ export class TestService {
       const token = await this.authService.generateJwt(
         user.id,
         user.username,
-        user.twoFaEnabled,
+        user.isTwoFaEnabled,
       );
       const socket: Socket = io('http://localhost:8001', { auth: { token } });
       testUsers.push({ user, socket });

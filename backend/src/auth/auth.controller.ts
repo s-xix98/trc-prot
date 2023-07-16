@@ -122,14 +122,14 @@ export class AuthController {
       where: { id: req.user.userId },
     });
 
-    if (!isValid || !user || !user.twoFaEnabled) {
+    if (!isValid || !user || !user.isTwoFaEnabled) {
       throw new ForbiddenException();
     }
 
     const token = await this.authService.generateJwt(
       req.user.userId,
       req.user.username,
-      user.twoFaEnabled,
+      user.isTwoFaEnabled,
       true,
     );
 
