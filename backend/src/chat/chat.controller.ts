@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtTwoFaAuthGuard } from 'src/auth/guard/jwt-two-fa.guard';
 
 import { UserInfo } from '../user/types/userInfo';
 
 import { ChatService } from './chat.service';
 import { UpdateRoomMemberRoleDto } from './dto/Channel.dto';
-import { JwtTwoFaAuthGuard } from 'src/auth/guard/jwt-two-fa.guard';
 
 @UseGuards(JwtTwoFaAuthGuard)
 @Controller('chat')
