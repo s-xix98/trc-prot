@@ -1,5 +1,6 @@
-import { chatChannelSchema } from '@/features/chat/types/chatChannelDto';
 import { z } from 'zod';
+
+import { chatChannelSchema } from '@/features/chat/types/chatChannelDto';
 
 export const SignUpDtoSchema = z.object({
   email: z.string().email(),

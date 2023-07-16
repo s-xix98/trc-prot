@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai';
 
-import { userInfoAtom } from '@/stores/jotai';
+import { currentUserAtom } from '@/stores/jotai';
 
 export const useCurrentUser = () => {
-  const currentUserInfo = useAtomValue(userInfoAtom);
+  const currentUser = useAtomValue(currentUserAtom);
 
-  return { currentUserInfo };
+  return { currentUserInfo: currentUser?.userInfo };
 };
