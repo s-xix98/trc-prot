@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class GameService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getRanking() {
+  async GetRanking() {
     const ranking = await this.prismaService.rating.findMany({
       select: {
         userData: {
@@ -26,5 +26,22 @@ export class GameService {
       ...pick(r, 'userId', 'rating'),
       ...r.userData,
     }));
+  }
+
+  async UpdateRating(userId: string, result: 'WIN' | 'LOSE') {
+    const rankingDiff = result === 'WIN' ? 1 : -1;
+
+    await this.prismaService.rating.upsert({
+      where: {
+        userId: userId,
+      },
+      update: {
+        rating: { increment: rankingDiff },
+      },
+      create: {
+        userId: userId,
+        rating: rankingDiff,
+      },
+    });
   }
 }

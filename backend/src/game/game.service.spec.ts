@@ -61,7 +61,7 @@ describe('GameService', () => {
     });
 
     await Promise.all(tableCreationPromise);
-    const ranking = await game.getRanking();
+    const ranking = await game.GetRanking();
     expect(ranking).toEqual(expectedResult);
   });
 });
