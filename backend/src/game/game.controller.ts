@@ -11,7 +11,7 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Get('ranking')
-  async getRanking(): Promise<Rate[]> {
-    return this.gameService.getRanking();
+  async GetRanking(): Promise<Rate[]> {
+    return this.gameService.GetRanking();
   }
 }
