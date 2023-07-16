@@ -72,9 +72,12 @@ export class GameGateway {
       client.emit('already playing');
       return;
     }
-    if (!this.waitingUser || this.waitingUser.data.id === reqUser.data.id) {
+    if (!this.waitingUser) {
       console.log('waiting', reqUser.data.username);
       this.waitingUser = reqUser;
+      return;
+    }
+    if (this.waitingUser.data.id === reqUser.data.id) {
       return;
     }
 
