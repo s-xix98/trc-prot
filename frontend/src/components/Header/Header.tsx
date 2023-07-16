@@ -11,14 +11,14 @@ const HeaderLink = ({ href, name }: { href: string; name: string }) => {
 };
 
 export const Header = () => {
-  const login = useLogin();
+  const { manualLogin } = useLogin();
 
   // TODO : 消す
   const loginAsHuga = () => {
-    login('huga@example.com', 'hugahuga');
+    manualLogin('huga@example.com', 'hugahuga');
   };
   const loginAsPiyo = () => {
-    login('piyo@example.com', 'piyopiyo');
+    manualLogin('piyo@example.com', 'piyopiyo');
   };
 
   return (
