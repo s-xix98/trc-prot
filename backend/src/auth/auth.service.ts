@@ -8,7 +8,7 @@ import { toDataURL } from 'qrcode';
 import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../game/dto/UserDto';
 
-import { accessToken, authUser } from './types/auth.types';
+import { accessToken, authUser, jwtPayload } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
 import { loginDto } from './dto/login.dto';
 import { QRCode } from './types/qrcode.types';
@@ -42,7 +42,13 @@ export class AuthService {
     });
     // 既に登録されている場合
     if (user) {
-      return { jwt: await this.generateJwt(user.user.id, user.user.username) };
+      return {
+        jwt: await this.generateJwt(
+          user.user.id,
+          user.user.username,
+          user.user.isTwoFaEnabled,
+        ),
+      };
     }
 
     // まだ登録されていない場合
@@ -59,13 +65,26 @@ export class AuthService {
       },
     });
 
-    return { jwt: await this.generateJwt(newUser.id, newUser.username) };
+    return {
+      jwt: await this.generateJwt(
+        newUser.id,
+        newUser.username,
+        newUser.isTwoFaEnabled,
+      ),
+    };
   }
 
-  async generateJwt(userId: string, username: string): Promise<string> {
-    const payload = {
+  async generateJwt(
+    userId: string,
+    username: string,
+    isTwoFaEnabled: boolean,
+    isTwoFactorAuthenticated = false,
+  ): Promise<string> {
+    const payload: jwtPayload = {
       userId,
       username,
+      isTwoFaEnabled,
+      isTwoFactorAuthenticated,
     };
 
     return this.jwtService.signAsync(payload, { expiresIn: '1h' });
@@ -84,7 +103,13 @@ export class AuthService {
           hashedPassword: hashedPassword,
         },
       });
-      return { jwt: await this.generateJwt(user.id, user.username) };
+      return {
+        jwt: await this.generateJwt(
+          user.id,
+          user.username,
+          user.isTwoFaEnabled,
+        ),
+      };
     } catch (e) {
       console.log(e);
       // email,usernameが被った時のエラーは'P2002'が帰ってくる
@@ -125,7 +150,9 @@ export class AuthService {
       throw new ForbiddenException('Password incorrect');
     }
     console.log('OK');
-    return { jwt: await this.generateJwt(user.id, user.username) };
+    return {
+      jwt: await this.generateJwt(user.id, user.username, user.isTwoFaEnabled),
+    };
   }
 
   async jwtHuga(): Promise<accessToken> {
@@ -137,7 +164,9 @@ export class AuthService {
     if (!huga) {
       throw new Error('huga not found');
     }
-    return { jwt: await this.generateJwt(huga.id, huga.username) };
+    return {
+      jwt: await this.generateJwt(huga.id, huga.username, huga.isTwoFaEnabled),
+    };
   }
 
   async generateTwoFaSecret(user: UserInfo): Promise<QRCode> {
@@ -161,7 +190,7 @@ export class AuthService {
         id: userId,
       },
       data: {
-        twoFaEnabled: true,
+        isTwoFaEnabled: true,
       },
     });
   }

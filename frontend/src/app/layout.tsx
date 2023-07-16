@@ -6,9 +6,12 @@ import './globals.css';
 // import { Inter } from 'next/font/google';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
 import { ThemeProvider } from '@mui/material';
+import { useSetAtom } from 'jotai';
 
 import { useSession } from '@/hooks/useSession';
 import { theme } from '@/lib/mui';
+import { useSessionSocket } from '@/hooks/useSocket';
+import { channelListAtom } from '@/stores/jotai';
 
 import StyledComponentsRegistry from '../lib/registry';
 
@@ -25,7 +28,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const setChannelList = useSetAtom(channelListAtom);
+
   useSession();
+
+  // TODO : 移動させる
+  useSessionSocket('error', (data) => {
+    console.log(data);
+  });
+
+  useSessionSocket('joinedRooms', (data) => {
+    console.log('joinedRooms', data);
+    setChannelList(data);
+  });
+
+  useSessionSocket('friendRequests', (data) => {
+    // friendRequestの処理を書く
+    console.log('friendRequests', data);
+  });
+
+  useSessionSocket('friends', (data) => {
+    console.log('friends', data);
+  });
+
+  useSessionSocket('blockUsers', (data) => {
+    console.log('blockUsers', data);
+  });
 
   return (
     <html lang="en">

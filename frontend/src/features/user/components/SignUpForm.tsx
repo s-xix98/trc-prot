@@ -8,7 +8,7 @@ import { useSignUp } from '../api/userSignUp';
 import { SignUpDto, SignUpDtoSchema } from '../types/UserDto';
 
 export const SignUpForm = () => {
-  const signUp = useSignUp();
+  const { signUp } = useSignUp();
   const methods = useForm<SignUpDto>({
     resolver: zodResolver(SignUpDtoSchema),
   });

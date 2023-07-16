@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { PrismaService } from '../prisma/prisma.service';
+
 import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
@@ -24,7 +26,10 @@ import { TwoFaDto } from './dto/twoFa.dto';
 @Controller('auth')
 @ApiTags('/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
@@ -99,5 +104,35 @@ export class AuthController {
     }
 
     await this.authService.enableTwoFa(req.user.userId);
+  }
+
+  @Post('2fa/authentication')
+  @UseGuards(JwtAuthGuard)
+  async authentication(
+    @Request() req: any,
+    @Body() dto: TwoFaDto,
+  ): Promise<accessToken> {
+    console.log('2fa/authentication', req.user, dto);
+    const isValid = await this.authService.isTwoFaCodeValidForUser(
+      dto.twoFaCode,
+      req.user.userId,
+    );
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id: req.user.userId },
+    });
+
+    if (!isValid || !user || !user.isTwoFaEnabled) {
+      throw new ForbiddenException();
+    }
+
+    const token = await this.authService.generateJwt(
+      req.user.userId,
+      req.user.username,
+      user.isTwoFaEnabled,
+      true,
+    );
+
+    return { jwt: token };
   }
 }
