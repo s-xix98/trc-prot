@@ -28,8 +28,8 @@ export class GameService {
     }));
   }
 
-  async UpdateRating(userId:string, result: 'WIN' | 'LOSE') {
-    let rankingDiff = result === 'WIN' ? 1 : -1;
+  async UpdateRating(userId: string, result: 'WIN' | 'LOSE') {
+    const rankingDiff = result === 'WIN' ? 1 : -1;
 
     await this.prismaService.rating.upsert({
       where: {

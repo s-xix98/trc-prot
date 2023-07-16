@@ -17,7 +17,10 @@ export class GameGateway {
   private userGameMap = new Map<string, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;
 
-  constructor(private gameService: GameService, private server: WsocketGateway) {}
+  constructor(
+    private gameService: GameService,
+    private server: WsocketGateway,
+  ) {}
 
   handleConnection(client: Socket) {
     console.log('game connection');
@@ -79,14 +82,8 @@ export class GameGateway {
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(reqUser.data.id, game);
 
-    reqUser.client.emit(
-      'matched',
-      this.waitingUser.data.username,
-    );
-    this.waitingUser.client.emit(
-      'matched',
-      reqUser.data.username,
-    );
+    reqUser.client.emit('matched', this.waitingUser.data.username);
+    this.waitingUser.client.emit('matched', reqUser.data.username);
     this.waitingUser = undefined;
   }
 
