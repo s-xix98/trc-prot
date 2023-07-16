@@ -24,7 +24,7 @@ const onDisconnect = () => {
 
 function App() {
   // TODO : 消す、login ページに飛ぶ前に、ページ見えちゃうの嫌なので一旦
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const setChannelList = useSetAtom(channelListAtom);
 
   useSessionSocket('addRoom', (data) => {
@@ -70,7 +70,7 @@ function App() {
 
   return (
     <MainLayout>
-      {userInfo && <Terminal commandElemMap={commandElemMap} />}
+      {currentUserInfo && <Terminal commandElemMap={commandElemMap} />}
     </MainLayout>
   );
 }

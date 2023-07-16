@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
-import { userInfoAtom } from '@/stores/jotai';
 import { channelListAtom } from '@/stores/jotai';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { chatChannelDto } from '../types/chatChannelDto';
 
@@ -30,11 +30,11 @@ const ChooseRoom = () => {
 };
 
 export const Chat = () => {
-  const userInfo = useAtomValue(userInfoAtom);
+  const { currentUserInfo } = useCurrentUser();
   const [selectedChannel, setSelectedChannel] = useState<chatChannelDto>();
   const channels = useAtomValue(channelListAtom);
 
-  if (userInfo === undefined) {
+  if (currentUserInfo === undefined) {
     return <PleaseLogin />;
   }
   return (

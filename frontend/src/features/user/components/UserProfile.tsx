@@ -54,11 +54,11 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
 };
 
 export const UserProfile = ({ userInfo }: { userInfo: UserInfo }) => {
-  const currentUser = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
 
   return (
     <>
-      {currentUser.userInfo?.id === userInfo.id ? (
+      {currentUserInfo?.id === userInfo.id ? (
         <MyProfile userInfo={userInfo} />
       ) : (
         <OtherProfile userInfo={userInfo} />

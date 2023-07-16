@@ -8,7 +8,7 @@ import { Game } from './Game';
 
 export const Matching = () => {
   const [isMatched, setMatched] = useState(false);
-  const { userInfo } = useCurrentUser();
+  const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   useSessionSocket('matched', (side: number, enemyName: string) => {
@@ -24,14 +24,14 @@ export const Matching = () => {
 
   useEffect(() => {
     return () => {
-      sessionSocketEmitter.emit('clear match', userInfo?.id);
+      sessionSocketEmitter.emit('clear match', currentUserInfo?.id);
     };
-  }, [userInfo, sessionSocketEmitter]);
+  }, [currentUserInfo, sessionSocketEmitter]);
 
   const onClickAct = () => {
-    sessionSocketEmitter.emit('matchmake', userInfo);
+    sessionSocketEmitter.emit('matchmake', currentUserInfo);
   };
-  // console.log("ui", userInfo);
+  // console.log("ui", currentUserInfo);
   return (
     <Container flexDirection={'column'}>
       <div>

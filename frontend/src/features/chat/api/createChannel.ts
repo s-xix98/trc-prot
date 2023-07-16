@@ -1,12 +1,10 @@
-import { useAtomValue } from 'jotai';
-
-import { userInfoAtom } from '@/stores/jotai';
 import { useSessionSocketEmitter } from '@/hooks/useSocket';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { CreateChannelDto } from '../types/CreateChannelDto';
 
 export const useCreateChannel = () => {
-  const userinfo = useAtomValue(userInfoAtom);
+  const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (
@@ -14,14 +12,14 @@ export const useCreateChannel = () => {
     password: string | undefined,
     isPrivate: boolean | undefined,
   ) => {
-    if (userinfo === undefined) {
-      console.log('userinfo is undef');
+    if (currentUserInfo === undefined) {
+      console.log('currentUserInfo is undef');
       return;
     }
 
     const dto: CreateChannelDto = {
       roomName: roomName,
-      userId: userinfo.id,
+      userId: currentUserInfo.id,
       password: password,
       isPrivate: isPrivate,
     };
