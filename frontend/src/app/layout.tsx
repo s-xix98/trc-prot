@@ -11,8 +11,8 @@ import { useSetAtom } from 'jotai';
 import { useSession } from '@/hooks/useSession';
 import { theme } from '@/lib/mui';
 import { useSessionSocket } from '@/hooks/useSocket';
-import { channelListAtom } from '@/stores/jotai';
 import { useLogout } from '@/features/user/api/userLogin';
+import { currentUserAtom } from '@/stores/jotai';
 
 import StyledComponentsRegistry from '../lib/registry';
 
@@ -29,7 +29,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const setChannelList = useSetAtom(channelListAtom);
+  const setCurrentUserAtom = useSetAtom(currentUserAtom);
   const { logout } = useLogout();
 
   useSession();
@@ -47,20 +47,27 @@ export default function RootLayout({
 
   useSessionSocket('joinedRooms', (data) => {
     console.log('joinedRooms', data);
-    setChannelList(data);
+    setCurrentUserAtom((prev) =>
+      prev ? { ...prev, joinedRooms: data } : prev,
+    );
   });
 
   useSessionSocket('friendRequests', (data) => {
     // friendRequestの処理を書く
     console.log('friendRequests', data);
+    setCurrentUserAtom((prev) =>
+      prev ? { ...prev, friendRequests: data } : prev,
+    );
   });
 
   useSessionSocket('friends', (data) => {
     console.log('friends', data);
+    setCurrentUserAtom((prev) => (prev ? { ...prev, friends: data } : prev));
   });
 
   useSessionSocket('blockUsers', (data) => {
     console.log('blockUsers', data);
+    setCurrentUserAtom((prev) => (prev ? { ...prev, blockUsers: data } : prev));
   });
 
   return (
