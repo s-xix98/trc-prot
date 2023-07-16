@@ -21,7 +21,7 @@ const customAxios = axios.create({
 
 export const useSessionAxios = () => {
   const router = useRouter();
-  const logout = useLogout();
+  const { logout } = useLogout();
 
   useEffect(() => {
     customAxios.interceptors.request.use(setAccessTokenForRequest);

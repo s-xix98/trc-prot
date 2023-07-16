@@ -13,7 +13,7 @@ import { useCurrentUser } from './useCurrentUser';
 export const useSession = () => {
   const pathname = usePathname();
   const { automaticLogin } = useLogin();
-  const logout = useLogout();
+  const { logout } = useLogout();
   const { verifySession } = useVerifySession();
   const { currentUserInfo } = useCurrentUser();
 

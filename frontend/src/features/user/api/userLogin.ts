@@ -72,5 +72,5 @@ export const useLogout = () => {
     router.push('/login');
   };
 
-  return logout;
+  return { logout };
 };

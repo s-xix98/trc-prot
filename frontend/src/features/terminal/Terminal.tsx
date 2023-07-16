@@ -25,7 +25,7 @@ export const Terminal = ({
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
   const [userInfo] = useAtom(userInfoAtom);
 
-  const logout = useLogout();
+  const { logout } = useLogout();
 
   const [currentModalElem, setCurrentModalElem] = useState<JSX.Element>();
 
