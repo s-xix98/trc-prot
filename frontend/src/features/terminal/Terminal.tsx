@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { useAtom } from 'jotai';
-import { useRouter } from 'next/navigation';
 import { KeyboardEvent } from 'react';
 import { useSnackbar } from 'notistack';
 
@@ -9,9 +8,10 @@ import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
-import { socketAtom, userInfoAtom } from '@/stores/jotai';
-import { tokenStorage } from '@/utils/tokenStorage';
 import { Input } from '@/components/Elements/Input/Input';
+import { userInfoAtom } from '@/stores/jotai';
+
+import { useLogout } from '../user/api/userLogin';
 
 import { TerminalOutput } from './TerminalOutput';
 
@@ -23,14 +23,13 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
-  const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-  const [socket, setSocket] = useAtom(socketAtom);
+  const [userInfo] = useAtom(userInfoAtom);
+
+  const { logout } = useLogout();
 
   const [currentModalElem, setCurrentModalElem] = useState<JSX.Element>();
 
   const { modalIsOpen, openModal, closeModal } = useModal();
-
-  const router = useRouter();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -46,11 +45,7 @@ export const Terminal = ({
     e.preventDefault(); // 改行を入力しない
 
     if (input === 'logout') {
-      socket?.disconnect();
-      setUserInfo(undefined);
-      setSocket(undefined);
-      tokenStorage.remove();
-      router.push('/login');
+      logout();
     }
 
     // TODO : 消す

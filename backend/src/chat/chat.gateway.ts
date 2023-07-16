@@ -33,35 +33,26 @@ export class ChatGateway {
     console.log('chat Connection');
     console.log(client.id);
 
-    // handleConnection(client: Socket)の引数にデータを渡すにはクライアント側のURLパスにクエリを追加しないといけないから
-    // 元々あるhugaで代用
-    // jwt導入次第削除
-    const huga = await this.prisma.user.findUnique({
-      where: {
-        username: 'huga',
-      },
-    });
-
-    if (!huga) {
+    const token = client.handshake.auth.token;
+    if (!token) {
       return;
     }
-    const roomIds = await this.prisma.roomMember.findMany({
-      where: {
-        userId: huga.id,
-      },
-    });
 
-    const rooms = await this.prisma.chatRoom.findMany({
-      where: {
-        id: {
-          in: roomIds.map((room) => room.chatRoomId),
-        },
-      },
-    });
+    const userId = this.server.extractUserIdFromToken(token);
+    if (!userId) {
+      return;
+    }
 
-    rooms.forEach((room) => {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return;
+    }
+
+    const joinedRooms = await this.chatService.getJoinedRooms(userId);
+    client.emit('joinedRooms', joinedRooms);
+
+    joinedRooms.forEach((room) => {
       this.server.JoinRoom(client, roomType.Chat, room.id);
-      client.emit('addRoom', room);
     });
   }
 
@@ -72,10 +63,10 @@ export class ChatGateway {
   @SubscribeMessage('createChannel')
   async createChannel(client: Socket, dto: CreateChannelDto) {
     const createdRoom = await this.chatService.createChannel(dto);
+    const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
-    client.emit('addRoom', createdRoom);
-    client.broadcast.emit('addRoom', createdRoom);
+    client.emit('joinedRooms', joinedRooms);
   }
 
   @SubscribeMessage('joinChannel')
