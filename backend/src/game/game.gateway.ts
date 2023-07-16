@@ -2,7 +2,6 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { UseFilters } from '@nestjs/common';
 
-import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
@@ -10,38 +9,7 @@ import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
 import { OnShutdownCallback, PlayerData } from './types';
-
-const UpdateRatingTable = async (
-  winner: string,
-  loser: string,
-  prisma: PrismaService,
-) => {
-  await prisma.rating.upsert({
-    where: {
-      userId: winner,
-    },
-    update: {
-      rating: { increment: 1 },
-    },
-    create: {
-      userId: winner,
-      rating: 1,
-    },
-  });
-
-  await prisma.rating.upsert({
-    where: {
-      userId: loser,
-    },
-    update: {
-      rating: { increment: -1 },
-    },
-    create: {
-      userId: loser,
-      rating: -1,
-    },
-  });
-};
+import { GameService } from './game.service';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
@@ -49,7 +17,7 @@ export class GameGateway {
   private userGameMap = new Map<string, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;
 
-  constructor(private prisma: PrismaService, private server: WsocketGateway) {}
+  constructor(private gameService: GameService, private server: WsocketGateway) {}
 
   handleConnection(client: Socket) {
     console.log('game connection');
@@ -103,7 +71,8 @@ export class GameGateway {
       console.log('onshutdown');
       this.userGameMap.delete(winnerUserId);
       this.userGameMap.delete(loserUserId);
-      UpdateRatingTable(winnerUserId, loserUserId, this.prisma);
+      this.gameService.UpdateRating(winnerUserId, 'WIN');
+      this.gameService.UpdateRating(loserUserId, 'LOSE');
     };
 
     const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
