@@ -46,16 +46,17 @@ export const useLogin = () => {
   return { automaticLogin, manualLogin };
 };
 
+export const useVerifySession = () => {
+  const sessionAxios = useSessionAxios();
 
-      const user = await sessionAxios.get<UserInfo>('/user/me');
-      setUserInfo(user.data);
-      // TODO とりあえずlogだけ
-    } catch (err) {
+  // sessionAxios が 401 の時に logout して /login まで 運んでくれる
+  const verifySession = () => {
+    sessionAxios.get<UserInfo>('/user/me').catch((err) => {
       console.log(err);
-    }
+    });
   };
 
-  return login;
+  return { verifySession };
 };
 
 export const useLogout = () => {
