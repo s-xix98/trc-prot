@@ -266,6 +266,9 @@ export class ChatService {
         id: true,
         roomName: true,
       },
+      orderBy: {
+        updatedAt: 'desc',
+      },
     });
 
     return joinedRooms;
