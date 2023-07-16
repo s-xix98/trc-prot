@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 import { useSessionAxios } from '@/hooks/useSessionAxios';
-import { tokenStorage } from "@/utils/tokenStorage";
+import { tokenStorage } from '@/utils/tokenStorage';
 
 export default function Fa() {
   const [qrcode, setqrcode] = useState<string>('');
@@ -36,7 +36,7 @@ export default function Fa() {
       .catch((err) => {
         console.log(err);
       });
-    };
+  };
 
   const sendAuth = () => {
     const dto = {
@@ -44,15 +44,16 @@ export default function Fa() {
     };
 
     axios
-    .post('/auth/2fa/authentication', dto)
-    .then((res) => {
-      console.log(res);
-      const jwt = Buffer.from(res.data.jwt, 'base64').toString();
-      console.log(jwt);
-      tokenStorage.set(res.data.jwt);
-    }).catch((err) => {
-      console.log(err);
-    });
+      .post('/auth/2fa/authentication', dto)
+      .then((res) => {
+        console.log(res);
+        const jwt = Buffer.from(res.data.jwt, 'base64').toString();
+        console.log(jwt);
+        tokenStorage.set(res.data.jwt);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -66,10 +67,7 @@ export default function Fa() {
       />
       <button onClick={sendEnable}>enable</button>
 
-      <input
-        value={auth}
-        onChange={(event) => setAuth(event.target.value)}
-      />
+      <input value={auth} onChange={(event) => setAuth(event.target.value)} />
       <button onClick={sendAuth}>authentication</button>
     </div>
   );

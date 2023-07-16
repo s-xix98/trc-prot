@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { PrismaService } from '../prisma/prisma.service';
+
 import { AuthService } from './auth.service';
 import { accessToken } from './types/auth.types';
 import { signUpDto } from './dto/signUp.dto';
@@ -20,12 +22,14 @@ import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { FtAuthGuard } from './guard/ft-auth.guard';
 import { QRCode } from './types/qrcode.types';
 import { TwoFaDto } from './dto/twoFa.dto';
-import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('auth')
 @ApiTags('/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly prismaService:PrismaService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   @Post('signup')
   @ApiOperation({ summary: 'signUp nori' })
@@ -114,13 +118,20 @@ export class AuthController {
       req.user.userId,
     );
 
-    const user = await this.prismaService.user.findUnique({where:{id:req.user.userId}});
+    const user = await this.prismaService.user.findUnique({
+      where: { id: req.user.userId },
+    });
 
     if (!isValid || !user || !user.twoFaEnabled) {
       throw new ForbiddenException();
     }
 
-    const token =  await this.authService.generateJwt(req.user.userId, req.user.username, user.twoFaEnabled, true);
+    const token = await this.authService.generateJwt(
+      req.user.userId,
+      req.user.username,
+      user.twoFaEnabled,
+      true,
+    );
 
     return { jwt: token };
   }
