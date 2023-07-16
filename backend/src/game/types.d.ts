@@ -1,5 +1,7 @@
 import { Socket } from 'socket.io';
 
+import { UserInfo } from './dto/UserDto';
+
 export type Ball = {
   x: number;
   y: number;
@@ -18,8 +20,8 @@ export type Paddle = {
 export type Scores = { left: number; right: number };
 
 export type OnShutdownCallback = (
-  winner: Socket,
-  loser: Socket,
+  winnerUserId: string,
+  loserUserId: string,
   scores: Scores,
 ) => void;
 
@@ -28,3 +30,5 @@ export type Rate = {
   username: string;
   rating: number;
 };
+
+export type PlayerData = { client: Socket; data: UserInfo };
