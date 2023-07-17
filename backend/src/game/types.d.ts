@@ -35,3 +35,8 @@ export type Rate = {
 };
 
 export type PlayerData = { client: Socket; data: UserInfo };
+
+export type PlayerResult = {
+  readonly userId: string;
+  readonly score: number;
+};
