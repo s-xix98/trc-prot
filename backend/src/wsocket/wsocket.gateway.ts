@@ -27,16 +27,27 @@ export class WsocketGateway {
 
     const token = client.handshake.auth.token;
     if (token === undefined) {
+      client.emit('logout');
       client.disconnect();
       return;
     }
 
     try {
       const payload = await this.auth.verifyJwt(token);
+
+      const oldClient = this.userMap.get(payload.userId);
+      if (oldClient !== undefined) {
+        oldClient.emit('logout');
+        oldClient.disconnect();
+        this.socketMap.delete(oldClient);
+        this.userMap.delete(payload.userId);
+      }
+
       this.socketMap.set(client, payload.userId);
       this.userMap.set(payload.userId, client);
     } catch (err) {
       console.log(err);
+      client.emit('logout');
       client.disconnect();
     }
   }
