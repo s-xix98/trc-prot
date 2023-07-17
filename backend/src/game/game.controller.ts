@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 import { Rate } from './types';
 import { GameService } from './game.service';
+import { MatchHistory } from './dto/Api';
 
 @UseGuards(JwtAuthGuard)
 @Controller('game')
@@ -16,7 +17,9 @@ export class GameController {
   }
 
   @Get('match-history')
-  async GetMatchHistory(@Query('userId') userId: string) {
+  async GetMatchHistory(
+    @Query('userId') userId: string,
+  ): Promise<MatchHistory[]> {
     return this.gameService.GetMatchHistory(userId);
   }
 }

@@ -3,6 +3,8 @@ import { pick } from 'lodash';
 
 import { PrismaService } from '../prisma/prisma.service';
 
+import { MatchHistory } from './dto/Api';
+
 @Injectable()
 export class GameService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -45,7 +47,7 @@ export class GameService {
     });
   }
 
-  async GetMatchHistory(userId: string) {
+  async GetMatchHistory(userId: string): Promise<MatchHistory[]> {
     const history = await this.prismaService.matchHistory.findMany({
       select: {
         player1: {
