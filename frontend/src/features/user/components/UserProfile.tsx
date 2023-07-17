@@ -2,13 +2,14 @@ import { Avatar, Stack } from '@mui/material';
 import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
 import { useState } from 'react';
 
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useCurrentUser, useFriendStatus } from '@/hooks/useCurrentUser';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
+import { useUnblockRequestSender } from '../api/unblockRequestSender';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
@@ -31,9 +32,49 @@ const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   );
 };
 
+const FriendUserDetails = ({ sendBlockReq }: { sendBlockReq: () => void }) => {
+  return (
+    <>
+      <p>Friend</p>
+      <button onClick={sendBlockReq}>Block Req</button>
+    </>
+  );
+};
+
+const BlockUserDetails = ({
+  sendUnBlockReq,
+}: {
+  sendUnBlockReq: () => void;
+}) => {
+  return (
+    <>
+      <p>Blocking</p>
+      <button onClick={sendUnBlockReq}>Unblock Req</button>
+    </>
+  );
+};
+
+const OtherUserDetails = ({
+  sendFriendReq,
+  sendBlockReq,
+}: {
+  sendFriendReq: () => void;
+  sendBlockReq: () => void;
+}) => {
+  return (
+    <>
+      <p>Other</p>
+      <button onClick={sendFriendReq}>Friend Req</button>
+      <button onClick={sendBlockReq}>Block Req</button>
+    </>
+  );
+};
+
 const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const friendRequestSender = useFriendRequestSender();
   const blockRequestSender = useBlockRequestSender();
+  const unblockRequestSender = useUnblockRequestSender();
+  const { isFriend, isBlockUser } = useFriendStatus();
 
   const sendFriendReq = () => {
     friendRequestSender.emit(userInfo.id);
@@ -43,12 +84,24 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
     blockRequestSender.emit(userInfo.id);
   };
 
+  const sendUnBlockReq = () => {
+    unblockRequestSender.emit(userInfo.id);
+  };
+
   return (
     <div>
       <ShowIcon userInfo={userInfo} />
       <br />
-      <button onClick={sendFriendReq}>Friend Req</button>
-      <button onClick={sendBlockReq}>Block Req</button>
+      {isFriend(userInfo) && <FriendUserDetails sendBlockReq={sendBlockReq} />}
+      {isBlockUser(userInfo) && (
+        <BlockUserDetails sendUnBlockReq={sendUnBlockReq} />
+      )}
+      {!isFriend(userInfo) && !isBlockUser(userInfo) && (
+        <OtherUserDetails
+          sendFriendReq={sendFriendReq}
+          sendBlockReq={sendBlockReq}
+        />
+      )}
     </div>
   );
 };
