@@ -33,6 +33,16 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+interface GameRule {
+  EvaluateGameResult(
+    p1: PlayerResult,
+    p2: PlayerResult,
+  ): { winner: PlayerResult; loser: PlayerResult } | null;
+  CreateResultEvaluator(): ResultEvaluator;
+  isGameFinished(p1Score: number, p2Score: number): boolean;
+}
+
+
 export class GameLogic {
   private ball: Ball;
   private p1: Player;
