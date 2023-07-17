@@ -84,6 +84,12 @@ test-e2e:
 # docker compose down になぜか `-f` オプションがない
 	export COMPOSE_FILE=docker-compose.yml:docker-compose.e2e.yml && docker compose down
 
+# ローカルで実行
+# 自分でローカルに必要なもの install する必要あるかも
+# back, front ともに buildはされない, コンテナが動作中である必要あり。
+# DB は 初期化
+# TAKE_SCREENSHOT=0 : スクショ も更新されない
+# HEADLESS=0        : ブラウザ出して動作確認できる
 PHONY	+=	test-e2e-local
 test-e2e-local:
 	docker compose run --rm backend make setup-db
