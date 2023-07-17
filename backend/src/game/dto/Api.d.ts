@@ -1,6 +1,8 @@
+import { UserInfo } from './UserDto';
+
 export type MatchHistory = {
-  player1: string;
-  player2: string;
-  winner: string | undefined;
-  date: Date;
+  player1: UserInfo;
+  player2: UserInfo;
+  winner: UserInfo | null;
+  createdAt: Date;
 };

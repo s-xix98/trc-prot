@@ -52,16 +52,19 @@ export class GameService {
       select: {
         player1: {
           select: {
+            id: true,
             username: true,
           },
         },
         player2: {
           select: {
+            id: true,
             username: true,
           },
         },
         winner: {
           select: {
+            id: true,
             username: true,
           },
         },
@@ -83,12 +86,7 @@ export class GameService {
     });
 
     console.log('history raw', history);
-    return history.map((h) => ({
-      player1: h.player1.username,
-      player2: h.player2.username,
-      winner: h.winner?.username,
-      date: h.createdAt,
-    }));
+    return history;
   }
 
   async UpdateMatchHistory(
