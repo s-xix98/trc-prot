@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 
 import { currentUserAtom } from '@/stores/jotai';
+import { UserInfo } from '@/features/user/types/UserDto';
 
 import { useSessionSocket } from './useSocket';
 
@@ -45,4 +46,31 @@ export const useCurrentUser = () => {
     blockUsers: currentUser?.blockUsers ?? [],
     joinedRooms: currentUser?.joinedRooms ?? [],
   };
+};
+
+const containsUser = (users: UserInfo[], target: UserInfo) => {
+  for (const user of users) {
+    if (user.id === target.id) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const useFriendStatus = () => {
+  const { friends, friendRequests, blockUsers } = useCurrentUser();
+
+  const isFriend = (targetUserInfo: UserInfo) => {
+    return containsUser(friends, targetUserInfo);
+  };
+
+  const isFriendRequest = (targetUserInfo: UserInfo) => {
+    return containsUser(friendRequests, targetUserInfo);
+  };
+
+  const isBlockUser = (targetUserInfo: UserInfo) => {
+    return containsUser(blockUsers, targetUserInfo);
+  };
+
+  return { isFriend, isFriendRequest, isBlockUser };
 };
