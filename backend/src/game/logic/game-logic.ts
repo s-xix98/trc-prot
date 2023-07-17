@@ -1,6 +1,13 @@
 import { Socket } from 'socket.io';
 
-import { Ball, OnShutdownCallback, Paddle, PlayerData } from '../types';
+import {
+  Ball,
+  OnShutdownCallback,
+  Paddle,
+  PlayerData,
+  PlayerResult,
+  ResultEvaluator,
+} from '../types';
 import {
   canvas,
   CreateBall,
@@ -231,6 +238,19 @@ export class GameLogic {
     this.p1.socket.emit('game data', this.ConvertToGameDto());
     this.p2.socket.emit('game data', this.ConvertToGameDto());
     setTimeout(this.StartGame.bind(this), 500);
+  }
+
+  private CreateResultEvaluator(): ResultEvaluator {
+    const matchPoint = this.matchPoint;
+    return (p1: PlayerResult, p2: PlayerResult) => {
+      if (p1.score == matchPoint && p2.score != matchPoint) {
+        return { winner: p1, loser: p2 };
+      } else if (p2.score == matchPoint && p1.score != matchPoint) {
+        return { winner: p2, loser: p1 };
+      } else {
+        return null;
+      }
+    };
   }
 
   private GetWinnerLoserPair() {
