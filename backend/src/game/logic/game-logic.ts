@@ -72,13 +72,14 @@ export class GameLogic {
   private p1: Player;
   private p2: Player;
   private intervalId: any;
-  private matchPoint = MatchPoint;
+  private rule: GameRule;
   private onShutdown: OnShutdownCallback;
 
   constructor(
     p1: PlayerData,
     p2: PlayerData,
     onShutdown: OnShutdownCallback,
+    rule: GameRule = new BasicRule(MatchPoint),
     ball: Ball = CreateBall(),
   ) {
     this.ball = ball;
@@ -99,6 +100,7 @@ export class GameLogic {
       score: 0,
     };
     this.onShutdown = onShutdown;
+    this.rule = rule;
   }
 
   RebindSocket(userId: string, socket: Socket) {
@@ -175,7 +177,7 @@ export class GameLogic {
     }
     const p1Result: PlayerResult = this.p1;
     const p2Result: PlayerResult = this.p2;
-    this.onShutdown(p1Result, p2Result, this.CreateResultEvaluator());
+    this.onShutdown(p1Result, p2Result, this.rule.CreateResultEvaluator());
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む
@@ -241,7 +243,7 @@ export class GameLogic {
   }
 
   private isGameFinished(): boolean {
-    return this.p1.score == this.matchPoint || this.p2.score == this.matchPoint;
+    return this.rule.isGameFinished(this.p1.score, this.p2.score);
   }
 
   private HandleGameOver() {
@@ -268,25 +270,8 @@ export class GameLogic {
     setTimeout(this.StartGame.bind(this), 500);
   }
 
-  private CreateResultEvaluator(): ResultEvaluator {
-    const matchPoint = this.matchPoint;
-    return (p1: PlayerResult, p2: PlayerResult) => {
-      if (p1.score == matchPoint && p2.score != matchPoint) {
-        return { winner: p1, loser: p2 };
-      } else if (p2.score == matchPoint && p1.score != matchPoint) {
-        return { winner: p2, loser: p1 };
-      } else {
-        return null;
-      }
-    };
-  }
-
-  private EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
-    return this.CreateResultEvaluator()(p1, p2);
-  }
-
   private GetWinnerLoserPair() {
-    const players = this.EvaluateGameResult(this.p1, this.p2);
+    const players = this.rule.EvaluateGameResult(this.p1, this.p2);
     if (!players) {
       return null;
     }
