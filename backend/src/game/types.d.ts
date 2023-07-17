@@ -20,9 +20,9 @@ export type Paddle = {
 export type Scores = { left: number; right: number };
 
 export type OnShutdownCallback = (
-  winnerUserId: string,
-  loserUserId: string,
-  scores: Scores,
+  player1: PlayerResult,
+  player2: PlayerResult,
+  resultEvaluator: ResultEvaluator,
 ) => void;
 
 export type Rate = {
@@ -32,3 +32,13 @@ export type Rate = {
 };
 
 export type PlayerData = { client: Socket; data: UserInfo };
+
+export type PlayerResult = {
+  readonly userId: string;
+  readonly score: number;
+};
+
+export type ResultEvaluator = (
+  p1: PlayerResult,
+  p2: PlayerResult,
+) => { winner: PlayerResult; loser: PlayerResult } | null;

@@ -1,6 +1,13 @@
 import { Socket } from 'socket.io';
 
-import { Ball, OnShutdownCallback, Paddle, PlayerData } from '../types';
+import {
+  Ball,
+  OnShutdownCallback,
+  Paddle,
+  PlayerData,
+  PlayerResult,
+  ResultEvaluator,
+} from '../types';
 import {
   canvas,
   CreateBall,
@@ -129,14 +136,12 @@ export class GameLogic {
       return;
     }
     clearInterval(this.intervalId);
-    const players = this.GetWinnerLoserPair();
-    if (players === null) {
+    if (!this.isGameFinished()) {
       return;
     }
-    this.onShutdown(players.winner.userId, players.loser.userId, {
-      left: this.p1.score,
-      right: this.p2.score,
-    });
+    const p1Result: PlayerResult = this.p1;
+    const p2Result: PlayerResult = this.p2;
+    this.onShutdown(p1Result, p2Result, this.CreateResultEvaluator());
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む
@@ -229,13 +234,32 @@ export class GameLogic {
     setTimeout(this.StartGame.bind(this), 500);
   }
 
+  private CreateResultEvaluator(): ResultEvaluator {
+    const matchPoint = this.matchPoint;
+    return (p1: PlayerResult, p2: PlayerResult) => {
+      if (p1.score == matchPoint && p2.score != matchPoint) {
+        return { winner: p1, loser: p2 };
+      } else if (p2.score == matchPoint && p1.score != matchPoint) {
+        return { winner: p2, loser: p1 };
+      } else {
+        return null;
+      }
+    };
+  }
+
+  private EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
+    return this.CreateResultEvaluator()(p1, p2);
+  }
+
   private GetWinnerLoserPair() {
-    if (this.p1.score == this.matchPoint) {
-      return { winner: this.p1, loser: this.p2 };
-    } else if (this.p2.score == this.matchPoint) {
-      return { winner: this.p2, loser: this.p1 };
-    } else {
+    const players = this.EvaluateGameResult(this.p1, this.p2);
+    if (!players) {
       return null;
+    }
+    if (this.p1.userId == players.winner.userId) {
+      return { winner: this.p1, loser: this.p2 };
+    } else {
+      return { winner: this.p2, loser: this.p1 };
     }
   }
 
