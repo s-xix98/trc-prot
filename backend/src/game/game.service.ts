@@ -48,42 +48,43 @@ export class GameService {
   }
 
   async GetMatchHistory(userId: string): Promise<MatchHistory[]> {
-    const history = await this.prismaService.matchHistory.findMany({
-      select: {
-        player1: {
-          select: {
-            id: true,
-            username: true,
+    const history: MatchHistory[] =
+      await this.prismaService.matchHistory.findMany({
+        select: {
+          player1: {
+            select: {
+              id: true,
+              username: true,
+            },
           },
+          player2: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+          winner: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+          createdAt: true,
         },
-        player2: {
-          select: {
-            id: true,
-            username: true,
-          },
+        where: {
+          OR: [
+            {
+              player1Id: userId,
+            },
+            {
+              player2Id: userId,
+            },
+          ],
         },
-        winner: {
-          select: {
-            id: true,
-            username: true,
-          },
+        orderBy: {
+          createdAt: 'desc',
         },
-        createdAt: true,
-      },
-      where: {
-        OR: [
-          {
-            player1Id: userId,
-          },
-          {
-            player2Id: userId,
-          },
-        ],
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+      });
 
     console.log('history raw', history);
     return history;
