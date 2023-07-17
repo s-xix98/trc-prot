@@ -20,12 +20,9 @@ export type Paddle = {
 export type Scores = { left: number; right: number };
 
 export type OnShutdownCallback = (
-  winnerUserId: string,
-  loserUserId: string,
-  player1UserId: string,
-  player2UserId: string,
-  player1score: number,
-  player2score: number,
+  player1: PlayerResult,
+  player2: PlayerResult,
+  resultEvaluator: ResultEvaluator,
 ) => void;
 
 export type Rate = {

@@ -136,18 +136,12 @@ export class GameLogic {
       return;
     }
     clearInterval(this.intervalId);
-    const players = this.GetWinnerLoserPair();
-    if (players === null) {
+    if (!this.isGameFinished()) {
       return;
     }
-    this.onShutdown(
-      players.winner.userId,
-      players.loser.userId,
-      this.p1.userId,
-      this.p2.userId,
-      this.p1.score,
-      this.p2.score,
-    );
+    const p1Result: PlayerResult = this.p1;
+    const p2Result: PlayerResult = this.p2;
+    this.onShutdown(p1Result, p2Result, this.CreateResultEvaluator());
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む

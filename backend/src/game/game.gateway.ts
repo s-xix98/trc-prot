@@ -8,7 +8,7 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
-import { OnShutdownCallback, PlayerData } from './types';
+import { OnShutdownCallback, PlayerData, PlayerResult, ResultEvaluator } from './types';
 import { GameService } from './game.service';
 
 @WebSocketGateway()
@@ -68,21 +68,21 @@ export class GameGateway {
     }
 
     const onShutdown: OnShutdownCallback = async (
-      winnerUserId: string,
-      loserUserId: string,
-      player1UserId: string,
-      player2UserId: string,
+      player1: PlayerResult,
+      player2: PlayerResult,
+      resultEvaluator: ResultEvaluator,
     ) => {
       console.log('onshutdown');
-      this.userGameMap.delete(player1UserId);
-      this.userGameMap.delete(player2UserId);
-      this.gameService.UpdateRating(winnerUserId, 'WIN');
-      this.gameService.UpdateRating(loserUserId, 'LOSE');
-      this.gameService.UpdateMatchHistory(
-        player1UserId,
-        player2UserId,
-        winnerUserId,
-      );
+      this.userGameMap.delete(player1.userId);
+      this.userGameMap.delete(player2.userId);
+      const players = resultEvaluator(player1, player2);
+      if (players) {
+        this.gameService.UpdateRating(players.winner.userId, 'WIN');
+        this.gameService.UpdateRating(players.loser.userId, 'LOSE');
+        this.gameService.UpdateMatchHistory(player1.userId, player2.userId, players.winner.userId);
+      } else {
+        this.gameService.UpdateMatchHistory(player1.userId, player2.userId, undefined);
+      }
     };
 
     const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
