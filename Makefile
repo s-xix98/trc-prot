@@ -76,8 +76,8 @@ sb-update:
 
 # backend  : DB の初期化
 # frontend : build して test 実行
-PHONY	+=	test-e2e
-test-e2e:
+PHONY	+=	test-e2e-run-on-ctr
+test-e2e-run-on-ctr:
 	docker compose down || :
 	docker compose -f docker-compose.yml -f docker-compose.e2e.yml up --abort-on-container-exit
 # docker compose down の際に、docker-compose.yml にない、サービスが落ちてくれないので、COMPOSE_FILE でファイル指定して down
