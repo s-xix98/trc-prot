@@ -247,13 +247,19 @@ export class GameLogic {
     };
   }
 
+  private EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
+    return this.CreateResultEvaluator()(p1, p2);
+  }
+
   private GetWinnerLoserPair() {
-    if (this.p1.score == this.matchPoint) {
-      return { winner: this.p1, loser: this.p2 };
-    } else if (this.p2.score == this.matchPoint) {
-      return { winner: this.p2, loser: this.p1 };
-    } else {
+    const players = this.EvaluateGameResult(this.p1, this.p2);
+    if (!players) {
       return null;
+    }
+    if (this.p1.userId == players.winner.userId) {
+      return { winner: this.p1, loser: this.p2 };
+    } else {
+      return { winner: this.p2, loser: this.p1 };
     }
   }
 
