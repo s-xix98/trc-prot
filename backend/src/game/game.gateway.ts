@@ -8,7 +8,12 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
 import { Keys } from './logic/KeyAction';
-import { OnShutdownCallback, PlayerData, PlayerResult, ResultEvaluator } from './types';
+import {
+  OnShutdownCallback,
+  PlayerData,
+  PlayerResult,
+  ResultEvaluator,
+} from './types';
 import { GameService } from './game.service';
 
 @WebSocketGateway()
@@ -79,9 +84,17 @@ export class GameGateway {
       if (players) {
         this.gameService.UpdateRating(players.winner.userId, 'WIN');
         this.gameService.UpdateRating(players.loser.userId, 'LOSE');
-        this.gameService.UpdateMatchHistory(player1.userId, player2.userId, players.winner.userId);
+        this.gameService.UpdateMatchHistory(
+          player1.userId,
+          player2.userId,
+          players.winner.userId,
+        );
       } else {
-        this.gameService.UpdateMatchHistory(player1.userId, player2.userId, undefined);
+        this.gameService.UpdateMatchHistory(
+          player1.userId,
+          player2.userId,
+          undefined,
+        );
       }
     };
 

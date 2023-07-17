@@ -45,7 +45,11 @@ export class GameService {
     });
   }
 
-  async UpdateMatchHistory(userId1: string, userId2: string, winnerId?: string) {
+  async UpdateMatchHistory(
+    userId1: string,
+    userId2: string,
+    winnerId?: string,
+  ) {
     await this.prismaService.matchHistory.create({
       data: {
         player1Id: userId1,
