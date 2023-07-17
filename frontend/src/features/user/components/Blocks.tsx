@@ -1,14 +1,14 @@
-import { useGetBlocks } from '../api/getBlocks';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { UserListWithModal } from './UserProfile';
 
 export const Blocks = () => {
-  const { blocks } = useGetBlocks();
+  const { blockUsers } = useCurrentUser();
 
   return (
     <>
       <h1>Blocks</h1>
-      <UserListWithModal userList={blocks} />
+      <UserListWithModal userList={blockUsers} />
     </>
   );
 };

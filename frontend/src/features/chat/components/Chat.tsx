@@ -39,7 +39,7 @@ export const Chat = () => {
     <Container>
       <ContainerItem display={'flex'} flexRatio={1}>
         <ChatChannelArea
-          channels={joinedRooms ?? []}
+          channels={joinedRooms}
           setSelectedChannel={setSelectedChannel}
         />
       </ContainerItem>

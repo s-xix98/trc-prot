@@ -1,9 +1,9 @@
-import { useGetFriends } from '../api/getFriends';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { UserListWithModal } from './UserProfile';
 
 export const Friends = () => {
-  const { friends } = useGetFriends();
+  const { friends } = useCurrentUser();
 
   return (
     <>

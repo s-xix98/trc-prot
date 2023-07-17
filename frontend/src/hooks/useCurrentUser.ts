@@ -37,11 +37,12 @@ export const useCurrentUser = () => {
   const currentUser = useAtomValue(currentUserAtom);
 
   // TODO : 微妙な気がするが、変更箇所多くなるので一旦
+  // TODO : めんどうなので friends などが undef の時は [] を返すようにした
   return {
     currentUserInfo: currentUser?.userInfo,
-    friends: currentUser?.friends,
-    friendRequests: currentUser?.friendRequests,
-    blockUsers: currentUser?.blockUsers,
-    joinedRooms: currentUser?.joinedRooms,
+    friends: currentUser?.friends ?? [],
+    friendRequests: currentUser?.friendRequests ?? [],
+    blockUsers: currentUser?.blockUsers ?? [],
+    joinedRooms: currentUser?.joinedRooms ?? [],
   };
 };
