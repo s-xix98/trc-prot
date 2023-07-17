@@ -12,6 +12,7 @@ import { useSession } from '@/hooks/useSession';
 import { theme } from '@/lib/mui';
 import { useSessionSocket } from '@/hooks/useSocket';
 import { channelListAtom } from '@/stores/jotai';
+import { useLogout } from '@/features/user/api/userLogin';
 
 import StyledComponentsRegistry from '../lib/registry';
 
@@ -29,12 +30,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const setChannelList = useSetAtom(channelListAtom);
+  const { logout } = useLogout();
 
   useSession();
 
   // TODO : 移動させる
   useSessionSocket('error', (data) => {
     console.log(data);
+  });
+
+  useSessionSocket('logout', (data) => {
+    // logoutと同じ処理
+    console.log('logout', data);
+    logout();
   });
 
   useSessionSocket('joinedRooms', (data) => {

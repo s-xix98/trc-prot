@@ -27,6 +27,7 @@ export class WsocketGateway {
 
     const token = client.handshake.auth.token;
     if (token === undefined) {
+      client.emit('logout');
       client.disconnect();
       return;
     }
@@ -37,6 +38,7 @@ export class WsocketGateway {
       this.userMap.set(payload.userId, client);
     } catch (err) {
       console.log(err);
+      client.emit('logout');
       client.disconnect();
     }
   }
