@@ -19,8 +19,8 @@ import { GameDto } from '../dto/GameDto';
 import { keyActions, Keys } from './KeyAction';
 
 type Player = {
+  readonly userId: string;
   socket: Socket;
-  userId: string;
   isReady: boolean;
   paddle: Paddle;
   keyInputs: boolean[];
