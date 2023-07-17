@@ -1,7 +1,10 @@
-export type chatChannelDto = {
-  id: string;
-  roomName: string;
-};
+import { z } from 'zod';
+
+export const chatChannelSchema = z.object({
+  id: z.string(),
+  roomName: z.string(),
+});
+export type chatChannelDto = z.infer<typeof chatChannelSchema>;
 
 export type UpdateRoomMemberRoleDto = {
   role: 'ADMIN' | 'USER';

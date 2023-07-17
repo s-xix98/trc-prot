@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 
 import { GameGateway } from './game.gateway';
+import { GameService } from './game.service';
 
 describe('GameGateway', () => {
   let gateway: GameGateway;
@@ -12,7 +13,7 @@ describe('GameGateway', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [WsocketModule],
-      providers: [GameGateway, PrismaService, ConfigService],
+      providers: [GameGateway, GameService, PrismaService, ConfigService],
     }).compile();
 
     gateway = module.get<GameGateway>(GameGateway);

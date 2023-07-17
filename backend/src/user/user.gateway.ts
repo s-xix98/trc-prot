@@ -101,6 +101,8 @@ export class UserGateway {
 
       await this.sendFriends(dto.userId);
       await this.sendFriends(dto.targetId);
+      await this.sendFriendRequests(dto.userId);
+      await this.sendFriendRequests(dto.targetId);
     } else if (srcFriendship === null) {
       await this.userService.upsertFriendship(
         dto.userId,

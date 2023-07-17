@@ -1,6 +1,13 @@
 import { Socket } from 'socket.io';
 
-import { Ball, OnShutdownCallback, Paddle, PlayerData } from '../types';
+import {
+  Ball,
+  OnShutdownCallback,
+  Paddle,
+  PlayerData,
+  PlayerResult,
+  ResultEvaluator,
+} from '../types';
 import {
   canvas,
   CreateBall,
@@ -12,8 +19,8 @@ import { GameDto } from '../dto/GameDto';
 import { keyActions, Keys } from './KeyAction';
 
 type Player = {
+  readonly userId: string;
   socket: Socket;
-  userId: string;
   isReady: boolean;
   paddle: Paddle;
   keyInputs: boolean[];
@@ -26,18 +33,53 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+interface GameRule {
+  EvaluateGameResult(
+    p1: PlayerResult,
+    p2: PlayerResult,
+  ): { winner: PlayerResult; loser: PlayerResult } | null;
+  CreateResultEvaluator(): ResultEvaluator;
+  isGameFinished(p1Score: number, p2Score: number): boolean;
+}
+
+export class BasicRule implements GameRule {
+  constructor(private matchPoint = MatchPoint) {}
+
+  EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
+    return this.CreateResultEvaluator()(p1, p2);
+  }
+
+  CreateResultEvaluator(): ResultEvaluator {
+    const matchPoint = this.matchPoint;
+    return (p1: PlayerResult, p2: PlayerResult) => {
+      if (p1.score == matchPoint && p2.score != matchPoint) {
+        return { winner: p1, loser: p2 };
+      } else if (p2.score == matchPoint && p1.score != matchPoint) {
+        return { winner: p2, loser: p1 };
+      } else {
+        return null;
+      }
+    };
+  }
+
+  isGameFinished(p1Score: number, p2Score: number): boolean {
+    return p1Score == this.matchPoint || p2Score == this.matchPoint;
+  }
+}
+
 export class GameLogic {
   private ball: Ball;
   private p1: Player;
   private p2: Player;
   private intervalId: any;
-  private matchPoint = MatchPoint;
+  private rule: GameRule;
   private onShutdown: OnShutdownCallback;
 
   constructor(
     p1: PlayerData,
     p2: PlayerData,
     onShutdown: OnShutdownCallback,
+    rule: GameRule = new BasicRule(MatchPoint),
     ball: Ball = CreateBall(),
   ) {
     this.ball = ball;
@@ -58,6 +100,7 @@ export class GameLogic {
       score: 0,
     };
     this.onShutdown = onShutdown;
+    this.rule = rule;
   }
 
   RebindSocket(userId: string, socket: Socket) {
@@ -129,14 +172,12 @@ export class GameLogic {
       return;
     }
     clearInterval(this.intervalId);
-    const players = this.GetWinnerLoserPair();
-    if (players === null) {
+    if (!this.isGameFinished()) {
       return;
     }
-    this.onShutdown(players.winner.userId, players.loser.userId, {
-      left: this.p1.score,
-      right: this.p2.score,
-    });
+    const p1Result: PlayerResult = this.p1;
+    const p2Result: PlayerResult = this.p2;
+    this.onShutdown(p1Result, p2Result, this.rule.CreateResultEvaluator());
   }
 
   // ボールの半径とパドルの厚みを考慮してないからめり込む
@@ -202,7 +243,7 @@ export class GameLogic {
   }
 
   private isGameFinished(): boolean {
-    return this.p1.score == this.matchPoint || this.p2.score == this.matchPoint;
+    return this.rule.isGameFinished(this.p1.score, this.p2.score);
   }
 
   private HandleGameOver() {
@@ -230,12 +271,14 @@ export class GameLogic {
   }
 
   private GetWinnerLoserPair() {
-    if (this.p1.score == this.matchPoint) {
-      return { winner: this.p1, loser: this.p2 };
-    } else if (this.p2.score == this.matchPoint) {
-      return { winner: this.p2, loser: this.p1 };
-    } else {
+    const players = this.rule.EvaluateGameResult(this.p1, this.p2);
+    if (!players) {
       return null;
+    }
+    if (this.p1.userId == players.winner.userId) {
+      return { winner: this.p1, loser: this.p2 };
+    } else {
+      return { winner: this.p2, loser: this.p1 };
     }
   }
 
