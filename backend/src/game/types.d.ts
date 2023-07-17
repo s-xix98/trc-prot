@@ -40,3 +40,8 @@ export type PlayerResult = {
   readonly userId: string;
   readonly score: number;
 };
+
+export type ResultEvaluator = (
+  p1: PlayerResult,
+  p2: PlayerResult,
+) => { winner: PlayerResult; loser: PlayerResult } | null;
