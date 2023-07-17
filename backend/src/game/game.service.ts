@@ -45,6 +45,50 @@ export class GameService {
     });
   }
 
+  async GetMatchHistory(userId: string) {
+    const history = await this.prismaService.matchHistory.findMany({
+      select: {
+        player1: {
+          select: {
+            username: true,
+          },
+        },
+        player2: {
+          select: {
+            username: true,
+          },
+        },
+        winner: {
+          select: {
+            username: true,
+          },
+        },
+        createdAt: true,
+      },
+      where: {
+        OR: [
+          {
+            player1Id: userId,
+          },
+          {
+            player2Id: userId,
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    console.log('history raw', history);
+    return history.map((h) => ({
+      player1: h.player1.username,
+      player2: h.player2.username,
+      winner: h.winner?.username,
+      date: h.createdAt,
+    }));
+  }
+
   async UpdateMatchHistory(
     userId1: string,
     userId2: string,
