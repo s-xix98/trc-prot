@@ -6,13 +6,12 @@ import './globals.css';
 // import { Inter } from 'next/font/google';
 import { SnackbarProvider, closeSnackbar } from 'notistack';
 import { ThemeProvider } from '@mui/material';
-import { useSetAtom } from 'jotai';
 
 import { useSession } from '@/hooks/useSession';
 import { theme } from '@/lib/mui';
 import { useSessionSocket } from '@/hooks/useSocket';
-import { channelListAtom } from '@/stores/jotai';
 import { useLogout } from '@/features/user/api/userLogin';
+import { useCurrentUserStateUpdates } from '@/hooks/useCurrentUser';
 
 import StyledComponentsRegistry from '../lib/registry';
 
@@ -29,10 +28,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const setChannelList = useSetAtom(channelListAtom);
   const { logout } = useLogout();
 
   useSession();
+  useCurrentUserStateUpdates();
 
   // TODO : 移動させる
   useSessionSocket('error', (data) => {
@@ -43,24 +42,6 @@ export default function RootLayout({
     // logoutと同じ処理
     console.log('logout', data);
     logout();
-  });
-
-  useSessionSocket('joinedRooms', (data) => {
-    console.log('joinedRooms', data);
-    setChannelList(data);
-  });
-
-  useSessionSocket('friendRequests', (data) => {
-    // friendRequestの処理を書く
-    console.log('friendRequests', data);
-  });
-
-  useSessionSocket('friends', (data) => {
-    console.log('friends', data);
-  });
-
-  useSessionSocket('blockUsers', (data) => {
-    console.log('blockUsers', data);
   });
 
   return (

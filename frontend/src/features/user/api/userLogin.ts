@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
-import { socketAtom, userInfoAtom } from '@/stores/jotai';
+import { currentUserAtom, socketAtom } from '@/stores/jotai';
 
 import { LoginDto, UserInfo } from '../types/UserDto';
 
@@ -13,7 +13,7 @@ import { useSessionAxios } from '../../../hooks/useSessionAxios';
 import { BACKEND } from '../../../constants';
 
 export const useLogin = () => {
-  const setUserInfo = useSetAtom(userInfoAtom);
+  const setCurrentUser = useSetAtom(currentUserAtom);
   const sessionAxios = useSessionAxios();
   const setSocket = useSetAtom(socketAtom);
 
@@ -21,7 +21,13 @@ export const useLogin = () => {
     sessionAxios
       .get<UserInfo>('/user/me')
       .then((res) => {
-        setUserInfo(res.data);
+        setCurrentUser({
+          userInfo: res.data,
+          friends: [],
+          friendRequests: [],
+          blockUsers: [],
+          joinedRooms: [],
+        });
         setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
       })
       .catch((err) => {
@@ -62,11 +68,11 @@ export const useVerifySession = () => {
 export const useLogout = () => {
   const router = useRouter();
   const [socket, setSocket] = useAtom(socketAtom);
-  const [, setUserInfo] = useAtom(userInfoAtom);
+  const [, setCurrentUser] = useAtom(currentUserAtom);
 
   const logout = () => {
     socket?.disconnect();
-    setUserInfo(undefined);
+    setCurrentUser(undefined);
     setSocket(undefined);
     tokenStorage.remove();
     router.push('/login');

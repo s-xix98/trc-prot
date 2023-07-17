@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
-import { useAtom } from 'jotai';
 import { KeyboardEvent } from 'react';
 import { useSnackbar } from 'notistack';
 
@@ -9,7 +8,7 @@ import { useScroll } from '@/hooks/useScroll';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { Input } from '@/components/Elements/Input/Input';
-import { userInfoAtom } from '@/stores/jotai';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { useLogout } from '../user/api/userLogin';
 
@@ -23,7 +22,7 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
-  const [userInfo] = useAtom(userInfoAtom);
+  const { currentUserInfo } = useCurrentUser();
 
   const { logout } = useLogout();
 
@@ -88,7 +87,7 @@ export const Terminal = ({
       <div style={{ padding: '3px' }}>
         <Input
           msg={input}
-          start={`${userInfo?.username ?? ''} > `}
+          start={`${currentUserInfo?.username ?? ''} > `}
           onChangeAct={onChangeAct}
           onKeyDownAct={onKeyDownAct}
           disableUnderline={true}
