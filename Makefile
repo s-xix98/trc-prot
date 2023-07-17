@@ -84,6 +84,11 @@ test-e2e:
 # docker compose down になぜか `-f` オプションがない
 	export COMPOSE_FILE=docker-compose.yml:docker-compose.e2e.yml && docker compose down
 
+PHONY	+=	test-e2e-local
+test-e2e-local:
+	docker compose run --rm backend make setup-db
+	cd test && python3 -m src --TAKE_SCREENSHOT=0 --HEADLESS=0
+
 # etc...
 # ------------------------------------------------------------------------------------------
 .PHONY: $(PHONY)
