@@ -42,6 +42,30 @@ interface GameRule {
   isGameFinished(p1Score: number, p2Score: number): boolean;
 }
 
+export class BasicRule implements GameRule {
+  constructor(private matchPoint = MatchPoint) {}
+
+  EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
+    return this.CreateResultEvaluator()(p1, p2);
+  }
+
+  CreateResultEvaluator(): ResultEvaluator {
+    const matchPoint = this.matchPoint;
+    return (p1: PlayerResult, p2: PlayerResult) => {
+      if (p1.score == matchPoint && p2.score != matchPoint) {
+        return { winner: p1, loser: p2 };
+      } else if (p2.score == matchPoint && p1.score != matchPoint) {
+        return { winner: p2, loser: p1 };
+      } else {
+        return null;
+      }
+    };
+  }
+
+  isGameFinished(p1Score: number, p2Score: number): boolean {
+    return p1Score == this.matchPoint || p2Score == this.matchPoint;
+  }
+}
 
 export class GameLogic {
   private ball: Ball;
