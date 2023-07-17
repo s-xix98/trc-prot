@@ -7,12 +7,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
-
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { JwtTwoFaAuthGuard } from 'src/auth/guard/jwt-two-fa.guard';
 
 import { UserService } from './user.service';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtTwoFaAuthGuard)
 @Controller('user')
 @ApiTags('/user')
 export class UserController {
