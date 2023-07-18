@@ -14,9 +14,9 @@ import { SignUpForm } from '@/features/user/components/SignUpForm';
 export default function Login() {
   useRedirectToHome();
 
-  const [isLogin, setValue] = useState(true);
+  const [isLogin, setValue] = useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: boolean) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -29,13 +29,13 @@ export default function Login() {
           textColor="inherit"
           TabIndicatorProps={{ style: { backgroundColor: 'green' } }}
         >
-          <Tab value={true} label="Login" />
-          <Tab value={false} label="SignUp" />
+          <Tab value={0} label="Login" />
+          <Tab value={1} label="SignUp" />
         </Tabs>
       </Box>
       <br />
-      {isLogin && <LoginForm />}
-      {!isLogin && <SignUpForm />}
+      {isLogin === 0 && <LoginForm />}
+      {isLogin === 1 && <SignUpForm />}
     </MainLayout>
   );
 }
