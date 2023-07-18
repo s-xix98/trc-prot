@@ -29,18 +29,29 @@ class UserInteractionManager:
         page = self.page
         page.goto(TOP_PAGE_URL)
 
-    def signup(self) -> None:
+    def signup(
+        self,
+        username: Union[str, None] = None,
+        email: Union[str, None] = None,
+        password: Union[str, None] = None,
+        take_screenshot: bool = True,
+    ) -> None:
         page = self.page
         user = self.user
+        username = username if username else self.user.name
+        email = email if email else self.user.email
+        password = password if password else self.user.password
 
         page.get_by_role("tab", name="SignUp").click()
-        page.locator('input[name="username"]').fill(user.name)
-        page.locator('input[name="email"]').fill(user.email)
-        page.locator('input[name="hashedPassword"]').fill(user.password)
-        self.screenshot("signup-before")
+        page.locator('input[name="username"]').fill(username)
+        page.locator('input[name="email"]').fill(email)
+        page.locator('input[name="hashedPassword"]').fill(password)
+        if take_screenshot:
+            self.screenshot("signup-before")
 
         page.get_by_role("button", name="SignUp").click()
-        self.screenshot("signup-after")
+        if take_screenshot:
+            self.screenshot("signup-after")
 
     def login(
         self,
