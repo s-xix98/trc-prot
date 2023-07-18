@@ -35,6 +35,9 @@ jobs:
       - name: checkout git repository
         uses: actions/checkout@v3
 
+      - name: is storybook file exists
+        run: cd frontend && make sb-ck-file
+
       - name: cache frontend node-modules
         id: cache-frontend-node-modules
         uses: actions/cache@v3
@@ -84,8 +87,6 @@ jobs:
           python3 -m http.server 6006 --directory storybook-static &
           timeout 30 bash -c 'while ! >/dev/tcp/localhost/6006; do sleep 3; done'
 
-      - name: is storybook file exists
-        run: cd frontend && make sb-ck-file
       - name: run storybook test
         run: |
           cd frontend

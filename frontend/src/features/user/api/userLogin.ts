@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
+import { useSnackbar } from 'notistack';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
@@ -16,6 +17,7 @@ export const useLogin = () => {
   const setCurrentUser = useSetAtom(currentUserAtom);
   const sessionAxios = useSessionAxios();
   const setSocket = useSetAtom(socketAtom);
+  const { enqueueSnackbar } = useSnackbar();
 
   const automaticLogin = () => {
     sessionAxios
@@ -32,6 +34,7 @@ export const useLogin = () => {
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar(err?.response?.data?.message);
       });
   };
 
@@ -46,6 +49,7 @@ export const useLogin = () => {
       })
       .catch((err) => {
         console.log(err);
+        enqueueSnackbar(err?.response?.data?.message);
       });
   };
 
@@ -54,11 +58,13 @@ export const useLogin = () => {
 
 export const useVerifySession = () => {
   const sessionAxios = useSessionAxios();
+  const { enqueueSnackbar } = useSnackbar();
 
   // sessionAxios が 401 の時に logout して /login まで 運んでくれる
   const verifySession = () => {
     sessionAxios.get<UserInfo>('/user/me').catch((err) => {
       console.log(err);
+      enqueueSnackbar(err?.response?.data?.message);
     });
   };
 

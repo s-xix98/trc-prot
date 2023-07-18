@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 import { accessToken } from '@/app/login/types/accessToken';
 import { tokenStorage } from '@/utils/tokenStorage';
@@ -11,6 +12,7 @@ import { BACKEND } from '../../../constants';
 
 export const useSignUp = () => {
   const { automaticLogin } = useLogin();
+  const { enqueueSnackbar } = useSnackbar();
 
   const signUp = (username: string, email: string, pass: string) => {
     const signUpDto: SignUpDto = {
@@ -28,6 +30,7 @@ export const useSignUp = () => {
       .catch((err) => {
         // TODO とりあえずlogだけ
         console.log(err);
+        enqueueSnackbar(err?.response?.data?.message);
       });
   };
 

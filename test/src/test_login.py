@@ -33,6 +33,18 @@ def test_login_invalid_password(page: Page, test_name: str) -> None:
     e2e.login(password="1", take_screenshot=True)
 
 
+def test_signup_already_use_email(page: Page, test_name: str) -> None:
+    e2e = UserInteractionManager(test_name, E2E, page)
+    e2e.goto_top_page()
+    e2e.signup(username="dupEmail")
+
+
+def test_login_incorrect_password(page: Page, test_name: str) -> None:
+    e2e = UserInteractionManager(test_name, E2E, page)
+    e2e.goto_top_page()
+    e2e.login(password="incorrect", take_screenshot=True)
+
+
 def test_logout(page: Page, test_name: str) -> None:
     e2e = UserInteractionManager(test_name, E2E, page)
     e2e.goto_top_page()
