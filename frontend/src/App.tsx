@@ -54,6 +54,10 @@ const Launcher = ({
   );
 };
 
+const Test = () => {
+  return (<>test</>);
+};
+
 function App() {
   // TODO : 消す、login ページに飛ぶ前に、ページ見えちゃうの嫌なので一旦
   const { currentUserInfo } = useCurrentUser();
@@ -77,6 +81,7 @@ function App() {
   commandElemMap.set('./friends', <Friends />);
   commandElemMap.set('./friendsReq', <FriendRequests />);
   commandElemMap.set('./blocks', <Blocks />);
+  commandElemMap.set('./test', <Test />);
 
   // TODO : 消す or もうちょいちゃんと作る
   const forLauncherCommandElemMap = new Map(commandElemMap);
