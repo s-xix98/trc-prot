@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Chat } from './features/chat/components/Chat';
 import { Game } from './features/game/Game';
 import { MainLayout } from './components/Layout/MainLayout';
-import { useSessionSocket } from './hooks/useSocket';
+import { useSessionSocket, useSessionSocketEmitter } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { UserSearch } from './features/user/components/Search';
 import { Matching } from './features/game/Matching';
@@ -55,7 +55,26 @@ const Launcher = ({
 };
 
 const Test = () => {
-  return (<>test</>);
+  const { joinedRooms, friends } = useCurrentUser();
+  const socket = useSessionSocketEmitter();
+  const inviteButton = () => {
+    socket.emit('inviteChatRoom', {
+      chatRoomId: joinedRooms[0].id,
+      targetId: friends[0].id,
+    });
+  };
+
+  useSessionSocket('receiveInviteChatRoom', (data) => {
+    console.log('receive invite sitayo');
+    console.log(data);
+  });
+
+  return (
+    <>
+      test
+      <button onClick={inviteButton}> invite </button>
+    </>
+  );
 };
 
 function App() {
