@@ -33,7 +33,7 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
-interface GameRule {
+export interface GameRule {
   EvaluateGameResult(
     p1: PlayerResult,
     p2: PlayerResult,
