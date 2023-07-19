@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 
-import { searchUserDto } from './dto/user.dto';
+import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
 
@@ -212,6 +212,22 @@ export class UserGateway {
       await this.sendFriends(dto.userId);
       await this.sendFriends(dto.targetId);
     }
+  }
+
+  @SubscribeMessage('updateProfile')
+  async updateProfile(client: Socket, dto: UserProfileDto) {
+    console.log('updateProfile', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('invalid token');
+    }
+
+    await this.userService.updateUser(userId, dto);
+    const user = await this.userService.findOneById(userId);
+
+    client.emit('profile', user);
+    // TODO全体に通知する
   }
 
   private async sendFriendRequests(userId: string) {
