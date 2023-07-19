@@ -45,6 +45,12 @@ export const useSessionAxios = () => {
   return customAxios;
 };
 
+type axiosGetPrm = {
+  uri: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params?: any;
+};
+
 // 使う際は注意必要ます
 // zod Schema オブジェクトの useMemoで メモ化等際レンダリング起きないように
 // onSucessCallback も useCallbackを使用等、毎回関数生成しないようにする必要あり
@@ -54,13 +60,13 @@ export const useCustomAxiosGetter = () => {
 
   const customAxiosGetter = useCallback(
     <T>(
-      uri: string,
+      axiosGetPrm: axiosGetPrm,
       Schema: z.ZodSchema<T>,
       onSucessCallback: (resData: T) => void,
     ) => {
-      console.log('useCustomAxiosGetter', uri);
+      console.log('useCustomAxiosGetter', axiosGetPrm.uri, axiosGetPrm.params);
       customAxios
-        .get(uri)
+        .get(axiosGetPrm.uri, axiosGetPrm.params)
         .then((res) => {
           console.log('customAxiosGetter', res.data);
           try {

@@ -18,7 +18,7 @@ export const useRoomHistory = (selectedChannelId: string) => {
 
   useEffect(() => {
     customAxiosGetter(
-      '/chat/rooms/' + selectedChannelId + '/history',
+      { uri: '/chat/rooms/' + selectedChannelId + '/history' },
       handleMessageDtoArrSchema,
       onSucessCallback,
     );
