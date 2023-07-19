@@ -3,6 +3,9 @@ import { GameLogic } from '../logic/game-logic';
 
 import { GameFactory, OnMatched } from './types';
 
+// TODO ほんとはGameLogicじゃなくて任意のゲームインタフェースをマップ出来るようにしたいが、GameLogicを色々疎結合にするコストが高いので一旦放置。
+// GameLogciと密結合なのでテスタビリティが終ってるけど、テストを書かないことで抵抗してる
+
 export class MatchingTable {
   private userGameMap = new Map<string, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;

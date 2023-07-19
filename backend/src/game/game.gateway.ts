@@ -21,6 +21,7 @@ import { MatchingTable } from './matching/matching-table';
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
+  // TODO MatchinTableをシングルトンにしてDIしたい
   private matchingTable: MatchingTable = new MatchingTable();
 
   constructor(
