@@ -22,4 +22,11 @@ export class MatchingTable {
     return isU1deleted && isU2deleted;
   }
 
+
+  clearWaitingUser(userId: string) {
+    if (this.waitingUser?.data.id !== userId) {
+      return;
+    }
+    this.waitingUser = undefined;
+  }
 }
