@@ -8,7 +8,7 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useSearch } from '@/hooks/useSearch';
 import { useModal } from '@/hooks/useModal';
 
-import { chatChannelDto } from '../types/chatChannelDto';
+import { chatChannelDto, chatChannelSchema } from '../types/chatChannelDto';
 
 const SearchedResult = (searchedList: chatChannelDto[]) => {
   return (
@@ -22,7 +22,8 @@ const SearchedResult = (searchedList: chatChannelDto[]) => {
 
 export const ChannelSearchModal = () => {
   const { focusRef } = useFocus();
-  const { searchedList, searcher } = useSearch<chatChannelDto>();
+  const { searchedList, searcher } =
+    useSearch<chatChannelDto>(chatChannelSchema);
   const { modalIsOpen, openModal, closeModal } = useModal();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
