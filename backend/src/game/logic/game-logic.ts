@@ -43,7 +43,7 @@ export interface GameRule {
 }
 
 export class BasicRule implements GameRule {
-  constructor(private matchPoint = MatchPoint) {}
+  constructor(private readonly matchPoint = MatchPoint) {}
 
   EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
     return this.CreateResultEvaluator()(p1, p2);
