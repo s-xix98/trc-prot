@@ -3,11 +3,13 @@ import { useEffect } from 'react';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useSessionAxios } from '@/hooks/useSessionAxios';
 
+import { UserInfo } from '../types/UserDto';
+
 export type MatchHistory = {
-  player1: string;
-  player2: string;
-  winner: string | undefined;
-  date: Date;
+  player1: UserInfo;
+  player2: UserInfo;
+  winner: UserInfo | null;
+  createdAt: Date;
 };
 
 export type Rate = {
