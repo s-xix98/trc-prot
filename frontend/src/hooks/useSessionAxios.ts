@@ -1,6 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { ZodError, z } from 'zod';
+import { useSnackbar } from 'notistack';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { BACKEND } from '@/constants';
@@ -41,4 +43,43 @@ export const useSessionAxios = () => {
   }, [router, logout]);
 
   return customAxios;
+};
+
+export const useCustomAxiosGetter = () => {
+  const customAxios = useSessionAxios();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const customAxiosGetter = useCallback(
+    <T>(
+      uri: string,
+      Schema: z.ZodSchema<T>,
+      onSucessCallback: (resData: T) => void,
+    ) => {
+      console.log('useCustomAxiosGetter', uri);
+      customAxios
+        .get(uri)
+        .then((res) => {
+          console.log('customAxiosGetter', res.data);
+          try {
+            const resData = Schema.parse(res.data);
+            onSucessCallback(resData);
+          } catch (e) {
+            if (e instanceof ZodError) {
+              // TODO : for debug
+              console.log('Zod Error :', e.message);
+              enqueueSnackbar(`Zod Error : ${e.message}`);
+            } else {
+              throw e;
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          enqueueSnackbar(err?.response?.data?.message);
+        });
+    },
+    [customAxios, enqueueSnackbar],
+  );
+
+  return { customAxiosGetter };
 };
