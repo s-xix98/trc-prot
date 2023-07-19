@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useCustomAxiosGetter } from '@/hooks/useSessionAxios';
 
@@ -7,8 +7,6 @@ export const useSearch = <T>(schema: z.ZodSchema<T>) => {
   const [searchedList, setSearchList] = useState<T[]>([]);
 
   const { customAxiosGetter } = useCustomAxiosGetter();
-
-  const schemaArr = useMemo(() => schema.array(), [schema]);
 
   const searcher = useCallback(
     (path: string, searchWord: string) => {
@@ -22,11 +20,11 @@ export const useSearch = <T>(schema: z.ZodSchema<T>) => {
       }
       customAxiosGetter(
         { uri: path, params: { params: { searchWord } } },
-        schemaArr,
+        schema.array(),
         onSucessCallback,
       );
     },
-    [customAxiosGetter, schemaArr],
+    [customAxiosGetter, schema],
   );
 
   return { searchedList, searcher };
