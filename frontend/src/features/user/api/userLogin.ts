@@ -3,40 +3,44 @@ import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
 import { useSnackbar } from 'notistack';
+import { useCallback } from 'react';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
 import { currentUserAtom, socketAtom } from '@/stores/jotai';
 
-import { LoginDto, UserInfo } from '../types/UserDto';
+import {
+  LoginDto,
+  UserInfo,
+  UserInfoSchema,
+} from '../types/UserDto';
 
-import { useSessionAxios } from '../../../hooks/useSessionAxios';
+import {
+  useCustomAxiosGetter,
+  useSessionAxios,
+} from '../../../hooks/useSessionAxios';
 import { BACKEND } from '../../../constants';
 
 export const useLogin = () => {
   const setCurrentUser = useSetAtom(currentUserAtom);
-  const sessionAxios = useSessionAxios();
+  const { customAxiosGetter } = useCustomAxiosGetter();
   const setSocket = useSetAtom(socketAtom);
   const { enqueueSnackbar } = useSnackbar();
 
-  const automaticLogin = () => {
-    sessionAxios
-      .get<UserInfo>('/user/me')
-      .then((res) => {
-        setCurrentUser({
-          userInfo: res.data,
-          friends: [],
-          friendRequests: [],
-          blockUsers: [],
-          joinedRooms: [],
-        });
-        setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
-      })
-      .catch((err) => {
-        console.log(err);
-        enqueueSnackbar(err?.response?.data?.message);
+  const automaticLogin = useCallback(() => {
+    const onSucessCallback = (userInfo: UserInfo) => {
+      setCurrentUser({
+        userInfo: userInfo,
+        friends: [],
+        friendRequests: [],
+        blockUsers: [],
+        joinedRooms: [],
       });
-  };
+      setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
+    };
+
+    customAxiosGetter({ uri: '/user/me' }, UserInfoSchema, onSucessCallback);
+  }, [customAxiosGetter,setCurrentUser, setSocket]);
 
   const manualLogin = (email: string, pass: string) => {
     const loginDto: LoginDto = { email: email, hashedPassword: pass };
