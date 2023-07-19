@@ -25,11 +25,6 @@ export type OnShutdownCallback = (
   resultEvaluator: ResultEvaluator,
 ) => void;
 
-export type Rate = {
-  userData: UserInfo;
-  rating: number;
-};
-
 export type PlayerData = { client: Socket; data: UserInfo };
 
 export type PlayerResult = {

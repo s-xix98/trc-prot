@@ -2,9 +2,8 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
-import { Rate } from './types';
 import { GameService } from './game.service';
-import { MatchHistory } from './dto/Api';
+import { MatchHistory, Rate } from './dto/Api';
 
 @UseGuards(JwtAuthGuard)
 @Controller('game')
