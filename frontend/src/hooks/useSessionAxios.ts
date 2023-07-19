@@ -45,6 +45,9 @@ export const useSessionAxios = () => {
   return customAxios;
 };
 
+// 使う際は注意必要ます
+// zod Schema オブジェクトの useMemoで メモ化等際レンダリング起きないように
+// onSucessCallback も useCallbackを使用等、毎回関数生成しないようにする必要あり
 export const useCustomAxiosGetter = () => {
   const customAxios = useSessionAxios();
   const { enqueueSnackbar } = useSnackbar();
