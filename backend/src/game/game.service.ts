@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { pick } from 'lodash';
 
 import { PrismaService } from '../prisma/prisma.service';
 
