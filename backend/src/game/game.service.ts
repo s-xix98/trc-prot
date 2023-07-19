@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { pick } from 'lodash';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -11,17 +10,13 @@ export class GameService {
   async GetRanking() {
     const ranking = await this.prismaService.rating.findMany({
       select: {
-        userData: { select: { username: true } },
-        userId: true,
+        userData: { select: { id: true, username: true } },
         rating: true,
       },
       orderBy: { rating: 'desc' },
     });
 
-    return ranking.map((r) => ({
-      ...pick(r, 'userId', 'rating'),
-      ...r.userData,
-    }));
+    return ranking;
   }
 
   async UpdateRating(userId: string, result: 'WIN' | 'LOSE') {

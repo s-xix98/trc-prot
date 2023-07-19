@@ -44,9 +44,11 @@ describe('GameService', () => {
     const expectedResult = users
       .map((u, idx) => {
         return {
-          userId: u.user.id,
+          userData: {
+            id: u.user.id,
+            username: u.user.username,
+          },
           rating: idx,
-          username: u.user.username,
         };
       })
       .reverse();
