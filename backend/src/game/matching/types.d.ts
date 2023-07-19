@@ -6,3 +6,7 @@ export type GameFactory = (
   readonly player2: PlayerData,
 ) => GameLogic;
 
+export type OnMatched = (
+  readonly player1: PlayerData,
+  readonly player2: PlayerData,
+) => void;
