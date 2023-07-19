@@ -26,8 +26,7 @@ export type OnShutdownCallback = (
 ) => void;
 
 export type Rate = {
-  userId: string;
-  username: string;
+  userData: UserInfo;
   rating: number;
 };
 
