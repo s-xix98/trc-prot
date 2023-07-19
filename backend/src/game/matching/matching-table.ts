@@ -10,6 +10,9 @@ export class MatchingTable {
     return this.userGameMap.get(userId);
   }
 
+  isPlaying(userId: string): boolean {
+    return this.userGameMap.has(userId);
+  }
 
   deleteGame(userId1: string, userId2: string): boolean {
     const g1 = this.getGame(userId1);
