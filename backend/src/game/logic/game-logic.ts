@@ -283,9 +283,9 @@ export class GameLogic {
   }
 
   private UpdateScore() {
-    if (this.ball.x <= 0) {
+    if (this.ball.x <= canvas.xMin) {
       this.p2.score++;
-    } else if (this.ball.x >= 1) {
+    } else if (this.ball.x >= canvas.xMax) {
       this.p1.score++;
     }
   }
