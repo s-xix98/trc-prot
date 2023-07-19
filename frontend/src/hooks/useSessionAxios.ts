@@ -61,7 +61,7 @@ export const useCustomAxiosGetter = () => {
   const customAxiosGetter = useCallback(
     <T>(
       axiosGetPrm: axiosGetPrm,
-      Schema: z.ZodSchema<T>,
+      schema: z.ZodSchema<T>,
       onSucessCallback: (resData: T) => void,
     ) => {
       console.log('useCustomAxiosGetter', axiosGetPrm.uri, axiosGetPrm.params);
@@ -70,7 +70,7 @@ export const useCustomAxiosGetter = () => {
         .then((res) => {
           console.log('customAxiosGetter', res.data);
           try {
-            const resData = Schema.parse(res.data);
+            const resData = schema.parse(res.data);
             onSucessCallback(resData);
           } catch (e) {
             if (e instanceof ZodError) {
