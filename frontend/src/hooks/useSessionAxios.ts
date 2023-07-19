@@ -64,7 +64,9 @@ export const useCustomAxiosGetter = () => {
       schema: z.ZodSchema<T>,
       onSucessCallback: (resData: T) => void,
     ) => {
+      // TODO : for debug
       console.log('useCustomAxiosGetter', axiosGetPrm.uri, axiosGetPrm.params);
+      // enqueueSnackbar(`get ${axiosGetPrm.uri}`);
       customAxios
         .get(axiosGetPrm.uri, axiosGetPrm.params)
         .then((res) => {
