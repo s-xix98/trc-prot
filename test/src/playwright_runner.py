@@ -2,13 +2,14 @@ from typing import Callable
 
 from playwright.sync_api import Page, Playwright, expect, sync_playwright
 
+from src.constants import HEADLESS
 from src.logger import logger
 
 TEST_FUNC_TYPE = Callable[[Page, str], None]
 
 
 def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
-    browser = playwright.chromium.launch()
+    browser = playwright.chromium.launch(headless=HEADLESS)
     context = browser.new_context()
     page = context.new_page()
 
