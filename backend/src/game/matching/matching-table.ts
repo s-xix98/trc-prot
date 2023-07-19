@@ -1,10 +1,33 @@
 import { PlayerData } from '../types';
 import { GameLogic } from '../logic/game-logic';
 
+import { GameFactory, OnMatched } from './types';
 
 export class MatchingTable {
   private userGameMap = new Map<string, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;
+
+  matchmake(
+    enqueuedUser: PlayerData,
+    gameFactory: GameFactory,
+    onMatched: OnMatched,
+  ) {
+    if (this.isPlaying(enqueuedUser.data.id)) {
+      console.log('already playing', enqueuedUser.data.username);
+      return;
+    } else if (!this.waitingUser) {
+      console.log('add waiting', enqueuedUser.data.username);
+      this.waitingUser = enqueuedUser;
+      return;
+    } else if (this.waitingUser.data.id === enqueuedUser.data.id) {
+      return;
+    }
+    const game = gameFactory(this.waitingUser, enqueuedUser);
+    this.userGameMap.set(this.waitingUser.data.id, game);
+    this.userGameMap.set(enqueuedUser.data.id, game);
+    onMatched(this.waitingUser, enqueuedUser);
+    this.clearWaitingUser(this.waitingUser.data.id);
+  }
 
   getGame(userId: string): GameLogic | undefined {
     return this.userGameMap.get(userId);
@@ -24,7 +47,6 @@ export class MatchingTable {
     const isU2deleted = this.userGameMap.delete(userId2);
     return isU1deleted && isU2deleted;
   }
-
 
   clearWaitingUser(userId: string) {
     if (this.waitingUser?.data.id !== userId) {
