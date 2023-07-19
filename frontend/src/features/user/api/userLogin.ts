@@ -9,11 +9,7 @@ import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
 import { currentUserAtom, socketAtom } from '@/stores/jotai';
 
-import {
-  LoginDto,
-  UserInfo,
-  UserInfoSchema,
-} from '../types/UserDto';
+import { LoginDto, UserInfo, UserInfoSchema } from '../types/UserDto';
 
 import {
   useCustomAxiosGetter,
@@ -40,7 +36,7 @@ export const useLogin = () => {
     };
 
     customAxiosGetter({ uri: '/user/me' }, UserInfoSchema, onSucessCallback);
-  }, [customAxiosGetter,setCurrentUser, setSocket]);
+  }, [customAxiosGetter, setCurrentUser, setSocket]);
 
   const manualLogin = (email: string, pass: string) => {
     const loginDto: LoginDto = { email: email, hashedPassword: pass };
