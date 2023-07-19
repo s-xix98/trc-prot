@@ -124,7 +124,7 @@ export const UserProfileModal = ({
   modalIsOpen,
   closeModal,
 }: {
-  userInfo: UserInfo;
+  userInfo: UserInfo | undefined;
   modalIsOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -135,7 +135,8 @@ export const UserProfileModal = ({
       height="50%"
       width="30%"
     >
-      <UserProfile userInfo={userInfo} />
+      {!userInfo && <p>user is not selecting</p>}
+      {userInfo && <UserProfile userInfo={userInfo} />}
     </ModalView>
   );
 };
@@ -145,13 +146,11 @@ export const UserListWithModal = ({ userList }: { userList: UserInfo[] }) => {
 
   return (
     <>
-      {selectingUser && (
-        <UserProfileModal
-          userInfo={selectingUser}
-          modalIsOpen={modal.modalIsOpen}
-          closeModal={modal.closeModal}
-        />
-      )}
+      <UserProfileModal
+        userInfo={selectingUser}
+        modalIsOpen={modal.modalIsOpen}
+        closeModal={modal.closeModal}
+      />
       {userList.map((user, idx) => (
         <p
           key={idx}
