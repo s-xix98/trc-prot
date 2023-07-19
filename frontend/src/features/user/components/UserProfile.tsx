@@ -146,11 +146,7 @@ export const UserListWithModal = ({ userList }: { userList: UserInfo[] }) => {
 
   return (
     <>
-      <UserProfileModal
-        userInfo={selectingUser}
-        modalIsOpen={modal.modalIsOpen}
-        closeModal={modal.closeModal}
-      />
+      <UserProfileModal userInfo={selectingUser} {...modal} />
       {userList.map((user, idx) => (
         <p
           key={idx}
