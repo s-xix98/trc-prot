@@ -7,7 +7,7 @@ from src.playwright_runner_utils import take_screenshot
 from src.user import User
 
 
-def test_basic(page: Page, test_name: str, user: User) -> None:
+def test_basic(test_name: str, page: Page, user: User) -> None:
     # ログインしてない状態だと、login に 飛ばされるはず
     page.goto(TOP_PAGE_URL)
     time.sleep(3)

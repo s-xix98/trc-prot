@@ -6,7 +6,7 @@ from src.constants import HEADLESS
 from src.logger import logger
 from src.user import E2E, User
 
-TEST_FUNC_TYPE = Callable[[Page, str, User], None]
+TEST_FUNC_TYPE = Callable[[str, Page, User], None]
 
 
 def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
@@ -17,7 +17,7 @@ def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
     # console
     page.on("console", lambda msg: logger.debug(msg.text))
 
-    func(page, func.__name__, E2E)
+    func(func.__name__, page, E2E)
 
     # ---------------------
     context.close()
