@@ -6,3 +6,8 @@ export type MatchHistory = {
   winner: UserInfo | null;
   createdAt: Date;
 };
+
+export type Rate = {
+  userData: UserInfo;
+  rating: number;
+};
