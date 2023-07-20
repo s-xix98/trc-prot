@@ -1,19 +1,28 @@
-import { UserInfo } from '../../user/types/UserDto';
+import { z } from 'zod';
+
+import { UserInfoSchema } from '../../user/types/UserDto';
+
 // バックエンドの方と同じデータ構造
 
-export type MessageDto = {
-  content: string;
-  authorId: string;
-};
+export const MessageDtoSchema = z.object({
+  content: z.string(),
+  authorId: z.string(),
+});
+export type MessageDto = z.infer<typeof MessageDtoSchema>;
 
-export type handleMessageDto = {
-  content: string;
-  user: UserInfo;
-};
+export const handleMessageDtoSchema = z.object({
+  content: z.string(),
+  user: UserInfoSchema,
+});
+export type handleMessageDto = z.infer<typeof handleMessageDtoSchema>;
 
-export type sendMessageDto = {
-  content: string;
+export const handleMessageDtoArrSchema = handleMessageDtoSchema.array();
+export type handleMessageDtoArr = z.infer<typeof handleMessageDtoArrSchema>;
+
+export const sendMessageDtoSchema = z.object({
+  content: z.string(),
   // TODO authができたらheaderからuserID取り出せるから消す
-  userId: string;
-  chatRoomId: string;
-};
+  userId: z.string(),
+  chatRoomId: z.string(),
+});
+export type sendMessageDto = z.infer<typeof sendMessageDtoSchema>;

@@ -5,7 +5,7 @@ import { Container } from '@/components/Layout/Container';
 import { Input } from '@/components/Elements/Input/Input';
 import { useFocus } from '@/hooks/useFocus';
 
-import { UserInfo } from '../types/UserDto';
+import { UserInfo, UserInfoSchema } from '../types/UserDto';
 
 import { UserListWithModal } from './UserProfile';
 
@@ -13,7 +13,7 @@ import { useSearch } from '../../../hooks/useSearch';
 
 export const UserSearch = () => {
   const { focusRef } = useFocus();
-  const { searchedList, searcher } = useSearch<UserInfo>();
+  const { searchedList, searcher } = useSearch<UserInfo>(UserInfoSchema);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     searcher('/user/search', e.target.value);

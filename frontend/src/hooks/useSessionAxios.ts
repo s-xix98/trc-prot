@@ -1,6 +1,8 @@
 import axios, { InternalAxiosRequestConfig } from 'axios';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { ZodError, z } from 'zod';
+import { useSnackbar } from 'notistack';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { BACKEND } from '@/constants';
@@ -41,4 +43,54 @@ export const useSessionAxios = () => {
   }, [router, logout]);
 
   return customAxios;
+};
+
+type axiosGetPrm = {
+  uri: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params?: any;
+};
+
+// 使う際は注意必要ます
+// zod Schema オブジェクトの useMemoで メモ化等際レンダリング起きないように
+// onSucessCallback も useCallbackを使用等、毎回関数生成しないようにする必要あり
+export const useCustomAxiosGetter = () => {
+  const customAxios = useSessionAxios();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const customAxiosGetter = useCallback(
+    <T>(
+      axiosGetPrm: axiosGetPrm,
+      schema: z.ZodSchema<T>,
+      onSucessCallback: (resData: T) => void,
+    ) => {
+      // TODO : for debug
+      console.log('useCustomAxiosGetter', axiosGetPrm.uri, axiosGetPrm.params);
+      // enqueueSnackbar(`get ${axiosGetPrm.uri}`);
+      customAxios
+        .get(axiosGetPrm.uri, axiosGetPrm.params)
+        .then((res) => {
+          console.log('customAxiosGetter', res.data);
+          try {
+            const resData = schema.parse(res.data);
+            onSucessCallback(resData);
+          } catch (e) {
+            if (e instanceof ZodError) {
+              // TODO : for debug
+              console.log('Zod Error :', e.message);
+              enqueueSnackbar(`Zod Error : ${e.message}`);
+            } else {
+              throw e;
+            }
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          enqueueSnackbar(err?.response?.data?.message);
+        });
+    },
+    [customAxios, enqueueSnackbar],
+  );
+
+  return { customAxiosGetter };
 };

@@ -1,25 +1,28 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 
-import { BACKEND } from '@/constants';
+import {
+  handleMessageDtoArr,
+  handleMessageDtoArrSchema,
+} from '../types/MessageDto';
 
-import { handleMessageDto } from '../types/MessageDto';
-
-import { useSessionAxios } from '../../../hooks/useSessionAxios';
+import { useCustomAxiosGetter } from '../../../hooks/useSessionAxios';
 
 export const useRoomHistory = (selectedChannelId: string) => {
-  const [chatHistMsgs, setChatHistMsgs] = useState<handleMessageDto[]>([]);
-  const axios = useSessionAxios();
+  const [chatHistMsgs, setChatHistMsgs] = useState<handleMessageDtoArr>([]);
+  const { customAxiosGetter } = useCustomAxiosGetter();
+
+  const onSucessCallback = useCallback((chatHistMsgs: handleMessageDtoArr) => {
+    setChatHistMsgs(chatHistMsgs);
+  }, []);
+
   useEffect(() => {
-    axios
-      .get(BACKEND + '/chat/rooms/' + selectedChannelId + '/history')
-      .then((res) => {
-        setChatHistMsgs(res.data);
-      })
-      .catch(() => {
-        console.log('room 取得失敗');
-      });
-  }, [selectedChannelId, axios]);
+    customAxiosGetter(
+      { uri: '/chat/rooms/' + selectedChannelId + '/history' },
+      handleMessageDtoArrSchema,
+      onSucessCallback,
+    );
+  }, [customAxiosGetter, onSucessCallback, selectedChannelId]);
 
   return { chatHistMsgs, setChatHistMsgs };
 };
