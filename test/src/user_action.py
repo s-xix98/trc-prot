@@ -91,6 +91,30 @@ class UserInteractionManager:
             logger.info("force_logout fail")
             pass
 
+    def send_friend_req(self, target_friend_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./search")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_placeholder("username").fill(target_friend_name)
+        page.get_by_text(target_friend_name, exact=True).click()
+        page.get_by_role("button", name="Friend Req").click()
+        page.locator(".MuiAvatar-root").press("Escape")
+        page.get_by_role("heading", name="User Search").press("Escape")
+
+    def send_block_req(self, target_friend_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./search")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_placeholder("username").fill(target_friend_name)
+        page.get_by_text(target_friend_name, exact=True).click()
+        page.get_by_role("button", name="Block Req").click()
+        page.locator(".MuiAvatar-root").press("Escape")
+        page.get_by_role("heading", name="User Search").press("Escape")
+
     def create_chat_room(self, room_name: str) -> None:
         page = self.page
 
