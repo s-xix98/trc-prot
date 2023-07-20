@@ -244,6 +244,7 @@ export class ChatGateway {
       throw new Error('You are not member of this room');
     }
 
+    await this.chatService.UpsertInviteUser(dto.targetId, requestUserId, room.id);
 
     }
   }
