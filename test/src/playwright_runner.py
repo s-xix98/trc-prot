@@ -4,8 +4,9 @@ from playwright.sync_api import Page, Playwright, expect, sync_playwright
 
 from src.constants import HEADLESS
 from src.logger import logger
+from src.user import E2E, User
 
-TEST_FUNC_TYPE = Callable[[Page, str], None]
+TEST_FUNC_TYPE = Callable[[Page, str, User], None]
 
 
 def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
@@ -16,7 +17,7 @@ def run(playwright: Playwright, func: TEST_FUNC_TYPE) -> None:
     # console
     page.on("console", lambda msg: logger.debug(msg.text))
 
-    func(page, func.__name__)
+    func(page, func.__name__, E2E)
 
     # ---------------------
     context.close()
