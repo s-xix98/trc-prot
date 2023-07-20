@@ -6,9 +6,9 @@ from playwright.sync_api import Page
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from src.constants import TOP_PAGE_URL
+from src.logger import logger
 from src.playwright_runner_utils import take_screenshot
 from src.user import User
-from src.logger import logger
 
 
 @dataclass
