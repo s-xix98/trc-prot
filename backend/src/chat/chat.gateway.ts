@@ -292,4 +292,16 @@ export class ChatGateway {
     const joinedRooms = await this.chatService.getJoinedRooms(userId);
     client.emit('joinedRooms', joinedRooms);
   }
+
+  async broadcastMessagesToJoinedRooms(userId: string) {
+    const rooms = await this.chatService.getJoinedRooms(userId);
+    await Promise.all(
+      rooms.map((room) => this.broadcastRoomMessageHistory(room.id)),
+    );
+  }
+
+  private async broadcastRoomMessageHistory(roomId: string) {
+    const msgs = await this.chatService.getChannelHistoryById(roomId);
+    this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
+  }
 }
