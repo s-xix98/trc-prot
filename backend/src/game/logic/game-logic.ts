@@ -33,7 +33,7 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
-interface GameRule {
+export interface GameRule {
   EvaluateGameResult(
     p1: PlayerResult,
     p2: PlayerResult,
@@ -43,7 +43,7 @@ interface GameRule {
 }
 
 export class BasicRule implements GameRule {
-  constructor(private matchPoint = MatchPoint) {}
+  constructor(private readonly matchPoint = MatchPoint) {}
 
   EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
     return this.CreateResultEvaluator()(p1, p2);
@@ -68,21 +68,17 @@ export class BasicRule implements GameRule {
 }
 
 export class GameLogic {
-  private ball: Ball;
   private p1: Player;
   private p2: Player;
   private intervalId: any;
-  private rule: GameRule;
-  private onShutdown: OnShutdownCallback;
 
   constructor(
     p1: PlayerData,
     p2: PlayerData,
-    onShutdown: OnShutdownCallback,
-    rule: GameRule = new BasicRule(MatchPoint),
-    ball: Ball = CreateBall(),
+    private readonly onShutdown: OnShutdownCallback,
+    private readonly rule: GameRule = new BasicRule(MatchPoint),
+    private ball: Ball = CreateBall(),
   ) {
-    this.ball = ball;
     this.p1 = {
       socket: p1.client,
       userId: p1.data.id,
@@ -99,8 +95,6 @@ export class GameLogic {
       keyInputs: [],
       score: 0,
     };
-    this.onShutdown = onShutdown;
-    this.rule = rule;
   }
 
   RebindSocket(userId: string, socket: Socket) {
@@ -283,9 +277,9 @@ export class GameLogic {
   }
 
   private UpdateScore() {
-    if (this.ball.x <= 0) {
+    if (this.ball.x <= canvas.xMin) {
       this.p2.score++;
-    } else if (this.ball.x >= 1) {
+    } else if (this.ball.x >= canvas.xMax) {
       this.p1.score++;
     }
   }
