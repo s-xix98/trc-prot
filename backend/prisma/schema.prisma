@@ -23,6 +23,8 @@ model User {
   twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
+  invitee        InviteChatRoom[] @relation("invitee")
+  inviter        InviteChatRoom[] @relation("inviter")
   userChatState  UserChatState[]
   userProfile    UserProfile?
   friendship1    Friendship[]    @relation("src")
@@ -56,6 +58,19 @@ model UserProfile {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+
+model InviteChatRoom {
+  createdAt  DateTime @default(now())
+  inviterUserId    String
+  inviteeUserId     String
+  chatRoomId String
+
+  invitee      User     @relation("invitee",fields: [inviteeUserId], references: [id])
+  inviter      User     @relation("inviter",fields: [inviterUserId], references: [id])
+  chatRoom  ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  @@id([inviteeUserId,inviterUserId, chatRoomId])
+}
+
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
   id             String          @id @default(cuid())
@@ -68,6 +83,7 @@ model ChatRoom {
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
+  inviteChatRoom InviteChatRoom[]
 }
 
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
