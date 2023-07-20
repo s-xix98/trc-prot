@@ -9,11 +9,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
 import { AuthModule } from '../auth/auth.module';
 import { WsocketModule } from '../wsocket/wsocket.module';
+import { ChatModule } from '../chat/chat.module';
 
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { ChatModule } from '../chat/chat.module';
 
 const USERNUM = 10;
 

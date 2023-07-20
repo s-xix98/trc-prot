@@ -74,7 +74,7 @@ const Test = () => {
   };
 
   const updateProfileButton = () => {
-    socket.emit('updateProfile', {username: `test1${n}`});
+    socket.emit('updateProfile', { username: `test1${n}` });
     setn(n + 1);
   };
 

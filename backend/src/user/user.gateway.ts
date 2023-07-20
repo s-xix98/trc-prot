@@ -5,11 +5,11 @@ import { UseFilters } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { ChatGateway } from '../chat/chat.gateway';
 
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { ChatGateway } from '../chat/chat.gateway';
 
 @WebSocketGateway({
   cors: {

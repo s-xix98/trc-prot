@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtTwoFaAuthGuard } from '../auth/guard/jwt-two-fa.guard';
 
+import { JwtTwoFaAuthGuard } from '../auth/guard/jwt-two-fa.guard';
 import { UserInfo } from '../user/types/userInfo';
 
 import { ChatService } from './chat.service';
