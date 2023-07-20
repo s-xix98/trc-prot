@@ -14,3 +14,6 @@ HEADLESS = True if args.HEADLESS != 0 else False
 TEST_IMG_DIR: Final = "img"
 
 TOP_PAGE_URL: Final = os.environ.get("TOP_PAGE_URL") or "http://localhost:3000/"
+
+MAX_WORKERS = 15
+TEST_USER_COUNT = 30

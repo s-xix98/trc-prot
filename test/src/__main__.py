@@ -1,4 +1,5 @@
-from src.constants import HEADLESS, TAKE_SCREENSHOT, TOP_PAGE_URL
+from src.constants import (HEADLESS, MAX_WORKERS, TAKE_SCREENSHOT,
+                           TEST_USER_COUNT, TOP_PAGE_URL)
 from src.logger import logger
 from src.playwright_runner import playwright_test_runner
 from src.test_basic import test_basic
@@ -14,6 +15,9 @@ def main() -> None:
     logger.info(f"TOP_PAGE_URL    : {TOP_PAGE_URL}")
     logger.info(f"HEADLESS        : {HEADLESS}")
     logger.info(f"TAKE_SCREENSHOT : {TAKE_SCREENSHOT}")
+    logger.info(f"MAX_WORKERS     : {MAX_WORKERS}")
+    logger.info(f"TEST_USER_COUNT : {TEST_USER_COUNT}")
+
     playwright_test_runner(
         [
             test_basic,
