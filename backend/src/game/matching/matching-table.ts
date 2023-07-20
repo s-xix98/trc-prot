@@ -28,8 +28,8 @@ export class MatchingTable {
     const game = gameFactory(this.waitingUser, enqueuedUser);
     this.userGameMap.set(this.waitingUser.data.id, game);
     this.userGameMap.set(enqueuedUser.data.id, game);
-    this.clearWaitingUser(this.waitingUser.data.id);
     onMatched(this.waitingUser, enqueuedUser);
+    this.clearWaitingUser(this.waitingUser.data.id);
   }
 
   getGame(userId: string): GameLogic | undefined {
