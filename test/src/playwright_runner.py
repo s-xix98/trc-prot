@@ -32,7 +32,11 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
             # TODO : マルチスレッドで実行時、テストの同期取るように
             for user in user_lst:
                 logger.info(f"--- RUN TEST : {func.__name__}, user : {user.name} ---")
-                func(func.__name__, page, user)
+                try:
+                    func(func.__name__, page, user)
+                except PlaywrightTimeoutError as e:
+                    logger.error(f"PlaywrightTimeoutError :  {func.__name__}, user : {user.name}, {str(e)}")
+                    page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
                 logger.info(f"--- END TEST : {func.__name__}, user : {user.name} ---")
                 # local storage が残ってしまうので、test のたびに logout するように
                 force_logout("force-logout", user, page)
