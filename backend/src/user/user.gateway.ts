@@ -278,4 +278,12 @@ export class UserGateway {
     );
   }
 
+  private async broadcastFriends(userId: string) {
+    const friends = await this.userService.getFriends(userId);
+    await Promise.all(
+      friends.map(async (user) => {
+        this.sendFriends(user.id);
+      }),
+    );
+  }
 }
