@@ -8,6 +8,7 @@ from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from src.constants import TOP_PAGE_URL
 from src.playwright_runner_utils import take_screenshot
 from src.user import User
+from src.logger import logger
 
 
 @dataclass
@@ -84,9 +85,10 @@ class UserInteractionManager:
     def force_logout(self) -> None:
         page = self.page
         try:
-            page.locator("#outlined-multiline-static").fill("logout", timeout=100)
-            page.locator("#outlined-multiline-static").press("Enter", timeout=100)
+            page.locator("#outlined-multiline-static").fill("logout", timeout=300)
+            page.locator("#outlined-multiline-static").press("Enter", timeout=300)
         except PlaywrightTimeoutError:
+            logger.info("force_logout fail")
             pass
 
     def create_chat_room(self, room_name: str) -> None:
