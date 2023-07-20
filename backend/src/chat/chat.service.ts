@@ -279,7 +279,7 @@ export class ChatService {
     inviterId: string,
     chatRoomId: string,
   ) {
-    const invitedUser = await this.prismaService.inviteChatRoom.upsert({
+    const invitedUser = await this.prismaService.chatInvitation.upsert({
       where: {
         inviteeUserId_inviterUserId_chatRoomId: {
           inviteeUserId: inviteeId,
@@ -299,7 +299,7 @@ export class ChatService {
   }
 
   async getInvites(userId: string) {
-    const invites = await this.prismaService.inviteChatRoom.findMany({
+    const invites = await this.prismaService.chatInvitation.findMany({
       where: {
         inviteeUserId: userId,
       },

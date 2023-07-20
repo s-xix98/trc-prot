@@ -23,8 +23,8 @@ model User {
   twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
-  invitee        InviteChatRoom[] @relation("invitee")
-  inviter        InviteChatRoom[] @relation("inviter")
+  invitee        chatInvitation[] @relation("invitee")
+  inviter        chatInvitation[] @relation("inviter")
   userChatState  UserChatState[]
   userProfile    UserProfile?
   friendship1    Friendship[]     @relation("src")
@@ -58,7 +58,7 @@ model UserProfile {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model InviteChatRoom {
+model chatInvitation {
   createdAt     DateTime @default(now())
   inviterUserId String
   inviteeUserId String
@@ -83,7 +83,7 @@ model ChatRoom {
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
-  inviteChatRoom InviteChatRoom[]
+  chatInvitation chatInvitation[]
 }
 
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
