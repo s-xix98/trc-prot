@@ -127,6 +127,7 @@ export class GameGateway {
         this.matchingTable.deleteGame(p1Result.userId, p2Result.userId);
         await this.gameService
           .saveGameResult(p1Result, p2Result, resultEvaluator)
+          .catch((e) => console.log(e));
       };
 
       return new GameLogic(player1, player2, onShutdown);
