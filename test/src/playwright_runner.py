@@ -52,7 +52,7 @@ def playwright_test_runner(func_lst: list[TEST_FUNC_TYPE]) -> None:
 def playwright_test_runner_multiple_threads(func_lst: list[TEST_FUNC_TYPE]) -> None:
     executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
     all_test_user: list[User] = [
-        User(f"user{i}", f"{i}@exmple.com", f"{i}{i}{i}")
+        User(i, f"user{i}", f"{i}@exmple.com", f"{i}{i}{i}")
         for i in range(1, TEST_USER_COUNT + 1)
     ]
     for i in range(MAX_WORKERS):

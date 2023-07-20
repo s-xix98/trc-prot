@@ -12,7 +12,7 @@ def test_signup(test_name: str, page: Page, user: User) -> None:
 
 def test_signup_invalid_form(test_name: str, page: Page, user: User) -> None:
     invalid_email_user = User(
-        name="invalid-email", email="invalid", password="invalid-email-password"
+        idx=-1, name="invalid-email", email="invalid", password="invalid-email-password"
     )
     invalid_email = UserInteractionManager(test_name, invalid_email_user, page)
     invalid_email.goto_top_page()
