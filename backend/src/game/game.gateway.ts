@@ -80,7 +80,9 @@ export class GameGateway {
       console.log('onshutdown');
       this.userGameMap.delete(player1.userId);
       this.userGameMap.delete(player2.userId);
-      await this.gameService.saveGameResult(player1, player2, resultEvaluator);
+      await this.gameService
+        .saveGameResult(player1, player2, resultEvaluator)
+        .catch((e) => console.log(e));
     };
 
     const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
