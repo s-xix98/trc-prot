@@ -294,4 +294,33 @@ export class ChatService {
     return invitedUser;
   }
 
+  async getInvites(userId: string) {
+    const invites = await this.prismaService.inviteChatRoom.findMany({
+      where: {
+        inviteeUserId: userId,
+      },
+      include: {
+        chatRoom: {
+          select: {
+            id: true,
+            roomName: true,
+          },
+        },
+        inviter: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return invites.map((invite) => {
+      const { chatRoom, inviter } = invite;
+      return {
+        chatRoom,
+        inviter,
+      };
+    });
+  }
 }
