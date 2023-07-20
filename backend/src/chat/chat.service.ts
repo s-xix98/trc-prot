@@ -274,12 +274,12 @@ export class ChatService {
     return joinedRooms;
   }
 
-  async UpsertInviteUser(
+  async upsertInvitation(
     inviteeId: string,
     inviterId: string,
     chatRoomId: string,
   ) {
-    const invitedUser = await this.prismaService.chatInvitation.upsert({
+    const invitation = await this.prismaService.chatInvitation.upsert({
       where: {
         inviteeUserId_inviterUserId_chatRoomId: {
           inviteeUserId: inviteeId,
@@ -295,7 +295,7 @@ export class ChatService {
       },
     });
 
-    return invitedUser;
+    return invitation;
   }
 
   async getInvites(userId: string) {
