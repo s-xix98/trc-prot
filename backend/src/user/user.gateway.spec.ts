@@ -13,6 +13,7 @@ import { WsocketModule } from '../wsocket/wsocket.module';
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
+import { ChatModule } from '../chat/chat.module';
 
 const USERNUM = 10;
 
@@ -37,7 +38,7 @@ describe('UserGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, AuthModule, WsocketModule],
+      imports: [TestModule, AuthModule, WsocketModule, ChatModule],
       providers: [UserGateway, PrismaService, TestService, UserService],
     }).compile();
 
