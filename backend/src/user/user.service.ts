@@ -196,4 +196,25 @@ export class UserService {
     return user;
   }
 
+  async getSentFriendRequests(userId: string) {
+    const requests = await this.prisma.friendship.findMany({
+      where: {
+        srcUserId: userId,
+        status: {
+          equals: 'Requested',
+        },
+      },
+      include: {
+        destUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return requests;
+  }
+
 }

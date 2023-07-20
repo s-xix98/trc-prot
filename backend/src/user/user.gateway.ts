@@ -259,4 +259,14 @@ export class UserGateway {
     const blockUsers = await this.userService.getBlockUsers(userId);
     sock.emit('blockUsers', blockUsers);
   }
+
+  private async broadcastSentRequests(userId: string) {
+    const requests = await this.userService.getSentFriendRequests(userId);
+    await Promise.all(
+      requests.map(async (req) => {
+        this.sendFriendRequests(req.destUserId);
+      }),
+    );
+  }
+
 }
