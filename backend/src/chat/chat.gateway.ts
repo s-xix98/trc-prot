@@ -42,18 +42,21 @@ export class ChatGateway {
     if (!userId) {
       return;
     }
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return;
+      }
 
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
-      return;
+      const joinedRooms = await this.chatService.getJoinedRooms(userId);
+      client.emit('joinedRooms', joinedRooms);
+
+      joinedRooms.forEach((room) => {
+        this.server.JoinRoom(client, roomType.Chat, room.id);
+      });
+    } catch (e) {
+      console.log(e);
     }
-
-    const joinedRooms = await this.chatService.getJoinedRooms(userId);
-    client.emit('joinedRooms', joinedRooms);
-
-    joinedRooms.forEach((room) => {
-      this.server.JoinRoom(client, roomType.Chat, room.id);
-    });
   }
 
   handleDisconnect(client: Socket) {
