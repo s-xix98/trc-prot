@@ -10,6 +10,7 @@ import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { MessageDto } from './dto/message.dto';
 import {
   CreateChannelDto,
+  InviteChatRoomDto,
   JoinChannelDto,
   RoomMemberRestrictionDto,
 } from './dto/Channel.dto';
@@ -221,6 +222,45 @@ export class ChatGateway {
       // TODO targetを消す
       // client.emit('deleteRoom', targetState);
       // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    }
+  }
+
+  @SubscribeMessage('inviteChatRoom')
+  async inviteRoom(client: Socket, dto: InviteChatRoomDto) {
+    console.log('inviteChatRoom', dto);
+
+    const requestUserId = this.server.getUserId(client);
+    if (!requestUserId) {
+      throw new Error();
+    }
+
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
+      throw new Error('Room is not found');
+    }
+
+    const requestUser = await this.chatService.findRoomMember(
+      room.id,
+      requestUserId,
+    );
+    if (!requestUser) {
+      throw new Error('You are not member of this room');
+    }
+
+    await this.chatService.upsertInvitation(
+      dto.targetId,
+      requestUserId,
+      room.id,
+    );
+
+    await this.sendInvites(dto.targetId);
+  }
+
+  async sendInvites(userId: string) {
+    const socket = this.server.getSocket(userId);
+    if (socket) {
+      const invites = await this.chatService.getInvites(userId);
+      socket.emit('receiveInviteChatRoom', invites);
     }
   }
 }
