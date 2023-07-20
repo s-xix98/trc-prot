@@ -246,6 +246,14 @@ export class ChatGateway {
 
     await this.chatService.UpsertInviteUser(dto.targetId, requestUserId, room.id);
 
+    await this.sendInvites(dto.targetId);
+  }
+
+  async sendInvites(userId: string) {
+    const socket = this.server.getSocket(userId);
+    if (socket) {
+      const invites = await this.chatService.getInvites(userId);
+      socket.emit('receiveInviteChatRoom', invites);
     }
   }
 }
