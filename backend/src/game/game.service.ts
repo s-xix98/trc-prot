@@ -21,19 +21,6 @@ export class GameService {
     return ranking;
   }
 
-  private async UpdateRating(
-    userId: string,
-    rankingDiff: number,
-    prisma: PrsimaClientTx,
-  ) {
-    const pricla = prisma || this.prismaService;
-    await pricla.rating.upsert({
-      where: { userId: userId },
-      update: { rating: { increment: rankingDiff } },
-      create: { userId: userId, rating: rankingDiff },
-    });
-  }
-
   async GetMatchHistory(userId: string): Promise<MatchHistory[]> {
     const history: MatchHistory[] =
       await this.prismaService.matchHistory.findMany({
@@ -49,18 +36,6 @@ export class GameService {
 
     console.log('history raw', history);
     return history;
-  }
-
-  private async UpdateMatchHistory(
-    userId1: string,
-    userId2: string,
-    winnerId?: string,
-    prisma?: PrsimaClientTx,
-  ) {
-    const pricla = prisma || this.prismaService;
-    await pricla.matchHistory.create({
-      data: { player1Id: userId1, player2Id: userId2, winnerId: winnerId },
-    });
   }
 
   async saveGameResult(
@@ -89,6 +64,31 @@ export class GameService {
           tx,
         );
       }
+    });
+  }
+
+  private async UpdateRating(
+    userId: string,
+    rankingDiff: number,
+    prisma: PrsimaClientTx,
+  ) {
+    const pricla = prisma || this.prismaService;
+    await pricla.rating.upsert({
+      where: { userId: userId },
+      update: { rating: { increment: rankingDiff } },
+      create: { userId: userId, rating: rankingDiff },
+    });
+  }
+
+  private async UpdateMatchHistory(
+    userId1: string,
+    userId2: string,
+    winnerId?: string,
+    prisma?: PrsimaClientTx,
+  ) {
+    const pricla = prisma || this.prismaService;
+    await pricla.matchHistory.create({
+      data: { player1Id: userId1, player2Id: userId2, winnerId: winnerId },
     });
   }
 }
