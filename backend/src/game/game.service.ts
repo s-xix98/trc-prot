@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { PrsimaClientTx } from 'src/prisma/types';
 
 import { PrismaService } from '../prisma/prisma.service';
 
 import { MatchHistory } from './dto/Api';
+import { PlayerResult, ResultEvaluator } from './types';
 
 @Injectable()
 export class GameService {
@@ -19,9 +21,13 @@ export class GameService {
     return ranking;
   }
 
-  async UpdateRating(userId: string, result: 'WIN' | 'LOSE') {
-    const rankingDiff = result === 'WIN' ? 1 : -1;
-    await this.prismaService.rating.upsert({
+  private async UpdateRating(
+    userId: string,
+    rankingDiff: number,
+    prisma: PrsimaClientTx,
+  ) {
+    const pricla = prisma || this.prismaService;
+    await pricla.rating.upsert({
       where: { userId: userId },
       update: { rating: { increment: rankingDiff } },
       create: { userId: userId, rating: rankingDiff },
@@ -45,13 +51,44 @@ export class GameService {
     return history;
   }
 
-  async UpdateMatchHistory(
+  private async UpdateMatchHistory(
     userId1: string,
     userId2: string,
     winnerId?: string,
+    prisma?: PrsimaClientTx,
   ) {
-    await this.prismaService.matchHistory.create({
+    const pricla = prisma || this.prismaService;
+    await pricla.matchHistory.create({
       data: { player1Id: userId1, player2Id: userId2, winnerId: winnerId },
+    });
+  }
+
+  async saveGameResult(
+    p1Result: PlayerResult,
+    p2Result: PlayerResult,
+    resultEvaluator: ResultEvaluator,
+  ) {
+    await this.prismaService.$transaction(async (tx) => {
+      const players = resultEvaluator(p1Result, p2Result);
+      if (players) {
+        await Promise.all([
+          this.UpdateRating(players.winner.userId, 1, tx),
+          this.UpdateRating(players.loser.userId, -1, tx),
+          this.UpdateMatchHistory(
+            p1Result.userId,
+            p2Result.userId,
+            players.winner.userId,
+            tx,
+          ),
+        ]);
+      } else {
+        await this.UpdateMatchHistory(
+          p1Result.userId,
+          p2Result.userId,
+          undefined,
+          tx,
+        );
+      }
     });
   }
 }

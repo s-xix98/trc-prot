@@ -80,22 +80,7 @@ export class GameGateway {
       console.log('onshutdown');
       this.userGameMap.delete(player1.userId);
       this.userGameMap.delete(player2.userId);
-      const players = resultEvaluator(player1, player2);
-      if (players) {
-        this.gameService.UpdateRating(players.winner.userId, 'WIN');
-        this.gameService.UpdateRating(players.loser.userId, 'LOSE');
-        this.gameService.UpdateMatchHistory(
-          player1.userId,
-          player2.userId,
-          players.winner.userId,
-        );
-      } else {
-        this.gameService.UpdateMatchHistory(
-          player1.userId,
-          player2.userId,
-          undefined,
-        );
-      }
+      await this.gameService.saveGameResult(player1, player2, resultEvaluator);
     };
 
     const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
