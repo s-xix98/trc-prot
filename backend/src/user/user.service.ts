@@ -217,4 +217,24 @@ export class UserService {
     return requests;
   }
 
+  async getUsersWhoBlockedUser(userId: string) {
+    const users = await this.prisma.friendship.findMany({
+      where: {
+        destUserId: userId,
+        status: {
+          equals: 'Blocked',
+        },
+      },
+      include: {
+        srcUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return users.map((u) => u.srcUser);
+  }
 }

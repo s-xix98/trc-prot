@@ -269,4 +269,13 @@ export class UserGateway {
     );
   }
 
+  private async broadcastBlockers(userId: string) {
+    const users = await this.userService.getUsersWhoBlockedUser(userId);
+    await Promise.all(
+      users.map(async (user) => {
+        this.sendBlockUsers(user.id);
+      }),
+    );
+  }
+
 }
