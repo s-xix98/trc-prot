@@ -100,8 +100,11 @@ class UserInteractionManager:
         page.get_by_placeholder("username").fill(target_friend_name)
         page.get_by_text(target_friend_name, exact=True).click()
         page.get_by_role("button", name="Friend Req").click()
-        page.locator(".MuiAvatar-root").press("Escape")
-        page.get_by_role("heading", name="User Search").press("Escape")
+        time.sleep(0.1)
+        page.keyboard.press("Escape")
+        time.sleep(0.1)
+        page.keyboard.press("Escape")
+        time.sleep(0.1)
 
     def send_block_req(self, target_friend_name: str) -> None:
         page = self.page
@@ -112,8 +115,11 @@ class UserInteractionManager:
         page.get_by_placeholder("username").fill(target_friend_name)
         page.get_by_text(target_friend_name, exact=True).click()
         page.get_by_role("button", name="Block Req").click()
-        page.locator(".MuiAvatar-root").press("Escape")
-        page.get_by_role("heading", name="User Search").press("Escape")
+        time.sleep(0.1)
+        page.keyboard.press("Escape")
+        time.sleep(0.1)
+        page.keyboard.press("Escape")
+        time.sleep(0.1)
 
     def create_chat_room(self, room_name: str) -> None:
         page = self.page
