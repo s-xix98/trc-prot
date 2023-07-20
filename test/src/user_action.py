@@ -87,9 +87,8 @@ class UserInteractionManager:
         try:
             page.locator("#outlined-multiline-static").fill("logout", timeout=300)
             page.locator("#outlined-multiline-static").press("Enter", timeout=300)
-        except PlaywrightTimeoutError:
-            logger.info("force_logout fail")
-            pass
+        except PlaywrightTimeoutError as e:
+            logger.info(f"{self.user.name} force_logout fail : {e}")
 
     def send_friend_req(self, target_friend_name: str) -> None:
         page = self.page
