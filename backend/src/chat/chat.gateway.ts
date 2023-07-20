@@ -244,9 +244,7 @@ export class ChatGateway {
       throw new Error('You are not member of this room');
     }
 
-    const targetSocket = this.server.getSocket(dto.targetId);
-    if (targetSocket) {
-      targetSocket.emit('receiveInviteChatRoom', room);
+
     }
   }
 }
