@@ -273,4 +273,58 @@ export class ChatService {
 
     return joinedRooms;
   }
+
+  async upsertInvitation(
+    inviteeId: string,
+    inviterId: string,
+    chatRoomId: string,
+  ) {
+    const invitation = await this.prismaService.chatInvitation.upsert({
+      where: {
+        inviteeUserId_inviterUserId_chatRoomId: {
+          inviteeUserId: inviteeId,
+          inviterUserId: inviterId,
+          chatRoomId: chatRoomId,
+        },
+      },
+      update: {},
+      create: {
+        inviteeUserId: inviteeId,
+        inviterUserId: inviterId,
+        chatRoomId: chatRoomId,
+      },
+    });
+
+    return invitation;
+  }
+
+  async getInvites(userId: string) {
+    const invites = await this.prismaService.chatInvitation.findMany({
+      where: {
+        inviteeUserId: userId,
+      },
+      include: {
+        chatRoom: {
+          select: {
+            id: true,
+            roomName: true,
+          },
+        },
+        inviter: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return invites.map((invite) => {
+      const { chatRoom, inviter } = invite;
+      return {
+        chatRoom,
+        inviter,
+      };
+    });
+  }
 }
