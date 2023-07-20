@@ -9,6 +9,7 @@ import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
+import { ChatGateway } from '../chat/chat.gateway';
 
 @WebSocketGateway({
   cors: {
@@ -20,6 +21,7 @@ export class UserGateway {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
+    private chatGateway: ChatGateway,
     private server: WsocketGateway,
   ) {}
 
@@ -227,7 +229,13 @@ export class UserGateway {
     const user = await this.userService.findOneById(userId);
 
     client.emit('profile', user);
-    // TODO全体に通知する
+
+    await Promise.all([
+      this.broadcastFriends(userId),
+      this.broadcastBlockers(userId),
+      this.broadcastSentRequests(userId),
+      this.chatGateway.broadcastMessagesToJoinedRooms(userId),
+    ]);
   }
 
   private async sendFriendRequests(userId: string) {
