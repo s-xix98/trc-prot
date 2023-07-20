@@ -57,6 +57,6 @@ def playwright_test_runner_multiple_threads(func_lst: list[TEST_FUNC_TYPE]) -> N
     ]
     for i in range(MAX_WORKERS):
         user_lst = all_test_user[i::MAX_WORKERS]
-        logger.info(*[u.name for u in user_lst])
+        logger.info(str([u.name for u in user_lst]))
         executor.submit(run, func_lst=func_lst, user_lst=user_lst)
     executor.shutdown()
