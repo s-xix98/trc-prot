@@ -114,29 +114,6 @@ export class GameGateway {
   }
 
   private CreateGameFactory(): GameFactory {
-    const updateDataBase = (
-      p1Result: PlayerResult,
-      p2Result: PlayerResult,
-      resultEvaluator: ResultEvaluator,
-    ) => {
-      const players = resultEvaluator(p1Result, p2Result);
-      if (players) {
-        this.gameService.UpdateRating(players.winner.userId, 'WIN');
-        this.gameService.UpdateRating(players.loser.userId, 'LOSE');
-        this.gameService.UpdateMatchHistory(
-          p1Result.userId,
-          p2Result.userId,
-          players.winner.userId,
-        );
-      } else {
-        this.gameService.UpdateMatchHistory(
-          p1Result.userId,
-          p2Result.userId,
-          undefined,
-        );
-      }
-    };
-
     const gameFactory: GameFactory = (
       player1: PlayerData,
       player2: PlayerData,
@@ -148,7 +125,8 @@ export class GameGateway {
       ) => {
         console.log('onshutdown');
         this.matchingTable.deleteGame(p1Result.userId, p2Result.userId);
-        updateDataBase(p1Result, p2Result, resultEvaluator);
+        await this.gameService
+          .saveGameResult(p1Result, p2Result, resultEvaluator)
       };
 
       return new GameLogic(player1, player2, onShutdown);
