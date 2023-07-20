@@ -21,6 +21,9 @@ export const UserInfoSchema = z.object({
 });
 export type UserInfo = z.infer<typeof UserInfoSchema>;
 
+export const UserInfoArrSchema = UserInfoSchema.array();
+export type UserInfoArr = z.infer<typeof UserInfoArrSchema>;
+
 export const CurrentUserSchema = z.object({
   userInfo: UserInfoSchema,
   friends: UserInfoSchema.array(),

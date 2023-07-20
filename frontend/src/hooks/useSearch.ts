@@ -1,24 +1,31 @@
-import { useState } from 'react';
+import { z } from 'zod';
+import { useCallback, useState } from 'react';
 
-import { useSessionAxios } from '@/hooks/useSessionAxios';
+import { useCustomAxiosGetter } from '@/hooks/useSessionAxios';
 
-export const useSearch = <T>() => {
+export const useSearch = <T>(schema: z.ZodSchema<T>) => {
   const [searchedList, setSearchList] = useState<T[]>([]);
-  const axios = useSessionAxios();
 
-  const searcher = (path: string, searchWord: string) => {
-    if (searchWord.length === 0) {
-      setSearchList([]);
-      return;
-    }
-    axios
-      .get<T[]>(path, { params: { searchWord } })
-      .then((res) => {
-        setSearchList(res.data);
-      })
-      // TODO とりあえず何もしない エラー表示とか出したいね
-      .catch((err) => console.log(err));
-  };
+  const { customAxiosGetter } = useCustomAxiosGetter();
+
+  const searcher = useCallback(
+    (path: string, searchWord: string) => {
+      const onSucessCallback = (resData: T[]) => {
+        setSearchList(resData);
+      };
+
+      if (searchWord.length === 0) {
+        setSearchList([]);
+        return;
+      }
+      customAxiosGetter(
+        { uri: path, params: { params: { searchWord } } },
+        schema.array(),
+        onSucessCallback,
+      );
+    },
+    [customAxiosGetter, schema],
+  );
 
   return { searchedList, searcher };
 };

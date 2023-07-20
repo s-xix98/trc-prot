@@ -1,23 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useSessionAxios } from '@/hooks/useSessionAxios';
-import { UserInfo } from '@/features/user/types/UserDto';
+import { useCustomAxiosGetter } from '@/hooks/useSessionAxios';
+import { UserInfoArr, UserInfoArrSchema } from '@/features/user/types/UserDto';
 
 export const useRoomMembers = (channelId: string) => {
-  const [roomMembers, setRoomMembers] = useState<UserInfo[]>([]);
-  const axios = useSessionAxios();
+  const [roomMembers, setRoomMembers] = useState<UserInfoArr>([]);
+  const { customAxiosGetter } = useCustomAxiosGetter();
+
+  const onSucessCallback = useCallback((roomMembers: UserInfoArr) => {
+    setRoomMembers(roomMembers);
+  }, []);
 
   useEffect(() => {
-    console.log(`/chat/rooms/${channelId}/members`);
-    axios
-      .get(`/chat/rooms/${channelId}/members`)
-      .then((r) => {
-        setRoomMembers(r.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [axios, channelId]);
+    customAxiosGetter(
+      { uri: `/chat/rooms/${channelId}/members` },
+      UserInfoArrSchema,
+      onSucessCallback,
+    );
+  }, [customAxiosGetter, onSucessCallback, channelId]);
 
   return { roomMembers };
 };
