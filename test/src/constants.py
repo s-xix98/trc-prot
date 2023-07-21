@@ -15,5 +15,5 @@ TEST_IMG_DIR: Final = "img"
 
 TOP_PAGE_URL: Final = os.environ.get("TOP_PAGE_URL") or "http://localhost:3000/"
 
-MAX_WORKERS = 15
-TEST_USER_COUNT = 30
+MAX_WORKERS = 5
+TEST_USER_COUNT = 5
