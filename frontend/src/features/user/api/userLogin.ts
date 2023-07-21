@@ -31,6 +31,7 @@ export const useLogin = () => {
         friendRequests: [],
         blockUsers: [],
         joinedRooms: [],
+        receiveInviteChatRooms: [],
       });
       setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
     };
