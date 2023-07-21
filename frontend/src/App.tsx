@@ -65,6 +65,12 @@ const Test = () => {
     });
   };
 
+  const leaveButton = () => {
+    socket.emit('leaveChatRoom', {
+      chatRoomId: joinedRooms[0].id,
+    });
+  };
+
   useSessionSocket('receiveInviteChatRoom', (data) => {
     console.log('receive invite sitayo');
     console.log(data);
@@ -74,6 +80,7 @@ const Test = () => {
     <>
       test
       <button onClick={inviteButton}> invite </button>
+      <button onClick={leaveButton}> leave </button>
     </>
   );
 };
