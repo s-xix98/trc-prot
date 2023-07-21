@@ -53,6 +53,8 @@ export class ChatGateway {
       const joinedRooms = await this.chatService.getJoinedRooms(userId);
       client.emit('joinedRooms', joinedRooms);
 
+      this.sendInvites(userId);
+
       joinedRooms.forEach((room) => {
         this.server.JoinRoom(client, roomType.Chat, room.id);
       });
