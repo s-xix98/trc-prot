@@ -6,7 +6,9 @@ export const MatchHistoryDtoSchema = z.object({
   player1: UserInfoSchema,
   player2: UserInfoSchema,
   winner: UserInfoSchema.or(z.null()),
-  createdAt: z.date(),
+  // TODO : date のはずだけど、 zod parse がエラー吐くので、
+  // とりえあず、 string
+  createdAt: z.string(),
 });
 export type MatchHistoryDto = z.infer<typeof MatchHistoryDtoSchema>;
 
