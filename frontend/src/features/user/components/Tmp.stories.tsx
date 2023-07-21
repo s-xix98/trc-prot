@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { History } from './Tmp';
+import { Tmp } from './Tmp';
 
 const meta = {
-  component: History,
+  component: Tmp,
   tags: ['autodocs'],
-} satisfies Meta<typeof History>;
+} satisfies Meta<typeof Tmp>;
 
 export default meta;
 
-type Story = StoryObj<typeof History>;
+type Story = StoryObj<typeof Tmp>;
 
 export const Basic: Story = {};
