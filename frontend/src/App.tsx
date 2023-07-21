@@ -97,7 +97,7 @@ function App() {
   commandElemMap.set('m', <Matching />);
   commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
   commandElemMap.set('./history', <MatchHistory />);
-  commandElemMap.set('./ranking', <Ranking/>)
+  commandElemMap.set('./ranking', <Ranking />);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);
   commandElemMap.set('./search', <UserSearch />);
