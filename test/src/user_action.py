@@ -54,6 +54,8 @@ class UserInteractionManager:
         page.get_by_role("button", name="SignUp").click()
         if take_screenshot:
             self.screenshot("signup-after")
+        # ちゃんと home に 戻ったか？
+        page.get_by_text(f"{self.user.name} >").click()
 
     def login(
         self,
