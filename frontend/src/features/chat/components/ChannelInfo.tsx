@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useModal } from '@/hooks/useModal';
@@ -87,6 +89,54 @@ export const ChannelInfo = ({
       ) : (
         <NotJoinedChannelInfo selectedChannel={selectedChannel} />
       )}
+    </>
+  );
+};
+
+export const ChannelInfoModal = ({
+  selectedChannel,
+  modalIsOpen,
+  closeModal,
+}: {
+  selectedChannel: chatChannelDto | undefined;
+  modalIsOpen: boolean;
+  closeModal: () => void;
+}) => {
+  return (
+    <ModalView
+      modalIsOpen={modalIsOpen}
+      closeModal={closeModal}
+      height="50%"
+      width="30%"
+    >
+      {!selectedChannel && <p>channel is not selecting</p>}
+      {selectedChannel && <ChannelInfo selectedChannel={selectedChannel} />}
+    </ModalView>
+  );
+};
+
+export const ChannelListWithModal = ({
+  channelList,
+}: {
+  channelList: chatChannelDto[];
+}) => {
+  const modal = useModal();
+  const [selectingChannel, setSelectingChannel] = useState<chatChannelDto>();
+
+  return (
+    <>
+      <ChannelInfoModal selectedChannel={selectingChannel} {...modal} />
+      {channelList.map((channel, idx) => (
+        <p
+          key={idx}
+          onClick={() => {
+            setSelectingChannel(channel);
+            modal.openModal();
+          }}
+        >
+          {channel.roomName}
+        </p>
+      ))}
     </>
   );
 };
