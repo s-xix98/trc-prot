@@ -15,12 +15,14 @@ import {
   ResultEvaluator,
 } from './types';
 import { GameService } from './game.service';
+import { GameFactory, OnMatched } from './matching/types';
+import { MatchingTable } from './matching/matching-table';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
-  private userGameMap = new Map<string, GameLogic>();
-  private waitingUser: PlayerData | undefined = undefined;
+  // TODO MatchinTableをシングルトンにしてDIしたい
+  private matchingTable: MatchingTable = new MatchingTable();
 
   constructor(
     private gameService: GameService,
@@ -38,7 +40,7 @@ export class GameGateway {
     if (!userId) {
       return;
     }
-    this.userGameMap.get(userId)?.RebindSocket(userId, client);
+    this.matchingTable.getGame(userId)?.RebindSocket(userId, client);
   }
 
   handleDisconnect(client: Socket) {
@@ -49,59 +51,36 @@ export class GameGateway {
     const userId = this.server.extractUserIdFromToken(
       client.handshake.auth.token,
     );
-    if (!userId || this.waitingUser?.data.id !== userId) {
+    if (!userId) {
       return;
     }
-    this.waitingUser = undefined;
+    this.matchingTable.clearWaitingUser(userId);
   }
 
   @SubscribeMessage('matchmake')
   matchmake(client: Socket, user: UserInfo) {
     console.log('matchmake', user.username);
-    const reqUser: PlayerData = { client: client, data: user };
-    if (this.userGameMap.has(user.id)) {
+    if (this.matchingTable.isPlaying(user.id)) {
       client.emit('already playing');
       return;
     }
-    if (!this.waitingUser) {
-      console.log('waiting', reqUser.data.username);
-      this.waitingUser = reqUser;
-      return;
-    }
-    if (this.waitingUser.data.id === reqUser.data.id) {
-      return;
-    }
 
-    const onShutdown: OnShutdownCallback = async (
-      player1: PlayerResult,
-      player2: PlayerResult,
-      resultEvaluator: ResultEvaluator,
-    ) => {
-      console.log('onshutdown');
-      this.userGameMap.delete(player1.userId);
-      this.userGameMap.delete(player2.userId);
-      await this.gameService
-        .saveGameResult(player1, player2, resultEvaluator)
-        .catch((e) => console.log(e));
+    const onMatched: OnMatched = (player1: PlayerData, player2: PlayerData) => {
+      player1.client.emit('matched', player2.data.username);
+      player2.client.emit('matched', player1.data.username);
     };
 
-    const game = new GameLogic(this.waitingUser, reqUser, onShutdown);
-    this.userGameMap.set(this.waitingUser.data.id, game);
-    this.userGameMap.set(reqUser.data.id, game);
-
-    reqUser.client.emit('matched', this.waitingUser.data.username);
-    this.waitingUser.client.emit('matched', reqUser.data.username);
-    this.waitingUser = undefined;
+    this.matchingTable.matchmake(
+      { client: client, data: user },
+      this.CreateGameFactory(),
+      onMatched,
+    );
   }
 
   @SubscribeMessage('clear match')
   clearMatch(client: Socket, userId: string) {
     console.log('clearMatch');
-    if (this.waitingUser?.data.id === userId) {
-      console.log('to undefined waiter');
-      this.waitingUser = undefined;
-      return;
-    }
+    this.matchingTable.clearWaitingUser(userId);
   }
 
   @SubscribeMessage('start game')
@@ -111,7 +90,7 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    this.userGameMap.get(userid)?.ReadyGame(client);
+    this.matchingTable.getGame(userid)?.ReadyGame(client);
   }
 
   @SubscribeMessage('key press')
@@ -121,7 +100,7 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    this.userGameMap.get(userid)?.HandleKeyPress(client, key);
+    this.matchingTable.getGame(userid)?.HandleKeyPress(client, key);
   }
 
   @SubscribeMessage('key release')
@@ -131,6 +110,29 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    this.userGameMap.get(userid)?.HandleKeyRelease(client, key);
+    this.matchingTable.getGame(userid)?.HandleKeyRelease(client, key);
+  }
+
+  private CreateGameFactory(): GameFactory {
+    const gameFactory: GameFactory = (
+      player1: PlayerData,
+      player2: PlayerData,
+    ): GameLogic => {
+      const onShutdown: OnShutdownCallback = async (
+        p1Result: PlayerResult,
+        p2Result: PlayerResult,
+        resultEvaluator: ResultEvaluator,
+      ) => {
+        console.log('onshutdown');
+        this.matchingTable.deleteGame(p1Result.userId, p2Result.userId);
+        await this.gameService
+          .saveGameResult(p1Result, p2Result, resultEvaluator)
+          .catch((e) => console.log(e));
+      };
+
+      return new GameLogic(player1, player2, onShutdown);
+    };
+
+    return gameFactory;
   }
 }
