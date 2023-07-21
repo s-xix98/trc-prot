@@ -101,7 +101,9 @@ class UserInteractionManager:
         page.get_by_role("button", name="Friend Req").click()
         time.sleep(0.1)
         page.keyboard.press("Escape")
+        page.keyboard.press("Escape")
         time.sleep(0.1)
+        page.keyboard.press("Escape")
         page.keyboard.press("Escape")
         # ちゃんと home に 戻ったか？
         page.get_by_text(f"{self.user.name} >").click()
@@ -117,7 +119,9 @@ class UserInteractionManager:
         page.get_by_role("button", name="Block Req").click()
         time.sleep(0.1)
         page.keyboard.press("Escape")
+        page.keyboard.press("Escape")
         time.sleep(0.1)
+        page.keyboard.press("Escape")
         page.keyboard.press("Escape")
         # ちゃんと home に 戻ったか？
         page.get_by_text(f"{self.user.name} >").click()
