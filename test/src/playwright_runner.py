@@ -42,8 +42,10 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
                 logger.info(f"--- END TEST : {func.__name__}, user : {user.name} ---")
                 # local storage が残ってしまうので、test のたびに logout するように
-                force_logout("force-logout", user, page)
                 logger.info(f"storage_state : {context.storage_state()}")
+                if context.storage_state() != {"cookies": [], "origins": []}:
+                    force_logout("force-logout", user, page)
+                    logger.info(f"force_logout - storage_state : {context.storage_state()}")
 
         logger.info(f"--- END ALL TEST ---")
 
