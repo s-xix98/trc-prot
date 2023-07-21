@@ -44,7 +44,7 @@ export const MatchHistory = () => {
 
   return (
     <>
-      <h3>MatchHistoryDto</h3>
+      <h3>MatchHistory</h3>
       <br />
       <UserProfileModal userInfo={selectingUser} {...modal} />
       {matchHistories.map((result, idx) => (
