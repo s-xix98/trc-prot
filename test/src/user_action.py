@@ -103,7 +103,8 @@ class UserInteractionManager:
         page.keyboard.press("Escape")
         time.sleep(0.1)
         page.keyboard.press("Escape")
-        time.sleep(0.1)
+        # ちゃんと home に 戻ったか？
+        page.get_by_text(f"{self.user.name} >").click()
 
     def send_block_req(self, target_friend_name: str) -> None:
         page = self.page
@@ -118,7 +119,8 @@ class UserInteractionManager:
         page.keyboard.press("Escape")
         time.sleep(0.1)
         page.keyboard.press("Escape")
-        time.sleep(0.1)
+        # ちゃんと home に 戻ったか？
+        page.get_by_text(f"{self.user.name} >").click()
 
     def create_chat_room(self, room_name: str) -> None:
         page = self.page
