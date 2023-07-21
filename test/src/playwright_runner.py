@@ -1,7 +1,9 @@
 import time
 from typing import Callable
 
-from playwright.sync_api import Page, Playwright, expect, sync_playwright
+from playwright.sync_api import Page, Playwright
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+from playwright.sync_api import expect, sync_playwright
 
 from src.constants import HEADLESS, MAX_WORKERS, TEST_USER_COUNT
 from src.logger import logger
@@ -35,17 +37,23 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
                 try:
                     func(func.__name__, page, user)
                 except PlaywrightTimeoutError as e:
-                    logger.error(f"PlaywrightTimeoutError :  {func.__name__}, user : {user.name}, {str(e)}")
+                    logger.error(
+                        f"PlaywrightTimeoutError :  {func.__name__}, user : {user.name}, {str(e)}"
+                    )
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
                 except Exception as e:
-                    logger.error(f"Exception : {func.__name__}, user : {user.name}, {str(e)}")
+                    logger.error(
+                        f"Exception : {func.__name__}, user : {user.name}, {str(e)}"
+                    )
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
                 logger.info(f"--- END TEST : {func.__name__}, user : {user.name} ---")
                 # local storage が残ってしまうので、test のたびに logout するように
                 logger.info(f"storage_state : {context.storage_state()}")
                 if context.storage_state() != {"cookies": [], "origins": []}:
                     force_logout("force-logout", user, page)
-                    logger.info(f"force_logout - storage_state : {context.storage_state()}")
+                    logger.info(
+                        f"force_logout - storage_state : {context.storage_state()}"
+                    )
 
         logger.info(f"--- END ALL TEST ---")
 
