@@ -36,15 +36,18 @@ export class UserGateway {
     if (!userId) {
       return;
     }
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return;
+      }
 
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
-      return;
+      await this.sendBlockUsers(userId);
+      await this.sendFriends(userId);
+      await this.sendFriendRequests(userId);
+    } catch (e) {
+      console.log(e);
     }
-
-    await this.sendBlockUsers(userId);
-    await this.sendFriends(userId);
-    await this.sendFriendRequests(userId);
   }
 
   handleDisconnect(client: Socket) {
