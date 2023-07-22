@@ -187,9 +187,11 @@ export class ChatGateway {
     });
 
     if (count > 0) {
-      // TODO targetを消す
-      // client.emit('deleteRoom', targetState);
-      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+      const targetSock = this.server.getSocket(dto.targetId);
+      if (targetSock) {
+        this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+        await this.sendJoinedRooms(dto.targetId);
+      }
     }
   }
 
@@ -266,9 +268,11 @@ export class ChatGateway {
     });
 
     if (count > 0) {
-      // TODO targetを消す
-      // client.emit('deleteRoom', targetState);
-      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+      const targetSock = this.server.getSocket(dto.targetId);
+      if (targetSock) {
+        this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+        await this.sendJoinedRooms(dto.targetId);
+      }
     }
   }
 
