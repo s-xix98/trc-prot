@@ -14,7 +14,7 @@ import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
 import { useUnblockRequestSender } from '../api/unblockRequestSender';
-import { UserProfileDtoSchema, } from '../types/UpdateProfileDto';
+import { UserProfileDtoSchema } from '../types/UpdateProfileDto';
 import { useUpdateProfile } from '../api/updateProfile';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
@@ -61,6 +61,10 @@ const MyProfileUpdateForm = () => {
     updateProfile(username, base64Image);
   };
 
+  const resetForm = () => {
+    methods.reset({ username: null, base64Image: null });
+  };
+
   return (
     <>
       <p>Profile Update</p>
@@ -82,6 +86,9 @@ const MyProfileUpdateForm = () => {
           <br />
           <br />
           <button type="submit">UpdateProfile</button>
+          <button type="button" onClick={resetForm}>
+            Reset
+          </button>
         </form>
       </FormProvider>
     </>
