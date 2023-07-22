@@ -153,6 +153,12 @@ export class ChatGateway {
   async banRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banRoomMember', dto);
 
+    const reqUserExists = await this.userService.userExists(dto.userId);
+    const targetUserExists = await this.userService.userExists(dto.targetId);
+    if (!reqUserExists || !targetUserExists) {
+      throw new Error('User is not found');
+    }
+
     const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
@@ -183,6 +189,12 @@ export class ChatGateway {
   async muteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('muteRoomMember', dto);
 
+    const reqUserExists = await this.userService.userExists(dto.userId);
+    const targetUserExists = await this.userService.userExists(dto.targetId);
+    if (!reqUserExists || !targetUserExists) {
+      throw new Error('User is not found');
+    }
+
     const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
@@ -199,6 +211,12 @@ export class ChatGateway {
   @SubscribeMessage('kickRoomMember')
   async kickRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('kickRoomMember', dto);
+
+    const reqUserExists = await this.userService.userExists(dto.userId);
+    const targetUserExists = await this.userService.userExists(dto.targetId);
+    if (!reqUserExists || !targetUserExists) {
+      throw new Error('User is not found');
+    }
 
     const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
     if (!isQualifiedUser) {
