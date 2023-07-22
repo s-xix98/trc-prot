@@ -20,6 +20,7 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=HEADLESS)
         context = browser.new_context()
+        context.set_default_timeout(5000)
         page = context.new_page()
 
         # console
