@@ -302,8 +302,8 @@ export class ChatGateway {
       throw new Error();
     }
 
-    const room = await this.chatService.findChannelById(dto.chatRoomId);
-    if (!room) {
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
       throw new Error('Room is not found');
     }
 
