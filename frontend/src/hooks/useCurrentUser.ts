@@ -33,6 +33,13 @@ export const useCurrentUserStateUpdates = () => {
     setCurrentUserAtom((prev) => (prev ? { ...prev, blockUsers: data } : prev));
   });
 
+  useSessionSocket('receiveInviteChatRoom', (data) => {
+    console.log('receive invite sitayo', data);
+    setCurrentUserAtom((prev) =>
+      prev ? { ...prev, receiveInviteChatRooms: data } : prev,
+    );
+  });
+
   useSessionSocket('profile', (data) => {
     console.log('profile', data);
     setCurrentUserAtom((prev) => (prev ? { ...prev, userInfo: data } : prev));
@@ -50,6 +57,7 @@ export const useCurrentUser = () => {
     friendRequests: currentUser?.friendRequests ?? [],
     blockUsers: currentUser?.blockUsers ?? [],
     joinedRooms: currentUser?.joinedRooms ?? [],
+    receiveInviteChatRooms: currentUser?.receiveInviteChatRooms ?? [],
   };
 };
 
