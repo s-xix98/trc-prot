@@ -140,13 +140,7 @@ export class ChatGateway {
 
     const msg = await this.chatService.createMessage(dto);
 
-    const roomMsgs = await this.chatService.getChannelHistoryById(
-      msg.chatRoomId,
-    );
-
-    this.server
-      .to(roomType.Chat, msg.chatRoomId)
-      .emit('receiveMessage', roomMsgs);
+    this.broadcastRoomMessageHistory(msg.chatRoomId);
   }
 
   @SubscribeMessage('banRoomMember')
