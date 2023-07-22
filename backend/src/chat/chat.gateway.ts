@@ -159,6 +159,11 @@ export class ChatGateway {
       throw new Error('User is not found');
     }
 
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
     const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
@@ -195,6 +200,11 @@ export class ChatGateway {
       throw new Error('User is not found');
     }
 
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
     const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
@@ -216,6 +226,11 @@ export class ChatGateway {
     const targetUserExists = await this.userService.userExists(dto.targetId);
     if (!reqUserExists || !targetUserExists) {
       throw new Error('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
     }
 
     const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
