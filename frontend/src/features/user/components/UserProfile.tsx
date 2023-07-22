@@ -96,10 +96,13 @@ const MyProfileUpdateForm = () => {
   );
 };
 
+// TODO : 名前変更した時に modal の表示名変わるように, あんま良くないので、ちゃんとするかも
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
+  const { currentUserInfo } = useCurrentUser();
+
   return (
     <div>
-      <ShowIcon userInfo={userInfo} />
+      <ShowIcon userInfo={currentUserInfo ? currentUserInfo : userInfo} />
       <br />
       <p>this is me</p>
       <br />
