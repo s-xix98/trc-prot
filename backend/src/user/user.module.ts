@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 import { WsocketModule } from '../wsocket/wsocket.module';
@@ -9,8 +9,9 @@ import { UserService } from './user.service';
 import { UserGateway } from './user.gateway';
 
 @Module({
-  imports: [PrismaModule, WsocketModule, ChatModule],
+  imports: [PrismaModule, WsocketModule, forwardRef(() => ChatModule)],
   controllers: [UserController],
   providers: [UserService, UserGateway],
+  exports: [UserService],
 })
 export class UserModule {}

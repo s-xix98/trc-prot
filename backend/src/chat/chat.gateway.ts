@@ -16,6 +16,7 @@ import {
   RoomMemberRestrictionDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
+import { UserService } from '../user/user.service';
 
 @WebSocketGateway({
   cors: {
@@ -28,6 +29,7 @@ export class ChatGateway {
     private prisma: PrismaService,
     private server: WsocketGateway,
     private chatService: ChatService,
+    private userService: UserService,
   ) {}
 
   async handleConnection(client: Socket) {
