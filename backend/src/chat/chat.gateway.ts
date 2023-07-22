@@ -75,6 +75,7 @@ export class ChatGateway {
     }
 
     const createdRoom = await this.chatService.createChannel(dto);
+    await this.chatService.upsertRoomMember(createdRoom.id, dto.userId, 'OWNER');
     const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);

@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ChatRoom } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UserRole } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
@@ -98,15 +99,26 @@ export class ChatService {
       },
     });
 
-    await this.prismaService.roomMember.create({
-      data: {
-        userId: dto.userId,
-        chatRoomId: createdRoom.id,
-        role: 'OWNER',
+    return createdRoom;
+  }
+
+  async upsertRoomMember(chatRoomId: string, userId: string, role: UserRole) {
+    const roomMember = await this.prismaService.roomMember.upsert({
+      where: {
+        userId_chatRoomId: {
+          userId: userId,
+          chatRoomId: chatRoomId,
+        },
+      },
+      update: {},
+      create: {
+        userId: userId,
+        chatRoomId: chatRoomId,
+        role: role,
       },
     });
 
-    return createdRoom;
+    return roomMember;
   }
 
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
