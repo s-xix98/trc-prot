@@ -5,8 +5,9 @@ import { UseFilters } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { ChatGateway } from '../chat/chat.gateway';
 
-import { searchUserDto } from './dto/user.dto';
+import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
 
@@ -20,6 +21,7 @@ export class UserGateway {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
+    private chatGateway: ChatGateway,
     private server: WsocketGateway,
   ) {}
 
@@ -36,15 +38,18 @@ export class UserGateway {
     if (!userId) {
       return;
     }
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return;
+      }
 
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
-      return;
+      await this.sendBlockUsers(userId);
+      await this.sendFriends(userId);
+      await this.sendFriendRequests(userId);
+    } catch (e) {
+      console.log(e);
     }
-
-    await this.sendBlockUsers(userId);
-    await this.sendFriends(userId);
-    await this.sendFriendRequests(userId);
   }
 
   handleDisconnect(client: Socket) {
@@ -211,6 +216,28 @@ export class UserGateway {
     }
   }
 
+  @SubscribeMessage('updateProfile')
+  async updateProfile(client: Socket, dto: UserProfileDto) {
+    console.log('updateProfile', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('invalid token');
+    }
+
+    await this.userService.updateUser(userId, dto);
+    const user = await this.userService.findOneById(userId);
+
+    client.emit('profile', user);
+
+    await Promise.all([
+      this.broadcastFriends(userId),
+      this.broadcastBlockers(userId),
+      this.broadcastSentRequests(userId),
+      this.chatGateway.broadcastMessagesToJoinedRooms(userId),
+    ]);
+  }
+
   private async sendFriendRequests(userId: string) {
     const sock = this.server.getSocket(userId);
     if (sock === undefined) {
@@ -239,5 +266,32 @@ export class UserGateway {
 
     const blockUsers = await this.userService.getBlockUsers(userId);
     sock.emit('blockUsers', blockUsers);
+  }
+
+  private async broadcastSentRequests(userId: string) {
+    const requests = await this.userService.getSentFriendRequests(userId);
+    await Promise.all(
+      requests.map(async (req) => {
+        this.sendFriendRequests(req.destUserId);
+      }),
+    );
+  }
+
+  private async broadcastBlockers(userId: string) {
+    const users = await this.userService.getUsersWhoBlockedUser(userId);
+    await Promise.all(
+      users.map(async (user) => {
+        this.sendBlockUsers(user.id);
+      }),
+    );
+  }
+
+  private async broadcastFriends(userId: string) {
+    const friends = await this.userService.getFriends(userId);
+    await Promise.all(
+      friends.map(async (user) => {
+        this.sendFriends(user.id);
+      }),
+    );
   }
 }

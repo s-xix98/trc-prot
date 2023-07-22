@@ -10,7 +10,9 @@ import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { MessageDto } from './dto/message.dto';
 import {
   CreateChannelDto,
+  InviteChatRoomDto,
   JoinChannelDto,
+  LeaveRoomDto,
   RoomMemberRestrictionDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
@@ -42,18 +44,21 @@ export class ChatGateway {
     if (!userId) {
       return;
     }
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return;
+      }
 
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
-      return;
+      const joinedRooms = await this.chatService.getJoinedRooms(userId);
+      client.emit('joinedRooms', joinedRooms);
+
+      joinedRooms.forEach((room) => {
+        this.server.JoinRoom(client, roomType.Chat, room.id);
+      });
+    } catch (e) {
+      console.log(e);
     }
-
-    const joinedRooms = await this.chatService.getJoinedRooms(userId);
-    client.emit('joinedRooms', joinedRooms);
-
-    joinedRooms.forEach((room) => {
-      this.server.JoinRoom(client, roomType.Chat, room.id);
-    });
   }
 
   handleDisconnect(client: Socket) {
@@ -219,5 +224,84 @@ export class ChatGateway {
       // client.emit('deleteRoom', targetState);
       // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
     }
+  }
+
+  @SubscribeMessage('inviteChatRoom')
+  async inviteRoom(client: Socket, dto: InviteChatRoomDto) {
+    console.log('inviteChatRoom', dto);
+
+    const requestUserId = this.server.getUserId(client);
+    if (!requestUserId) {
+      throw new Error();
+    }
+
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
+      throw new Error('Room is not found');
+    }
+
+    const requestUser = await this.chatService.findRoomMember(
+      room.id,
+      requestUserId,
+    );
+    if (!requestUser) {
+      throw new Error('You are not member of this room');
+    }
+
+    await this.chatService.upsertInvitation(
+      dto.targetId,
+      requestUserId,
+      room.id,
+    );
+
+    await this.sendInvites(dto.targetId);
+  }
+
+  async sendInvites(userId: string) {
+    const socket = this.server.getSocket(userId);
+    if (socket) {
+      const invites = await this.chatService.getInvites(userId);
+      socket.emit('receiveInviteChatRoom', invites);
+    }
+  }
+
+  @SubscribeMessage('leaveChatRoom')
+  async leaveRoom(client: Socket, dto: LeaveRoomDto) {
+    console.log('leaveChatRoom', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error();
+    }
+
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
+      throw new Error('Room is not found');
+    }
+
+    await this.prisma.roomMember.delete({
+      where: {
+        userId_chatRoomId: {
+          userId,
+          chatRoomId: dto.chatRoomId,
+        },
+      },
+    });
+
+    this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    const joinedRooms = await this.chatService.getJoinedRooms(userId);
+    client.emit('joinedRooms', joinedRooms);
+  }
+
+  async broadcastMessagesToJoinedRooms(userId: string) {
+    const rooms = await this.chatService.getJoinedRooms(userId);
+    await Promise.all(
+      rooms.map((room) => this.broadcastRoomMessageHistory(room.id)),
+    );
+  }
+
+  private async broadcastRoomMessageHistory(roomId: string) {
+    const msgs = await this.chatService.getChannelHistoryById(roomId);
+    this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
   }
 }

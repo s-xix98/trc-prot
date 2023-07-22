@@ -12,26 +12,28 @@ datasource db {
 
 // userの情報
 model User {
-  id             String          @id @default(cuid())
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  username       String          @unique @default(uuid())
-  email          String          @unique
+  id             String           @id @default(cuid())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  username       String           @unique @default(uuid())
+  email          String           @unique
   hashedPassword String?
-  base64Image    Bytes?
-  isTwoFaEnabled Boolean         @default(false)
+  base64Image    String?
+  isTwoFaEnabled Boolean          @default(false)
   twoFaSecret    String?
   messages       Message[]
   roomMembers    RoomMember[]
+  invitee        chatInvitation[] @relation("invitee")
+  inviter        chatInvitation[] @relation("inviter")
   userChatState  UserChatState[]
   userProfile    UserProfile?
-  friendship1    Friendship[]    @relation("src")
-  friendship2    Friendship[]    @relation("dest")
+  friendship1    Friendship[]     @relation("src")
+  friendship2    Friendship[]     @relation("dest")
   auth           Auth?
   Rating         Rating[]
-  MatchHistory1  MatchHistory[]  @relation("player1")
-  MatchHistory2  MatchHistory[]  @relation("player2")
-  MatchHistory3  MatchHistory[]  @relation("winner")
+  MatchHistory1  MatchHistory[]   @relation("player1")
+  MatchHistory2  MatchHistory[]   @relation("player2")
+  MatchHistory3  MatchHistory[]   @relation("winner")
 }
 
 model Auth {
@@ -56,18 +58,32 @@ model UserProfile {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model chatInvitation {
+  createdAt     DateTime @default(now())
+  inviterUserId String
+  inviteeUserId String
+  chatRoomId    String
+
+  invitee  User     @relation("invitee", fields: [inviteeUserId], references: [id])
+  inviter  User     @relation("inviter", fields: [inviterUserId], references: [id])
+  chatRoom ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+
+  @@id([inviteeUserId, inviterUserId, chatRoomId])
+}
+
 // userが所属しているchatRoomの集合を取得
 model ChatRoom {
-  id             String          @id @default(cuid())
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  roomName       String          @unique
+  id             String           @id @default(cuid())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  roomName       String           @unique
   hashedPassword String?
-  isPrivate      Boolean         @default(false)
-  isDM           Boolean         @default(false)
+  isPrivate      Boolean          @default(false)
+  isDM           Boolean          @default(false)
   messages       Message[]
   roomMembers    RoomMember[]
   userChatState  UserChatState[]
+  chatInvitation chatInvitation[]
 }
 
 // チャットルームの管理者からbanされた時にこのテーブルに追加、時間が経ったら削除
