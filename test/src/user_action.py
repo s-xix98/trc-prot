@@ -31,6 +31,18 @@ class UserInteractionManager:
         page = self.page
         page.goto(TOP_PAGE_URL)
 
+    def escape_back_to_home(self) -> None:
+        page = self.page
+
+        for _ in range(10):
+            try:
+                page.keyboard.press("Escape")
+                page.keyboard.press("Escape")
+                page.keyboard.press("Escape")
+                page.get_by_text(f"{self.user.name} >").click(timeout=300)
+            except PlaywrightTimeoutError:
+                pass
+
     def signup(
         self,
         username: Union[str, None] = None,
