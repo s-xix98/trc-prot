@@ -66,8 +66,8 @@ class UserInteractionManager:
         page.get_by_role("button", name="SignUp").click()
         if take_screenshot:
             self.screenshot("signup-after")
-        # ちゃんと home に 戻ったか？
-        page.get_by_text(f"{self.user.name} >").click()
+        # signup して home に行ったか確認
+        self.escape_back_to_home()
 
     def login(
         self,
@@ -114,13 +114,7 @@ class UserInteractionManager:
         page.get_by_text(target_friend_name, exact=True).click()
         page.get_by_role("button", name="Friend Req").click()
         time.sleep(0.1)
-        page.keyboard.press("Escape")
-        page.keyboard.press("Escape")
-        time.sleep(0.1)
-        page.keyboard.press("Escape")
-        page.keyboard.press("Escape")
-        # ちゃんと home に 戻ったか？
-        page.get_by_text(f"{self.user.name} >").click()
+        self.escape_back_to_home()
 
     def send_block_req(self, target_friend_name: str) -> None:
         page = self.page
@@ -132,13 +126,7 @@ class UserInteractionManager:
         page.get_by_text(target_friend_name, exact=True).click()
         page.get_by_role("button", name="Block Req").click()
         time.sleep(0.1)
-        page.keyboard.press("Escape")
-        page.keyboard.press("Escape")
-        time.sleep(0.1)
-        page.keyboard.press("Escape")
-        page.keyboard.press("Escape")
-        # ちゃんと home に 戻ったか？
-        page.get_by_text(f"{self.user.name} >").click()
+        self.escape_back_to_home()
 
     def create_chat_room(self, room_name: str) -> None:
         page = self.page
