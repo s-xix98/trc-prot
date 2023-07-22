@@ -32,6 +32,11 @@ export const useCurrentUserStateUpdates = () => {
     console.log('blockUsers', data);
     setCurrentUserAtom((prev) => (prev ? { ...prev, blockUsers: data } : prev));
   });
+
+  useSessionSocket('profile', (data) => {
+    console.log('profile', data);
+    setCurrentUserAtom((prev) => (prev ? { ...prev, userInfo: data } : prev));
+  });
 };
 
 export const useCurrentUser = () => {

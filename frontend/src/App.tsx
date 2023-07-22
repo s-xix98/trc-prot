@@ -59,11 +59,24 @@ const Launcher = ({
 const Test = () => {
   const { joinedRooms, friends } = useCurrentUser();
   const socket = useSessionSocketEmitter();
+  const [n, setn] = useState(0);
+
   const inviteButton = () => {
     socket.emit('inviteChatRoom', {
       chatRoomId: joinedRooms[0].id,
       targetId: friends[0].id,
     });
+  };
+
+  const leaveButton = () => {
+    socket.emit('leaveChatRoom', {
+      chatRoomId: joinedRooms[0].id,
+    });
+  };
+
+  const updateProfileButton = () => {
+    socket.emit('updateProfile', { username: `test1${n}` });
+    setn(n + 1);
   };
 
   useSessionSocket('receiveInviteChatRoom', (data) => {
@@ -75,6 +88,8 @@ const Test = () => {
     <>
       test
       <button onClick={inviteButton}> invite </button>
+      <button onClick={leaveButton}> leave </button>
+      <button onClick={updateProfileButton}> updateProfile </button>
     </>
   );
 };

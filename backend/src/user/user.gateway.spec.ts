@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TestModule } from '../test/test.module';
 import { AuthModule } from '../auth/auth.module';
 import { WsocketModule } from '../wsocket/wsocket.module';
+import { ChatModule } from '../chat/chat.module';
 
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
@@ -37,7 +38,7 @@ describe('UserGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, AuthModule, WsocketModule],
+      imports: [TestModule, AuthModule, WsocketModule, ChatModule],
       providers: [UserGateway, PrismaService, TestService, UserService],
     }).compile();
 
