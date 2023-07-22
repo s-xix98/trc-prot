@@ -34,12 +34,12 @@ class UserInteractionManager:
     def escape_back_to_home(self) -> None:
         page = self.page
 
-        for _ in range(10):
+        for _ in range(5):
             try:
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
-                page.get_by_text(f"{self.user.name} >").click(timeout=300)
+                page.get_by_text(f"{self.user.name} >").click(timeout=100)
                 break
             except PlaywrightTimeoutError:
                 pass
