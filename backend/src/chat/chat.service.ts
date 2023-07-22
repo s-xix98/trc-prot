@@ -342,4 +342,10 @@ export class ChatService {
       };
     });
   }
+
+  async roomExists(roomId: string) {
+    const room = await this.findChannelById(roomId);
+    return room !== null;
+  }
+
 }
