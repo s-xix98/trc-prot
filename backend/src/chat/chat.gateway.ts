@@ -266,13 +266,13 @@ export class ChatGateway {
       throw new Error();
     }
 
-    const room = await this.chatService.findChannelById(dto.chatRoomId);
-    if (!room) {
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
       throw new Error('Room is not found');
     }
 
     const requestUser = await this.chatService.findRoomMember(
-      room.id,
+      dto.chatRoomId,
       inviterId,
     );
     if (!requestUser) {
@@ -282,7 +282,7 @@ export class ChatGateway {
     await this.chatService.upsertInvitation(
       dto.targetId,
       inviterId,
-      room.id,
+      dto.chatRoomId,
     );
 
     await this.sendInvites(dto.targetId);
