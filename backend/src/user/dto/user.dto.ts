@@ -3,6 +3,6 @@ export class searchUserDto {
 }
 
 export class UserProfileDto {
-  base64Image?: Buffer;
+  base64Image?: string;
   username?: string;
 }

@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 
 import { currentUserAtom } from '@/stores/jotai';
 import { UserInfo } from '@/features/user/types/UserDto';
+import { chatChannelDto } from '@/features/chat/types/chatChannelDto';
 
 import { useSessionSocket } from './useSocket';
 
@@ -33,6 +34,13 @@ export const useCurrentUserStateUpdates = () => {
     setCurrentUserAtom((prev) => (prev ? { ...prev, blockUsers: data } : prev));
   });
 
+  useSessionSocket('receiveInviteChatRoom', (data) => {
+    console.log('receive invite sitayo', data);
+    setCurrentUserAtom((prev) =>
+      prev ? { ...prev, receiveInviteChatRooms: data } : prev,
+    );
+  });
+
   useSessionSocket('profile', (data) => {
     console.log('profile', data);
     setCurrentUserAtom((prev) => (prev ? { ...prev, userInfo: data } : prev));
@@ -50,6 +58,7 @@ export const useCurrentUser = () => {
     friendRequests: currentUser?.friendRequests ?? [],
     blockUsers: currentUser?.blockUsers ?? [],
     joinedRooms: currentUser?.joinedRooms ?? [],
+    receiveInviteChatRooms: currentUser?.receiveInviteChatRooms ?? [],
   };
 };
 
@@ -78,4 +87,14 @@ export const useFriendStatus = () => {
   };
 
   return { isFriend, isFriendRequest, isBlockUser };
+};
+
+export const useChatRoomStatus = () => {
+  const { joinedRooms } = useCurrentUser();
+
+  const isJoinedRoom = (room: chatChannelDto) => {
+    return joinedRooms.some((r) => r.id === room.id);
+  };
+
+  return { isJoinedRoom };
 };
