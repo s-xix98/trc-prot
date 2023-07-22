@@ -179,19 +179,17 @@ export class ChatGateway {
 
     await this.chatService.upsertRoomMemberState(dto, 'BANNED');
 
-    const { count } = await this.prisma.roomMember.deleteMany({
+    await this.prisma.roomMember.deleteMany({
       where: {
         userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
 
-    if (count > 0) {
-      const targetSock = this.server.getSocket(dto.targetId);
-      if (targetSock) {
-        this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
-        await this.sendJoinedRooms(dto.targetId);
-      }
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+      await this.sendJoinedRooms(dto.targetId);
     }
   }
 
@@ -260,19 +258,17 @@ export class ChatGateway {
       throw new Error('you can not restrict this user');
     }
 
-    const { count } = await this.prisma.roomMember.deleteMany({
+    await this.prisma.roomMember.deleteMany({
       where: {
         userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
 
-    if (count > 0) {
-      const targetSock = this.server.getSocket(dto.targetId);
-      if (targetSock) {
-        this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
-        await this.sendJoinedRooms(dto.targetId);
-      }
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+      await this.sendJoinedRooms(dto.targetId);
     }
   }
 
