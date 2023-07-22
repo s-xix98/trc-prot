@@ -350,4 +350,12 @@ export class ChatGateway {
     const msgs = await this.chatService.getChannelHistoryById(roomId);
     this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
   }
+
+  private async sendJoinedRooms(userId: string) {
+    const socket = this.server.getSocket(userId);
+    if (socket) {
+      const joinedRooms = await this.chatService.getJoinedRooms(userId);
+      socket.emit('joinedRooms', joinedRooms);
+    }
+  }
 }
