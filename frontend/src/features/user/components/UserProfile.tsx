@@ -33,9 +33,10 @@ const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
 const FormUserProfileDtoSchema = z.object({
   username: UserProfileDtoSchema.shape.username.nullable().optional(),
   base64Image: z
-    .instanceof(FileList)
+    .unknown()
     .optional()
-    .transform((fileList) => fileList?.[0])
+    .transform((files) => (files instanceof FileList ? files : undefined))
+    .transform((files) => files?.[0])
     .transform((file) => (file ? convertToBase64(file) : file))
     .transform((data) => z.string().parse(data))
     .nullable(),
