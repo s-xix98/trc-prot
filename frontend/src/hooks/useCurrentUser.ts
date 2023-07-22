@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 
 import { currentUserAtom } from '@/stores/jotai';
 import { UserInfo } from '@/features/user/types/UserDto';
+import { chatChannelDto } from '@/features/chat/types/chatChannelDto';
 
 import { useSessionSocket } from './useSocket';
 
@@ -86,4 +87,14 @@ export const useFriendStatus = () => {
   };
 
   return { isFriend, isFriendRequest, isBlockUser };
+};
+
+export const useChatRoomStatus = () => {
+  const { joinedRooms } = useCurrentUser();
+
+  const isJoinedRoom = (room: chatChannelDto) => {
+    return joinedRooms.some((r) => r.id === room.id);
+  };
+
+  return { isJoinedRoom };
 };

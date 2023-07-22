@@ -4,6 +4,8 @@ import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useModal } from '@/hooks/useModal';
 
+import { ChannelListWithModal } from './ChannelInfo';
+
 export const ReceiveInviteChannel = () => {
   const { receiveInviteChatRooms } = useCurrentUser();
 
@@ -11,9 +13,9 @@ export const ReceiveInviteChannel = () => {
     <Container flexDirection="column">
       <h2>ReceiveInviteChannels</h2>
       <ContainerItem overflowY="scroll">
-        {receiveInviteChatRooms.map((receiveInviteRoom, idx) => (
-          <p key={idx}>{receiveInviteRoom.chatRoom.roomName}</p>
-        ))}
+        <ChannelListWithModal
+          channelList={receiveInviteChatRooms.map((r) => r.chatRoom)}
+        />
       </ContainerItem>
     </Container>
   );
