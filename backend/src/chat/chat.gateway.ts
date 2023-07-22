@@ -95,6 +95,11 @@ export class ChatGateway {
       throw new Error('User is not found');
     }
 
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
     const userState = await this.chatService.findRoomMemberState(
       dto.chatRoomId,
       dto.userId,
