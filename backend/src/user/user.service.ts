@@ -238,4 +238,14 @@ export class UserService {
 
     return users.map((u) => u.srcUser);
   }
+
+  async userExists(userId: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    return user !== null;
+  }
 }
