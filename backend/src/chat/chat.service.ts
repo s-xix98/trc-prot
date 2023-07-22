@@ -357,4 +357,12 @@ export class ChatService {
     return true;
   }
 
+  async isUserRestrictable(roomId:string, userId:string) {
+    const target = await this.findRoomMember(roomId, userId);
+
+    if (target === null || target.role === 'OWNER') {
+      return false;
+    }
+    return true;
+  }
 }
