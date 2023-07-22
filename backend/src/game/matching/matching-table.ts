@@ -6,8 +6,10 @@ import { GameFactory, OnMatched } from './types';
 // TODO ほんとはGameLogicじゃなくて任意のゲームインタフェースをマップ出来るようにしたいが、GameLogicを色々疎結合にするコストが高いので一旦放置。
 // GameLogciと密結合なのでテスタビリティが終ってるけど、テストを書かないことで抵抗してる
 
+type UserId = string;
+
 export class MatchingTable {
-  private userGameMap = new Map<string, GameLogic>();
+  private userGameMap = new Map<UserId, GameLogic>();
   private waitingUser: PlayerData | undefined = undefined;
 
   matchmake(
@@ -32,15 +34,15 @@ export class MatchingTable {
     this.clearWaitingUser(this.waitingUser.data.id);
   }
 
-  getGame(userId: string): GameLogic | undefined {
+  getGame(userId: UserId): GameLogic | undefined {
     return this.userGameMap.get(userId);
   }
 
-  isPlaying(userId: string): boolean {
+  isPlaying(userId: UserId): boolean {
     return this.userGameMap.has(userId);
   }
 
-  deleteGame(userId1: string, userId2: string): boolean {
+  deleteGame(userId1: UserId, userId2: UserId): boolean {
     const g1 = this.getGame(userId1);
     const g2 = this.getGame(userId2);
     if (!g1 || !g2 || g1 !== g2) {
@@ -51,7 +53,7 @@ export class MatchingTable {
     return isU1deleted && isU2deleted;
   }
 
-  clearWaitingUser(userId: string) {
+  clearWaitingUser(userId: UserId) {
     if (this.waitingUser?.data.id !== userId) {
       return;
     }
