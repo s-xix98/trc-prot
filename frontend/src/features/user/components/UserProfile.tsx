@@ -2,11 +2,13 @@ import { Avatar, Stack } from '@mui/material';
 import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { useCurrentUser, useFriendStatus } from '@/hooks/useCurrentUser';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 import { FormInput } from '@/components/Elements/Input/FormInput';
+import { convertToBase64 } from '@/utils/base64';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -28,6 +30,20 @@ const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
     </Stack>
   );
 };
+
+// Form 用の UserProfile Schema
+// react hook form で undef だと、未入力とエラーででしまうので null を 許容
+const FormUserProfileDtoSchema = z.object({
+  username: UserProfileDtoSchema.shape.username.nullable().optional(),
+  base64Image: z
+    .instanceof(FileList)
+    .optional()
+    .transform((fileList) => fileList?.[0])
+    .transform((file) => (file ? convertToBase64(file) : file))
+    .transform((data) => z.string().parse(data))
+    .nullable(),
+});
+type FormUserProfileDto = z.infer<typeof FormUserProfileDtoSchema>;
 
 const MyProfileUpdateForm = () => {
   const { updateProfile } = useUpdateProfile();
