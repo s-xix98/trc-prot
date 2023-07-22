@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { roomType } from '../wsocket/utils';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
+import { UserService } from '../user/user.service';
 
 import { MessageDto } from './dto/message.dto';
 import {
@@ -16,7 +17,6 @@ import {
   RoomMemberRestrictionDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
-import { UserService } from '../user/user.service';
 
 @WebSocketGateway({
   cors: {
@@ -75,7 +75,11 @@ export class ChatGateway {
     }
 
     const createdRoom = await this.chatService.createChannel(dto);
-    await this.chatService.upsertRoomMember(createdRoom.id, dto.userId, 'OWNER');
+    await this.chatService.upsertRoomMember(
+      createdRoom.id,
+      dto.userId,
+      'OWNER',
+    );
     const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);

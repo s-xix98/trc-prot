@@ -11,6 +11,7 @@ import { TestService } from '../test/test.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { AuthModule } from '../auth/auth.module';
+import { UserModule } from '../user/user.module';
 
 import {
   CreateChannelDto,
@@ -20,7 +21,6 @@ import {
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
-import { UserModule } from '../user/user.module';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
