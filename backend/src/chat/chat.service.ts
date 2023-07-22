@@ -136,20 +136,7 @@ export class ChatService {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
-    const roomMember = await this.prismaService.roomMember.upsert({
-      where: {
-        userId_chatRoomId: {
-          userId: dto.userId,
-          chatRoomId: dto.chatRoomId,
-        },
-      },
-      update: {},
-      create: {
-        userId: dto.userId,
-        chatRoomId: dto.chatRoomId,
-      },
-    });
-
+    const roomMember = await this.upsertRoomMember(room.id, dto.userId, 'USER');
     return roomMember;
   }
 
