@@ -1,9 +1,9 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
+import { UserState } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 
 import { UserProfileDto } from './dto/user.dto';
-import { UserState } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
