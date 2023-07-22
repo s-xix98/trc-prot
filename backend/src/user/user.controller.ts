@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
-import { JwtTwoFaAuthGuard } from 'src/auth/guard/jwt-two-fa.guard';
+import { JwtTwoFaAuthGuard } from '../auth/guard/jwt-two-fa.guard';
 
 import { UserService } from './user.service';
 

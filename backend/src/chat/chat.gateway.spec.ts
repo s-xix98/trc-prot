@@ -20,6 +20,7 @@ import {
 import { ChatGateway } from './chat.gateway';
 import { MessageDto } from './dto/message.dto';
 import { ChatService } from './chat.service';
+import { UserModule } from '../user/user.module';
 const modelNames = ['chatRoom', 'user'];
 const USERNUM = 10;
 
@@ -34,7 +35,7 @@ describe('ChatGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, WsocketModule, AuthModule],
+      imports: [TestModule, WsocketModule, AuthModule, UserModule],
       providers: [ChatGateway, PrismaService, WsocketGateway, ChatService],
     }).compile();
 

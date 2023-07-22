@@ -1,5 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { ChatModule } from '../chat/chat.module';
