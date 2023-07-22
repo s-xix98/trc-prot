@@ -12,6 +12,7 @@ import {
   CreateChannelDto,
   InviteChatRoomDto,
   JoinChannelDto,
+  LeaveRoomDto,
   RoomMemberRestrictionDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
@@ -262,5 +263,45 @@ export class ChatGateway {
       const invites = await this.chatService.getInvites(userId);
       socket.emit('receiveInviteChatRoom', invites);
     }
+  }
+
+  @SubscribeMessage('leaveChatRoom')
+  async leaveRoom(client: Socket, dto: LeaveRoomDto) {
+    console.log('leaveChatRoom', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error();
+    }
+
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
+      throw new Error('Room is not found');
+    }
+
+    await this.prisma.roomMember.delete({
+      where: {
+        userId_chatRoomId: {
+          userId,
+          chatRoomId: dto.chatRoomId,
+        },
+      },
+    });
+
+    this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    const joinedRooms = await this.chatService.getJoinedRooms(userId);
+    client.emit('joinedRooms', joinedRooms);
+  }
+
+  async broadcastMessagesToJoinedRooms(userId: string) {
+    const rooms = await this.chatService.getJoinedRooms(userId);
+    await Promise.all(
+      rooms.map((room) => this.broadcastRoomMessageHistory(room.id)),
+    );
+  }
+
+  private async broadcastRoomMessageHistory(roomId: string) {
+    const msgs = await this.chatService.getChannelHistoryById(roomId);
+    this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
   }
 }

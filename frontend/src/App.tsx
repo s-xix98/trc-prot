@@ -15,7 +15,8 @@ import { Blocks } from './features/user/components/Blocks';
 import { FriendRequests } from './features/user/components/FriendRequests';
 import { useModal } from './hooks/useModal';
 import { ModalView } from './components/Elements/Modal/ModalView';
-import { History, Ranking } from './features/user/components/Tmp';
+import { MatchHistory } from './features/game/components/MatchHistory';
+import { Ranking } from './features/game/components/Ranking';
 
 const onConnect = () => {
   console.log('socket connect');
@@ -58,11 +59,24 @@ const Launcher = ({
 const Test = () => {
   const { joinedRooms, friends } = useCurrentUser();
   const socket = useSessionSocketEmitter();
+  const [n, setn] = useState(0);
+
   const inviteButton = () => {
     socket.emit('inviteChatRoom', {
       chatRoomId: joinedRooms[0].id,
       targetId: friends[0].id,
     });
+  };
+
+  const leaveButton = () => {
+    socket.emit('leaveChatRoom', {
+      chatRoomId: joinedRooms[0].id,
+    });
+  };
+
+  const updateProfileButton = () => {
+    socket.emit('updateProfile', { username: `test1${n}` });
+    setn(n + 1);
   };
 
   useSessionSocket('receiveInviteChatRoom', (data) => {
@@ -74,6 +88,8 @@ const Test = () => {
     <>
       test
       <button onClick={inviteButton}> invite </button>
+      <button onClick={leaveButton}> leave </button>
+      <button onClick={updateProfileButton}> updateProfile </button>
     </>
   );
 };
@@ -94,9 +110,9 @@ function App() {
   commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
-  commandElemMap.set('h', <History />);
-  commandElemMap.set('r', <Ranking />);
   commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
+  commandElemMap.set('./history', <MatchHistory />);
+  commandElemMap.set('./ranking', <Ranking />);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);
   commandElemMap.set('./search', <UserSearch />);

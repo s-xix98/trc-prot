@@ -23,7 +23,7 @@ export type OnShutdownCallback = (
   player1: PlayerResult,
   player2: PlayerResult,
   resultEvaluator: ResultEvaluator,
-) => void;
+) => Promise<void>;
 
 export type PlayerData = { client: Socket; data: UserInfo };
 

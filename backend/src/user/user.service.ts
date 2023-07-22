@@ -1,6 +1,8 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+
+import { UserProfileDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -180,5 +182,60 @@ export class UserService {
     });
 
     return requests.map((r) => r.srcUser);
+  }
+
+  async updateUser(userId: string, dto: UserProfileDto) {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+
+    return user;
+  }
+
+  async getSentFriendRequests(userId: string) {
+    const requests = await this.prisma.friendship.findMany({
+      where: {
+        srcUserId: userId,
+        status: {
+          equals: 'Requested',
+        },
+      },
+      include: {
+        destUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return requests;
+  }
+
+  async getUsersWhoBlockedUser(userId: string) {
+    const users = await this.prisma.friendship.findMany({
+      where: {
+        destUserId: userId,
+        status: {
+          equals: 'Blocked',
+        },
+      },
+      include: {
+        srcUser: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return users.map((u) => u.srcUser);
   }
 }

@@ -18,7 +18,7 @@ model User {
   username       String           @unique @default(uuid())
   email          String           @unique
   hashedPassword String?
-  base64Image    Bytes?
+  base64Image    String?
   isTwoFaEnabled Boolean          @default(false)
   twoFaSecret    String?
   messages       Message[]
