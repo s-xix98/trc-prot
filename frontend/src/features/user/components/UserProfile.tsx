@@ -59,6 +59,7 @@ const MyProfileUpdateForm = () => {
     const base64Image =
       data.base64Image === null ? undefined : data.base64Image;
     updateProfile(username, base64Image);
+    resetForm();
   };
 
   const resetForm = () => {
