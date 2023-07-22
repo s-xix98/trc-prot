@@ -14,10 +14,7 @@ import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
 import { useUnblockRequestSender } from '../api/unblockRequestSender';
-import {
-  UserProfileDto,
-  UserProfileDtoSchema,
-} from '../types/UpdateProfileDto';
+import { UserProfileDtoSchema, } from '../types/UpdateProfileDto';
 import { useUpdateProfile } from '../api/updateProfile';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
@@ -48,13 +45,20 @@ type FormUserProfileDto = z.infer<typeof FormUserProfileDtoSchema>;
 const MyProfileUpdateForm = () => {
   const { updateProfile } = useUpdateProfile();
 
-  const methods = useForm<UserProfileDto>({
-    resolver: zodResolver(UserProfileDtoSchema),
+  const methods = useForm<FormUserProfileDto>({
+    resolver: zodResolver(FormUserProfileDtoSchema),
+    defaultValues: {
+      username: null,
+      base64Image: null,
+    },
   });
 
-  const handleUpdateUserProfile: SubmitHandler<UserProfileDto> = (data) => {
+  const handleUpdateUserProfile: SubmitHandler<FormUserProfileDto> = (data) => {
     console.log(data);
-    updateProfile(data.username, data.base64Image);
+    const username = data.username === null ? undefined : data.username;
+    const base64Image =
+      data.base64Image === null ? undefined : data.base64Image;
+    updateProfile(username, base64Image);
   };
 
   return (
