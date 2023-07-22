@@ -58,6 +58,11 @@ export class UserService {
           not: userId,
         },
       },
+      select: {
+        id: true,
+        username: true,
+        base64Image: true,
+      },
     });
 
     return partialMatchUsers;
