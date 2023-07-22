@@ -164,13 +164,19 @@ export class ChatGateway {
       throw new Error('Room is not found');
     }
 
-    const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
+    const isQualifiedUser = await this.chatService.isUserQualified(
+      dto.chatRoomId,
+      dto.userId,
+    );
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const canRestrictUser = await this.chatService.isUserRestrictable(dto.chatRoomId, dto.targetId);
-    if (!canRestrictUser){
+    const canRestrictUser = await this.chatService.isUserRestrictable(
+      dto.chatRoomId,
+      dto.targetId,
+    );
+    if (!canRestrictUser) {
       throw new Error('you can not restrict this user');
     }
 
@@ -205,13 +211,19 @@ export class ChatGateway {
       throw new Error('Room is not found');
     }
 
-    const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
+    const isQualifiedUser = await this.chatService.isUserQualified(
+      dto.chatRoomId,
+      dto.userId,
+    );
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const canRestrictUser = await this.chatService.isUserRestrictable(dto.chatRoomId, dto.userId);
-    if (!canRestrictUser){
+    const canRestrictUser = await this.chatService.isUserRestrictable(
+      dto.chatRoomId,
+      dto.userId,
+    );
+    if (!canRestrictUser) {
       throw new Error('you can not restrict this user');
     }
 
@@ -233,13 +245,19 @@ export class ChatGateway {
       throw new Error('Room is not found');
     }
 
-    const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
+    const isQualifiedUser = await this.chatService.isUserQualified(
+      dto.chatRoomId,
+      dto.userId,
+    );
     if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const canRestrictUser = await this.chatService.isUserRestrictable(dto.chatRoomId, dto.userId);
-    if (!canRestrictUser){
+    const canRestrictUser = await this.chatService.isUserRestrictable(
+      dto.chatRoomId,
+      dto.userId,
+    );
+    if (!canRestrictUser) {
       throw new Error('you can not restrict this user');
     }
 
@@ -271,7 +289,10 @@ export class ChatGateway {
       throw new Error('Room is not found');
     }
 
-    const roomMemberExists = await this.chatService.roomMemberExists(dto.chatRoomId, inviterId);
+    const roomMemberExists = await this.chatService.roomMemberExists(
+      dto.chatRoomId,
+      inviterId,
+    );
     if (!roomMemberExists) {
       throw new Error('You are not member of this room');
     }

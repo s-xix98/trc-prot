@@ -341,7 +341,11 @@ export class ChatService {
     return roomMember !== null;
   }
 
-  async userRestrictionExists(roomId:string, userId:string, state:UserChatStateCode){
+  async userRestrictionExists(
+    roomId: string,
+    userId: string,
+    state: UserChatStateCode,
+  ) {
     const userState = await this.findRoomMemberState(roomId, userId, state);
 
     const now = new Date();
@@ -352,7 +356,7 @@ export class ChatService {
     return false;
   }
 
-  async isUserQualified(roomId:string, userId:string){
+  async isUserQualified(roomId: string, userId: string) {
     const requestUser = await this.findRoomMember(roomId, userId);
 
     if (requestUser === null || requestUser.role === 'USER') {
@@ -362,7 +366,7 @@ export class ChatService {
     return true;
   }
 
-  async isUserRestrictable(roomId:string, userId:string) {
+  async isUserRestrictable(roomId: string, userId: string) {
     const target = await this.findRoomMember(roomId, userId);
 
     if (target === null || target.role === 'OWNER') {
