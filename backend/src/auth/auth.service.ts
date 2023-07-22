@@ -235,8 +235,8 @@ export class AuthService {
     });
   }
 
-  private isIntervalPassed(lastAttempt: Date, ms:number) {
+  private isIntervalPassed(lastAttempt: Date, ms: number) {
     const now = new Date();
-    return (now.getTime() - lastAttempt.getTime()) > ms;
+    return now.getTime() - lastAttempt.getTime() > ms;
   }
 }
