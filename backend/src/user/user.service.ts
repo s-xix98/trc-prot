@@ -176,6 +176,7 @@ export class UserService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
@@ -210,6 +211,7 @@ export class UserService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
@@ -231,6 +233,7 @@ export class UserService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
