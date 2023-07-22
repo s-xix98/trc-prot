@@ -346,4 +346,15 @@ export class ChatService {
 
     return false;
   }
+
+  async isUserQualified(roomId:string, userId:string){
+    const requestUser = await this.findRoomMember(roomId, userId);
+
+    if (requestUser === null || requestUser.role === 'USER') {
+      return false;
+    }
+
+    return true;
+  }
+
 }
