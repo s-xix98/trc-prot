@@ -119,15 +119,22 @@ export class ChatGateway {
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, dto: MessageDto) {
-    const userState = await this.chatService.findRoomMemberState(
+    const userExists = await this.userService.userExists(dto.userId);
+    if (!userExists) {
+      throw new Error('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
+    const restrictionExists = await this.chatService.userRestrictionExists(
       dto.chatRoomId,
       dto.userId,
       'MUTED',
     );
-
-    const now = new Date();
-
-    if (userState && userState.endedAt > now) {
+    if (restrictionExists) {
       throw new Error('You are muted');
     }
 
