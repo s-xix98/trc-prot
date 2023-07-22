@@ -336,6 +336,11 @@ export class ChatService {
     return room !== null;
   }
 
+  async roomMemberExists(roomId: string, userId: string) {
+    const roomMember = await this.findRoomMember(roomId, userId);
+    return roomMember !== null;
+  }
+
   async userRestrictionExists(roomId:string, userId:string, state:UserChatStateCode){
     const userState = await this.findRoomMemberState(roomId, userId, state);
 
