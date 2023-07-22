@@ -153,12 +153,8 @@ export class ChatGateway {
   async banRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banRoomMember', dto);
 
-    const requestUser = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.userId,
-    );
-
-    if (requestUser === null || requestUser.role === 'USER') {
+    const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
+    if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
     }
 
@@ -193,12 +189,8 @@ export class ChatGateway {
   async muteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('muteRoomMember', dto);
 
-    const requestUser = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.userId,
-    );
-
-    if (requestUser === null || requestUser.role === 'USER') {
+    const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
+    if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
     }
 
@@ -220,12 +212,8 @@ export class ChatGateway {
   async kickRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('kickRoomMember', dto);
 
-    const requestUser = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.userId,
-    );
-
-    if (requestUser === null || requestUser.role === 'USER') {
+    const isQualifiedUser = await this.chatService.isUserQualified(dto.chatRoomId, dto.userId);
+    if (!isQualifiedUser) {
       throw new Error('You are not ADMIN || OWNER');
     }
 
