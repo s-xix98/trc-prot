@@ -69,6 +69,11 @@ export class ChatGateway {
   }
   @SubscribeMessage('createChannel')
   async createChannel(client: Socket, dto: CreateChannelDto) {
+    const exists = await this.userService.userExists(dto.userId);
+    if (!exists) {
+      throw new Error('User is not found');
+    }
+
     const createdRoom = await this.chatService.createChannel(dto);
     const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
