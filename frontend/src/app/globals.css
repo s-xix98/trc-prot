@@ -34,3 +34,9 @@ input {
   color: #33ff33;
   background-color: #252525;
 }
+
+input::file-selector-button {
+  padding: 1px;
+  color: #23aa23;
+  background-color: #252525;
+}
