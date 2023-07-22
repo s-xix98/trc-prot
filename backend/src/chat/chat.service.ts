@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ChatRoom } from '@prisma/client';
+import { ChatRoom, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
 
@@ -10,6 +10,7 @@ import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
+
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -252,7 +253,7 @@ export class ChatService {
   async findRoomMemberState(
     roomId: string,
     userId: string,
-    state: 'BANNED' | 'MUTED',
+    state: UserChatStateCode,
   ) {
     const memberState = await this.prismaService.userChatState.findUnique({
       where: {
@@ -348,4 +349,14 @@ export class ChatService {
     return room !== null;
   }
 
+  async userRestrictionExists(roomId:string, userId:string, state:UserChatStateCode){
+    const userState = await this.findRoomMemberState(roomId, userId, state);
+
+    const now = new Date();
+    if (userState && userState.endedAt > now) {
+      return true;
+    }
+
+    return false;
+  }
 }
