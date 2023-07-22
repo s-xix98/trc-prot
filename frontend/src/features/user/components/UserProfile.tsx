@@ -68,6 +68,19 @@ const MyProfileUpdateForm = () => {
         <form onSubmit={methods.handleSubmit(handleUpdateUserProfile)}>
           <FormInput name="username" placeholder="new username" type="text" />
           <br />
+          <br />
+          <input
+            type="file"
+            accept="image/*"
+            {...methods.register('base64Image')}
+          />
+          {methods.formState.errors.base64Image && (
+            <p style={{ color: 'red' }}>
+              {methods.formState.errors.base64Image.message}
+            </p>
+          )}
+          <br />
+          <br />
           <button type="submit">UpdateProfile</button>
         </form>
       </FormProvider>
