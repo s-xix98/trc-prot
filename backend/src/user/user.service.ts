@@ -129,6 +129,7 @@ export class UserService {
             id: true,
             username: true,
             base64Image: true,
+            state: true,
           },
         },
       },
