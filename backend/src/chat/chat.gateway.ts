@@ -111,9 +111,6 @@ export class ChatGateway {
     const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
-    this.server
-      .to(roomType.Chat, addedUser.chatRoomId)
-      .emit('joinChannel', addedUser);
 
     await this.sendJoinedRooms(addedUser.userId);
   }
