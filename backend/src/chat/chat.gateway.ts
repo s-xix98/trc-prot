@@ -100,15 +100,12 @@ export class ChatGateway {
       throw new Error('Room is not found');
     }
 
-    const userState = await this.chatService.findRoomMemberState(
+    const restrictionExists = await this.chatService.userRestrictionExists(
       dto.chatRoomId,
       dto.userId,
       'BANNED',
     );
-
-    const now = new Date();
-
-    if (userState && userState.endedAt > now) {
+    if (restrictionExists) {
       throw new Error('You are banned');
     }
 
