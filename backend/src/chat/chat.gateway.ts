@@ -158,22 +158,16 @@ export class ChatGateway {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.targetId,
-    );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
+    const canRestrictUser = await this.chatService.isUserRestrictable(dto.chatRoomId, dto.targetId);
+    if (!canRestrictUser){
+      throw new Error('you can not restrict this user');
     }
 
     await this.chatService.upsertRoomMemberState(dto, 'BANNED');
 
     const { count } = await this.prisma.roomMember.deleteMany({
       where: {
-        userId: target.userId,
+        userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
@@ -194,15 +188,9 @@ export class ChatGateway {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.targetId,
-    );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
+    const canRestrictUser = await this.chatService.isUserRestrictable(dto.chatRoomId, dto.userId);
+    if (!canRestrictUser){
+      throw new Error('you can not restrict this user');
     }
 
     await this.chatService.upsertRoomMemberState(dto, 'MUTED');
@@ -217,20 +205,14 @@ export class ChatGateway {
       throw new Error('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(
-      dto.chatRoomId,
-      dto.targetId,
-    );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
+    const canRestrictUser = await this.chatService.isUserRestrictable(dto.chatRoomId, dto.userId);
+    if (!canRestrictUser){
+      throw new Error('you can not restrict this user');
     }
 
     const { count } = await this.prisma.roomMember.deleteMany({
       where: {
-        userId: target.userId,
+        userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
