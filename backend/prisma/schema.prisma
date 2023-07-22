@@ -21,6 +21,7 @@ model User {
   base64Image    String?
   isTwoFaEnabled Boolean          @default(false)
   twoFaSecret    String?
+  twoFaLastCheckedAt  DateTime         @default(now())
   messages       Message[]
   roomMembers    RoomMember[]
   invitee        chatInvitation[] @relation("invitee")
