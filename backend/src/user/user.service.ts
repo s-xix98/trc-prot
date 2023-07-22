@@ -3,6 +3,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 import { UserProfileDto } from './dto/user.dto';
+import { UserState } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -197,6 +198,19 @@ export class UserService {
       },
       data: {
         ...dto,
+      },
+    });
+
+    return user;
+  }
+
+  async updateUserState(userId: string, state: UserState) {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        state,
       },
     });
 
