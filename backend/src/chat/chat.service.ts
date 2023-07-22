@@ -10,6 +10,7 @@ import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
+import { CustomException } from '../exceptions/custom.exception';
 
 @Injectable()
 export class ChatService {
@@ -129,7 +130,7 @@ export class ChatService {
     const room = await this.findChannelById(dto.chatRoomId);
     // TODO もうちょいちゃんとしたエラー投げる
     if (!room) {
-      throw new Error('Room not found');
+      throw new CustomException('Room not found');
     }
 
     if (room.hashedPassword !== null) {
@@ -158,12 +159,12 @@ export class ChatService {
   ) {
     // TODO もうちょいちゃんとしたエラー投げる
     if (enteredPassword === undefined) {
-      throw new Error('Password is required');
+      throw new CustomException('Password is required');
     }
 
     const isMatch = await bcrypt.compare(enteredPassword, hashedPassword);
     if (!isMatch) {
-      throw new Error('Password is incorrect');
+      throw new CustomException('Password is incorrect');
     }
   }
 
