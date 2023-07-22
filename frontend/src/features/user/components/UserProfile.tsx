@@ -1,14 +1,22 @@
 import { Avatar, Stack } from '@mui/material';
 import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { useCurrentUser, useFriendStatus } from '@/hooks/useCurrentUser';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useUserProfileModal } from '@/hooks/useUserProfileModal';
+import { FormInput } from '@/components/Elements/Input/FormInput';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
 import { useUnblockRequestSender } from '../api/unblockRequestSender';
+import {
+  UserProfileDto,
+  UserProfileDtoSchema,
+} from '../types/UpdateProfileDto';
+import { useUpdateProfile } from '../api/updateProfile';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
@@ -21,12 +29,40 @@ const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   );
 };
 
+const MyProfileUpdateForm = () => {
+  const { updateProfile } = useUpdateProfile();
+
+  const methods = useForm<UserProfileDto>({
+    resolver: zodResolver(UserProfileDtoSchema),
+  });
+
+  const handleUpdateUserProfile: SubmitHandler<UserProfileDto> = (data) => {
+    console.log(data);
+    updateProfile(data.username, data.base64Image);
+  };
+
+  return (
+    <>
+      <p>Profile Update</p>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(handleUpdateUserProfile)}>
+          <FormInput name="username" placeholder="new username" type="text" />
+          <br />
+          <button type="submit">UpdateProfile</button>
+        </form>
+      </FormProvider>
+    </>
+  );
+};
+
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <div>
       <ShowIcon userInfo={userInfo} />
       <br />
       <p>this is me</p>
+      <br />
+      <MyProfileUpdateForm />
     </div>
   );
 };
