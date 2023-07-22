@@ -82,10 +82,9 @@ export class ChatGateway {
       dto.userId,
       'OWNER',
     );
-    const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(dto.userId);
   }
 
   @SubscribeMessage('joinChannel')
@@ -116,8 +115,7 @@ export class ChatGateway {
       .to(roomType.Chat, addedUser.chatRoomId)
       .emit('joinChannel', addedUser);
 
-    const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(addedUser.userId);
   }
 
   @SubscribeMessage('sendMessage')
@@ -335,8 +333,7 @@ export class ChatGateway {
     });
 
     this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
-    const joinedRooms = await this.chatService.getJoinedRooms(userId);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(userId);
   }
 
   async broadcastMessagesToJoinedRooms(userId: string) {
