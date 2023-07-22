@@ -261,8 +261,8 @@ export class ChatGateway {
   async inviteRoom(client: Socket, dto: InviteChatRoomDto) {
     console.log('inviteChatRoom', dto);
 
-    const requestUserId = this.server.getUserId(client);
-    if (!requestUserId) {
+    const inviterId = this.server.getUserId(client);
+    if (!inviterId) {
       throw new Error();
     }
 
@@ -273,7 +273,7 @@ export class ChatGateway {
 
     const requestUser = await this.chatService.findRoomMember(
       room.id,
-      requestUserId,
+      inviterId,
     );
     if (!requestUser) {
       throw new Error('You are not member of this room');
@@ -281,7 +281,7 @@ export class ChatGateway {
 
     await this.chatService.upsertInvitation(
       dto.targetId,
-      requestUserId,
+      inviterId,
       room.id,
     );
 
