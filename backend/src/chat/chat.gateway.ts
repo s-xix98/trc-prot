@@ -90,6 +90,11 @@ export class ChatGateway {
 
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, dto: JoinChannelDto) {
+    const userExists = await this.userService.userExists(dto.userId);
+    if (!userExists) {
+      throw new Error('User is not found');
+    }
+
     const userState = await this.chatService.findRoomMemberState(
       dto.chatRoomId,
       dto.userId,
