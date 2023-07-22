@@ -40,6 +40,7 @@ class UserInteractionManager:
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
                 page.get_by_text(f"{self.user.name} >").click(timeout=300)
+                break
             except PlaywrightTimeoutError:
                 pass
 
@@ -68,6 +69,7 @@ class UserInteractionManager:
             self.screenshot("signup-after")
         # signup して home に行ったか確認
         self.escape_back_to_home()
+        logger.info("signup end")
 
     def login(
         self,
