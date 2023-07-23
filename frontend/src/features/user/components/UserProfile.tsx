@@ -125,8 +125,6 @@ const MyProfileUpdateForm = () => {
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const { currentUserInfo } = useCurrentUser();
 
-  console.log(userInfo);
-
   return (
     <div>
       <ShowIcon userInfo={currentUserInfo ? currentUserInfo : userInfo} />
