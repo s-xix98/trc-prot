@@ -1,5 +1,6 @@
 import logging
 from logging import Formatter, StreamHandler, getLogger
+from logging.handlers import RotatingFileHandler
 
 # DEBUG, INFO, WARNING, ERROR, CRITICAL
 
@@ -38,3 +39,13 @@ logger.propagate = False
 stream_handler = StreamHandler()
 stream_handler.setFormatter(ColorFormatter())
 logger.addHandler(stream_handler)
+
+# rotating_file_handler
+LOG_FILE = "log/logger.log"
+FORMAT_FILE = (
+    "%(asctime)s %(levelname)s %(filename)s:%(funcName)s:%(lineno)s %(message)s"
+)
+MAX_BYTES = 1000000
+rotating_file_handler = RotatingFileHandler(LOG_FILE, maxBytes=MAX_BYTES)
+rotating_file_handler.setFormatter(Formatter(FORMAT_FILE))
+logger.addHandler(rotating_file_handler)
