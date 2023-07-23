@@ -1,14 +1,21 @@
 import { Avatar, Stack } from '@mui/material';
 import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { useCurrentUser, useFriendStatus } from '@/hooks/useCurrentUser';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useUserProfileModal } from '@/hooks/useUserProfileModal';
+import { FormInput } from '@/components/Elements/Input/FormInput';
+import { convertToBase64 } from '@/utils/base64';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
 import { useBlockRequestSender } from '../api/blockRequestSender';
 import { useUnblockRequestSender } from '../api/unblockRequestSender';
+import { UserProfileDtoSchema } from '../types/UpdateProfileDto';
+import { useUpdateProfile } from '../api/updateProfile';
 
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
@@ -21,12 +28,86 @@ const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   );
 };
 
+// Form 用の UserProfile Schema
+// react hook form で undef だと、未入力とエラーででしまうので null を 許容
+const FormUserProfileDtoSchema = z.object({
+  username: UserProfileDtoSchema.shape.username.nullable().optional(),
+  base64Image: z
+    .unknown()
+    .optional()
+    .transform((files) => (files instanceof FileList ? files : undefined))
+    .transform((files) => files?.[0])
+    .transform((file) => (file ? convertToBase64(file) : file))
+    .transform((data) => z.string().parse(data))
+    .nullable(),
+});
+type FormUserProfileDto = z.infer<typeof FormUserProfileDtoSchema>;
+
+const MyProfileUpdateForm = () => {
+  const { updateProfile } = useUpdateProfile();
+
+  const methods = useForm<FormUserProfileDto>({
+    resolver: zodResolver(FormUserProfileDtoSchema),
+    defaultValues: {
+      username: null,
+      base64Image: null,
+    },
+  });
+
+  const handleUpdateUserProfile: SubmitHandler<FormUserProfileDto> = (data) => {
+    console.log(data);
+    const username = data.username === null ? undefined : data.username;
+    const base64Image =
+      data.base64Image === null ? undefined : data.base64Image;
+    updateProfile(username, base64Image);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    methods.reset({ username: null, base64Image: null });
+  };
+
+  return (
+    <>
+      <p>Profile Update</p>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(handleUpdateUserProfile)}>
+          <FormInput name="username" placeholder="new username" type="text" />
+          <br />
+          <br />
+          <input
+            type="file"
+            accept="image/*"
+            {...methods.register('base64Image')}
+          />
+          {methods.formState.errors.base64Image && (
+            <p style={{ color: 'red' }}>
+              {methods.formState.errors.base64Image.message}
+            </p>
+          )}
+          <br />
+          <br />
+          <button type="submit">UpdateProfile</button>
+          <button type="button" onClick={resetForm}>
+            Reset
+          </button>
+        </form>
+      </FormProvider>
+    </>
+  );
+};
+
+// TODO : 名前変更した時に modal の表示名変わるように, あんま良くないので、ちゃんとするかも
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
+  const { currentUserInfo } = useCurrentUser();
+
   return (
     <div>
-      <ShowIcon userInfo={userInfo} />
+      <ShowIcon userInfo={currentUserInfo ? currentUserInfo : userInfo} />
       <br />
       <p>this is me</p>
+      <br />
+      <MyProfileUpdateForm />
     </div>
   );
 };
