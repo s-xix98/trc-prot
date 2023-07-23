@@ -209,7 +209,7 @@ export class AuthService {
       !user ||
       !user.twoFaSecret ||
       !this.isValidTwoFaCode(user.twoFaSecret, twoFaCode) ||
-      this.isIntervalPassed(user.twoFaLastCheckedAt, 1000)
+      !this.isIntervalPassed(user.twoFaLastCheckedAt, 1000)
     ) {
       return false;
     }
