@@ -43,6 +43,10 @@ export const Terminal = ({
 
     e.preventDefault(); // 改行を入力しない
 
+    if (input === '') {
+      return;
+    }
+
     if (input === 'logout') {
       logout();
     }
