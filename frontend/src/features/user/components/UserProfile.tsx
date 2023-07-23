@@ -17,12 +17,22 @@ import { useUnblockRequestSender } from '../api/unblockRequestSender';
 import { UserProfileDtoSchema } from '../types/UpdateProfileDto';
 import { useUpdateProfile } from '../api/updateProfile';
 
+const DefalutIcon = () => {
+  return (
+    <Avatar sx={{ color: '#33ff33', bgcolor: 'black' }}>
+      <FaceRetouchingOffIcon />
+    </Avatar>
+  );
+};
+
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <Stack direction="row" spacing={2}>
-      <Avatar sx={{ color: '#33ff33', bgcolor: 'black' }}>
-        <FaceRetouchingOffIcon />
-      </Avatar>
+      {userInfo.base64Image ? (
+        <Avatar src={userInfo.base64Image} />
+      ) : (
+        <DefalutIcon />
+      )}
       <h1>{userInfo.username}</h1>
     </Stack>
   );
@@ -100,6 +110,8 @@ const MyProfileUpdateForm = () => {
 // TODO : 名前変更した時に modal の表示名変わるように, あんま良くないので、ちゃんとするかも
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const { currentUserInfo } = useCurrentUser();
+
+  console.log(userInfo);
 
   return (
     <div>
