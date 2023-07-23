@@ -16,7 +16,8 @@ export type LoginDto = z.infer<typeof LoginDtoSchema>;
 export const UserInfoSchema = z.object({
   id: z.string(),
   username: z.string(),
-  base64Image: z.string().optional(),
+  // TODO : null が来ることがある？
+  base64Image: z.string().nullable().optional(),
 });
 export type UserInfo = z.infer<typeof UserInfoSchema>;
 
