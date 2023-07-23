@@ -17,6 +17,10 @@ import { useUnblockRequestSender } from '../api/unblockRequestSender';
 import { UserProfileDtoSchema } from '../types/UpdateProfileDto';
 import { useUpdateProfile } from '../api/updateProfile';
 
+// TODO : ここに置くのは微妙だけど、とりあえず
+// 500KB?
+const MAX_FILE_SIZE = 500000;
+
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <Stack direction="row" spacing={2}>
@@ -37,6 +41,16 @@ const FormUserProfileDtoSchema = z.object({
     .optional()
     .transform((files) => (files instanceof FileList ? files : undefined))
     .transform((files) => files?.[0])
+    // TODO : for debug
+    .refine((file) => {
+      console.log('file size is', file?.size);
+      return true;
+    }, 'are?')
+    // true -> OK
+    .refine(
+      (file) => !file || file?.size <= MAX_FILE_SIZE,
+      'file size is too large',
+    )
     .transform((file) => (file ? convertToBase64(file) : file))
     .transform((data) => z.string().parse(data))
     .nullable(),
