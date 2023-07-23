@@ -17,6 +17,14 @@ import { useUnblockRequestSender } from '../api/unblockRequestSender';
 import { UserProfileDtoSchema } from '../types/UpdateProfileDto';
 import { useUpdateProfile } from '../api/updateProfile';
 
+const DefalutIcon = () => {
+  return (
+    <Avatar sx={{ color: '#33ff33', bgcolor: 'black' }}>
+      <FaceRetouchingOffIcon />
+    </Avatar>
+  );
+};
+
 // TODO : ここに置くのは微妙だけど、とりあえず
 // 500KB?
 const MAX_FILE_SIZE = 500000;
@@ -24,9 +32,11 @@ const MAX_FILE_SIZE = 500000;
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <Stack direction="row" spacing={2}>
-      <Avatar sx={{ color: '#33ff33', bgcolor: 'black' }}>
-        <FaceRetouchingOffIcon />
-      </Avatar>
+      {userInfo.base64Image ? (
+        <Avatar src={userInfo.base64Image} />
+      ) : (
+        <DefalutIcon />
+      )}
       <h1>{userInfo.username}</h1>
     </Stack>
   );
