@@ -140,6 +140,17 @@ export class GameGateway {
     dest.client.emit('matched', src.data.username);
   }
 
+  @SubscribeMessage('deny game-invitation')
+  denyInvitation(client: Socket, srcUser: UserInfo) {
+    const dest = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!dest) {
+      return;
+    }
+    this.gameRoom.denyInvitation({ src: srcUser.id, dest });
+  }
+
   @SubscribeMessage('key press')
   handleKeyPress(client: Socket, key: Keys) {
     console.log('press', key);
