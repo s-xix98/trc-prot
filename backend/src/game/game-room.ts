@@ -77,6 +77,10 @@ export class GameRoom {
     return { err: null };
   }
 
+  denyInvitation({ src, dest }: { src: UserId; dest: UserId }) {
+    this.invitations.delete({ src, dest });
+  }
+
   getInviters(destUserId: UserId): UserId[] {
     return this.invitations.getInviterIds(destUserId);
   }
