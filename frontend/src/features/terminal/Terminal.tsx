@@ -11,6 +11,7 @@ import { Input } from '@/components/Elements/Input/Input';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { useLogout } from '../user/api/userLogin';
+import { UserProfileModal } from '../user/components/UserProfile';
 
 import { TerminalOutput } from './TerminalOutput';
 
@@ -23,14 +24,19 @@ const TerminalInput = ({
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   onKeyDownAct: (e: KeyboardEvent<HTMLDivElement>) => void;
 }) => {
+  const modal = useModal();
   const { currentUserInfo } = useCurrentUser();
 
   return (
     <>
+      <UserProfileModal userInfo={currentUserInfo} {...modal} />
       <div style={{ padding: '3px' }}>
         <Input
           msg={input}
           start={`${currentUserInfo?.username ?? ''} > `}
+          startOnClick={() => {
+            modal.openModal();
+          }}
           onChangeAct={onChangeAct}
           onKeyDownAct={onKeyDownAct}
           disableUnderline={true}
