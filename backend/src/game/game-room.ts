@@ -9,6 +9,7 @@ type UserId = string;
 
 export class GameRoom {
   private playingUsers = new Map<UserId, GameLogic>();
+  private invitations: Invitation = new Invitation();
 
   add(
     { p1, p2 }: { p1: PlayerData; p2: PlayerData },
@@ -43,11 +44,85 @@ export class GameRoom {
     return isU1deleted && isU2deleted;
   }
 
+  invite(
+    { src, dest }: { src: UserId; dest: UserId },
+    gameFactory: GameFactory,
+  ): { err: string | null } {
+    if (this.isPlaying(src)) {
+      return { err: `ID: ${src} is playing` };
+    }
+    this.invitations.set({ src, dest }, gameFactory);
+    return { err: null };
+  }
+
+  acceptInvitation({ src, dest }: { src: PlayerData; dest: PlayerData }): {
+    err: string | null;
+  } {
+    const srcId = src.data.id;
+    const destId = dest.data.id;
+    const gameFactory = this.invitations.getGameFactory({
+      src: srcId,
+      dest: destId,
+    });
+    if (!gameFactory) {
+      return {
+        err: src.data.username + dest.data.username + 'has no invitaion',
+      };
+    }
+    const res = this.add({ p1: src, p2: dest }, gameFactory);
+    if (res.err != null) {
+      return res;
+    }
+    this.invitations.delete({ src: srcId, dest: destId });
+    return { err: null };
+  }
+
+  getInviters(destUserId: UserId): UserId[] {
+    return this.invitations.getInviterIds(destUserId);
+  }
+
   getGame(userId: UserId): GameLogic | undefined {
     return this.playingUsers.get(userId);
   }
 
   isPlaying(userId: UserId): boolean {
     return this.playingUsers.has(userId);
+  }
+}
+
+class Invitation {
+  private srcs = new Map<UserId, Set<UserId>>();
+  private dests = new Map<UserId, Set<UserId>>();
+  private factory = new Map<{ src: UserId; dest: UserId }, GameFactory>();
+
+  getInviterIds(dest: UserId) {
+    const inviterIds = this.dests.get(dest);
+    return inviterIds ? Array.from(inviterIds) : [];
+  }
+
+  getGameFactory({ src, dest }: { src: UserId; dest: UserId }) {
+    return this.factory.get({ src, dest });
+  }
+
+  set({ src, dest }: { src: UserId; dest: UserId }, gameFactory: GameFactory) {
+    if (!this.srcs.has(src)) {
+      this.srcs.set(src, new Set<UserId>());
+    }
+    if (!this.dests.has(dest)) {
+      this.dests.set(dest, new Set<UserId>());
+    }
+    this.srcs.get(src)?.add(dest);
+    this.dests.get(dest)?.add(src);
+    this.factory.set({ src, dest }, gameFactory);
+  }
+
+  has({ src, dest }: { src: UserId; dest: UserId }) {
+    return this.srcs.has(src) && this.dests.has(dest);
+  }
+
+  delete({ src, dest }: { src: UserId; dest: UserId }) {
+    this.srcs.get(src)?.delete(dest);
+    this.dests.get(dest)?.delete(src);
+    this.factory.delete({ src, dest });
   }
 }
