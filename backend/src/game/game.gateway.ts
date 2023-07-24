@@ -15,14 +15,16 @@ import {
   ResultEvaluator,
 } from './types';
 import { GameService } from './game.service';
-import { GameFactory, OnMatched } from './matching/types';
+import { GameFactory } from './matching/types';
 import { MatchingTable } from './matching/matching-table';
+import { GameRoom } from './game-room';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
 export class GameGateway {
   // TODO MatchinTableをシングルトンにしてDIしたい
   private matchingTable: MatchingTable = new MatchingTable();
+  private gameRoom: GameRoom = new GameRoom();
 
   constructor(
     private gameService: GameService,
@@ -40,7 +42,7 @@ export class GameGateway {
     if (!userId) {
       return;
     }
-    this.matchingTable.getGame(userId)?.RebindSocket(userId, client);
+    this.gameRoom.getGame(userId)?.RebindSocket(userId, client);
   }
 
   handleDisconnect(client: Socket) {
@@ -60,21 +62,24 @@ export class GameGateway {
   @SubscribeMessage('matchmake')
   matchmake(client: Socket, user: UserInfo) {
     console.log('matchmake', user.username);
-    if (this.matchingTable.isPlaying(user.id)) {
-      client.emit('already playing');
+    if (this.gameRoom.isPlaying(user.id)) {
+      client.emit('error', 'already playing');
       return;
     }
-
-    const onMatched: OnMatched = (player1: PlayerData, player2: PlayerData) => {
-      player1.client.emit('matched', player2.data.username);
-      player2.client.emit('matched', player1.data.username);
-    };
-
-    this.matchingTable.matchmake(
-      { client: client, data: user },
-      this.CreateGameFactory(),
-      onMatched,
-    );
+    const players = this.matchingTable.matchmake({
+      client: client,
+      data: user,
+    });
+    if (!players) {
+      return;
+    }
+    const { err } = this.gameRoom.add(players, this.CreateGameFactory());
+    if (err !== null) {
+      client.emit('error', err);
+      return;
+    }
+    players.p1.client.emit('matched', players.p2.data.username);
+    players.p2.client.emit('matched', players.p1.data.username);
   }
 
   @SubscribeMessage('clear match')
@@ -90,7 +95,7 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    this.matchingTable.getGame(userid)?.ReadyGame(client);
+    this.gameRoom.getGame(userid)?.ReadyGame(client);
   }
 
   @SubscribeMessage('key press')
@@ -100,7 +105,7 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    this.matchingTable.getGame(userid)?.HandleKeyPress(client, key);
+    this.gameRoom.getGame(userid)?.HandleKeyPress(client, key);
   }
 
   @SubscribeMessage('key release')
@@ -110,7 +115,7 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    this.matchingTable.getGame(userid)?.HandleKeyRelease(client, key);
+    this.gameRoom.getGame(userid)?.HandleKeyRelease(client, key);
   }
 
   private CreateGameFactory(): GameFactory {
@@ -124,7 +129,7 @@ export class GameGateway {
         resultEvaluator: ResultEvaluator,
       ) => {
         console.log('onshutdown');
-        this.matchingTable.deleteGame(p1Result.userId, p2Result.userId);
+        this.gameRoom.delete({ p1: p1Result.userId, p2: p2Result.userId });
         await this.gameService
           .saveGameResult(p1Result, p2Result, resultEvaluator)
           .catch((e) => console.log(e));
