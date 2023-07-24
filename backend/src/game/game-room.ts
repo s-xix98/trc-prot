@@ -75,6 +75,10 @@ export class GameRoom {
     return this.invitations.getInviterIds(destUserId);
   }
 
+  deleteInvitations(userid: UserId) {
+    this.invitations.deleteMany(userid);
+  }
+
   getGame(userId: UserId): GameLogic | undefined {
     return this.playingUsers.get(userId);
   }
@@ -118,5 +122,12 @@ class Invitation {
     this.srcs.get(src)?.delete(dest);
     this.dests.get(dest)?.delete(src);
     this.factory.delete({ src, dest });
+  }
+
+  deleteMany(userid: UserId) {
+    const dests = this.srcs.get(userid);
+    dests?.forEach((dest) => this.delete({ src: userid, dest }));
+    const srcs = this.dests.get(userid);
+    srcs?.forEach((src) => this.delete({ src, dest: userid }));
   }
 }
