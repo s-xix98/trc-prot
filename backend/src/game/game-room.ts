@@ -43,7 +43,6 @@ export class GameRoom {
     return isU1deleted && isU2deleted;
   }
 
-
   getGame(userId: UserId): GameLogic | undefined {
     return this.playingUsers.get(userId);
   }
@@ -52,4 +51,3 @@ export class GameRoom {
     return this.playingUsers.has(userId);
   }
 }
-
