@@ -14,6 +14,32 @@ import { useLogout } from '../user/api/userLogin';
 
 import { TerminalOutput } from './TerminalOutput';
 
+const TerminalInput = ({
+  input,
+  onChangeAct,
+  onKeyDownAct,
+}: {
+  input: string;
+  onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
+  onKeyDownAct: (e: KeyboardEvent<HTMLDivElement>) => void;
+}) => {
+  const { currentUserInfo } = useCurrentUser();
+
+  return (
+    <>
+      <div style={{ padding: '3px' }}>
+        <Input
+          msg={input}
+          start={`${currentUserInfo?.username ?? ''} > `}
+          onChangeAct={onChangeAct}
+          onKeyDownAct={onKeyDownAct}
+          disableUnderline={true}
+        />
+      </div>
+    </>
+  );
+};
+
 export const Terminal = ({
   commandElemMap,
 }: {
@@ -22,7 +48,6 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
-  const { currentUserInfo } = useCurrentUser();
 
   const { logout } = useLogout();
 
@@ -88,15 +113,11 @@ export const Terminal = ({
       <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
         {currentModalElem}
       </ModalView>
-      <div style={{ padding: '3px' }}>
-        <Input
-          msg={input}
-          start={`${currentUserInfo?.username ?? ''} > `}
-          onChangeAct={onChangeAct}
-          onKeyDownAct={onKeyDownAct}
-          disableUnderline={true}
-        />
-      </div>
+      <TerminalInput
+        input={input}
+        onChangeAct={onChangeAct}
+        onKeyDownAct={onKeyDownAct}
+      />
     </Container>
   );
 };
