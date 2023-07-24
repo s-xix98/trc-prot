@@ -57,6 +57,7 @@ export class GameGateway {
       return;
     }
     this.matchingTable.clearWaitingUser(userId);
+    this.gameRoom.deleteInvitations(userId);
   }
 
   @SubscribeMessage('matchmake')
