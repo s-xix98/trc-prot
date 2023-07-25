@@ -33,9 +33,9 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
-const getRandomInt = (max:number):number => {
+const getRandomInt = (max: number): number => {
   return Math.floor(Math.random() * max);
-}
+};
 
 export interface GameRule {
   EvaluateGameResult(
@@ -224,10 +224,12 @@ export class GameLogic {
     if (isLeftPaddleHitByBall()) {
       newX = -newX;
       this.ball.angle = this.ball.angle * -1 + Math.PI;
+      this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed *= 1.05;
     } else if (isRightPaddleHitByBall()) {
       newX = canvas.xMax - (newX - canvas.xMax);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
+      this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed *= 1.05;
     }
 
