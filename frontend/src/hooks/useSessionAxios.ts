@@ -86,7 +86,10 @@ export const useCustomAxiosGetter = () => {
         })
         .catch((err) => {
           console.log(err);
-          enqueueSnackbar(err?.response?.data?.message);
+          const resErrMsg = z.string().safeParse(err?.response?.data?.message);
+          enqueueSnackbar(
+            resErrMsg.success ? resErrMsg.data : 'Axios Get Error',
+          );
         });
     },
     [customAxios, enqueueSnackbar],

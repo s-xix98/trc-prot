@@ -72,12 +72,10 @@ describe('ChatGateway', () => {
         roomName: 'testroom',
         userId: user.user.id,
       };
-      await testService.emitAndWaitForEvent<CreateChannelDto>(
-        'createChannel',
-        'joinedRooms',
-        user.socket,
-        createChannelDto,
-      );
+
+      user.socket.emit('createChannel', createChannelDto);
+
+      await testService.sleep(200);
 
       room = await prismaService.chatRoom.findFirst({
         where: {
@@ -99,30 +97,20 @@ describe('ChatGateway', () => {
     });
 
     test('users[1]~users[9]が部屋に参加', async () => {
-      const promises: Promise<unknown>[] = [];
-
       testUsers.slice(1).map((testUser) => {
         const joinChannel: JoinChannelDto = {
           userId: testUser.user.id,
           chatRoomId: roomId,
         };
-        const joinPromise = testService.emitAndWaitForEvent<JoinChannelDto>(
-          'joinChannel',
-          'joinChannel',
-          testUser.socket,
-          joinChannel,
-        );
-        promises.push(joinPromise);
+
+        testUser.socket.emit('joinChannel', joinChannel);
       });
 
-      await Promise.all(promises).then(async () => {
-        const MemberList = await prismaService.roomMember.findMany({
-          where: {
-            chatRoomId: roomId,
-          },
-        });
-        expect(MemberList.length).toEqual(USERNUM);
-      });
+      await testService.sleep(200);
+
+      const MemberList = await chatService.getRoomMembersById(roomId);
+
+      expect(MemberList.length).toEqual(USERNUM);
     });
   });
 

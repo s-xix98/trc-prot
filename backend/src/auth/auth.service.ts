@@ -208,7 +208,8 @@ export class AuthService {
     if (
       !user ||
       !user.twoFaSecret ||
-      !this.isValidTwoFaCode(user.twoFaSecret, twoFaCode)
+      !this.isValidTwoFaCode(user.twoFaSecret, twoFaCode) ||
+      !this.isIntervalPassed(user.twoFaLastCheckedAt, 1000)
     ) {
       return false;
     }
@@ -232,5 +233,10 @@ export class AuthService {
         twoFaSecret: secret,
       },
     });
+  }
+
+  private isIntervalPassed(lastAttempt: Date, ms: number) {
+    const now = new Date();
+    return now.getTime() - lastAttempt.getTime() > ms;
   }
 }
