@@ -123,6 +123,12 @@ describe('ChatGateway', () => {
       roomId = room.id;
     });
 
+    afterEach(() => {
+      testUsers.forEach((u) => {
+        u.socket.removeAllListeners();
+      });
+    });
+
     test('users[0]が送信したメッセージがDBに保存されるか', async () => {
       const user: testUser = testUsers[0];
       const messageDto: MessageDto = {
