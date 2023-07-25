@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import { z } from 'zod';
 
 import { accessToken } from '@/app/login/types/accessToken';
 import { tokenStorage } from '@/utils/tokenStorage';
@@ -30,7 +31,8 @@ export const useSignUp = () => {
       .catch((err) => {
         // TODO とりあえずlogだけ
         console.log(err);
-        enqueueSnackbar(err?.response?.data?.message);
+        const resErrMsg = z.string().safeParse(err?.response?.data?.message);
+        enqueueSnackbar(resErrMsg.success ? resErrMsg.data : 'SignUp Error');
       });
   };
 

@@ -5,7 +5,7 @@ from playwright.sync_api import Page, Playwright
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from playwright.sync_api import expect, sync_playwright
 
-from src.constants import HEADLESS, MAX_WORKERS, TEST_USER_COUNT
+from src.constants import HEADLESS, MAX_WORKERS, TEST_USER_COUNT, TRACE
 from src.logger import logger
 from src.user import E2E, User
 
@@ -19,7 +19,14 @@ from src.user_action_utils import force_logout
 def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=HEADLESS)
+
+        # context = browser.new_context(record_video_dir="videos/",record_video_size={"width": 640 * 2, "height": 480 * 2},)
         context = browser.new_context()
+
+        #  python -m playwright show-trace xxx.zip
+        if TRACE:
+            context.tracing.start(screenshots=True, snapshots=True, sources=True)
+
         context.set_default_timeout(5000)
         page = context.new_page()
 
@@ -58,6 +65,10 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
 
         logger.info(f"--- END ALL TEST ---")
 
+        if TRACE:
+            context.tracing.stop(
+                path=f"log/trace/{'-'.join([u.name for u in user_lst])}-trace.zip"
+            )
         # ---------------------
         context.close()
         browser.close()

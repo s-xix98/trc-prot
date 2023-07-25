@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { KeyboardEvent } from 'react';
-import { useSnackbar } from 'notistack';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
@@ -30,8 +29,6 @@ export const Terminal = ({
 
   const { modalIsOpen, openModal, closeModal } = useModal();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
@@ -43,20 +40,12 @@ export const Terminal = ({
 
     e.preventDefault(); // 改行を入力しない
 
-    if (input === 'logout') {
-      logout();
+    if (input === '') {
+      return;
     }
 
-    // TODO : 消す
-    if (input === 'n') {
-      enqueueSnackbar('this is test msg');
-      enqueueSnackbar('this is test msg', { variant: 'default' });
-      enqueueSnackbar('this is test msg', { variant: 'info' });
-      enqueueSnackbar('this is test msg', { variant: 'success' });
-      enqueueSnackbar('this is test msg', { variant: 'warning' });
-      enqueueSnackbar('this is test msg', { variant: 'error' });
-      setInput('');
-      return;
+    if (input === 'logout') {
+      logout();
     }
 
     const inputElem = <p>&gt;&nbsp;{input}</p>;
