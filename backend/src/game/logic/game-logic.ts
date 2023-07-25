@@ -174,10 +174,15 @@ export class GameLogic {
     this.onShutdown(p1Result, p2Result, this.rule.CreateResultEvaluator());
   }
 
+  private getDxDy(speed: number, angle: number) {
+    return { dx: speed * Math.cos(angle), dy: speed * Math.sin(angle) };
+  }
+
   // ボールの半径とパドルの厚みを考慮してないからめり込む
   private UpdateBallPosition() {
-    let newX = this.ball.x + this.ball.dx;
-    let newY = this.ball.y + this.ball.dy;
+    const { dx, dy } = this.getDxDy(this.ball.speed, this.ball.angle);
+    let newX = this.ball.x + dx;
+    let newY = this.ball.y + dy;
 
     const isLeftPaddleHitByBall = () => {
       return (
@@ -203,18 +208,18 @@ export class GameLogic {
 
     if (isLeftPaddleHitByBall()) {
       newX = -newX;
-      this.ball.dx = -this.ball.dx;
+      this.ball.angle = this.ball.angle * -1 + Math.PI;
     } else if (isRightPaddleHitByBall()) {
       newX = canvas.xMax - (newX - canvas.xMax);
-      this.ball.dx = -this.ball.dx;
+      this.ball.angle = this.ball.angle * -1 + Math.PI;
     }
 
     if (newY <= canvas.yMin) {
       newY = -newY;
-      this.ball.dy = -this.ball.dy;
+      this.ball.angle *= -1;
     } else if (newY >= canvas.yMax) {
       newY = canvas.yMax - (newY - canvas.yMax);
-      this.ball.dy = -this.ball.dy;
+      this.ball.angle *= -1;
     }
 
     this.ball.x = newX;
