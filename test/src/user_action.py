@@ -144,6 +144,21 @@ class UserInteractionManager:
 
         self.screenshot("create_chat_room after")
 
+    def create_some_chat_room(self, room_name: str, times: int) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        self.screenshot("create_chat_room before")
+
+        for i in range(times):
+            page.get_by_text("ChannelCreate").click()
+            page.get_by_placeholder("roomName").fill(f"{room_name}{i}")
+            page.get_by_role("button", name="create").click()
+
+        self.screenshot("create_chat_room after")
+
     def visit_chat_room(self, room_name: str) -> None:
         page = self.page
 
