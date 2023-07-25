@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
+import { z } from 'zod';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
@@ -31,6 +32,7 @@ export const useLogin = () => {
         friendRequests: [],
         blockUsers: [],
         joinedRooms: [],
+        receiveInviteChatRooms: [],
       });
       setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
     };
@@ -49,7 +51,8 @@ export const useLogin = () => {
       })
       .catch((err) => {
         console.log(err);
-        enqueueSnackbar(err?.response?.data?.message);
+        const resErrMsg = z.string().safeParse(err?.response?.data?.message);
+        enqueueSnackbar(resErrMsg.success ? resErrMsg.data : 'Login Error');
       });
   };
 
@@ -64,7 +67,8 @@ export const useVerifySession = () => {
   const verifySession = () => {
     sessionAxios.get<UserInfo>('/user/me').catch((err) => {
       console.log(err);
-      enqueueSnackbar(err?.response?.data?.message);
+      const resErrMsg = z.string().safeParse(err?.response?.data?.message);
+      enqueueSnackbar(resErrMsg.success ? resErrMsg.data : 'Session Error');
     });
   };
 

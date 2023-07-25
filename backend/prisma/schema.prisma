@@ -12,28 +12,29 @@ datasource db {
 
 // userの情報
 model User {
-  id             String           @id @default(cuid())
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  username       String           @unique @default(uuid())
-  email          String           @unique
-  hashedPassword String?
-  base64Image    Bytes?
-  isTwoFaEnabled Boolean          @default(false)
-  twoFaSecret    String?
-  messages       Message[]
-  roomMembers    RoomMember[]
-  invitee        chatInvitation[] @relation("invitee")
-  inviter        chatInvitation[] @relation("inviter")
-  userChatState  UserChatState[]
-  userProfile    UserProfile?
-  friendship1    Friendship[]     @relation("src")
-  friendship2    Friendship[]     @relation("dest")
-  auth           Auth?
-  Rating         Rating[]
-  MatchHistory1  MatchHistory[]   @relation("player1")
-  MatchHistory2  MatchHistory[]   @relation("player2")
-  MatchHistory3  MatchHistory[]   @relation("winner")
+  id                 String           @id @default(cuid())
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  username           String           @unique @default(uuid())
+  email              String           @unique
+  hashedPassword     String?
+  base64Image        String?
+  isTwoFaEnabled     Boolean          @default(false)
+  twoFaSecret        String?
+  twoFaLastCheckedAt DateTime         @default(now())
+  messages           Message[]
+  roomMembers        RoomMember[]
+  invitee            chatInvitation[] @relation("invitee")
+  inviter            chatInvitation[] @relation("inviter")
+  userChatState      UserChatState[]
+  userProfile        UserProfile?
+  friendship1        Friendship[]     @relation("src")
+  friendship2        Friendship[]     @relation("dest")
+  auth               Auth?
+  Rating             Rating[]
+  MatchHistory1      MatchHistory[]   @relation("player1")
+  MatchHistory2      MatchHistory[]   @relation("player2")
+  MatchHistory3      MatchHistory[]   @relation("winner")
 }
 
 model Auth {
