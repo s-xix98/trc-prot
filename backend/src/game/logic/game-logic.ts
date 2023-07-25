@@ -33,6 +33,10 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+const getRandomInt = (max:number):number => {
+  return Math.floor(Math.random() * max);
+}
+
 export interface GameRule {
   EvaluateGameResult(
     p1: PlayerResult,
@@ -70,6 +74,7 @@ export class BasicRule implements GameRule {
 export class GameLogic {
   private p1: Player;
   private p2: Player;
+  private ball: Ball;
   private intervalId: any;
 
   constructor(
@@ -77,8 +82,8 @@ export class GameLogic {
     p2: PlayerData,
     private readonly onShutdown: OnShutdownCallback,
     private readonly rule: GameRule = new BasicRule(MatchPoint),
-    private ball: Ball = CreateBall(),
   ) {
+    this.ball = this.CreateRandomBall();
     this.p1 = {
       socket: p1.client,
       userId: p1.data.id,
@@ -174,6 +179,16 @@ export class GameLogic {
     this.onShutdown(p1Result, p2Result, this.rule.CreateResultEvaluator());
   }
 
+  private CreateRandomBall(): Ball {
+    const ball = CreateBall();
+    const random_angle =
+      Math.random() * ((Math.PI * 5) / 6) - (Math.PI * 5) / 12;
+    const p1_side = random_angle + Math.PI;
+    const p2_side = random_angle;
+    ball.angle = [p1_side, p2_side][getRandomInt(2)];
+    return ball;
+  }
+
   private getDxDy(speed: number, angle: number) {
     return { dx: speed * Math.cos(angle), dy: speed * Math.sin(angle) };
   }
@@ -250,7 +265,7 @@ export class GameLogic {
       return;
     }
     this.EndGame();
-    this.ball = CreateBall();
+    this.ball = this.CreateRandomBall();
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
 
@@ -261,7 +276,7 @@ export class GameLogic {
 
   private Restart() {
     this.EndGame();
-    this.ball = CreateBall();
+    this.ball = this.CreateRandomBall();
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
     this.p1.socket.emit('game data', this.ConvertToGameDto());
