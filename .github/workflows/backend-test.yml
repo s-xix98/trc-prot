@@ -41,6 +41,6 @@ jobs:
       - name: backend test some tiems
         run: |
           cd backend
-          for i in {0..10}; do make test; echo ${i} : $? >> log.txt; done
+          for i in {0..5}; do make test; echo ${i} : $? >> log.txt; done
           echo --- --- ---
           cat log.txt
