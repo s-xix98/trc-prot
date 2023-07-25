@@ -225,12 +225,14 @@ export class GameLogic {
       newX = -newX;
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
-      this.ball.speed *= 1.05;
+      this.ball.speed =
+        this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     } else if (isRightPaddleHitByBall()) {
       newX = canvas.xMax - (newX - canvas.xMax);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
-      this.ball.speed *= 1.05;
+      this.ball.speed =
+        this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     }
 
     if (newY <= canvas.yMin) {
