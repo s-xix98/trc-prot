@@ -25,6 +25,7 @@ export class ChatService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
@@ -43,6 +44,7 @@ export class ChatService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
@@ -326,6 +328,7 @@ export class ChatService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },

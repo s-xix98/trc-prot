@@ -58,6 +58,11 @@ export class UserService {
           not: userId,
         },
       },
+      select: {
+        id: true,
+        username: true,
+        base64Image: true,
+      },
     });
 
     return partialMatchUsers;
@@ -176,6 +181,7 @@ export class UserService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
@@ -210,6 +216,7 @@ export class UserService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },
@@ -231,6 +238,7 @@ export class UserService {
           select: {
             id: true,
             username: true,
+            base64Image: true,
           },
         },
       },

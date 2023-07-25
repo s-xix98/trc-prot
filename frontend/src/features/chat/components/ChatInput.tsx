@@ -27,6 +27,10 @@ export const ChatInput = ({
 
     e.preventDefault(); // 改行を入力しない
 
+    if (msg === '') {
+      return;
+    }
+
     sendMessage.emit(selectedChannel.id, msg);
     setMsg('');
   };

@@ -6,6 +6,7 @@ import { useJoinChannel } from '../api/joinChannel';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 import { ChannelSearchModal } from './ChannelSearchModal';
+import { ReceiveInviteChannelModal } from './ReceiveInviteChannel';
 
 export const ChatChannelArea = ({
   channels,
@@ -30,6 +31,8 @@ export const ChatChannelArea = ({
       <ChatChannelCreateModal />
       <hr />
       <ChannelSearchModal />
+      <hr />
+      <ReceiveInviteChannelModal />
       <hr />
       <Container flexDirection={'column'}>
         <ContainerItem overflowY={'scroll'}>

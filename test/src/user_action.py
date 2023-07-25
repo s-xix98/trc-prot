@@ -3,8 +3,10 @@ from dataclasses import dataclass
 from typing import Union
 
 from playwright.sync_api import Page
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 from src.constants import TOP_PAGE_URL
+from src.logger import logger
 from src.playwright_runner_utils import take_screenshot
 from src.user import User
 
@@ -29,6 +31,19 @@ class UserInteractionManager:
         page = self.page
         page.goto(TOP_PAGE_URL)
 
+    def escape_back_to_home(self) -> None:
+        page = self.page
+
+        for _ in range(5):
+            try:
+                page.keyboard.press("Escape")
+                page.keyboard.press("Escape")
+                page.keyboard.press("Escape")
+                page.get_by_text(f"{self.user.name} >").click(timeout=100)
+                break
+            except PlaywrightTimeoutError:
+                pass
+
     def signup(
         self,
         username: Union[str, None] = None,
@@ -52,6 +67,9 @@ class UserInteractionManager:
         page.get_by_role("button", name="SignUp").click()
         if take_screenshot:
             self.screenshot("signup-after")
+        # signup して home に行ったか確認
+        self.escape_back_to_home()
+        logger.info("signup end")
 
     def login(
         self,
@@ -79,6 +97,38 @@ class UserInteractionManager:
 
         page.locator("#outlined-multiline-static").fill("logout")
         page.locator("#outlined-multiline-static").press("Enter")
+
+    def force_logout(self) -> None:
+        page = self.page
+        try:
+            page.locator("#outlined-multiline-static").fill("logout", timeout=300)
+            page.locator("#outlined-multiline-static").press("Enter", timeout=300)
+        except PlaywrightTimeoutError as e:
+            logger.info(f"{self.user.name} force_logout fail : {e}")
+
+    def send_friend_req(self, target_friend_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./search")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_placeholder("username").fill(target_friend_name)
+        page.get_by_text(target_friend_name, exact=True).click()
+        page.get_by_role("button", name="Friend Req").click()
+        time.sleep(0.1)
+        self.escape_back_to_home()
+
+    def send_block_req(self, target_friend_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./search")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_placeholder("username").fill(target_friend_name)
+        page.get_by_text(target_friend_name, exact=True).click()
+        page.get_by_role("button", name="Block Req").click()
+        time.sleep(0.1)
+        self.escape_back_to_home()
 
     def create_chat_room(self, room_name: str) -> None:
         page = self.page

@@ -35,6 +35,9 @@ export const useSessionSocketEmitter = () => {
       return;
     }
 
+    // TODO : for debug
+    console.log('useSessionSocketEmitter', eventName);
+
     sessionSocket.emit(eventName, ...data);
   };
 
