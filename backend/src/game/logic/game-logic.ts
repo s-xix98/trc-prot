@@ -123,7 +123,7 @@ export class GameLogic {
     if (this.p1.isReady && this.p2.isReady) {
       this.p1.socket.emit('game ready left', this.ConvertToGameDto());
       this.p2.socket.emit('game ready right', this.ConvertToGameDto());
-      setTimeout(this.StartGame.bind(this), 5000);
+      setTimeout(this.StartGame.bind(this), 2000);
     }
   }
 
