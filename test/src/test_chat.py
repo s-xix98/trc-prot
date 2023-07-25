@@ -1,5 +1,6 @@
 from playwright.sync_api import Page
 
+from src.playwright_runner import TEST_FUNC_TYPE
 from src.user import User
 from src.user_action import UserInteractionManager
 
@@ -49,3 +50,12 @@ def test_chat_scroll_to_the_bottom(test_name: str, page: Page, user: User) -> No
     client.login()
 
     client.visit_chat_room("test-room")
+
+
+test_chat_lst: list[TEST_FUNC_TYPE] = [
+    test_create_channel,
+    test_create_some_channel,
+    test_chat_send_msg,
+    test_chat_send_some_msg,
+    test_chat_scroll_to_the_bottom,
+]
