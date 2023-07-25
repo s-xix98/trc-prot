@@ -8,8 +8,12 @@ import {
   UseGuards,
   Request,
   ForbiddenException,
+  Redirect,
+  Res,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+import { Response } from 'express';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -30,6 +34,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('signup')
@@ -65,8 +70,12 @@ export class AuthController {
   // googleAuthの処理が終わった後のエンドポイント
   @Get('google/redirect')
   @UseGuards(GoogleAuthGuard)
-  async GoogleRedirect(@Request() req: any): Promise<accessToken> {
-    return this.authService.providerLogin(req.user);
+  @Redirect()
+  async GoogleRedirect(@Request() req: any, @Res() res: Response) {
+    const frontUrl =
+      this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
+    const token = await this.authService.providerLogin(req.user);
+    res.redirect(frontUrl + '/login?access_token=' + token.jwt);
   }
 
   @Get('42')
@@ -76,8 +85,12 @@ export class AuthController {
 
   @Get('42/redirect')
   @UseGuards(FtAuthGuard)
-  async ftRedirect(@Request() req: any): Promise<accessToken> {
-    return this.authService.providerLogin(req.user);
+  @Redirect()
+  async ftRedirect(@Request() req: any, @Res() res: Response) {
+    const frontUrl =
+      this.configService.get<string>('FRONTEND') || 'http://localhost:3000';
+    const token = await this.authService.providerLogin(req.user);
+    res.redirect(frontUrl + '/login?access_token=' + token.jwt);
   }
 
   @Get('2fa/generate')

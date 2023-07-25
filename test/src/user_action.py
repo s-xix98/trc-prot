@@ -39,7 +39,7 @@ class UserInteractionManager:
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
-                page.get_by_text(f"{self.user.name} >").click(timeout=100)
+                page.get_by_role("heading", name="Terminal").click(timeout=100)
                 break
             except PlaywrightTimeoutError:
                 pass
