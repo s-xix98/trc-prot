@@ -13,6 +13,15 @@ def test_create_channel(test_name: str, page: Page, user: User) -> None:
     client.create_chat_room("test-room")
 
 
+def test_create_some_channel(test_name: str, page: Page, user: User) -> None:
+    client = UserInteractionManager(test_name, user, page)
+
+    client.goto_top_page()
+    client.login()
+
+    client.create_some_chat_room("test-some-room", 100)
+
+
 def test_chat_send_msg(test_name: str, page: Page, user: User) -> None:
     client = UserInteractionManager(test_name, user, page)
 
