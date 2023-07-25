@@ -15,9 +15,7 @@ def main() -> None:
     logger.info(f"TAKE_SCREENSHOT : {TAKE_SCREENSHOT}")
     logger.info(f"TRACE           : {TRACE}")
 
-    playwright_test_runner(test_basic_lst)
-    playwright_test_runner(test_login_lst)
-    playwright_test_runner(test_chat_lst)
+    playwright_test_runner([*test_basic_lst, *test_login_lst, *test_chat_lst])
 
     logger.info(f"--- MULTIPLE THREADS TEST ---")
     logger.info(f"MAX_WORKERS     : {MAX_WORKERS}")
