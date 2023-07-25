@@ -38,3 +38,7 @@ jobs:
         run: cd backend && npx prisma db push && npx prisma generate
       - name: backend test
         run: cd backend && make test
+      - name: backend test some tiems
+        run: |
+          cd backend
+          for i in {0..10}; do make test; done
