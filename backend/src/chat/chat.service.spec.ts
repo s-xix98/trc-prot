@@ -54,6 +54,8 @@ describe('ChatService', () => {
         ...createChannelDto,
       });
 
+      await chatService.upsertRoomMember(room.id, owner.user.id, 'OWNER');
+
       const joinChannelDto: JoinChannelDto = {
         chatRoomId: room.id,
         userId: user.user.id,
@@ -84,6 +86,7 @@ describe('ChatService', () => {
       };
 
       const room = await chatService.createChannel(createChannelDto);
+      await chatService.upsertRoomMember(room.id, owner.user.id, 'OWNER');
 
       for (let i = 0; i < roomMembers.length; i++) {
         const joinChannelDto: JoinChannelDto = {

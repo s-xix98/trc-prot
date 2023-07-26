@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ChangeEvent } from 'react';
 import { KeyboardEvent } from 'react';
-import { useSnackbar } from 'notistack';
 
 import { Container } from '@/components/Layout/Container';
 import { useScroll } from '@/hooks/useScroll';
@@ -11,8 +10,40 @@ import { Input } from '@/components/Elements/Input/Input';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { useLogout } from '../user/api/userLogin';
+import { UserProfileModal } from '../user/components/UserProfile';
 
 import { TerminalOutput } from './TerminalOutput';
+
+const TerminalInput = ({
+  input,
+  onChangeAct,
+  onKeyDownAct,
+}: {
+  input: string;
+  onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
+  onKeyDownAct: (e: KeyboardEvent<HTMLDivElement>) => void;
+}) => {
+  const modal = useModal();
+  const { currentUserInfo } = useCurrentUser();
+
+  return (
+    <>
+      <UserProfileModal userInfo={currentUserInfo} {...modal} />
+      <div style={{ padding: '3px' }}>
+        <Input
+          msg={input}
+          start={`${currentUserInfo?.username ?? ''} > `}
+          startOnClick={() => {
+            modal.openModal();
+          }}
+          onChangeAct={onChangeAct}
+          onKeyDownAct={onKeyDownAct}
+          disableUnderline={true}
+        />
+      </div>
+    </>
+  );
+};
 
 export const Terminal = ({
   commandElemMap,
@@ -22,15 +53,12 @@ export const Terminal = ({
   const [input, setInput] = useState('');
   const [outputArr, setOutputArr] = useState<JSX.Element[]>([]);
   const { scrollBottomRef, handleScroll } = useScroll(outputArr);
-  const { currentUserInfo } = useCurrentUser();
 
   const { logout } = useLogout();
 
   const [currentModalElem, setCurrentModalElem] = useState<JSX.Element>();
 
   const { modalIsOpen, openModal, closeModal } = useModal();
-
-  const { enqueueSnackbar } = useSnackbar();
 
   const onChangeAct = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -49,18 +77,6 @@ export const Terminal = ({
 
     if (input === 'logout') {
       logout();
-    }
-
-    // TODO : 消す
-    if (input === 'n') {
-      enqueueSnackbar('this is test msg');
-      enqueueSnackbar('this is test msg', { variant: 'default' });
-      enqueueSnackbar('this is test msg', { variant: 'info' });
-      enqueueSnackbar('this is test msg', { variant: 'success' });
-      enqueueSnackbar('this is test msg', { variant: 'warning' });
-      enqueueSnackbar('this is test msg', { variant: 'error' });
-      setInput('');
-      return;
     }
 
     const inputElem = <p>&gt;&nbsp;{input}</p>;
@@ -88,15 +104,11 @@ export const Terminal = ({
       <ModalView modalIsOpen={modalIsOpen} closeModal={closeModal}>
         {currentModalElem}
       </ModalView>
-      <div style={{ padding: '3px' }}>
-        <Input
-          msg={input}
-          start={`${currentUserInfo?.username ?? ''} > `}
-          onChangeAct={onChangeAct}
-          onKeyDownAct={onKeyDownAct}
-          disableUnderline={true}
-        />
-      </div>
+      <TerminalInput
+        input={input}
+        onChangeAct={onChangeAct}
+        onKeyDownAct={onKeyDownAct}
+      />
     </Container>
   );
 };

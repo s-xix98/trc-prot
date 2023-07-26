@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { roomType } from '../wsocket/utils';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
+import { UserService } from '../user/user.service';
 
 import { MessageDto } from './dto/message.dto';
 import {
@@ -28,6 +29,7 @@ export class ChatGateway {
     private prisma: PrismaService,
     private server: WsocketGateway,
     private chatService: ChatService,
+    private userService: UserService,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -69,7 +71,17 @@ export class ChatGateway {
   }
   @SubscribeMessage('createChannel')
   async createChannel(client: Socket, dto: CreateChannelDto) {
+    const exists = await this.userService.userExists(dto.userId);
+    if (!exists) {
+      throw new Error('User is not found');
+    }
+
     const createdRoom = await this.chatService.createChannel(dto);
+    await this.chatService.upsertRoomMember(
+      createdRoom.id,
+      dto.userId,
+      'OWNER',
+    );
     const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
