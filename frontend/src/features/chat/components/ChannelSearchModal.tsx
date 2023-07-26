@@ -43,19 +43,17 @@ export const ChannelSearchModal = () => {
         width="200px"
         height="250px"
       >
-        <div>
-          <Container flexDirection={'column'}>
-            <h2>ChannelSearch</h2>
-            <ContainerItem overflowY="scroll">
-              {SearchedResult(searchedList)}
-            </ContainerItem>
-            <Input
-              focusRef={focusRef}
-              onChangeAct={onChange}
-              placeholder={'channel name'}
-            />
-          </Container>
-        </div>
+        <Container flexDirection={'column'}>
+          <h2>ChannelSearch</h2>
+          <ContainerItem overflowY="scroll">
+            {SearchedResult(searchedList)}
+          </ContainerItem>
+          <Input
+            focusRef={focusRef}
+            onChangeAct={onChange}
+            placeholder={'channel name'}
+          />
+        </Container>
       </ModalView>
     </>
   );
