@@ -135,10 +135,6 @@ export class UserGateway {
 
     console.log(relation);
 
-    await this.sendBlockUsers(dto.userId);
-    await this.sendFriends(dto.userId);
-    await this.sendFriendRequests(dto.userId);
-
     // 相手がフレンドorリクエストの場合はレコードから削除する
     const { count } = await this.prisma.friendship.deleteMany({
       where: {
@@ -150,6 +146,10 @@ export class UserGateway {
       },
     });
     console.log(count);
+
+    await this.sendBlockUsers(dto.userId);
+    await this.sendFriends(dto.userId);
+    await this.sendFriendRequests(dto.userId);
 
     if (count > 0) {
       await this.sendFriends(dto.targetId);
