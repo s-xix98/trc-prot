@@ -45,8 +45,8 @@ export const JoinedChannelInfo = ({
   return (
     <Container flexDirection={'column'}>
       <ChannelInfoHeader selectedChannel={selectedChannel} />
+      <br />
       <ContainerItem overflowY="scroll">
-        <br />
         <UserListWithModal userList={roomMembers} />
       </ContainerItem>
     </Container>
