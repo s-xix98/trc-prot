@@ -1,5 +1,6 @@
 from playwright.sync_api import Page
 
+from src.playwright_runner import TEST_FUNC_TYPE
 from src.user import User
 from src.user_action import UserInteractionManager
 
@@ -51,3 +52,14 @@ def test_logout(test_name: str, page: Page, user: User) -> None:
     client.login(take_screenshot=True)
     client.logout()
     client.screenshot("logout after")
+
+
+test_login_lst: list[TEST_FUNC_TYPE] = [
+    test_signup,
+    test_signup_invalid_form,
+    test_login,
+    test_login_invalid_password,
+    test_signup_already_use_email,
+    test_login_incorrect_password,
+    test_logout,
+]
