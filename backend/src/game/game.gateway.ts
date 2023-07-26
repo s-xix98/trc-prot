@@ -101,9 +101,15 @@ export class GameGateway {
     this.gameRoom.getGame(userid)?.ReadyGame(client);
   }
 
-  // TODO client == srcUserが保証されてないので、jwtから取れるようにしたい
   @SubscribeMessage('invite game')
-  invite(client: Socket, src: UserInfo, dest: UserInfo) {
+  async invite(client: Socket, dest: UserInfo) {
+    const srcId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!srcId) {
+      return;
+    }
+    const src: UserInfo = await this.user.findOneById(srcId);
     const destSock = this.server.getSocket(dest.id);
     if (!destSock) {
       client.emit('error', `${dest.username} is not online`);
