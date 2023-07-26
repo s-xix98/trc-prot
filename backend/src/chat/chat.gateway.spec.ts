@@ -250,12 +250,9 @@ describe('ChatGateway', () => {
         password: password,
       };
 
-      await testService.emitAndWaitForEvent<JoinChannelDto>(
-        'joinChannel',
-        'joinChannel',
-        user.socket,
-        joinChannel,
-      );
+      user.socket.emit('joinChannel', joinChannel);
+
+      await testService.sleep(400);
 
       const MemberList = await prismaService.roomMember.findMany({
         where: {
