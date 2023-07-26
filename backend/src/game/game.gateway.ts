@@ -4,6 +4,7 @@ import { UseFilters } from '@nestjs/common';
 
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { UserService } from '../user/user.service';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
@@ -29,6 +30,7 @@ export class GameGateway {
   constructor(
     private gameService: GameService,
     private server: WsocketGateway,
+    private user: UserService,
   ) {}
 
   handleConnection(client: Socket) {
