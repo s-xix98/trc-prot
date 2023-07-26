@@ -5,13 +5,13 @@ import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useChatRoomStatus } from '@/hooks/useCurrentUser';
+import { UserListWithModal } from '@/features/user/components/UserProfile';
 
 import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useJoinChannel } from '../api/joinChannel';
 
 import { ChannelInvite } from './ChatInvite';
-import { UserListWithModal } from '@/features/user/components/UserProfile';
 
 const ChannelInfoHeader = ({
   selectedChannel,
