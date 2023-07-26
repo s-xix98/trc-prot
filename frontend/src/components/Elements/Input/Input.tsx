@@ -9,6 +9,7 @@ import { inputSx } from '@/lib/mui';
 export const Input = ({
   msg,
   start = undefined,
+  startOnClick = undefined,
   onChangeAct,
   onKeyDownAct = undefined,
   placeholder,
@@ -17,6 +18,7 @@ export const Input = ({
 }: {
   msg?: string;
   start?: string;
+  startOnClick?: () => void;
   onChangeAct: (e: ChangeEvent<HTMLInputElement>) => void;
   onKeyDownAct?: (e: KeyboardEvent<HTMLDivElement>) => void;
   placeholder?: string | undefined;
@@ -37,7 +39,9 @@ export const Input = ({
           disableUnderline: disableUnderline,
           startAdornment: start ? (
             <InputAdornment position="start">
-              <p style={{ color: '#33ff33' }}>{start}</p>
+              <p style={{ color: '#33ff33' }} onClick={startOnClick}>
+                {start}
+              </p>
             </InputAdornment>
           ) : undefined,
           style: {

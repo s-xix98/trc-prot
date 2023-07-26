@@ -11,6 +11,7 @@ import { TestService } from '../test/test.service';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { AuthModule } from '../auth/auth.module';
+import { UserModule } from '../user/user.module';
 
 import {
   CreateChannelDto,
@@ -34,7 +35,7 @@ describe('ChatGateway', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestModule, WsocketModule, AuthModule],
+      imports: [TestModule, WsocketModule, AuthModule, UserModule],
       providers: [ChatGateway, PrismaService, WsocketGateway, ChatService],
     }).compile();
 
@@ -72,12 +73,10 @@ describe('ChatGateway', () => {
         roomName: 'testroom',
         userId: user.user.id,
       };
-      await testService.emitAndWaitForEvent<CreateChannelDto>(
-        'createChannel',
-        'joinedRooms',
-        user.socket,
-        createChannelDto,
-      );
+
+      user.socket.emit('createChannel', createChannelDto);
+
+      await testService.sleep(200);
 
       room = await prismaService.chatRoom.findFirst({
         where: {
@@ -99,30 +98,20 @@ describe('ChatGateway', () => {
     });
 
     test('users[1]~users[9]が部屋に参加', async () => {
-      const promises: Promise<unknown>[] = [];
-
       testUsers.slice(1).map((testUser) => {
         const joinChannel: JoinChannelDto = {
           userId: testUser.user.id,
           chatRoomId: roomId,
         };
-        const joinPromise = testService.emitAndWaitForEvent<JoinChannelDto>(
-          'joinChannel',
-          'joinChannel',
-          testUser.socket,
-          joinChannel,
-        );
-        promises.push(joinPromise);
+
+        testUser.socket.emit('joinChannel', joinChannel);
       });
 
-      await Promise.all(promises).then(async () => {
-        const MemberList = await prismaService.roomMember.findMany({
-          where: {
-            chatRoomId: roomId,
-          },
-        });
-        expect(MemberList.length).toEqual(USERNUM);
-      });
+      await testService.sleep(200);
+
+      const MemberList = await chatService.getRoomMembersById(roomId);
+
+      expect(MemberList.length).toEqual(USERNUM);
     });
   });
 
@@ -133,6 +122,12 @@ describe('ChatGateway', () => {
         throw Error('room is not created');
       }
       roomId = room.id;
+    });
+
+    afterEach(() => {
+      testUsers.forEach((u) => {
+        u.socket.removeAllListeners();
+      });
     });
 
     test('users[0]が送信したメッセージがDBに保存されるか', async () => {
