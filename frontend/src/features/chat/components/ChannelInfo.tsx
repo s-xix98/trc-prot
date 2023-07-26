@@ -9,6 +9,7 @@ import { useChatRoomStatus } from '@/hooks/useCurrentUser';
 import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useJoinChannel } from '../api/joinChannel';
+import { useLeaveChatRoom } from '../api/leaveChatRoom';
 
 import { ChannelInvite } from './ChatInvite';
 
@@ -18,6 +19,7 @@ const ChannelInfoHeader = ({
   selectedChannel: chatChannelDto;
 }) => {
   const modal = useModal();
+  const leaveChatRoomEmitter = useLeaveChatRoom();
 
   return (
     <div>
@@ -28,6 +30,9 @@ const ChannelInfoHeader = ({
         <h3>{selectedChannel.roomName}</h3>
         <div style={{ margin: 'auto 10px auto auto' }}>
           <button onClick={() => modal.openModal()}>Invite</button>
+          <button onClick={() => leaveChatRoomEmitter.emit(selectedChannel.id)}>
+            Leave
+          </button>
         </div>
       </Container>
     </div>
