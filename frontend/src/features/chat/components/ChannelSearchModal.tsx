@@ -10,15 +10,7 @@ import { useModal } from '@/hooks/useModal';
 
 import { chatChannelDto, chatChannelSchema } from '../types/chatChannelDto';
 
-const SearchedResult = (searchedList: chatChannelDto[]) => {
-  return (
-    <>
-      {searchedList.map((channel, idx) => (
-        <p key={idx}> {channel.roomName}</p>
-      ))}
-    </>
-  );
-};
+import { ChannelListWithModal } from './ChannelInfo';
 
 export const ChannelSearchModal = () => {
   const { focusRef } = useFocus();
@@ -46,7 +38,7 @@ export const ChannelSearchModal = () => {
         <Container flexDirection={'column'}>
           <h2>ChannelSearch</h2>
           <ContainerItem overflowY="scroll">
-            {SearchedResult(searchedList)}
+            <ChannelListWithModal channelList={searchedList} />
           </ContainerItem>
           <Input
             focusRef={focusRef}
