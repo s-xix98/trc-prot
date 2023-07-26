@@ -11,6 +11,7 @@ import { chatChannelDto } from '../types/chatChannelDto';
 import { useJoinChannel } from '../api/joinChannel';
 
 import { ChannelInvite } from './ChatInvite';
+import { UserListWithModal } from '@/features/user/components/UserProfile';
 
 const ChannelInfoHeader = ({
   selectedChannel,
@@ -46,9 +47,7 @@ export const JoinedChannelInfo = ({
       <ChannelInfoHeader selectedChannel={selectedChannel} />
       <ContainerItem overflowY="scroll">
         <br />
-        {roomMembers.map((r, idx) => (
-          <p key={idx}>{r.username}</p>
-        ))}
+        <UserListWithModal userList={roomMembers} />
       </ContainerItem>
     </Container>
   );
