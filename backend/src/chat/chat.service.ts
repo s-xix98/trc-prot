@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ChatRoom } from '@prisma/client';
+import { ChatRoom, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
 
@@ -10,6 +10,7 @@ import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
+
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -135,20 +136,7 @@ export class ChatService {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
-    const roomMember = await this.prismaService.roomMember.upsert({
-      where: {
-        userId_chatRoomId: {
-          userId: dto.userId,
-          chatRoomId: dto.chatRoomId,
-        },
-      },
-      update: {},
-      create: {
-        userId: dto.userId,
-        chatRoomId: dto.chatRoomId,
-      },
-    });
-
+    const roomMember = await this.upsertRoomMember(room.id, dto.userId, 'USER');
     return roomMember;
   }
 
@@ -252,7 +240,7 @@ export class ChatService {
   async findRoomMemberState(
     roomId: string,
     userId: string,
-    state: 'BANNED' | 'MUTED',
+    state: UserChatStateCode,
   ) {
     const memberState = await this.prismaService.userChatState.findUnique({
       where: {
@@ -341,5 +329,49 @@ export class ChatService {
         inviter,
       };
     });
+  }
+
+  async roomExists(roomId: string) {
+    const room = await this.findChannelById(roomId);
+    return room !== null;
+  }
+
+  async roomMemberExists(roomId: string, userId: string) {
+    const roomMember = await this.findRoomMember(roomId, userId);
+    return roomMember !== null;
+  }
+
+  async userRestrictionExists(
+    roomId: string,
+    userId: string,
+    state: UserChatStateCode,
+  ) {
+    const userState = await this.findRoomMemberState(roomId, userId, state);
+
+    const now = new Date();
+    if (userState && userState.endedAt > now) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async isUserQualified(roomId: string, userId: string) {
+    const requestUser = await this.findRoomMember(roomId, userId);
+
+    if (requestUser === null || requestUser.role === 'USER') {
+      return false;
+    }
+
+    return true;
+  }
+
+  async isUserRestrictable(roomId: string, userId: string) {
+    const target = await this.findRoomMember(roomId, userId);
+
+    if (target === null || target.role === 'OWNER') {
+      return false;
+    }
+    return true;
   }
 }
