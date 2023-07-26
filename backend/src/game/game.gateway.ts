@@ -126,17 +126,22 @@ export class GameGateway {
     destSock.emit('receive game-invitation', src);
   }
 
-  // TODO client == destUserが保証されてないので、jwtから取れるようにしたい
   @SubscribeMessage('accept game-invitation')
-  acceptInvitation(client: Socket, srcUser: UserInfo, destUser: UserInfo) {
+  async acceptInvitation(client: Socket, srcUser: UserInfo) {
+    const destId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!destId) {
+      return;
+    }
+    const destUser: UserInfo = await this.user.findOneById(destId);
     const srcSock = this.server.getSocket(srcUser.id);
-    const destSock = this.server.getSocket(destUser.id);
-    if (!srcSock || !destSock) {
-      client.emit('error', 'invalid invitation');
+    if (!srcSock) {
+      client.emit('error', `${srcUser.username} is not online`);
       return;
     }
     const src: PlayerData = { client: srcSock, data: srcUser };
-    const dest: PlayerData = { client: destSock, data: destUser };
+    const dest: PlayerData = { client, data: destUser };
     const { err } = this.gameRoom.acceptInvitation({ src, dest });
     if (err !== null) {
       client.emit('error', err);
