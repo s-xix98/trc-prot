@@ -7,6 +7,7 @@ import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useChatRoomStatus } from '@/hooks/useCurrentUser';
 import { selectedChannelAtom } from '@/stores/chatState';
+import { UserListWithModal } from '@/features/user/components/UserProfile';
 
 import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
@@ -57,11 +58,9 @@ export const JoinedChannelInfo = ({
   return (
     <Container flexDirection={'column'}>
       <ChannelInfoHeader selectedChannel={selectedChannel} />
+      <br />
       <ContainerItem overflowY="scroll">
-        <br />
-        {roomMembers.map((r, idx) => (
-          <p key={idx}>{r.username}</p>
-        ))}
+        <UserListWithModal userList={roomMembers} />
       </ContainerItem>
     </Container>
   );
