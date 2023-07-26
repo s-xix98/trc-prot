@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useSetAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useChatRoomStatus } from '@/hooks/useCurrentUser';
+import { selectedChannelAtom } from '@/stores/chatState';
 
 import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
@@ -20,6 +22,7 @@ const ChannelInfoHeader = ({
 }) => {
   const modal = useModal();
   const leaveChatRoomEmitter = useLeaveChatRoom();
+  const setSelectedChannel = useSetAtom(selectedChannelAtom);
 
   return (
     <div>
@@ -30,7 +33,12 @@ const ChannelInfoHeader = ({
         <h3>{selectedChannel.roomName}</h3>
         <div style={{ margin: 'auto 10px auto auto' }}>
           <button onClick={() => modal.openModal()}>Invite</button>
-          <button onClick={() => leaveChatRoomEmitter.emit(selectedChannel.id)}>
+          <button
+            onClick={() => {
+              leaveChatRoomEmitter.emit(selectedChannel.id);
+              setSelectedChannel(undefined);
+            }}
+          >
             Leave
           </button>
         </div>
