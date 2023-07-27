@@ -80,6 +80,17 @@ export class ChatService {
     return invitation;
   }
 
+  async deleteInvitation(inviteeUserId: string, inviterUserId: string, chatRoomId: string) {
+    const {count} = await this.prismaService.chatInvitation.deleteMany({
+      where: {
+        inviteeUserId,
+        inviterUserId,
+        chatRoomId,
+      },
+    });
+
+    return count;
+  }
 
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
