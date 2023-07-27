@@ -306,6 +306,35 @@ export class ChatGateway {
     }
   }
 
+  @SubscribeMessage('acceptChatInvitation')
+  async acceptChatInvitation(client: Socket, dto: InviteChatRoomDto) {
+    console.log('acceptChatInvitation', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
+    const invitation = await this.chatService.findInvitation(userId, dto.targetId, dto.chatRoomId);
+    if (!invitation) {
+      throw new Error('Invitation is not found');
+    }
+
+    const roomMemberExists = await this.chatService.roomMemberExists(dto.chatRoomId, userId);
+    if (!roomMemberExists) {
+      await this.chatService.createRoomMember(dto.chatRoomId, userId, 'USER');
+    }
+
+    await this.chatService.deleteInvitation(userId, dto.targetId, dto.chatRoomId);
+
+    await this.sendInvites(userId);
+  }
+
   @SubscribeMessage('leaveChatRoom')
   async leaveRoom(client: Socket, dto: LeaveRoomDto) {
     console.log('leaveChatRoom', dto);
