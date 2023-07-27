@@ -26,6 +26,11 @@ export class InviteChatRoomDto {
   targetId: string;
 }
 
+export class AcceptChatInvitationDto {
+  chatRoomId: string;
+  inviterId: string;
+}
+
 export class LeaveRoomDto {
   chatRoomId: string;
 }

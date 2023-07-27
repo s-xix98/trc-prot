@@ -17,6 +17,7 @@ import { useModal } from './hooks/useModal';
 import { ModalView } from './components/Elements/Modal/ModalView';
 import { MatchHistory } from './features/game/components/MatchHistory';
 import { Ranking } from './features/game/components/Ranking';
+import { UserInfo } from './features/user/types/UserDto';
 
 const onConnect = () => {
   console.log('socket connect');
@@ -100,6 +101,9 @@ function App() {
 
   useSessionSocket('connect', onConnect);
   useSessionSocket('disconnect', onDisconnect);
+  useSessionSocket('receive game-invitation', (inviter: UserInfo) => {
+    console.log(inviter);
+  });
 
   //useSessionSocket()
 

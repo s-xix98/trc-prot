@@ -67,6 +67,40 @@ export class ChatService {
     return room;
   }
 
+  async findInvitation(
+    inviteeUserId: string,
+    inviterUserId: string,
+    chatRoomId: string,
+  ) {
+    const invitation = await this.prismaService.chatInvitation.findUnique({
+      where: {
+        inviteeUserId_inviterUserId_chatRoomId: {
+          inviteeUserId,
+          inviterUserId,
+          chatRoomId,
+        },
+      },
+    });
+
+    return invitation;
+  }
+
+  async deleteInvitation(
+    inviteeUserId: string,
+    inviterUserId: string,
+    chatRoomId: string,
+  ) {
+    const { count } = await this.prismaService.chatInvitation.deleteMany({
+      where: {
+        inviteeUserId,
+        inviterUserId,
+        chatRoomId,
+      },
+    });
+
+    return count;
+  }
+
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
       where: {
@@ -119,6 +153,18 @@ export class ChatService {
         userId: userId,
         chatRoomId: chatRoomId,
         role: role,
+      },
+    });
+
+    return roomMember;
+  }
+
+  async createRoomMember(chatRoomId: string, userId: string, role: UserRole) {
+    const roomMember = await this.prismaService.roomMember.create({
+      data: {
+        userId,
+        chatRoomId,
+        role,
       },
     });
 
