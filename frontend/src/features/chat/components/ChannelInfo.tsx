@@ -8,6 +8,7 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useGetInviter, useChatRoomStatus } from '@/hooks/useCurrentUser';
 import { selectedChannelAtom } from '@/stores/chatState';
 import { UserListWithModal } from '@/features/user/components/UserProfile';
+import { Input } from '@/components/Elements/Input/Input';
 
 import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
@@ -95,13 +96,21 @@ const JoinChannelButton = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
+  const [password, setPassword] = useState<string>();
   const joinChannel = useJoinChannel();
 
+  // TODO : input で改行できちゃうます。
+  // Input自体をを改行不可にする予定
   return (
     <>
+      <Input
+        msg={password}
+        placeholder="password"
+        onChangeAct={(e) => setPassword(e.target.value)}
+      />
       <button
         onClick={() => {
-          joinChannel.emit(selectedChannel.id);
+          joinChannel.emit(selectedChannel.id, password);
         }}
       >
         join
