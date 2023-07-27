@@ -150,6 +150,18 @@ export class ChatService {
     return roomMember;
   }
 
+  async createRoomMember(chatRoomId: string, userId: string, role: UserRole) {
+    const roomMember = await this.prismaService.roomMember.create({
+      data: {
+        userId,
+        chatRoomId,
+        role,
+      },
+    });
+
+    return roomMember;
+  }
+
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
   async JoinChannel(dto: JoinChannelDto) {
     const room = await this.findChannelById(dto.chatRoomId);
