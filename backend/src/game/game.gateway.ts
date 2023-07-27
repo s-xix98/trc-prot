@@ -57,6 +57,7 @@ export class GameGateway {
       return;
     }
     this.matchingTable.clearWaitingUser(userId);
+    this.gameRoom.deleteInvitations(userId);
   }
 
   @SubscribeMessage('matchmake')
@@ -96,6 +97,58 @@ export class GameGateway {
       return;
     }
     this.gameRoom.getGame(userid)?.ReadyGame(client);
+  }
+
+  // TODO client == srcUserが保証されてないので、jwtから取れるようにしたい
+  @SubscribeMessage('invite game')
+  invite(client: Socket, src: UserInfo, dest: UserInfo) {
+    const destSock = this.server.getSocket(dest.id);
+    if (!destSock) {
+      client.emit('error', `${dest.username} is not online`);
+      return;
+    }
+    const { err } = this.gameRoom.invite(
+      { src: src.id, dest: dest.id },
+      this.CreateGameFactory(),
+    );
+    if (err !== null) {
+      client.emit('error', err);
+      return;
+    }
+    destSock.emit('receive game-invitation', src);
+  }
+
+  // TODO client == destUserが保証されてないので、jwtから取れるようにしたい
+  @SubscribeMessage('accept game-invitation')
+  acceptInvitation(client: Socket, srcUser: UserInfo, destUser: UserInfo) {
+    const srcSock = this.server.getSocket(srcUser.id);
+    const destSock = this.server.getSocket(destUser.id);
+    if (!srcSock || !destSock) {
+      client.emit('error', 'invalid invitation');
+      return;
+    }
+    const src: PlayerData = { client: srcSock, data: srcUser };
+    const dest: PlayerData = { client: destSock, data: destUser };
+    const { err } = this.gameRoom.acceptInvitation({ src, dest });
+    if (err !== null) {
+      client.emit('error', err);
+      return;
+    }
+    this.matchingTable.clearWaitingUser(src.data.id);
+    this.matchingTable.clearWaitingUser(dest.data.id);
+    src.client.emit('matched', dest.data.username);
+    dest.client.emit('matched', src.data.username);
+  }
+
+  @SubscribeMessage('deny game-invitation')
+  denyInvitation(client: Socket, srcUser: UserInfo) {
+    const dest = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!dest) {
+      return;
+    }
+    this.gameRoom.denyInvitation({ src: srcUser.id, dest });
   }
 
   @SubscribeMessage('key press')
