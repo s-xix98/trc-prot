@@ -1,3 +1,4 @@
+import threading
 import time
 from typing import Callable
 
@@ -15,8 +16,41 @@ from concurrent.futures import ThreadPoolExecutor
 
 from src.user_action_utils import force_logout
 
+g_lock = threading.Lock()
+g_waiting_thread = 0
 
-def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
+
+def inc_waiting_thread_count() -> None:
+    global g_waiting_thread
+    g_lock.acquire()
+    g_waiting_thread += 1
+    if g_waiting_thread == MAX_WORKERS:
+        g_waiting_thread = 0
+    g_lock.release()
+
+
+def is_test_start_possible() -> bool:
+    g_lock.acquire()
+    test_start_possible = g_waiting_thread == 0
+    g_lock.release()
+    return test_start_possible
+
+
+def wait_other_thread(thd_idx: int) -> None:
+    inc_waiting_thread_count()
+    while True:
+        if is_test_start_possible():
+            break
+        logger.info(f"thd_idx : {thd_idx} waiting")
+        time.sleep(0.5)
+
+
+def run(
+    thd_idx: int,
+    is_multi_thd_test: bool,
+    func_lst: list[TEST_FUNC_TYPE],
+    user_lst: list[User],
+) -> None:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(headless=HEADLESS)
 
@@ -39,6 +73,8 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
             time.sleep(15)
 
         for func in func_lst:
+            if is_multi_thd_test:
+                wait_other_thread(thd_idx)
             # TODO : マルチスレッドで実行時、テストの同期取るように
             for user in user_lst:
                 logger.info(f"--- RUN TEST : {func.__name__}, user : {user.name} ---")
@@ -77,7 +113,7 @@ def run(func_lst: list[TEST_FUNC_TYPE], user_lst: list[User]) -> None:
 
 
 def playwright_test_runner(func_lst: list[TEST_FUNC_TYPE]) -> None:
-    run(func_lst, [E2E])
+    run(thd_idx=0, is_multi_thd_test=False, func_lst=func_lst, user_lst=[E2E])
 
 
 def playwright_test_runner_multiple_threads(func_lst: list[TEST_FUNC_TYPE]) -> None:
@@ -87,7 +123,14 @@ def playwright_test_runner_multiple_threads(func_lst: list[TEST_FUNC_TYPE]) -> N
         for i in range(1, TEST_USER_COUNT + 1)
     ]
     for i in range(MAX_WORKERS):
+        thd_idx = i
         user_lst = all_test_user[i::MAX_WORKERS]
         logger.info(str([u.name for u in user_lst]))
-        executor.submit(run, func_lst=func_lst, user_lst=user_lst)
+        executor.submit(
+            run,
+            thd_idx=thd_idx,
+            is_multi_thd_test=True,
+            func_lst=func_lst,
+            user_lst=user_lst,
+        )
     executor.shutdown()
