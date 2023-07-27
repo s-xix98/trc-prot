@@ -4,8 +4,9 @@ import './globals.css';
 // storybook addon-coverage を入れたら、test でエラーが出るようになった。
 // Inter コメントアウトしても、特に影響がなかったので一旦コメントアウト
 // import { Inter } from 'next/font/google';
-import { SnackbarProvider, closeSnackbar } from 'notistack';
+import { SnackbarProvider, closeSnackbar, useSnackbar } from 'notistack';
 import { ThemeProvider } from '@mui/material';
+import { z } from 'zod';
 
 import { useSession } from '@/hooks/useSession';
 import { theme } from '@/lib/mui';
@@ -25,11 +26,14 @@ import StyledComponentsRegistry from '../lib/registry';
 
 export const SessionHandler = ({ children }: { children: React.ReactNode }) => {
   const { logout } = useLogout();
+  const { enqueueSnackbar } = useSnackbar();
 
   useSession();
   useCurrentUserStateUpdates();
 
   useSessionSocket('error', (data) => {
+    const resErrMsg = z.string().safeParse(data);
+    enqueueSnackbar(resErrMsg.success ? data : 'Error');
     console.log(data);
   });
 
