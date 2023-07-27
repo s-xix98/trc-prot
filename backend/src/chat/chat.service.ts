@@ -185,7 +185,7 @@ export class ChatService {
 
     let roomMember = await this.findRoomMember(room.id, dto.userId);
     if (!roomMember) {
-      roomMember = await this.upsertRoomMember(room.id, dto.userId, 'USER');
+      roomMember = await this.createRoomMember(room.id, dto.userId, 'USER');
     }
     return roomMember;
   }
