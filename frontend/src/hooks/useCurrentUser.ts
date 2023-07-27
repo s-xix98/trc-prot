@@ -102,3 +102,9 @@ export const useChatRoomStatus = () => {
 
   return { isJoinedRoom, isInvitedRoom };
 };
+
+export const useGetInviter = (room: chatChannelDto) => {
+  const { receiveInviteChatRooms } = useCurrentUser();
+
+  return receiveInviteChatRooms.find((r) => r.chatRoom.id === room.id)?.inviter;
+};
