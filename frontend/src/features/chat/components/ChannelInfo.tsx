@@ -5,7 +5,7 @@ import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
-import { useChatRoomStatus } from '@/hooks/useCurrentUser';
+import { useGetInviter, useChatRoomStatus } from '@/hooks/useCurrentUser';
 import { selectedChannelAtom } from '@/stores/chatState';
 import { UserListWithModal } from '@/features/user/components/UserProfile';
 
@@ -13,6 +13,7 @@ import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useJoinChannel } from '../api/joinChannel';
 import { useLeaveChatRoom } from '../api/leaveChatRoom';
+import { useAcceptChatInvitation } from '../api/acceptInvite';
 
 import { ChannelInvite } from './ChatInvite';
 
@@ -66,6 +67,29 @@ export const JoinedChannelInfo = ({
   );
 };
 
+const AcceptInviteButton = ({
+  selectedChannel,
+}: {
+  selectedChannel: chatChannelDto;
+}) => {
+  const acceptChatInvitation = useAcceptChatInvitation();
+  const inviter = useGetInviter(selectedChannel);
+
+  const acceptInvite = () => {
+    if (inviter === undefined) {
+      console.log('inviter is undef');
+      return;
+    }
+    acceptChatInvitation.emit(selectedChannel.id, inviter.id);
+  };
+
+  return (
+    <>
+      <button onClick={acceptInvite}>AcceptInvite</button>
+    </>
+  );
+};
+
 const JoinChannelButton = ({
   selectedChannel,
 }: {
@@ -91,10 +115,16 @@ const NotJoinedChannelInfo = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
+  const { isInvitedRoom } = useChatRoomStatus();
+
   return (
     <div>
       <h3>{selectedChannel.roomName}</h3>
-      <JoinChannelButton selectedChannel={selectedChannel} />
+      {isInvitedRoom(selectedChannel) ? (
+        <AcceptInviteButton selectedChannel={selectedChannel} />
+      ) : (
+        <JoinChannelButton selectedChannel={selectedChannel} />
+      )}
     </div>
   );
 };
