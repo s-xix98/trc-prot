@@ -66,7 +66,7 @@ export const JoinedChannelInfo = ({
   );
 };
 
-const NotJoinedChannelInfo = ({
+const JoinChannelButton = ({
   selectedChannel,
 }: {
   selectedChannel: chatChannelDto;
@@ -74,8 +74,7 @@ const NotJoinedChannelInfo = ({
   const joinChannel = useJoinChannel();
 
   return (
-    <div>
-      <h3>{selectedChannel.roomName}</h3>
+    <>
       <button
         onClick={() => {
           joinChannel.emit(selectedChannel.id);
@@ -83,6 +82,19 @@ const NotJoinedChannelInfo = ({
       >
         join
       </button>
+    </>
+  );
+};
+
+const NotJoinedChannelInfo = ({
+  selectedChannel,
+}: {
+  selectedChannel: chatChannelDto;
+}) => {
+  return (
+    <div>
+      <h3>{selectedChannel.roomName}</h3>
+      <JoinChannelButton selectedChannel={selectedChannel} />
     </div>
   );
 };
