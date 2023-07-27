@@ -7,6 +7,7 @@ import { roomType } from '../wsocket/utils';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { UserService } from '../user/user.service';
+import { CustomException } from '../exceptions/custom.exception';
 
 import { MessageDto } from './dto/message.dto';
 import {
@@ -17,7 +18,6 @@ import {
   RoomMemberRestrictionDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
-import { CustomException } from '../exceptions/custom.exception';
 
 @WebSocketGateway({
   cors: {

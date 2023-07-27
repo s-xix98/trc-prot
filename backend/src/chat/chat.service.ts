@@ -5,12 +5,12 @@ import { UserRole } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
+import { CustomException } from '../exceptions/custom.exception';
 
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
-import { CustomException } from '../exceptions/custom.exception';
 
 @Injectable()
 export class ChatService {

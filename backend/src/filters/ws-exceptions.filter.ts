@@ -1,5 +1,6 @@
 import { Catch, ArgumentsHost } from '@nestjs/common';
 import { BaseWsExceptionFilter } from '@nestjs/websockets';
+
 import { CustomException } from '../exceptions/custom.exception';
 
 @Catch()

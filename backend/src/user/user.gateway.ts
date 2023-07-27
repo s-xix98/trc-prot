@@ -6,11 +6,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { ChatGateway } from '../chat/chat.gateway';
+import { CustomException } from '../exceptions/custom.exception';
 
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { CustomException } from '../exceptions/custom.exception';
 
 @WebSocketGateway({
   cors: {
