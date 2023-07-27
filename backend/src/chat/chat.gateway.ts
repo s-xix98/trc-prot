@@ -82,10 +82,9 @@ export class ChatGateway {
       dto.userId,
       'OWNER',
     );
-    const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(dto.userId);
   }
 
   @SubscribeMessage('joinChannel')
@@ -112,12 +111,8 @@ export class ChatGateway {
     const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
-    this.server
-      .to(roomType.Chat, addedUser.chatRoomId)
-      .emit('joinChannel', addedUser);
 
-    const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(addedUser.userId);
   }
 
   @SubscribeMessage('sendMessage')
@@ -179,17 +174,17 @@ export class ChatGateway {
 
     await this.chatService.upsertRoomMemberState(dto, 'BANNED');
 
-    const { count } = await this.prisma.roomMember.deleteMany({
+    await this.prisma.roomMember.deleteMany({
       where: {
         userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
 
-    if (count > 0) {
-      // TODO targetを消す
-      // client.emit('deleteRoom', targetState);
-      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+      await this.sendJoinedRooms(dto.targetId);
     }
   }
 
@@ -258,17 +253,17 @@ export class ChatGateway {
       throw new Error('you can not restrict this user');
     }
 
-    const { count } = await this.prisma.roomMember.deleteMany({
+    await this.prisma.roomMember.deleteMany({
       where: {
         userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
 
-    if (count > 0) {
-      // TODO targetを消す
-      // client.emit('deleteRoom', targetState);
-      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+      await this.sendJoinedRooms(dto.targetId);
     }
   }
 
@@ -335,8 +330,7 @@ export class ChatGateway {
     });
 
     this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
-    const joinedRooms = await this.chatService.getJoinedRooms(userId);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(userId);
   }
 
   async broadcastMessagesToJoinedRooms(userId: string) {
@@ -349,5 +343,13 @@ export class ChatGateway {
   private async broadcastRoomMessageHistory(roomId: string) {
     const msgs = await this.chatService.getChannelHistoryById(roomId);
     this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
+  }
+
+  private async sendJoinedRooms(userId: string) {
+    const socket = this.server.getSocket(userId);
+    if (socket) {
+      const joinedRooms = await this.chatService.getJoinedRooms(userId);
+      socket.emit('joinedRooms', joinedRooms);
+    }
   }
 }
