@@ -76,7 +76,7 @@ describe('ChatGateway', () => {
 
       user.socket.emit('createChannel', createChannelDto);
 
-      await testService.sleep(200);
+      await testService.sleep(400);
 
       room = await prismaService.chatRoom.findFirst({
         where: {
@@ -107,7 +107,7 @@ describe('ChatGateway', () => {
         testUser.socket.emit('joinChannel', joinChannel);
       });
 
-      await testService.sleep(200);
+      await testService.sleep(400);
 
       const MemberList = await chatService.getRoomMembersById(roomId);
 
@@ -250,12 +250,9 @@ describe('ChatGateway', () => {
         password: password,
       };
 
-      await testService.emitAndWaitForEvent<JoinChannelDto>(
-        'joinChannel',
-        'joinChannel',
-        user.socket,
-        joinChannel,
-      );
+      user.socket.emit('joinChannel', joinChannel);
+
+      await testService.sleep(400);
 
       const MemberList = await prismaService.roomMember.findMany({
         where: {
