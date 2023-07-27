@@ -17,6 +17,7 @@ import {
   JoinChannelDto,
   LeaveRoomDto,
   RoomMemberRestrictionDto,
+  RejectChatInvitationDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -347,6 +348,29 @@ export class ChatGateway {
 
     await this.sendInvites(userId);
     await this.sendJoinedRooms(userId);
+  }
+
+  @SubscribeMessage('rejectChatInvitation')
+  async RejectChatRoomInvitation(client: Socket, dto: RejectChatInvitationDto) {
+    console.log('rejectChatInvitation', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('User not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
+    await this.chatService.deleteInvitation(
+      userId,
+      dto.inviterId,
+      dto.chatRoomId,
+    );
+
+    await this.sendInvites(userId);
   }
 
   @SubscribeMessage('leaveChatRoom')

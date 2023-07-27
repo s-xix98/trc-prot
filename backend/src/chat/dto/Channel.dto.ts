@@ -34,3 +34,8 @@ export class AcceptChatInvitationDto {
 export class LeaveRoomDto {
   chatRoomId: string;
 }
+
+export class RejectChatInvitationDto {
+  chatRoomId: string;
+  inviterId: string;
+}
