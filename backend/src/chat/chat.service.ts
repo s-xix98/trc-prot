@@ -66,6 +66,21 @@ export class ChatService {
     return room;
   }
 
+  async findInvitation(inviteeUserId: string, inviterUserId: string, chatRoomId: string) {
+    const invitation = await this.prismaService.chatInvitation.findUnique({
+      where: {
+        inviteeUserId_inviterUserId_chatRoomId: {
+          inviteeUserId,
+          inviterUserId,
+          chatRoomId,
+        },
+      },
+    });
+
+    return invitation;
+  }
+
+
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
       where: {
