@@ -176,13 +176,7 @@ export class ChatGateway {
     }
 
     await this.chatService.upsertRoomMemberState(dto, 'BANNED');
-
-    await this.prisma.roomMember.deleteMany({
-      where: {
-        userId: dto.targetId,
-        chatRoomId: dto.chatRoomId,
-      },
-    });
+    await this.chatService.deleteRoomMember(dto.chatRoomId, dto.targetId);
 
     const targetSock = this.server.getSocket(dto.targetId);
     if (targetSock) {
@@ -256,12 +250,7 @@ export class ChatGateway {
       throw new CustomException('you can not restrict this user');
     }
 
-    await this.prisma.roomMember.deleteMany({
-      where: {
-        userId: dto.targetId,
-        chatRoomId: dto.chatRoomId,
-      },
-    });
+    await this.chatService.deleteRoomMember(dto.chatRoomId, dto.targetId);
 
     const targetSock = this.server.getSocket(dto.targetId);
     if (targetSock) {
@@ -387,14 +376,7 @@ export class ChatGateway {
       throw new CustomException('Room is not found');
     }
 
-    await this.prisma.roomMember.delete({
-      where: {
-        userId_chatRoomId: {
-          userId,
-          chatRoomId: dto.chatRoomId,
-        },
-      },
-    });
+    await this.chatService.deleteRoomMember(dto.chatRoomId, userId);
 
     this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
     await this.sendJoinedRooms(userId);
