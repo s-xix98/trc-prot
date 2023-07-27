@@ -17,3 +17,11 @@ export const ReceiveInviteChatRoomDtoSchema = z.object({
 export type ReceiveInviteChatRoomDto = z.infer<
   typeof ReceiveInviteChatRoomDtoSchema
 >;
+
+export const AcceptChatInvitationDtoSchema = z.object({
+  chatRoomId: z.string(),
+  inviterId: z.string(),
+});
+export type AcceptChatInvitationDto = z.infer<
+  typeof AcceptChatInvitationDtoSchema
+>;
