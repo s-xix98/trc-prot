@@ -11,6 +11,7 @@ import { CustomException } from '../exceptions/custom.exception';
 
 import { MessageDto } from './dto/message.dto';
 import {
+  AcceptChatInvitationDto,
   CreateChannelDto,
   InviteChatRoomDto,
   JoinChannelDto,
@@ -305,6 +306,47 @@ export class ChatGateway {
       const invites = await this.chatService.getInvites(userId);
       socket.emit('receiveInviteChatRoom', invites);
     }
+  }
+
+  @SubscribeMessage('acceptChatInvitation')
+  async acceptChatInvitation(client: Socket, dto: AcceptChatInvitationDto) {
+    console.log('acceptChatInvitation', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
+    const invitation = await this.chatService.findInvitation(
+      userId,
+      dto.inviterId,
+      dto.chatRoomId,
+    );
+    if (!invitation) {
+      throw new Error('Invitation is not found');
+    }
+
+    const roomMemberExists = await this.chatService.roomMemberExists(
+      dto.chatRoomId,
+      userId,
+    );
+    if (!roomMemberExists) {
+      await this.chatService.createRoomMember(dto.chatRoomId, userId, 'USER');
+    }
+
+    await this.chatService.deleteInvitation(
+      userId,
+      dto.inviterId,
+      dto.chatRoomId,
+    );
+
+    await this.sendInvites(userId);
+    await this.sendJoinedRooms(userId);
   }
 
   @SubscribeMessage('leaveChatRoom')
