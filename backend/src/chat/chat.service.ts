@@ -171,6 +171,17 @@ export class ChatService {
     return roomMember;
   }
 
+  async deleteRoomMember(chatRoomId: string, userId: string) {
+    const { count } = await this.prismaService.roomMember.deleteMany({
+      where: {
+        userId,
+        chatRoomId,
+      },
+    });
+
+    return count;
+  }
+
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
   async JoinChannel(dto: JoinChannelDto) {
     const room = await this.findChannelById(dto.chatRoomId);
