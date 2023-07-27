@@ -208,10 +208,7 @@ export class ChatGateway {
       throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const isOwner = await this.chatService.isOwner(
-      dto.chatRoomId,
-      dto.userId,
-    );
+    const isOwner = await this.chatService.isOwner(dto.chatRoomId, dto.userId);
     if (isOwner) {
       throw new CustomException('you can not restrict this user');
     }
@@ -242,10 +239,7 @@ export class ChatGateway {
       throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const isOwner = await this.chatService.isOwner(
-      dto.chatRoomId,
-      dto.userId,
-    );
+    const isOwner = await this.chatService.isOwner(dto.chatRoomId, dto.userId);
     if (isOwner) {
       throw new CustomException('you can not restrict this user');
     }
