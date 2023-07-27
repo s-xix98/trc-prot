@@ -129,6 +129,7 @@ const NotJoinedChannelInfo = ({
   return (
     <div>
       <h3>{selectedChannel.roomName}</h3>
+      <br />
       {isInvitedRoom(selectedChannel) ? (
         <AcceptInviteButton selectedChannel={selectedChannel} />
       ) : (
