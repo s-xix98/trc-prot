@@ -315,12 +315,12 @@ export class ChatGateway {
 
     const userId = this.server.getUserId(client);
     if (!userId) {
-      throw new Error('User is not found');
+      throw new CustomException('User is not found');
     }
 
     const roomExists = await this.chatService.roomExists(dto.chatRoomId);
     if (!roomExists) {
-      throw new Error('Room is not found');
+      throw new CustomException('Room is not found');
     }
 
     const invitation = await this.chatService.findInvitation(
@@ -329,7 +329,7 @@ export class ChatGateway {
       dto.chatRoomId,
     );
     if (!invitation) {
-      throw new Error('Invitation is not found');
+      throw new CustomException('Invitation is not found');
     }
 
     const roomMemberExists = await this.chatService.roomMemberExists(
@@ -356,12 +356,12 @@ export class ChatGateway {
 
     const userId = this.server.getUserId(client);
     if (!userId) {
-      throw new Error('User not found');
+      throw new CustomException('User not found');
     }
 
     const roomExists = await this.chatService.roomExists(dto.chatRoomId);
     if (!roomExists) {
-      throw new Error('Room is not found');
+      throw new CustomException('Room is not found');
     }
 
     await this.chatService.deleteInvitation(
