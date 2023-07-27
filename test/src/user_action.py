@@ -39,7 +39,7 @@ class UserInteractionManager:
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
                 page.keyboard.press("Escape")
-                page.get_by_text(f"{self.user.name} >").click(timeout=100)
+                page.get_by_role("heading", name="Terminal").click(timeout=100)
                 break
             except PlaywrightTimeoutError:
                 pass
@@ -143,6 +143,71 @@ class UserInteractionManager:
         page.get_by_role("button", name="create").click()
 
         self.screenshot("create_chat_room after")
+
+    def create_some_chat_room(self, room_name: str, times: int) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        self.screenshot("create_chat_room before")
+
+        for i in range(times):
+            page.get_by_text("ChannelCreate").click()
+            page.get_by_placeholder("roomName").fill(f"{room_name}{i}")
+            page.get_by_role("button", name="create").click()
+
+        self.screenshot("create_chat_room after")
+
+    def invite_chat_room(self, room_name: str, invite_user_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_text(room_name).click()
+        page.get_by_role("heading", name=f"ChatTalkArea {room_name}").click()
+
+        self.screenshot("invite_chat_room prev")
+
+        page.get_by_role("button", name="Invite").click()
+        page.get_by_placeholder("username").fill(invite_user_name)
+        page.get_by_role("button", name="Invite").click()
+
+        page.keyboard.press("Escape")
+
+        self.screenshot("invite_chat_room after")
+
+    def search_and_join_chat_room(self, room_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_text("Channel Search").click()
+        page.get_by_placeholder("channel name").fill(room_name)
+
+        self.screenshot("search_and_join_chat_room before")
+
+        page.get_by_text(room_name).click()
+        page.get_by_role("button", name="join").click()
+
+        self.screenshot("search_and_join_chat_room after")
+
+    def leave_chat_room(self, room_name: str) -> None:
+        page = self.page
+
+        page.locator("#outlined-multiline-static").fill("./chat")
+        page.locator("#outlined-multiline-static").press("Enter")
+
+        page.get_by_text(room_name).click()
+
+        self.screenshot("leave_chat_room before")
+
+        page.get_by_role("heading", name=f"ChatTalkArea {room_name}").click()
+        page.get_by_role("button", name="Leave").click()
+
+        self.screenshot("leave_chat_room after")
 
     def visit_chat_room(self, room_name: str) -> None:
         page = self.page

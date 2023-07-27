@@ -1,12 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-
-import { chatChannelDto } from '../types/chatChannelDto';
+import { selectedChannelAtom } from '@/stores/chatState';
 
 import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';
@@ -29,7 +28,7 @@ const ChooseRoom = () => {
 
 export const Chat = () => {
   const { currentUserInfo } = useCurrentUser();
-  const [selectedChannel, setSelectedChannel] = useState<chatChannelDto>();
+  const [selectedChannel, setSelectedChannel] = useAtom(selectedChannelAtom);
   const { joinedRooms } = useCurrentUser();
 
   if (currentUserInfo === undefined) {

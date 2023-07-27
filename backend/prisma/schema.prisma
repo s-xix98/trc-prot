@@ -77,7 +77,7 @@ model ChatRoom {
   id             String           @id @default(cuid())
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
-  roomName       String           @unique
+  roomName       String
   hashedPassword String?
   isPrivate      Boolean          @default(false)
   isDM           Boolean          @default(false)

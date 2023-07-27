@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { ChatGateway } from '../chat/chat.gateway';
+import { CustomException } from '../exceptions/custom.exception';
 
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
@@ -77,7 +78,7 @@ export class UserGateway {
     console.log(dto);
 
     if (dto.userId === dto.targetId) {
-      throw new Error('cannot send friend request to yourself');
+      throw new CustomException('cannot send friend request to yourself');
     }
 
     const { srcFriendship, targetFriendship } =
@@ -87,11 +88,11 @@ export class UserGateway {
       srcFriendship?.status === 'Blocked' ||
       targetFriendship?.status === 'Blocked'
     ) {
-      throw new Error('cannot send friend request to blocked user');
+      throw new CustomException('cannot send friend request to blocked user');
     } else if (targetFriendship?.status === 'Accepted') {
-      throw new Error('already friend');
+      throw new CustomException('already friend');
     } else if (srcFriendship?.status === 'Requested') {
-      throw new Error('already requested');
+      throw new CustomException('already requested');
     } else if (targetFriendship?.status === 'Requested') {
       await this.userService.upsertFriendship(
         dto.userId,
@@ -124,7 +125,7 @@ export class UserGateway {
     console.log('blockUser', client.id, dto);
 
     if (dto.userId === dto.targetId) {
-      throw new Error('cannot block yourself');
+      throw new CustomException('cannot block yourself');
     }
 
     const relation = await this.userService.upsertFriendship(
@@ -134,10 +135,6 @@ export class UserGateway {
     );
 
     console.log(relation);
-
-    await this.sendBlockUsers(dto.userId);
-    await this.sendFriends(dto.userId);
-    await this.sendFriendRequests(dto.userId);
 
     // 相手がフレンドorリクエストの場合はレコードから削除する
     const { count } = await this.prisma.friendship.deleteMany({
@@ -151,6 +148,10 @@ export class UserGateway {
     });
     console.log(count);
 
+    await this.sendBlockUsers(dto.userId);
+    await this.sendFriends(dto.userId);
+    await this.sendFriendRequests(dto.userId);
+
     if (count > 0) {
       await this.sendFriends(dto.targetId);
     }
@@ -162,7 +163,7 @@ export class UserGateway {
     console.log('unblockUser', client.id, dto);
 
     if (dto.userId === dto.targetId) {
-      throw new Error('cannot unblock yourself');
+      throw new CustomException('cannot unblock yourself');
     }
 
     const { count } = await this.prisma.friendship.deleteMany({
@@ -186,7 +187,7 @@ export class UserGateway {
     console.log('unfriendUser', client.id, dto);
 
     if (dto.userId === dto.targetId) {
-      throw new Error('cannot unblock yourself');
+      throw new CustomException('cannot unblock yourself');
     }
 
     const { count } = await this.prisma.friendship.deleteMany({
@@ -222,7 +223,7 @@ export class UserGateway {
 
     const userId = this.server.getUserId(client);
     if (!userId) {
-      throw new Error('invalid token');
+      throw new CustomException('invalid token');
     }
 
     await this.userService.updateUser(userId, dto);

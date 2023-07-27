@@ -1,14 +1,17 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ChatRoom } from '@prisma/client';
+import { ChatRoom, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UserRole } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
+import { CustomException } from '../exceptions/custom.exception';
 
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
+
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -64,6 +67,40 @@ export class ChatService {
     return room;
   }
 
+  async findInvitation(
+    inviteeUserId: string,
+    inviterUserId: string,
+    chatRoomId: string,
+  ) {
+    const invitation = await this.prismaService.chatInvitation.findUnique({
+      where: {
+        inviteeUserId_inviterUserId_chatRoomId: {
+          inviteeUserId,
+          inviterUserId,
+          chatRoomId,
+        },
+      },
+    });
+
+    return invitation;
+  }
+
+  async deleteInvitation(
+    inviteeUserId: string,
+    inviterUserId: string,
+    chatRoomId: string,
+  ) {
+    const { count } = await this.prismaService.chatInvitation.deleteMany({
+      where: {
+        inviteeUserId,
+        inviterUserId,
+        chatRoomId,
+      },
+    });
+
+    return count;
+  }
+
   async search(searchWord: string) {
     const partialMatchRooms = await this.prismaService.chatRoom.findMany({
       where: {
@@ -100,15 +137,38 @@ export class ChatService {
       },
     });
 
-    await this.prismaService.roomMember.create({
-      data: {
-        userId: dto.userId,
-        chatRoomId: createdRoom.id,
-        role: 'OWNER',
+    return createdRoom;
+  }
+
+  async upsertRoomMember(chatRoomId: string, userId: string, role: UserRole) {
+    const roomMember = await this.prismaService.roomMember.upsert({
+      where: {
+        userId_chatRoomId: {
+          userId: userId,
+          chatRoomId: chatRoomId,
+        },
+      },
+      update: {},
+      create: {
+        userId: userId,
+        chatRoomId: chatRoomId,
+        role: role,
       },
     });
 
-    return createdRoom;
+    return roomMember;
+  }
+
+  async createRoomMember(chatRoomId: string, userId: string, role: UserRole) {
+    const roomMember = await this.prismaService.roomMember.create({
+      data: {
+        userId,
+        chatRoomId,
+        role,
+      },
+    });
+
+    return roomMember;
   }
 
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
@@ -116,27 +176,14 @@ export class ChatService {
     const room = await this.findChannelById(dto.chatRoomId);
     // TODO もうちょいちゃんとしたエラー投げる
     if (!room) {
-      throw new Error('Room not found');
+      throw new CustomException('Room not found');
     }
 
     if (room.hashedPassword !== null) {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
-    const roomMember = await this.prismaService.roomMember.upsert({
-      where: {
-        userId_chatRoomId: {
-          userId: dto.userId,
-          chatRoomId: dto.chatRoomId,
-        },
-      },
-      update: {},
-      create: {
-        userId: dto.userId,
-        chatRoomId: dto.chatRoomId,
-      },
-    });
-
+    const roomMember = await this.upsertRoomMember(room.id, dto.userId, 'USER');
     return roomMember;
   }
 
@@ -158,12 +205,12 @@ export class ChatService {
   ) {
     // TODO もうちょいちゃんとしたエラー投げる
     if (enteredPassword === undefined) {
-      throw new Error('Password is required');
+      throw new CustomException('Password is required');
     }
 
     const isMatch = await bcrypt.compare(enteredPassword, hashedPassword);
     if (!isMatch) {
-      throw new Error('Password is incorrect');
+      throw new CustomException('Password is incorrect');
     }
   }
 
@@ -240,7 +287,7 @@ export class ChatService {
   async findRoomMemberState(
     roomId: string,
     userId: string,
-    state: 'BANNED' | 'MUTED',
+    state: UserChatStateCode,
   ) {
     const memberState = await this.prismaService.userChatState.findUnique({
       where: {
@@ -329,5 +376,49 @@ export class ChatService {
         inviter,
       };
     });
+  }
+
+  async roomExists(roomId: string) {
+    const room = await this.findChannelById(roomId);
+    return room !== null;
+  }
+
+  async roomMemberExists(roomId: string, userId: string) {
+    const roomMember = await this.findRoomMember(roomId, userId);
+    return roomMember !== null;
+  }
+
+  async userRestrictionExists(
+    roomId: string,
+    userId: string,
+    state: UserChatStateCode,
+  ) {
+    const userState = await this.findRoomMemberState(roomId, userId, state);
+
+    const now = new Date();
+    if (userState && userState.endedAt > now) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async isUserQualified(roomId: string, userId: string) {
+    const requestUser = await this.findRoomMember(roomId, userId);
+
+    if (requestUser === null || requestUser.role === 'USER') {
+      return false;
+    }
+
+    return true;
+  }
+
+  async isUserRestrictable(roomId: string, userId: string) {
+    const target = await this.findRoomMember(roomId, userId);
+
+    if (target === null || target.role === 'OWNER') {
+      return false;
+    }
+    return true;
   }
 }

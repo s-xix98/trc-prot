@@ -90,11 +90,21 @@ export const useFriendStatus = () => {
 };
 
 export const useChatRoomStatus = () => {
-  const { joinedRooms } = useCurrentUser();
+  const { joinedRooms, receiveInviteChatRooms } = useCurrentUser();
 
   const isJoinedRoom = (room: chatChannelDto) => {
     return joinedRooms.some((r) => r.id === room.id);
   };
 
-  return { isJoinedRoom };
+  const isInvitedRoom = (room: chatChannelDto) => {
+    return receiveInviteChatRooms.some((r) => r.chatRoom.id === room.id);
+  };
+
+  return { isJoinedRoom, isInvitedRoom };
+};
+
+export const useGetInviter = (room: chatChannelDto) => {
+  const { receiveInviteChatRooms } = useCurrentUser();
+
+  return receiveInviteChatRooms.find((r) => r.chatRoom.id === room.id)?.inviter;
 };
