@@ -9,12 +9,6 @@ from src.user import User
 from src.user_action import UserInteractionManager
 
 
-# TODO : 消す
-# test の同期を取るためだけに存在
-def sleep(test_name: str, page: Page, user: User) -> None:
-    time.sleep(5)
-
-
 def test_create_many_user(test_name: str, page: Page, user: User) -> None:
     client = UserInteractionManager(test_name, user, page)
     client.goto_top_page()
@@ -37,6 +31,5 @@ def send_friend_req(test_name: str, page: Page, user: User) -> None:
 
 many_user_test_lst: list[TEST_FUNC_TYPE] = [
     test_create_many_user,
-    sleep,
     send_friend_req,
 ]
