@@ -344,6 +344,7 @@ export class ChatGateway {
     );
 
     await this.sendInvites(userId);
+    await this.sendJoinedRooms(userId);
   }
 
   @SubscribeMessage('leaveChatRoom')
