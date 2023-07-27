@@ -9,8 +9,8 @@ import { CustomException } from '../exceptions/custom.exception';
 
 import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
-import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
+import { MessageDto } from './dto/message.dto';
 
 @Injectable()
 export class ChatService {
@@ -183,7 +183,7 @@ export class ChatService {
   }
 
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
-  async JoinChannel(dto: JoinChannelDto) {
+  async JoinChannel(dto: JoinChannelDto, userId: string) {
     const room = await this.findChannelById(dto.chatRoomId);
     // TODO もうちょいちゃんとしたエラー投げる
     if (!room) {
@@ -194,18 +194,18 @@ export class ChatService {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
-    let roomMember = await this.findRoomMember(room.id, dto.userId);
+    let roomMember = await this.findRoomMember(room.id, userId);
     if (!roomMember) {
-      roomMember = await this.createRoomMember(room.id, dto.userId, 'USER');
+      roomMember = await this.createRoomMember(room.id, userId, 'USER');
     }
     return roomMember;
   }
 
-  async createMessage(dto: MessageDto) {
+  async createMessage(dto: MessageDto, userId: string) {
     const newMsg = await this.prismaService.message.create({
       data: {
         content: dto.content,
-        userId: dto.userId,
+        userId: userId,
         chatRoomId: dto.chatRoomId,
       },
     });

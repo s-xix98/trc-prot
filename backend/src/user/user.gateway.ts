@@ -96,13 +96,17 @@ export class UserGateway {
   async friendRequest(client: Socket, dto: friendshipDto) {
     console.log('friendRequest', client.id);
     console.log(dto);
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
 
-    if (dto.userId === dto.targetId) {
+    if (userId === dto.targetId) {
       throw new CustomException('cannot send friend request to yourself');
     }
 
     const { srcFriendship, targetFriendship } =
-      await this.userService.getFriendship(dto.userId, dto.targetId);
+      await this.userService.getFriendship(userId, dto.targetId);
 
     if (
       srcFriendship?.status === 'Blocked' ||
@@ -114,24 +118,16 @@ export class UserGateway {
     } else if (srcFriendship?.status === 'Requested') {
       throw new CustomException('already requested');
     } else if (targetFriendship?.status === 'Requested') {
-      await this.userService.upsertFriendship(
-        dto.userId,
-        dto.targetId,
-        'Accepted',
-      );
-      await this.userService.upsertFriendship(
-        dto.targetId,
-        dto.userId,
-        'Accepted',
-      );
+      await this.userService.upsertFriendship(userId, dto.targetId, 'Accepted');
+      await this.userService.upsertFriendship(dto.targetId, userId, 'Accepted');
 
-      await this.sendFriends(dto.userId);
+      await this.sendFriends(userId);
       await this.sendFriends(dto.targetId);
-      await this.sendFriendRequests(dto.userId);
+      await this.sendFriendRequests(userId);
       await this.sendFriendRequests(dto.targetId);
     } else if (srcFriendship === null) {
       await this.userService.upsertFriendship(
-        dto.userId,
+        userId,
         dto.targetId,
         'Requested',
       );
@@ -144,12 +140,17 @@ export class UserGateway {
   async blockUser(client: Socket, dto: friendshipDto) {
     console.log('blockUser', client.id, dto);
 
-    if (dto.userId === dto.targetId) {
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
+
+    if (userId === dto.targetId) {
       throw new CustomException('cannot block yourself');
     }
 
     const relation = await this.userService.upsertFriendship(
-      dto.userId,
+      userId,
       dto.targetId,
       'Blocked',
     );
@@ -160,7 +161,7 @@ export class UserGateway {
     const { count } = await this.prisma.friendship.deleteMany({
       where: {
         srcUserId: dto.targetId,
-        destUserId: dto.userId,
+        destUserId: userId,
         status: {
           in: ['Requested', 'Accepted'],
         },
@@ -168,9 +169,9 @@ export class UserGateway {
     });
     console.log(count);
 
-    await this.sendBlockUsers(dto.userId);
-    await this.sendFriends(dto.userId);
-    await this.sendFriendRequests(dto.userId);
+    await this.sendBlockUsers(userId);
+    await this.sendFriends(userId);
+    await this.sendFriendRequests(userId);
 
     if (count > 0) {
       await this.sendFriends(dto.targetId);
@@ -181,14 +182,18 @@ export class UserGateway {
   @SubscribeMessage('unblockUser')
   async unblockUser(client: Socket, dto: friendshipDto) {
     console.log('unblockUser', client.id, dto);
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
 
-    if (dto.userId === dto.targetId) {
+    if (userId === dto.targetId) {
       throw new CustomException('cannot unblock yourself');
     }
 
     const { count } = await this.prisma.friendship.deleteMany({
       where: {
-        srcUserId: dto.userId,
+        srcUserId: userId,
         destUserId: dto.targetId,
         status: {
           equals: 'Blocked',
@@ -197,7 +202,7 @@ export class UserGateway {
     });
 
     if (count > 0) {
-      await this.sendBlockUsers(dto.userId);
+      await this.sendBlockUsers(userId);
       // TODO 非表示だったmsgを表示する
     }
   }
@@ -205,8 +210,12 @@ export class UserGateway {
   @SubscribeMessage('unfriendUser')
   async unfriendUser(client: Socket, dto: friendshipDto) {
     console.log('unfriendUser', client.id, dto);
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
 
-    if (dto.userId === dto.targetId) {
+    if (userId === dto.targetId) {
       throw new CustomException('cannot unblock yourself');
     }
 
@@ -214,7 +223,7 @@ export class UserGateway {
       where: {
         OR: [
           {
-            srcUserId: dto.userId,
+            srcUserId: userId,
             destUserId: dto.targetId,
             status: {
               equals: 'Accepted',
@@ -222,7 +231,7 @@ export class UserGateway {
           },
           {
             srcUserId: dto.targetId,
-            destUserId: dto.userId,
+            destUserId: userId,
             status: {
               equals: 'Accepted',
             },
@@ -232,7 +241,7 @@ export class UserGateway {
     });
 
     if (count > 0) {
-      await this.sendFriends(dto.userId);
+      await this.sendFriends(userId);
       await this.sendFriends(dto.targetId);
     }
   }
