@@ -153,6 +153,20 @@ export class GameGateway {
     dest.client.emit('matched', src.data.username);
   }
 
+  @SubscribeMessage('get game-invitations')
+  async getInvitations(client: Socket) {
+    const destId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!destId) {
+      client.emit('error', `nazo no error`);
+      return;
+    }
+    const srcs = this.gameRoom.getInviters(destId);
+    const inviters = await this.gameService.getUsers(srcs);
+    client.emit('game-invitations', inviters);
+  }
+
   @SubscribeMessage('deny game-invitation')
   denyInvitation(client: Socket, srcUser: UserInfo) {
     const dest = this.server.extractUserIdFromToken(
