@@ -10,6 +10,7 @@ import { UserService } from '../user/user.service';
 
 import { MessageDto } from './dto/message.dto';
 import {
+  AcceptChatInvitationDto,
   CreateChannelDto,
   InviteChatRoomDto,
   JoinChannelDto,
@@ -307,7 +308,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('acceptChatInvitation')
-  async acceptChatInvitation(client: Socket, dto: InviteChatRoomDto) {
+  async acceptChatInvitation(client: Socket, dto: AcceptChatInvitationDto) {
     console.log('acceptChatInvitation', dto);
 
     const userId = this.server.getUserId(client);
@@ -322,7 +323,7 @@ export class ChatGateway {
 
     const invitation = await this.chatService.findInvitation(
       userId,
-      dto.targetId,
+      dto.inviterId,
       dto.chatRoomId,
     );
     if (!invitation) {
@@ -339,7 +340,7 @@ export class ChatGateway {
 
     await this.chatService.deleteInvitation(
       userId,
-      dto.targetId,
+      dto.inviterId,
       dto.chatRoomId,
     );
 
