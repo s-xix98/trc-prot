@@ -66,7 +66,11 @@ export class ChatService {
     return room;
   }
 
-  async findInvitation(inviteeUserId: string, inviterUserId: string, chatRoomId: string) {
+  async findInvitation(
+    inviteeUserId: string,
+    inviterUserId: string,
+    chatRoomId: string,
+  ) {
     const invitation = await this.prismaService.chatInvitation.findUnique({
       where: {
         inviteeUserId_inviterUserId_chatRoomId: {
@@ -80,8 +84,12 @@ export class ChatService {
     return invitation;
   }
 
-  async deleteInvitation(inviteeUserId: string, inviterUserId: string, chatRoomId: string) {
-    const {count} = await this.prismaService.chatInvitation.deleteMany({
+  async deleteInvitation(
+    inviteeUserId: string,
+    inviterUserId: string,
+    chatRoomId: string,
+  ) {
+    const { count } = await this.prismaService.chatInvitation.deleteMany({
       where: {
         inviteeUserId,
         inviterUserId,

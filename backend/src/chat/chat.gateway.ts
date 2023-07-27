@@ -320,17 +320,28 @@ export class ChatGateway {
       throw new Error('Room is not found');
     }
 
-    const invitation = await this.chatService.findInvitation(userId, dto.targetId, dto.chatRoomId);
+    const invitation = await this.chatService.findInvitation(
+      userId,
+      dto.targetId,
+      dto.chatRoomId,
+    );
     if (!invitation) {
       throw new Error('Invitation is not found');
     }
 
-    const roomMemberExists = await this.chatService.roomMemberExists(dto.chatRoomId, userId);
+    const roomMemberExists = await this.chatService.roomMemberExists(
+      dto.chatRoomId,
+      userId,
+    );
     if (!roomMemberExists) {
       await this.chatService.createRoomMember(dto.chatRoomId, userId, 'USER');
     }
 
-    await this.chatService.deleteInvitation(userId, dto.targetId, dto.chatRoomId);
+    await this.chatService.deleteInvitation(
+      userId,
+      dto.targetId,
+      dto.chatRoomId,
+    );
 
     await this.sendInvites(userId);
   }
