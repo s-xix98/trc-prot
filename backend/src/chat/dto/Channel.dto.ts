@@ -36,3 +36,10 @@ export class RejectChatInvitationDto {
   chatRoomId: string;
   inviterId: string;
 }
+
+export class UpdateChatRoomDto {
+  chatRoomId: string;
+  roomName?: string;
+  password?: string | null;
+  isPrivate?: boolean;
+}
