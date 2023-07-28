@@ -7,7 +7,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
 import { CustomException } from '../exceptions/custom.exception';
 
-import { CreateChannelDto, UpdateChatRoomDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
+import {
+  CreateChannelDto,
+  UpdateChatRoomDto,
+  UpdateRoomMemberRoleDto,
+} from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
