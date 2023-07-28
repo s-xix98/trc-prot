@@ -18,6 +18,7 @@ import {
   LeaveRoomDto,
   RoomMemberRestrictionDto,
   RejectChatInvitationDto,
+  UpdateChatRoomDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -382,6 +383,29 @@ export class ChatGateway {
 
     this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
     await this.sendJoinedRooms(userId);
+  }
+
+  @SubscribeMessage('updateChatRoom')
+  async updateChatRoom(client: Socket, dto: UpdateChatRoomDto) {
+    console.log('updateChatRoom', dto);
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
+
+    const isOwner = await this.chatService.isOwner(dto.chatRoomId, userId);
+    if (!isOwner) {
+      throw new CustomException('You are not owner');
+    }
+
+    await this.chatService.updateChatRoom(dto);
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   async broadcastRoomsToMembers(roomId: string) {
