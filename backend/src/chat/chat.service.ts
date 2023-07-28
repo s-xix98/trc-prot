@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
 import { CustomException } from '../exceptions/custom.exception';
 
-import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
+import { CreateChannelDto, UpdateChatRoomDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
@@ -390,6 +390,29 @@ export class ChatService {
         inviter,
       };
     });
+  }
+
+  async updateChatRoom(dto: UpdateChatRoomDto) {
+    let pwd: string | null | undefined;
+
+    if (dto.password === null) {
+      pwd = null;
+    } else if (dto.password !== undefined) {
+      pwd = await bcrypt.hash(dto.password, 10);
+    }
+
+    const room = await this.prismaService.chatRoom.update({
+      where: {
+        id: dto.chatRoomId,
+      },
+      data: {
+        roomName: dto.roomName,
+        hashedPassword: pwd,
+        isPrivate: dto.isPrivate,
+      },
+    });
+
+    return room;
   }
 
   async roomExists(roomId: string) {
