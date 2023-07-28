@@ -5,8 +5,8 @@ import { UserInfo } from './dto/UserDto';
 export type Ball = {
   x: number;
   y: number;
-  dx: number;
-  dy: number;
+  speed: number;
+  angle: number;
 };
 
 export type Paddle = {
