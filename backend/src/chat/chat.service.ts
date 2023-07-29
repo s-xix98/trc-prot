@@ -7,10 +7,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
 import { CustomException } from '../exceptions/custom.exception';
 
-import { CreateChannelDto, UpdateRoomMemberRoleDto } from './dto/Channel.dto';
+import {
+  CreateChannelDto,
+  UpdateChatRoomDto,
+  UpdateRoomMemberRoleDto,
+} from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
-import { MessageDto } from './dto/message.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
+import { MessageDto } from './dto/message.dto';
 
 @Injectable()
 export class ChatService {
@@ -171,8 +175,19 @@ export class ChatService {
     return roomMember;
   }
 
+  async deleteRoomMember(chatRoomId: string, userId: string) {
+    const { count } = await this.prismaService.roomMember.deleteMany({
+      where: {
+        userId,
+        chatRoomId,
+      },
+    });
+
+    return count;
+  }
+
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
-  async JoinChannel(dto: JoinChannelDto) {
+  async JoinChannel(dto: JoinChannelDto, userId: string) {
     const room = await this.findChannelById(dto.chatRoomId);
     // TODO もうちょいちゃんとしたエラー投げる
     if (!room) {
@@ -183,18 +198,18 @@ export class ChatService {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
-    let roomMember = await this.findRoomMember(room.id, dto.userId);
+    let roomMember = await this.findRoomMember(room.id, userId);
     if (!roomMember) {
-      roomMember = await this.createRoomMember(room.id, dto.userId, 'USER');
+      roomMember = await this.createRoomMember(room.id, userId, 'USER');
     }
     return roomMember;
   }
 
-  async createMessage(dto: MessageDto) {
+  async createMessage(dto: MessageDto, userId: string) {
     const newMsg = await this.prismaService.message.create({
       data: {
         content: dto.content,
-        userId: dto.userId,
+        userId: userId,
         chatRoomId: dto.chatRoomId,
       },
     });
@@ -381,6 +396,29 @@ export class ChatService {
     });
   }
 
+  async updateChatRoom(dto: UpdateChatRoomDto) {
+    let pwd: string | null | undefined;
+
+    if (dto.password === null) {
+      pwd = null;
+    } else if (dto.password !== undefined) {
+      pwd = await bcrypt.hash(dto.password, 10);
+    }
+
+    const room = await this.prismaService.chatRoom.update({
+      where: {
+        id: dto.chatRoomId,
+      },
+      data: {
+        roomName: dto.roomName,
+        hashedPassword: pwd,
+        isPrivate: dto.isPrivate,
+      },
+    });
+
+    return room;
+  }
+
   async roomExists(roomId: string) {
     const room = await this.findChannelById(roomId);
     return room !== null;
@@ -416,12 +454,12 @@ export class ChatService {
     return true;
   }
 
-  async isUserRestrictable(roomId: string, userId: string) {
+  async isOwner(roomId: string, userId: string) {
     const target = await this.findRoomMember(roomId, userId);
 
-    if (target === null || target.role === 'OWNER') {
-      return false;
+    if (target && target.role === 'OWNER') {
+      return true;
     }
-    return true;
+    return false;
   }
 }

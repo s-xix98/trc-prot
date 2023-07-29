@@ -1,11 +1,9 @@
 export class JoinChannelDto {
   chatRoomId: string;
-  userId: string;
   password?: string;
 }
 export class CreateChannelDto {
   roomName: string;
-  userId: string;
   password?: string;
   isPrivate?: boolean;
 }
@@ -16,7 +14,6 @@ export class UpdateRoomMemberRoleDto {
 
 export class RoomMemberRestrictionDto {
   chatRoomId: string;
-  userId: string;
   targetId: string;
   endedAt: Date;
 }
@@ -38,4 +35,11 @@ export class LeaveRoomDto {
 export class RejectChatInvitationDto {
   chatRoomId: string;
   inviterId: string;
+}
+
+export class UpdateChatRoomDto {
+  chatRoomId: string;
+  roomName?: string;
+  password?: string | null;
+  isPrivate?: boolean;
 }
