@@ -171,6 +171,17 @@ export class ChatService {
     return roomMember;
   }
 
+  async deleteRoomMember(chatRoomId: string, userId: string) {
+    const { count } = await this.prismaService.roomMember.deleteMany({
+      where: {
+        userId,
+        chatRoomId,
+      },
+    });
+
+    return count;
+  }
+
   // TODO createだと２回createすると例外を投げるので一旦upsertにした
   async JoinChannel(dto: JoinChannelDto) {
     const room = await this.findChannelById(dto.chatRoomId);
@@ -416,12 +427,12 @@ export class ChatService {
     return true;
   }
 
-  async isUserRestrictable(roomId: string, userId: string) {
+  async isOwner(roomId: string, userId: string) {
     const target = await this.findRoomMember(roomId, userId);
 
-    if (target === null || target.role === 'OWNER') {
-      return false;
+    if (target && target.role === 'OWNER') {
+      return true;
     }
-    return true;
+    return false;
   }
 }
