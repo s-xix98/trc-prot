@@ -38,6 +38,16 @@ export class GameService {
     return history;
   }
 
+  async getUsers(userIds: string[]) {
+    return await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        username: true,
+      },
+      where: { id: { in: userIds } },
+    });
+  }
+
   async saveGameResult(
     p1Result: PlayerResult,
     p2Result: PlayerResult,
