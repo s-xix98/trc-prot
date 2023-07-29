@@ -12,6 +12,7 @@ import { useModal } from '@/hooks/useModal';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 const BanUserModal = ({
   selectedChannel,
@@ -88,16 +89,27 @@ export const ShowRoomUser = ({
   selectedChannel: chatChannelDto;
   openUserProfileModal: (userInfo: UserInfo) => void;
 }) => {
+  const { currentUserInfo } = useCurrentUser();
+
   return (
-    <div>
-      <Container>
+    <>
+      {currentUserInfo?.id === user.id ? (
         <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
-        <div style={{ margin: 'auto 10px auto auto' }}>
-          <BanUserModal selectedChannel={selectedChannel} targetUser={user} />
-          <KickUserBtn selectedChannel={selectedChannel} user={user} />
+      ) : (
+        <div>
+          <Container>
+            <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+            <div style={{ margin: 'auto 10px auto auto' }}>
+              <BanUserModal
+                selectedChannel={selectedChannel}
+                targetUser={user}
+              />
+              <KickUserBtn selectedChannel={selectedChannel} user={user} />
+            </div>
+          </Container>
         </div>
-      </Container>
-    </div>
+      )}
+    </>
   );
 };
 
