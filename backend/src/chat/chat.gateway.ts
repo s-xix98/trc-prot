@@ -19,7 +19,7 @@ import {
   RoomMemberRestrictionDto,
   RejectChatInvitationDto,
   UpdateChatRoomDto,
-  KickRoomMemberRDto,
+  KickRoomMemberDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -223,7 +223,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('kickRoomMember')
-  async kickRoomMember(client: Socket, dto: KickRoomMemberRDto) {
+  async kickRoomMember(client: Socket, dto: KickRoomMemberDto) {
     console.log('kickRoomMember', dto);
     const userId = this.server.getUserId(client);
     if (!userId) {

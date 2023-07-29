@@ -18,7 +18,7 @@ export class RoomMemberRestrictionDto {
   endedAt: Date;
 }
 
-export class KickRoomMemberRDto {
+export class KickRoomMemberDto {
   chatRoomId: string;
   targetId: string;
 }
