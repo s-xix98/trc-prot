@@ -1,7 +1,7 @@
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 
 import { UserProfileModal } from './UserProfile';
-import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 
 export const Friends = () => {
   const { friends } = useCurrentUser();
