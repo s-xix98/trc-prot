@@ -1,4 +1,5 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
+import { UserState } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -128,17 +129,13 @@ export class UserService {
             id: true,
             username: true,
             base64Image: true,
+            state: true,
           },
         },
       },
     });
 
-    const friendsUserInfo = friends.map((f) => {
-      const { username, id } = f.destUser;
-      return { username, id };
-    });
-
-    return friendsUserInfo;
+    return friends.map((f) => f.destUser);
   }
 
   async getBlockUsers(userId: string) {
@@ -197,6 +194,19 @@ export class UserService {
       },
       data: {
         ...dto,
+      },
+    });
+
+    return user;
+  }
+
+  async updateUserState(userId: string, state: UserState) {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        state,
       },
     });
 

@@ -45,6 +45,9 @@ export class UserGateway {
         return;
       }
 
+      await this.userService.updateUserState(userId, 'ONLINE');
+      await this.broadcastFriends(userId);
+
       await this.sendBlockUsers(userId);
       await this.sendFriends(userId);
       await this.sendFriendRequests(userId);
@@ -53,9 +56,26 @@ export class UserGateway {
     }
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     console.log('handleDisconnect', client.id);
+    const token = client.handshake.auth.token;
+    if (!token) {
+      return;
+    }
+
+    const userId = this.server.extractUserIdFromToken(token);
+    if (!userId) {
+      return;
+    }
+
+    try {
+      await this.userService.updateUserState(userId, 'OFFLINE');
+      await this.broadcastFriends(userId);
+    } catch (error) {
+      console.log(error);
+    }
   }
+
   // TODO　エラー処理はしていない
   @SubscribeMessage('searchUser')
   async searchUser(client: Socket, dto: searchUserDto) {
