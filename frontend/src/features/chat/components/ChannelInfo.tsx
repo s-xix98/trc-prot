@@ -14,6 +14,7 @@ import { chatChannelDto } from '../types/chatChannelDto';
 import { useJoinChannel } from '../api/joinChannel';
 import { useLeaveChatRoom } from '../api/leaveChatRoom';
 import { useAcceptChatInvitation } from '../api/acceptInvite';
+import { useRejectChatInvitation } from '../api/inviteChannel';
 
 import { ChannelInvite } from './ChatInvite';
 
@@ -67,12 +68,13 @@ export const JoinedChannelInfo = ({
   );
 };
 
-const AcceptInviteButton = ({
+const AcceptInviteAndRejectInviteButton = ({
   selectedChannel,
 }: {
   selectedChannel: chatChannelDto;
 }) => {
   const acceptChatInvitation = useAcceptChatInvitation();
+  const rejectChatInvitation = useRejectChatInvitation();
   const inviter = useGetInviter(selectedChannel);
 
   const acceptInvite = () => {
@@ -83,9 +85,18 @@ const AcceptInviteButton = ({
     acceptChatInvitation.emit(selectedChannel.id, inviter.id);
   };
 
+  const rejectInvite = () => {
+    if (inviter === undefined) {
+      console.log('inviter is undef');
+      return;
+    }
+    rejectChatInvitation.emit(selectedChannel.id, inviter.id);
+  };
+
   return (
     <>
       <button onClick={acceptInvite}>AcceptInvite</button>
+      <button onClick={rejectInvite}>RejectInvite</button>
     </>
   );
 };
@@ -121,7 +132,7 @@ const NotJoinedChannelInfo = ({
     <div>
       <h3>{selectedChannel.roomName}</h3>
       {isInvitedRoom(selectedChannel) ? (
-        <AcceptInviteButton selectedChannel={selectedChannel} />
+        <AcceptInviteAndRejectInviteButton selectedChannel={selectedChannel} />
       ) : (
         <JoinChannelButton selectedChannel={selectedChannel} />
       )}
