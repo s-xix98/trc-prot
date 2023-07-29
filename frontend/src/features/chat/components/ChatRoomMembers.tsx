@@ -61,6 +61,24 @@ const BanUserModal = ({
   );
 };
 
+const KickUserBtn = ({
+  selectedChannel,
+  user,
+}: {
+  selectedChannel: chatChannelDto;
+  user: UserInfo;
+}) => {
+  const KickRoomMember = useKickRoomMember();
+
+  return (
+    <>
+      <button onClick={() => KickRoomMember.emit(selectedChannel.id, user.id)}>
+        Kick
+      </button>
+    </>
+  );
+};
+
 export const ShowChatRoomMembers = ({
   selectedChannel,
   roomMembers,
@@ -69,7 +87,6 @@ export const ShowChatRoomMembers = ({
   roomMembers: UserInfo[];
 }) => {
   const { selectingUser, modal, openUserProfileModal } = useUserProfileModal();
-  const KickRoomMember = useKickRoomMember();
 
   return (
     <>
@@ -84,13 +101,7 @@ export const ShowChatRoomMembers = ({
                   selectedChannel={selectedChannel}
                   targetUser={user}
                 />
-                <button
-                  onClick={() =>
-                    KickRoomMember.emit(selectedChannel.id, user.id)
-                  }
-                >
-                  Kick
-                </button>
+                <KickUserBtn selectedChannel={selectedChannel} user={user} />
               </div>
             </Container>
           </div>
