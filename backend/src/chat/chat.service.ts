@@ -194,7 +194,10 @@ export class ChatService {
       await this.verifyPassword(dto.password, room.hashedPassword);
     }
 
-    const roomMember = await this.upsertRoomMember(room.id, dto.userId, 'USER');
+    let roomMember = await this.findRoomMember(room.id, dto.userId);
+    if (!roomMember) {
+      roomMember = await this.createRoomMember(room.id, dto.userId, 'USER');
+    }
     return roomMember;
   }
 

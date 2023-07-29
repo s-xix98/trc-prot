@@ -1,7 +1,10 @@
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useSessionSocketEmitter } from '@/hooks/useSocket';
 
-import { InviteChatRoomDto } from '../types/InviteChatRoomDto';
+import {
+  InviteChatRoomDto,
+  RejectChatInvitationDto,
+} from '../types/InviteChatRoomDto';
 
 export const useInviteChannel = () => {
   const { currentUserInfo } = useCurrentUser();
@@ -19,6 +22,21 @@ export const useInviteChannel = () => {
     };
 
     sessionSocketEmitter.emit('inviteChatRoom', dto);
+  };
+
+  return { emit };
+};
+
+export const useRejectChatInvitation = () => {
+  const sessionSocketEmitter = useSessionSocketEmitter();
+
+  const emit = (chatRoomId: string, inviterId: string) => {
+    const dto: RejectChatInvitationDto = {
+      chatRoomId: chatRoomId,
+      inviterId: inviterId,
+    };
+
+    sessionSocketEmitter.emit('rejectChatInvitation', dto);
   };
 
   return { emit };
