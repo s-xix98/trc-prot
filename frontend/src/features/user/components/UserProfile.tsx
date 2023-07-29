@@ -3,6 +3,7 @@ import FaceRetouchingOffIcon from '@mui/icons-material/FaceRetouchingOff';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import Badge from '@mui/material/Badge';
 
 import { useCurrentUser, useFriendStatus } from '@/hooks/useCurrentUser';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
@@ -29,14 +30,50 @@ const DefalutIcon = () => {
 // 500KB?
 const MAX_FILE_SIZE = 500000;
 
+const IconStateBadge = ({
+  userInfo,
+  children,
+}: {
+  userInfo: UserInfo;
+  children: React.ReactNode;
+}) => {
+  const { friends } = useCurrentUser();
+
+  // クソ処理、フレンドリストにしか、state ないから、フレンドリストから state ひっぱてくる
+  const state = friends.find((f) => f.id === userInfo.id)?.state;
+  const stateColor = state !== 'OFFLINE' ? '#33ff33' : 'darkgray';
+
+  if (state === undefined) {
+    return <>{children}</>;
+  }
+
+  return (
+    <Badge
+      overlap="circular"
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      variant="dot"
+      sx={{
+        '& .MuiBadge-badge': {
+          backgroundColor: stateColor,
+          color: stateColor,
+        },
+      }}
+    >
+      {children}
+    </Badge>
+  );
+};
+
 const ShowIcon = ({ userInfo }: { userInfo: UserInfo }) => {
   return (
     <Stack direction="row" spacing={2}>
-      {userInfo.base64Image ? (
-        <Avatar src={userInfo.base64Image} />
-      ) : (
-        <DefalutIcon />
-      )}
+      <IconStateBadge userInfo={userInfo}>
+        {userInfo.base64Image ? (
+          <Avatar src={userInfo.base64Image} />
+        ) : (
+          <DefalutIcon />
+        )}
+      </IconStateBadge>
       <h1>{userInfo.username}</h1>
     </Stack>
   );
