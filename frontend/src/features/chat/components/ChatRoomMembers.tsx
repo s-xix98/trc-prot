@@ -14,32 +14,29 @@ import { chatChannelDto } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
 
-const BanUserModal = ({
-  selectedChannel,
-  targetUser,
+const SliderModal = ({
+  title,
+  btnText,
+  onClickAct,
 }: {
-  selectedChannel: chatChannelDto;
-  targetUser: UserInfo;
+  title: string;
+  btnText: string;
+  onClickAct: (value: number) => void;
 }) => {
   const modal = useModal();
   const [value, setValue] = useState<number>(30);
-  const banRoomMember = useBanRoomMember();
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number);
   };
 
-  const onClick = () => {
-    banRoomMember.emit(selectedChannel.id, targetUser.id, value);
-  }
-
   return (
     <>
       {modal.modalIsOpen === false ? (
-        <button onClick={() => modal.openModal()}>Ban</button>
+        <button onClick={() => modal.openModal()}>{btnText}</button>
       ) : (
         <ModalView {...modal} height="250px" width="200px">
-          <h3>Set Ban Time</h3>
+          <h3>{title}</h3>
           <br />
           <p>{value} minute</p>
           <div style={{ margin: '10px' }}>
@@ -53,9 +50,29 @@ const BanUserModal = ({
               max={300}
             />
           </div>
-          <button onClick={onClick}>Ban</button>
+          <button onClick={() => onClickAct(value)}>{btnText}</button>
         </ModalView>
       )}
+    </>
+  );
+};
+
+const BanUserModal = ({
+  selectedChannel,
+  targetUser,
+}: {
+  selectedChannel: chatChannelDto;
+  targetUser: UserInfo;
+}) => {
+  const banRoomMember = useBanRoomMember();
+
+  const onClickAct = (value: number) => {
+    banRoomMember.emit(selectedChannel.id, targetUser.id, value);
+  };
+
+  return (
+    <>
+      <SliderModal title="Set Ban Time" btnText="Ban" onClickAct={onClickAct} />
     </>
   );
 };
