@@ -12,3 +12,4 @@ RUN set -eux \
 
 RUN pip install playwright
 RUN playwright install && playwright install-deps
+RUN pip install pandas psycopg2-binary
