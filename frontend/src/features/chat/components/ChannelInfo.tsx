@@ -61,7 +61,10 @@ export const JoinedChannelInfo = ({
     <Container flexDirection={'column'}>
       <ChannelInfoHeader selectedChannel={selectedChannel} />
       <br />
-      <ShowChatRoomMembers roomMembers={roomMembers} />
+      <ShowChatRoomMembers
+        selectedChannel={selectedChannel}
+        roomMembers={roomMembers}
+      />
     </Container>
   );
 };
