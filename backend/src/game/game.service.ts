@@ -70,7 +70,7 @@ export class GameService {
   private async UpdateRating(
     userId: string,
     rankingDiff: number,
-    prisma: PrsimaClientTx,
+    prisma?: PrsimaClientTx,
   ) {
     const pricla = prisma || this.prismaService;
     await pricla.rating.upsert({
