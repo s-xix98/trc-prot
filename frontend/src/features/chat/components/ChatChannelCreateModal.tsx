@@ -19,8 +19,6 @@ export const ChatChannelCreateModal = () => {
   const createChannel = useCreateChannel();
   const methods = useForm<CreateChannelDto>({
     resolver: zodResolver(CreateChannelSchema),
-    // 何かしら値をセットする必要があるので設定
-    defaultValues: { userId: '' },
   });
 
   const handleChannelCreate: SubmitHandler<CreateChannelDto> = (data) => {
