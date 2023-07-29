@@ -79,6 +79,28 @@ const KickUserBtn = ({
   );
 };
 
+export const ShowRoomUser = ({
+  user,
+  selectedChannel,
+  openUserProfileModal,
+}: {
+  user: UserInfo;
+  selectedChannel: chatChannelDto;
+  openUserProfileModal: (userInfo: UserInfo) => void;
+}) => {
+  return (
+    <div>
+      <Container>
+        <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+        <div style={{ margin: 'auto 10px auto auto' }}>
+          <BanUserModal selectedChannel={selectedChannel} targetUser={user} />
+          <KickUserBtn selectedChannel={selectedChannel} user={user} />
+        </div>
+      </Container>
+    </div>
+  );
+};
+
 export const ShowChatRoomMembers = ({
   selectedChannel,
   roomMembers,
@@ -93,18 +115,12 @@ export const ShowChatRoomMembers = ({
       <UserProfileModal userInfo={selectingUser} {...modal} />
       <ContainerItem overflowY="scroll">
         {roomMembers.map((user, idx) => (
-          <div key={idx}>
-            <Container>
-              <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
-              <div style={{ margin: 'auto 10px auto auto' }}>
-                <BanUserModal
-                  selectedChannel={selectedChannel}
-                  targetUser={user}
-                />
-                <KickUserBtn selectedChannel={selectedChannel} user={user} />
-              </div>
-            </Container>
-          </div>
+          <ShowRoomUser
+            key={idx}
+            user={user}
+            selectedChannel={selectedChannel}
+            openUserProfileModal={openUserProfileModal}
+          />
         ))}
       </ContainerItem>
     </>
