@@ -135,12 +135,7 @@ export class UserService {
       },
     });
 
-    const friendsUserInfo = friends.map((f) => {
-      const { username, id } = f.destUser;
-      return { username, id };
-    });
-
-    return friendsUserInfo;
+    return friends.map((f) => f.destUser);
   }
 
   async getBlockUsers(userId: string) {
