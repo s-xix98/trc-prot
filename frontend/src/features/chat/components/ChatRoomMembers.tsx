@@ -8,11 +8,11 @@ import { UserInfo } from '@/features/user/types/UserDto';
 import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useModal } from '@/hooks/useModal';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 const BanUserModal = ({
   selectedChannel,
