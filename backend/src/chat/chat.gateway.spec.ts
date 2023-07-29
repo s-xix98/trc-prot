@@ -71,7 +71,6 @@ describe('ChatGateway', () => {
       const user: testUser = testUsers[0];
       const createChannelDto: CreateChannelDto = {
         roomName: 'testroom',
-        userId: user.user.id,
       };
 
       user.socket.emit('createChannel', createChannelDto);
@@ -100,7 +99,6 @@ describe('ChatGateway', () => {
     test('users[1]~users[9]が部屋に参加', async () => {
       testUsers.slice(1).map((testUser) => {
         const joinChannel: JoinChannelDto = {
-          userId: testUser.user.id,
           chatRoomId: roomId,
         };
 
@@ -134,7 +132,6 @@ describe('ChatGateway', () => {
       const user: testUser = testUsers[0];
       const messageDto: MessageDto = {
         content: 'test message',
-        userId: user.user.id,
         chatRoomId: roomId,
       };
 
@@ -157,7 +154,6 @@ describe('ChatGateway', () => {
       const user = testUsers[0];
       const messageDto: MessageDto = {
         content: 'test message',
-        userId: user.user.id,
         chatRoomId: roomId,
       };
       const promises: Promise<unknown>[] = [];
@@ -192,7 +188,6 @@ describe('ChatGateway', () => {
       const user: testUser = testUsers[0];
       const createChannelDto: CreateChannelDto = {
         roomName: roomName,
-        userId: user.user.id,
         password: password,
       };
       await testService.emitAndWaitForEvent<CreateChannelDto>(
@@ -224,7 +219,6 @@ describe('ChatGateway', () => {
       const user: testUser = testUsers[0];
       const createChannelDto: CreateChannelDto = {
         roomName: roomName + '1',
-        userId: user.user.id,
         password: password,
       };
 
@@ -245,7 +239,6 @@ describe('ChatGateway', () => {
       const room = await chatService.search(roomName);
       const user = testUsers[1];
       const joinChannel: JoinChannelDto = {
-        userId: user.user.id,
         chatRoomId: room[0].id,
         password: password,
       };
@@ -271,7 +264,6 @@ describe('ChatGateway', () => {
       const user = testUsers[0];
       const createChannelDto: CreateChannelDto = {
         roomName: roomName,
-        userId: user.user.id,
         isPrivate: true,
       };
 
@@ -306,7 +298,6 @@ describe('ChatGateway', () => {
 
       const createChannelDto: CreateChannelDto = {
         roomName: roomName,
-        userId: owner.user.id,
       };
 
       owner.socket.emit('createChannel', createChannelDto);
@@ -320,7 +311,6 @@ describe('ChatGateway', () => {
 
       const joinChannelDto: JoinChannelDto = {
         chatRoomId: room?.id || '',
-        userId: user.user.id,
       };
 
       user.socket.emit('joinChannel', joinChannelDto);
@@ -331,7 +321,6 @@ describe('ChatGateway', () => {
 
       const updateRoomMemberStateDto: RoomMemberRestrictionDto = {
         chatRoomId: room?.id || '',
-        userId: owner.user.id,
         targetId: user.user.id,
         endedAt: endedAt,
       };

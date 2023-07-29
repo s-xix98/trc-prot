@@ -8,12 +8,14 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useGetInviter, useChatRoomStatus } from '@/hooks/useCurrentUser';
 import { selectedChannelAtom } from '@/stores/chatState';
 import { UserListWithModal } from '@/features/user/components/UserProfile';
+import { Input } from '@/components/Elements/Input/Input';
 
 import { useRoomMembers } from '../api/roomMembers';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useJoinChannel } from '../api/joinChannel';
 import { useLeaveChatRoom } from '../api/leaveChatRoom';
 import { useAcceptChatInvitation } from '../api/acceptInvite';
+import { useRejectChatInvitation } from '../api/inviteChannel';
 
 import { ChannelInvite } from './ChatInvite';
 
@@ -67,12 +69,13 @@ export const JoinedChannelInfo = ({
   );
 };
 
-const AcceptInviteButton = ({
+const AcceptInviteAndRejectInviteButton = ({
   selectedChannel,
 }: {
   selectedChannel: chatChannelDto;
 }) => {
   const acceptChatInvitation = useAcceptChatInvitation();
+  const rejectChatInvitation = useRejectChatInvitation();
   const inviter = useGetInviter(selectedChannel);
 
   const acceptInvite = () => {
@@ -83,9 +86,18 @@ const AcceptInviteButton = ({
     acceptChatInvitation.emit(selectedChannel.id, inviter.id);
   };
 
+  const rejectInvite = () => {
+    if (inviter === undefined) {
+      console.log('inviter is undef');
+      return;
+    }
+    rejectChatInvitation.emit(selectedChannel.id, inviter.id);
+  };
+
   return (
     <>
       <button onClick={acceptInvite}>AcceptInvite</button>
+      <button onClick={rejectInvite}>RejectInvite</button>
     </>
   );
 };
@@ -95,13 +107,21 @@ const JoinChannelButton = ({
 }: {
   selectedChannel: chatChannelDto;
 }) => {
+  const [password, setPassword] = useState<string>();
   const joinChannel = useJoinChannel();
 
+  // TODO : input で改行できちゃうます。
+  // Input自体をを改行不可にする予定
   return (
     <>
+      <Input
+        msg={password}
+        placeholder="password"
+        onChangeAct={(e) => setPassword(e.target.value)}
+      />
       <button
         onClick={() => {
-          joinChannel.emit(selectedChannel.id);
+          joinChannel.emit(selectedChannel.id, password);
         }}
       >
         join
@@ -120,8 +140,9 @@ const NotJoinedChannelInfo = ({
   return (
     <div>
       <h3>{selectedChannel.roomName}</h3>
+      <br />
       {isInvitedRoom(selectedChannel) ? (
-        <AcceptInviteButton selectedChannel={selectedChannel} />
+        <AcceptInviteAndRejectInviteButton selectedChannel={selectedChannel} />
       ) : (
         <JoinChannelButton selectedChannel={selectedChannel} />
       )}
