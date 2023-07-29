@@ -4,6 +4,7 @@ import { UseFilters } from '@nestjs/common';
 
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
+import { UserService } from '../user/user.service';
 
 import { UserInfo } from './dto/UserDto';
 import { GameLogic } from './logic/game-logic';
@@ -29,6 +30,7 @@ export class GameGateway {
   constructor(
     private gameService: GameService,
     private server: WsocketGateway,
+    private user: UserService,
   ) {}
 
   handleConnection(client: Socket) {
@@ -99,9 +101,15 @@ export class GameGateway {
     this.gameRoom.getGame(userid)?.ReadyGame(client);
   }
 
-  // TODO client == srcUserが保証されてないので、jwtから取れるようにしたい
   @SubscribeMessage('invite game')
-  invite(client: Socket, src: UserInfo, dest: UserInfo) {
+  async invite(client: Socket, dest: UserInfo) {
+    const srcId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!srcId) {
+      return;
+    }
+    const src: UserInfo = await this.user.findOneById(srcId);
     const destSock = this.server.getSocket(dest.id);
     if (!destSock) {
       client.emit('error', `${dest.username} is not online`);
@@ -118,17 +126,22 @@ export class GameGateway {
     destSock.emit('receive game-invitation', src);
   }
 
-  // TODO client == destUserが保証されてないので、jwtから取れるようにしたい
   @SubscribeMessage('accept game-invitation')
-  acceptInvitation(client: Socket, srcUser: UserInfo, destUser: UserInfo) {
+  async acceptInvitation(client: Socket, srcUser: UserInfo) {
+    const destId = this.server.extractUserIdFromToken(
+      client.handshake.auth.token,
+    );
+    if (!destId) {
+      return;
+    }
+    const destUser: UserInfo = await this.user.findOneById(destId);
     const srcSock = this.server.getSocket(srcUser.id);
-    const destSock = this.server.getSocket(destUser.id);
-    if (!srcSock || !destSock) {
-      client.emit('error', 'invalid invitation');
+    if (!srcSock) {
+      client.emit('error', `${srcUser.username} is not online`);
       return;
     }
     const src: PlayerData = { client: srcSock, data: srcUser };
-    const dest: PlayerData = { client: destSock, data: destUser };
+    const dest: PlayerData = { client, data: destUser };
     const { err } = this.gameRoom.acceptInvitation({ src, dest });
     if (err !== null) {
       client.emit('error', err);
