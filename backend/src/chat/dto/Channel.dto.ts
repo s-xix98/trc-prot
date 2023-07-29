@@ -18,6 +18,11 @@ export class RoomMemberRestrictionDto {
   endedAt: Date;
 }
 
+export class KickRoomMemberRDto {
+  chatRoomId: string;
+  targetId: string;
+}
+
 export class InviteChatRoomDto {
   chatRoomId: string;
   targetId: string;
