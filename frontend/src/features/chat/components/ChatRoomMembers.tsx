@@ -13,6 +13,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
+import { useMuteRoomMember } from '../api/muteRoomMember';
 
 const SliderModal = ({
   title,
@@ -93,6 +94,34 @@ const BanUserModal = ({
   );
 };
 
+const MuteUserModal = ({
+  selectedChannel,
+  targetUser,
+}: {
+  selectedChannel: chatChannelDto;
+  targetUser: UserInfo;
+}) => {
+  const muteRoomMember = useMuteRoomMember();
+
+  const onClickAct = (value: number) => {
+    muteRoomMember.emit(selectedChannel.id, targetUser.id, value);
+  };
+
+  return (
+    <>
+      <SliderModal
+        title="Set Mute Time"
+        btnText="Mute"
+        onClickAct={onClickAct}
+        defaultVal={30}
+        stepVal={10}
+        minVal={10}
+        maxVal={300}
+      />
+    </>
+  );
+};
+
 const KickUserBtn = ({
   selectedChannel,
   user,
@@ -132,6 +161,10 @@ export const ShowRoomUser = ({
             <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
             <div style={{ margin: 'auto 10px auto auto' }}>
               <BanUserModal
+                selectedChannel={selectedChannel}
+                targetUser={user}
+              />
+              <MuteUserModal
                 selectedChannel={selectedChannel}
                 targetUser={user}
               />
