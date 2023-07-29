@@ -19,6 +19,7 @@ model User {
   email              String           @unique
   hashedPassword     String?
   base64Image        String?
+  state              UserState        @default(OFFLINE)
   isTwoFaEnabled     Boolean          @default(false)
   twoFaSecret        String?
   twoFaLastCheckedAt DateTime         @default(now())
@@ -159,6 +160,12 @@ enum UserRole {
 enum UserChatStateCode {
   BANNED
   MUTED
+}
+
+enum UserState {
+  ONLINE
+  OFFLINE
+  GAME
 }
 
 model Rating {
