@@ -18,6 +18,9 @@ export const UserInfoSchema = z.object({
   username: z.string(),
   // TODO : null が来ることがある？
   base64Image: z.string().nullable().optional(),
+  state: z
+    .union([z.literal('ONLINE'), z.literal('OFFLINE'), z.literal('GAME')])
+    .optional(),
 });
 export type UserInfo = z.infer<typeof UserInfoSchema>;
 
