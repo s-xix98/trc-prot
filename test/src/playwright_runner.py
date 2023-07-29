@@ -1,3 +1,4 @@
+import sys
 import threading
 import time
 from typing import Callable
@@ -85,11 +86,13 @@ def run(
                         f"PlaywrightTimeoutError :  {func.__name__}, user : {user.name}, {str(e)}"
                     )
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
+                    sys.exit(1)
                 except Exception as e:
                     logger.error(
                         f"Exception : {func.__name__}, user : {user.name}, {str(e)}"
                     )
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
+                    sys.exit(1)
                 logger.info(f"--- END TEST : {func.__name__}, user : {user.name} ---")
                 # local storage が残ってしまうので、test のたびに logout するように
                 force_logout("force-logout", user, page)
