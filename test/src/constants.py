@@ -19,3 +19,15 @@ TOP_PAGE_URL: Final = os.environ.get("TOP_PAGE_URL") or "http://localhost:3000/"
 
 MAX_WORKERS = 5
 TEST_USER_COUNT = 5
+
+# POSTGRES
+POSTGRES_USER = "test"
+POSTGRES_PASSWORD = "test"
+POSTGRES_DATABASE = "test"
+POSTGRES_HOST = "localhost"
+POSTGRES_PORT = "5432"
+
+# DB_TABLE_NAME
+DB_TABLE_NAME_USER = "User"
+DB_TABLE_NAME_CHAT_ROOM = "ChatRoom"
+DB_TABLE_NAME_MESSAGE = "Message"
