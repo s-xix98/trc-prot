@@ -22,7 +22,6 @@ export type handleMessageDtoArr = z.infer<typeof handleMessageDtoArrSchema>;
 export const sendMessageDtoSchema = z.object({
   content: z.string(),
   // TODO authができたらheaderからuserID取り出せるから消す
-  userId: z.string(),
   chatRoomId: z.string(),
 });
 export type sendMessageDto = z.infer<typeof sendMessageDtoSchema>;
