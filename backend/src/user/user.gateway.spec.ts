@@ -104,7 +104,6 @@ describe('UserGateway', () => {
   describe('friendRequest', () => {
     test('friendRequestしたらdbにレコードが存在し正しく挿入されてるか', async () => {
       const dto: friendshipDto = {
-        userId: testUsers[0].user.id,
         targetId: testUsers[1].user.id,
       };
 
@@ -159,11 +158,9 @@ describe('UserGateway', () => {
       const user1 = testUsers[1];
       const user2 = testUsers[2];
       const dto1: friendshipDto = {
-        userId: user1.user.id,
         targetId: user2.user.id,
       };
       const dto2: friendshipDto = {
-        userId: user2.user.id,
         targetId: user1.user.id,
       };
 
@@ -189,7 +186,6 @@ describe('UserGateway', () => {
   describe('blockUser', () => {
     test('blockしたらdbに挿入されるか', async () => {
       const dto: friendshipDto = {
-        userId: testUsers[0].user.id,
         targetId: testUsers[1].user.id,
       };
 
@@ -220,7 +216,6 @@ describe('UserGateway', () => {
 
     test('blockしたら相手のフレンドリクエストが削除されるか', async () => {
       let dto: friendshipDto = {
-        userId: testUsers[1].user.id,
         targetId: testUsers[0].user.id,
       };
       // 1が0にフレンドリクエストを送る
@@ -228,7 +223,6 @@ describe('UserGateway', () => {
       await testService.sleep(100);
 
       dto = {
-        userId: testUsers[0].user.id,
         targetId: testUsers[1].user.id,
       };
 
@@ -264,11 +258,9 @@ describe('UserGateway', () => {
       const user1 = testUsers[1];
 
       const dto1: friendshipDto = {
-        userId: user.user.id,
         targetId: user1.user.id,
       };
       const dto2: friendshipDto = {
-        userId: user1.user.id,
         targetId: user.user.id,
       };
 
@@ -284,14 +276,14 @@ describe('UserGateway', () => {
       await testService.sleep(100);
 
       const { srcFriendship, targetFriendship } =
-        await userService.getFriendship(dto1.userId, dto1.targetId);
+        await userService.getFriendship(user.user.id, dto1.targetId);
 
       expect(targetFriendship).toBeNull();
       expect(srcFriendship?.status).toEqual('Blocked');
 
       await prismaService.friendship.deleteMany({
         where: {
-          srcUserId: dto1.userId,
+          srcUserId: user.user.id,
           destUserId: dto1.targetId,
         },
       });
@@ -303,11 +295,9 @@ describe('UserGateway', () => {
       const user4 = testUsers[4];
       const user5 = testUsers[5];
       const dto1: friendshipDto = {
-        userId: user4.user.id,
         targetId: user5.user.id,
       };
       const dto2: friendshipDto = {
-        userId: user5.user.id,
         targetId: user4.user.id,
       };
 

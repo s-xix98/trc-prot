@@ -47,7 +47,6 @@ describe('ChatService', () => {
 
       const createChannelDto: CreateChannelDto = {
         roomName: 'testRoom',
-        userId: owner.user.id,
       };
 
       const room = await chatService.createChannel({
@@ -58,10 +57,9 @@ describe('ChatService', () => {
 
       const joinChannelDto: JoinChannelDto = {
         chatRoomId: room.id,
-        userId: user.user.id,
       };
 
-      await chatService.JoinChannel(joinChannelDto);
+      await chatService.JoinChannel(joinChannelDto, user.user.id);
 
       const updateRoleDto: UpdateRoomMemberRoleDto = {
         role: 'ADMIN',
@@ -82,7 +80,6 @@ describe('ChatService', () => {
 
       const createChannelDto: CreateChannelDto = {
         roomName: 'roomMemberTest',
-        userId: owner.user.id,
       };
 
       const room = await chatService.createChannel(createChannelDto);
@@ -91,10 +88,9 @@ describe('ChatService', () => {
       for (let i = 0; i < roomMembers.length; i++) {
         const joinChannelDto: JoinChannelDto = {
           chatRoomId: room.id,
-          userId: roomMembers[i].user.id,
         };
 
-        await chatService.JoinChannel(joinChannelDto);
+        await chatService.JoinChannel(joinChannelDto, roomMembers[i].user.id);
       }
 
       const joinedMembers = await chatService.getRoomMembersById(room.id);
