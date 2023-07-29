@@ -18,13 +18,21 @@ const SliderModal = ({
   title,
   btnText,
   onClickAct,
+  defaultVal,
+  stepVal,
+  minVal,
+  maxVal,
 }: {
   title: string;
   btnText: string;
   onClickAct: (value: number) => void;
+  defaultVal: number;
+  stepVal: number;
+  minVal: number;
+  maxVal: number;
 }) => {
   const modal = useModal();
-  const [value, setValue] = useState<number>(30);
+  const [value, setValue] = useState<number>(defaultVal);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number);
@@ -45,9 +53,9 @@ const SliderModal = ({
               value={value}
               onChange={handleChange}
               valueLabelDisplay="auto"
-              step={10}
-              min={10}
-              max={300}
+              step={stepVal}
+              min={minVal}
+              max={maxVal}
             />
           </div>
           <button onClick={() => onClickAct(value)}>{btnText}</button>
@@ -72,7 +80,15 @@ const BanUserModal = ({
 
   return (
     <>
-      <SliderModal title="Set Ban Time" btnText="Ban" onClickAct={onClickAct} />
+      <SliderModal
+        title="Set Ban Time"
+        btnText="Ban"
+        onClickAct={onClickAct}
+        defaultVal={30}
+        stepVal={10}
+        minVal={10}
+        maxVal={300}
+      />
     </>
   );
 };
