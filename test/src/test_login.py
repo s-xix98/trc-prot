@@ -1,6 +1,7 @@
 from playwright.sync_api import Page
 
 from src.playwright_runner import TEST_FUNC_TYPE
+from src.postgres_ctl import postgres_ctl
 from src.user import User
 from src.user_action import UserInteractionManager
 
@@ -9,6 +10,9 @@ def test_signup(test_name: str, page: Page, user: User) -> None:
     client = UserInteractionManager(test_name, user, page)
     client.goto_top_page()
     client.signup()
+
+    user_dic = postgres_ctl.get_all_user()
+    assert user_dic[user.name] != None
 
 
 def test_signup_invalid_form(test_name: str, page: Page, user: User) -> None:
