@@ -13,6 +13,6 @@ type Story = StoryObj<typeof ShowChatRoomMembers>;
 
 export const Basic: Story = {
   args: {
-    roomMembers: []
-  }
+    roomMembers: [],
+  },
 };

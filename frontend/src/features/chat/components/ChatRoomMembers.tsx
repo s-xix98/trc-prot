@@ -24,9 +24,7 @@ export const ShowChatRoomMembers = ({
         {roomMembers.map((user, idx) => (
           <div key={idx}>
             <Container>
-              <p onClick={() => openUserProfileModal(user)}>
-                {user.username}
-              </p>
+              <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
               <div style={{ margin: 'auto 10px auto auto' }}>
                 <button
                   onClick={() =>

@@ -250,7 +250,10 @@ export class ChatGateway {
     }
 
     // TODO : mute の方もバグってる？
-    const isOwner = await this.chatService.isOwner(dto.chatRoomId, dto.targetId);
+    const isOwner = await this.chatService.isOwner(
+      dto.chatRoomId,
+      dto.targetId,
+    );
     if (isOwner) {
       throw new CustomException('you can not restrict this user');
     }
