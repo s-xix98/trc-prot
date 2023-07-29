@@ -29,6 +29,10 @@ const BanUserModal = ({
     setValue(newValue as number);
   };
 
+  const onClick = () => {
+    banRoomMember.emit(selectedChannel.id, targetUser.id, value);
+  }
+
   return (
     <>
       {modal.modalIsOpen === false ? (
@@ -49,13 +53,7 @@ const BanUserModal = ({
               max={300}
             />
           </div>
-          <button
-            onClick={() => {
-              banRoomMember.emit(selectedChannel.id, targetUser.id, value);
-            }}
-          >
-            Ban
-          </button>
+          <button onClick={onClick}>Ban</button>
         </ModalView>
       )}
     </>
