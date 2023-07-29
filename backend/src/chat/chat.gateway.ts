@@ -249,7 +249,8 @@ export class ChatGateway {
       throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const isOwner = await this.chatService.isOwner(dto.chatRoomId, userId);
+    // TODO : mute の方もバグってる？
+    const isOwner = await this.chatService.isOwner(dto.chatRoomId, dto.targetId);
     if (isOwner) {
       throw new CustomException('you can not restrict this user');
     }
