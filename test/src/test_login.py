@@ -13,7 +13,6 @@ def test_signup(test_name: str, page: Page, user: User) -> None:
 
     user_dic = postgres_ctl.get_all_user()
     assert user_dic[user.name] != None
-    assert user_dic["fail"] != None
 
 
 def test_signup_invalid_form(test_name: str, page: Page, user: User) -> None:
