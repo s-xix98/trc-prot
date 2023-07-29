@@ -106,5 +106,13 @@ class PostgresController:
             )
         return message_dic
 
+    def get_all_chat_room_msg(self, room_name: str) -> list[MessageData]:
+        room_dic = self.get_all_chat_room()
+        all_msg_dic = self.get_all_message()
+
+        chat_room_id = room_dic[room_name].chat_room_id
+        msg_lst = all_msg_dic.get(chat_room_id) or []
+        return msg_lst
+
 
 postgres_ctl = PostgresController()
