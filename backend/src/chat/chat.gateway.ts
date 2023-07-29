@@ -7,14 +7,17 @@ import { roomType } from '../wsocket/utils';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { UserService } from '../user/user.service';
+import { CustomException } from '../exceptions/custom.exception';
 
 import { MessageDto } from './dto/message.dto';
 import {
+  AcceptChatInvitationDto,
   CreateChannelDto,
   InviteChatRoomDto,
   JoinChannelDto,
   LeaveRoomDto,
   RoomMemberRestrictionDto,
+  RejectChatInvitationDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -73,7 +76,7 @@ export class ChatGateway {
   async createChannel(client: Socket, dto: CreateChannelDto) {
     const exists = await this.userService.userExists(dto.userId);
     if (!exists) {
-      throw new Error('User is not found');
+      throw new CustomException('User is not found');
     }
 
     const createdRoom = await this.chatService.createChannel(dto);
@@ -82,96 +85,109 @@ export class ChatGateway {
       dto.userId,
       'OWNER',
     );
-    const joinedRooms = await this.chatService.getJoinedRooms(dto.userId);
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(dto.userId);
   }
 
   @SubscribeMessage('joinChannel')
   async joinChannel(client: Socket, dto: JoinChannelDto) {
-    const userState = await this.chatService.findRoomMemberState(
+    const userExists = await this.userService.userExists(dto.userId);
+    if (!userExists) {
+      throw new CustomException('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const restrictionExists = await this.chatService.userRestrictionExists(
       dto.chatRoomId,
       dto.userId,
       'BANNED',
     );
-
-    const now = new Date();
-
-    if (userState && userState.endedAt > now) {
-      throw new Error('You are banned');
+    if (restrictionExists) {
+      throw new CustomException('You are banned');
     }
 
     const addedUser = await this.chatService.JoinChannel(dto);
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
-    this.server
-      .to(roomType.Chat, addedUser.chatRoomId)
-      .emit('joinChannel', addedUser);
+
+    await this.sendJoinedRooms(addedUser.userId);
   }
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, dto: MessageDto) {
-    const userState = await this.chatService.findRoomMemberState(
+    const userExists = await this.userService.userExists(dto.userId);
+    if (!userExists) {
+      throw new CustomException('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const restrictionExists = await this.chatService.userRestrictionExists(
       dto.chatRoomId,
       dto.userId,
       'MUTED',
     );
-
-    const now = new Date();
-
-    if (userState && userState.endedAt > now) {
-      throw new Error('You are muted');
+    if (restrictionExists) {
+      throw new CustomException('You are muted');
     }
 
     const msg = await this.chatService.createMessage(dto);
 
-    const roomMsgs = await this.chatService.getChannelHistoryById(
-      msg.chatRoomId,
-    );
-
-    this.server
-      .to(roomType.Chat, msg.chatRoomId)
-      .emit('receiveMessage', roomMsgs);
+    this.broadcastRoomMessageHistory(msg.chatRoomId);
   }
 
   @SubscribeMessage('banRoomMember')
   async banRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('banRoomMember', dto);
 
-    const requestUser = await this.chatService.findRoomMember(
+    const reqUserExists = await this.userService.userExists(dto.userId);
+    const targetUserExists = await this.userService.userExists(dto.targetId);
+    if (!reqUserExists || !targetUserExists) {
+      throw new CustomException('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const isQualifiedUser = await this.chatService.isUserQualified(
       dto.chatRoomId,
       dto.userId,
     );
-
-    if (requestUser === null || requestUser.role === 'USER') {
-      throw new Error('You are not ADMIN || OWNER');
+    if (!isQualifiedUser) {
+      throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(
+    const canRestrictUser = await this.chatService.isUserRestrictable(
       dto.chatRoomId,
       dto.targetId,
     );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
+    if (!canRestrictUser) {
+      throw new CustomException('you can not restrict this user');
     }
 
     await this.chatService.upsertRoomMemberState(dto, 'BANNED');
 
-    const { count } = await this.prisma.roomMember.deleteMany({
+    await this.prisma.roomMember.deleteMany({
       where: {
-        userId: target.userId,
+        userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
 
-    if (count > 0) {
-      // TODO targetを消す
-      // client.emit('deleteRoom', targetState);
-      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+      await this.sendJoinedRooms(dto.targetId);
     }
   }
 
@@ -179,24 +195,31 @@ export class ChatGateway {
   async muteRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('muteRoomMember', dto);
 
-    const requestUser = await this.chatService.findRoomMember(
+    const reqUserExists = await this.userService.userExists(dto.userId);
+    const targetUserExists = await this.userService.userExists(dto.targetId);
+    if (!reqUserExists || !targetUserExists) {
+      throw new CustomException('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const isQualifiedUser = await this.chatService.isUserQualified(
       dto.chatRoomId,
       dto.userId,
     );
-
-    if (requestUser === null || requestUser.role === 'USER') {
-      throw new Error('You are not ADMIN || OWNER');
+    if (!isQualifiedUser) {
+      throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(
+    const canRestrictUser = await this.chatService.isUserRestrictable(
       dto.chatRoomId,
-      dto.targetId,
+      dto.userId,
     );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
+    if (!canRestrictUser) {
+      throw new CustomException('you can not restrict this user');
     }
 
     await this.chatService.upsertRoomMemberState(dto, 'MUTED');
@@ -206,37 +229,44 @@ export class ChatGateway {
   async kickRoomMember(client: Socket, dto: RoomMemberRestrictionDto) {
     console.log('kickRoomMember', dto);
 
-    const requestUser = await this.chatService.findRoomMember(
+    const reqUserExists = await this.userService.userExists(dto.userId);
+    const targetUserExists = await this.userService.userExists(dto.targetId);
+    if (!reqUserExists || !targetUserExists) {
+      throw new CustomException('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const isQualifiedUser = await this.chatService.isUserQualified(
       dto.chatRoomId,
       dto.userId,
     );
-
-    if (requestUser === null || requestUser.role === 'USER') {
-      throw new Error('You are not ADMIN || OWNER');
+    if (!isQualifiedUser) {
+      throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const target = await this.chatService.findRoomMember(
+    const canRestrictUser = await this.chatService.isUserRestrictable(
       dto.chatRoomId,
-      dto.targetId,
+      dto.userId,
     );
-
-    if (target === null) {
-      throw new Error('Target is not found');
-    } else if (target.role === 'OWNER') {
-      throw new Error('You can not ban or mute OWNER');
+    if (!canRestrictUser) {
+      throw new CustomException('you can not restrict this user');
     }
 
-    const { count } = await this.prisma.roomMember.deleteMany({
+    await this.prisma.roomMember.deleteMany({
       where: {
-        userId: target.userId,
+        userId: dto.targetId,
         chatRoomId: dto.chatRoomId,
       },
     });
 
-    if (count > 0) {
-      // TODO targetを消す
-      // client.emit('deleteRoom', targetState);
-      // this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
+      await this.sendJoinedRooms(dto.targetId);
     }
   }
 
@@ -244,28 +274,28 @@ export class ChatGateway {
   async inviteRoom(client: Socket, dto: InviteChatRoomDto) {
     console.log('inviteChatRoom', dto);
 
-    const requestUserId = this.server.getUserId(client);
-    if (!requestUserId) {
-      throw new Error();
+    const inviterId = this.server.getUserId(client);
+    if (!inviterId) {
+      throw new CustomException('User is not found');
     }
 
-    const room = await this.chatService.findChannelById(dto.chatRoomId);
-    if (!room) {
-      throw new Error('Room is not found');
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
     }
 
-    const requestUser = await this.chatService.findRoomMember(
-      room.id,
-      requestUserId,
+    const roomMemberExists = await this.chatService.roomMemberExists(
+      dto.chatRoomId,
+      inviterId,
     );
-    if (!requestUser) {
-      throw new Error('You are not member of this room');
+    if (!roomMemberExists) {
+      throw new CustomException('You are not member of this room');
     }
 
     await this.chatService.upsertInvitation(
       dto.targetId,
-      requestUserId,
-      room.id,
+      inviterId,
+      dto.chatRoomId,
     );
 
     await this.sendInvites(dto.targetId);
@@ -279,18 +309,82 @@ export class ChatGateway {
     }
   }
 
+  @SubscribeMessage('acceptChatInvitation')
+  async acceptChatInvitation(client: Socket, dto: AcceptChatInvitationDto) {
+    console.log('acceptChatInvitation', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
+    const invitation = await this.chatService.findInvitation(
+      userId,
+      dto.inviterId,
+      dto.chatRoomId,
+    );
+    if (!invitation) {
+      throw new Error('Invitation is not found');
+    }
+
+    const roomMemberExists = await this.chatService.roomMemberExists(
+      dto.chatRoomId,
+      userId,
+    );
+    if (!roomMemberExists) {
+      await this.chatService.createRoomMember(dto.chatRoomId, userId, 'USER');
+    }
+
+    await this.chatService.deleteInvitation(
+      userId,
+      dto.inviterId,
+      dto.chatRoomId,
+    );
+
+    await this.sendInvites(userId);
+    await this.sendJoinedRooms(userId);
+  }
+
+  @SubscribeMessage('rejectChatInvitation')
+  async RejectChatRoomInvitation(client: Socket, dto: RejectChatInvitationDto) {
+    console.log('rejectChatInvitation', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new Error('User not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new Error('Room is not found');
+    }
+
+    await this.chatService.deleteInvitation(
+      userId,
+      dto.inviterId,
+      dto.chatRoomId,
+    );
+
+    await this.sendInvites(userId);
+  }
+
   @SubscribeMessage('leaveChatRoom')
   async leaveRoom(client: Socket, dto: LeaveRoomDto) {
     console.log('leaveChatRoom', dto);
 
     const userId = this.server.getUserId(client);
     if (!userId) {
-      throw new Error();
+      throw new CustomException('User is not found');
     }
 
-    const room = await this.chatService.findChannelById(dto.chatRoomId);
-    if (!room) {
-      throw new Error('Room is not found');
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
     }
 
     await this.prisma.roomMember.delete({
@@ -303,8 +397,7 @@ export class ChatGateway {
     });
 
     this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
-    const joinedRooms = await this.chatService.getJoinedRooms(userId);
-    client.emit('joinedRooms', joinedRooms);
+    await this.sendJoinedRooms(userId);
   }
 
   async broadcastMessagesToJoinedRooms(userId: string) {
@@ -317,5 +410,13 @@ export class ChatGateway {
   private async broadcastRoomMessageHistory(roomId: string) {
     const msgs = await this.chatService.getChannelHistoryById(roomId);
     this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
+  }
+
+  private async sendJoinedRooms(userId: string) {
+    const socket = this.server.getSocket(userId);
+    if (socket) {
+      const joinedRooms = await this.chatService.getJoinedRooms(userId);
+      socket.emit('joinedRooms', joinedRooms);
+    }
   }
 }

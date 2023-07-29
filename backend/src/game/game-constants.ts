@@ -30,8 +30,8 @@ const CreatePaddle = (x: number): Paddle => {
 const ballConstants = {
   x: canvas.xMax / 2,
   y: canvas.yMax / 2,
-  dx: canvas.xMax / 400,
-  dy: canvas.yMax / 800,
+  speed: 0.005,
+  angle: 0,
 } as const;
 
 const paddleConstants = {

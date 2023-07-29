@@ -33,6 +33,10 @@ const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
 };
 
+const getRandomInt = (max: number): number => {
+  return Math.floor(Math.random() * max);
+};
+
 export interface GameRule {
   EvaluateGameResult(
     p1: PlayerResult,
@@ -70,6 +74,7 @@ export class BasicRule implements GameRule {
 export class GameLogic {
   private p1: Player;
   private p2: Player;
+  private ball: Ball;
   private intervalId: any;
 
   constructor(
@@ -77,8 +82,8 @@ export class GameLogic {
     p2: PlayerData,
     private readonly onShutdown: OnShutdownCallback,
     private readonly rule: GameRule = new BasicRule(MatchPoint),
-    private ball: Ball = CreateBall(),
   ) {
+    this.ball = this.CreateRandomBall();
     this.p1 = {
       socket: p1.client,
       userId: p1.data.id,
@@ -118,7 +123,7 @@ export class GameLogic {
     if (this.p1.isReady && this.p2.isReady) {
       this.p1.socket.emit('game ready left', this.ConvertToGameDto());
       this.p2.socket.emit('game ready right', this.ConvertToGameDto());
-      setTimeout(this.StartGame.bind(this), 5000);
+      setTimeout(this.StartGame.bind(this), 2000);
     }
   }
 
@@ -174,10 +179,25 @@ export class GameLogic {
     this.onShutdown(p1Result, p2Result, this.rule.CreateResultEvaluator());
   }
 
+  private CreateRandomBall(): Ball {
+    const ball = CreateBall();
+    const random_angle =
+      Math.random() * ((Math.PI * 5) / 6) - (Math.PI * 5) / 12;
+    const p1_side = random_angle + Math.PI;
+    const p2_side = random_angle;
+    ball.angle = [p1_side, p2_side][getRandomInt(2)];
+    return ball;
+  }
+
+  private getDxDy(speed: number, angle: number) {
+    return { dx: speed * Math.cos(angle), dy: speed * Math.sin(angle) };
+  }
+
   // ボールの半径とパドルの厚みを考慮してないからめり込む
   private UpdateBallPosition() {
-    let newX = this.ball.x + this.ball.dx;
-    let newY = this.ball.y + this.ball.dy;
+    const { dx, dy } = this.getDxDy(this.ball.speed, this.ball.angle);
+    let newX = this.ball.x + dx;
+    let newY = this.ball.y + dy;
 
     const isLeftPaddleHitByBall = () => {
       return (
@@ -203,18 +223,24 @@ export class GameLogic {
 
     if (isLeftPaddleHitByBall()) {
       newX = -newX;
-      this.ball.dx = -this.ball.dx;
+      this.ball.angle = this.ball.angle * -1 + Math.PI;
+      this.ball.angle *= Math.random() * 0.1 + 0.95;
+      this.ball.speed =
+        this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     } else if (isRightPaddleHitByBall()) {
       newX = canvas.xMax - (newX - canvas.xMax);
-      this.ball.dx = -this.ball.dx;
+      this.ball.angle = this.ball.angle * -1 + Math.PI;
+      this.ball.angle *= Math.random() * 0.1 + 0.95;
+      this.ball.speed =
+        this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     }
 
     if (newY <= canvas.yMin) {
       newY = -newY;
-      this.ball.dy = -this.ball.dy;
+      this.ball.angle *= -1;
     } else if (newY >= canvas.yMax) {
       newY = canvas.yMax - (newY - canvas.yMax);
-      this.ball.dy = -this.ball.dy;
+      this.ball.angle *= -1;
     }
 
     this.ball.x = newX;
@@ -245,7 +271,7 @@ export class GameLogic {
       return;
     }
     this.EndGame();
-    this.ball = CreateBall();
+    this.ball = this.CreateRandomBall();
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
 
@@ -256,7 +282,7 @@ export class GameLogic {
 
   private Restart() {
     this.EndGame();
-    this.ball = CreateBall();
+    this.ball = this.CreateRandomBall();
     this.p1.paddle = CreateLeftPaddle();
     this.p2.paddle = CreateRightPaddle();
     this.p1.socket.emit('game data', this.ConvertToGameDto());
