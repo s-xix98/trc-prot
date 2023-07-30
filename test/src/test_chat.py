@@ -79,10 +79,12 @@ def test_chat_invite(test_name: str, page: Page, user: User) -> None:
     client.invite_chat_room("test-room", "piyo")
 
     chat_room_invitation_lst = postgres_ctl.get_all_chat_room_invitation("test-room")
-    assert len(chat_room_invitation_lst) == 1
+    assert len(chat_room_invitation_lst) == 1, "invitation_lst len is not 1"
     chat_room_invitation = chat_room_invitation_lst[0]
-    assert chat_room_invitation.inviter_user_id == postgres_ctl.get_all_user()[user.name].user_id
-    assert chat_room_invitation.invitee_user_id == postgres_ctl.get_all_user()["piyo"].user_id
+    assert (
+        chat_room_invitation.inviter_user_id == postgres_ctl.get_all_user()[user.name].user_id
+    ), f"inviter is not {user.name}"
+    assert chat_room_invitation.invitee_user_id == postgres_ctl.get_all_user()["piyo"].user_id, f"invitee is not piyo"
 
 
 def leave_chat_room(test_name: str, page: Page, user: User) -> None:
