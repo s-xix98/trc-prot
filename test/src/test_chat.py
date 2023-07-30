@@ -99,6 +99,9 @@ def leave_chat_room(test_name: str, page: Page, user: User) -> None:
 
     client.leave_chat_room("test-room")
 
+    room_member = postgres_ctl.get_room_member("test-room")
+    assert len(room_member) == 0, "room member is not 0"
+
 
 def test_join_chat_room(test_name: str, page: Page, user: User) -> None:
     client = UserInteractionManager(test_name, user, page)
@@ -107,6 +110,10 @@ def test_join_chat_room(test_name: str, page: Page, user: User) -> None:
     client.login()
 
     client.search_and_join_chat_room("test-room")
+
+    room_member = postgres_ctl.get_room_member("test-room")
+    assert len(room_member) == 1, "room member is not 1"
+    assert room_member[0].user_id == postgres_ctl.get_all_user()[user.name].user_id
 
 
 test_chat_lst: list[TEST_FUNC_TYPE] = [

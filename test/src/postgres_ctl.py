@@ -8,9 +8,9 @@ import psycopg2
 
 from src.constants import (DB_TABLE_NAME_CHAT_INVITATION,
                            DB_TABLE_NAME_CHAT_ROOM, DB_TABLE_NAME_MESSAGE,
-                           DB_TABLE_NAME_USER, POSTGRES_DATABASE,
-                           POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_PORT,
-                           POSTGRES_USER)
+                           DB_TABLE_NAME_ROOM_MEMBER, DB_TABLE_NAME_USER,
+                           POSTGRES_DATABASE, POSTGRES_HOST, POSTGRES_PASSWORD,
+                           POSTGRES_PORT, POSTGRES_USER)
 from src.type_utils import enforce_type
 
 
@@ -24,6 +24,18 @@ class UserData:
         enforce_type(self.email, str)
         enforce_type(self.user_id, str)
         enforce_type(self.username, str)
+
+
+@dataclass
+class ChatRoomMember:
+    role: str
+    user_id: str
+    chat_room_id: str
+
+    def __post_init__(self) -> None:
+        enforce_type(self.role, str)
+        enforce_type(self.user_id, str)
+        enforce_type(self.chat_room_id, str)
 
 
 @dataclass
@@ -101,6 +113,18 @@ class PostgresController:
             room_dic[room_name] = ChatRoomData(room_name=room_name, chat_room_id=chat_room_id, is_private=is_private)
         return room_dic
 
+    def get_all_room_member(self) -> dict[str, list[ChatRoomMember]]:
+        room_member_dic: dict[str, list[ChatRoomMember]] = defaultdict(list)
+
+        for room_member in self.get_all_table_data(DB_TABLE_NAME_ROOM_MEMBER):
+            role, user_id, chat_room_id = (
+                room_member["role"],
+                room_member["userId"],
+                room_member["chatRoomId"],
+            )
+            room_member_dic[chat_room_id].append(ChatRoomMember(role=role, user_id=user_id, chat_room_id=chat_room_id))
+        return room_member_dic
+
     def get_all_message(self) -> dict[str, list[MessageData]]:
         message_dic: dict[str, list[MessageData]] = defaultdict(list)
 
@@ -130,6 +154,14 @@ class PostgresController:
                 )
             )
         return invitation_dic
+
+    def get_room_member(self, room_name: str) -> list[ChatRoomMember]:
+        room_dic = self.get_all_chat_room()
+        all_room_member_dic = self.get_all_room_member()
+
+        chat_room_id = room_dic[room_name].chat_room_id
+        room_member_lst = all_room_member_dic.get(chat_room_id) or []
+        return room_member_lst
 
     def get_all_chat_room_msg(self, room_name: str) -> list[MessageData]:
         room_dic = self.get_all_chat_room()
