@@ -16,6 +16,8 @@ export const Basic: Story = {
     selectedChannel: {
       id: 'id',
       roomName: 'roomName',
+      isPrivate: true,
+      hasPassword: true,
     },
   },
 };

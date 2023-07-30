@@ -242,7 +242,7 @@ class UserInteractionManager:
         page.get_by_text(room_name).click()
         self.screenshot("send_some_msg before")
 
-        for i in range(times):
+        for i in range(1, times + 1):
             msg = f"{i} " * i
             page.get_by_role("textbox").fill(msg)
             page.get_by_role("textbox").press("Enter")

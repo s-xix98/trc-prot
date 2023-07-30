@@ -10,6 +10,4 @@ class User:
     password: str
 
 
-E2E: Final = User(
-    idx=0, name="e2e-name", email="e2e@example.com", password="e2e-password"
-)
+E2E: Final = User(idx=0, name="e2e-name", email="e2e@example.com", password="e2e-password")
