@@ -84,9 +84,7 @@ class PostgresController:
             email, user_id, username = data["email"], data["id"], data["username"]
             if user_dic.get(username) != None:
                 raise ValueError("dup username")
-            user_dic[username] = UserData(
-                email=email, user_id=user_id, username=username
-            )
+            user_dic[username] = UserData(email=email, user_id=user_id, username=username)
         return user_dic
 
     def get_all_chat_room(self) -> dict[str, ChatRoomData]:
@@ -100,9 +98,7 @@ class PostgresController:
             )
             if room_dic.get(room_name) != None:
                 raise ValueError("dup room name")
-            room_dic[room_name] = ChatRoomData(
-                room_name=room_name, chat_room_id=chat_room_id, is_private=is_private
-            )
+            room_dic[room_name] = ChatRoomData(room_name=room_name, chat_room_id=chat_room_id, is_private=is_private)
         return room_dic
 
     def get_all_message(self) -> dict[str, list[MessageData]]:
@@ -114,9 +110,7 @@ class PostgresController:
                 message["userId"],
                 message["content"],
             )
-            message_dic[chat_room_id].append(
-                MessageData(chat_room_id=chat_room_id, user_id=user_id, content=content)
-            )
+            message_dic[chat_room_id].append(MessageData(chat_room_id=chat_room_id, user_id=user_id, content=content))
         return message_dic
 
     def get_all_chat_invitation(self) -> dict[str, list[ChatInvitation]]:

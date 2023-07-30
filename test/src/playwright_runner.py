@@ -82,15 +82,11 @@ def run(
                 try:
                     func(func.__name__, page, user)
                 except PlaywrightTimeoutError as e:
-                    logger.error(
-                        f"PlaywrightTimeoutError :  {func.__name__}, user : {user.name}, {str(e)}"
-                    )
+                    logger.error(f"PlaywrightTimeoutError :  {func.__name__}, user : {user.name}, {str(e)}")
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
                     sys.exit(1)
                 except Exception as e:
-                    logger.error(
-                        f"Exception : {func.__name__}, user : {user.name}, {str(e)}"
-                    )
+                    logger.error(f"Exception : {func.__name__}, user : {user.name}, {str(e)}")
                     page.screenshot(path=f"error/{func.__name__}-{user.name}-error.png")
                     sys.exit(1)
                 logger.info(f"--- END TEST : {func.__name__}, user : {user.name} ---")
@@ -107,9 +103,7 @@ def run(
         logger.info(f"--- END ALL TEST ---")
 
         if TRACE:
-            context.tracing.stop(
-                path=f"log/trace/{'-'.join([u.name for u in user_lst])}-trace.zip"
-            )
+            context.tracing.stop(path=f"log/trace/{'-'.join([u.name for u in user_lst])}-trace.zip")
         # ---------------------
         context.close()
         browser.close()
@@ -122,8 +116,7 @@ def playwright_test_runner(func_lst: list[TEST_FUNC_TYPE]) -> None:
 def playwright_test_runner_multiple_threads(func_lst: list[TEST_FUNC_TYPE]) -> None:
     executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
     all_test_user: list[User] = [
-        User(i, f"user{i}", f"{i}@example.com", f"{i}{i}{i}")
-        for i in range(1, TEST_USER_COUNT + 1)
+        User(i, f"user{i}", f"{i}@example.com", f"{i}{i}{i}") for i in range(1, TEST_USER_COUNT + 1)
     ]
     for i in range(MAX_WORKERS):
         thd_idx = i
