@@ -2,12 +2,10 @@ import { useState } from 'react';
 import { useSetAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
-import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useGetInviter, useChatRoomStatus } from '@/hooks/useCurrentUser';
 import { selectedChannelAtom } from '@/stores/chatState';
-import { UserListWithModal } from '@/features/user/components/UserProfile';
 import { Input } from '@/components/Elements/Input/Input';
 
 import { useRoomMembers } from '../api/roomMembers';
@@ -18,6 +16,7 @@ import { useAcceptChatInvitation } from '../api/acceptInvite';
 import { useRejectChatInvitation } from '../api/inviteChannel';
 
 import { ChannelInvite } from './ChatInvite';
+import { ShowChatRoomMembers } from './ChatRoomMembers';
 
 const ChannelInfoHeader = ({
   selectedChannel,
@@ -62,9 +61,10 @@ export const JoinedChannelInfo = ({
     <Container flexDirection={'column'}>
       <ChannelInfoHeader selectedChannel={selectedChannel} />
       <br />
-      <ContainerItem overflowY="scroll">
-        <UserListWithModal userList={roomMembers} />
-      </ContainerItem>
+      <ShowChatRoomMembers
+        selectedChannel={selectedChannel}
+        roomMembers={roomMembers}
+      />
     </Container>
   );
 };

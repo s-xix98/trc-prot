@@ -19,7 +19,7 @@ import {
   RoomMemberRestrictionDto,
   RejectChatInvitationDto,
   UpdateChatRoomDto,
-  KickRoomMemberRDto,
+  KickRoomMemberDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -223,7 +223,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('kickRoomMember')
-  async kickRoomMember(client: Socket, dto: KickRoomMemberRDto) {
+  async kickRoomMember(client: Socket, dto: KickRoomMemberDto) {
     console.log('kickRoomMember', dto);
     const userId = this.server.getUserId(client);
     if (!userId) {
@@ -249,7 +249,11 @@ export class ChatGateway {
       throw new CustomException('You are not ADMIN || OWNER');
     }
 
-    const isOwner = await this.chatService.isOwner(dto.chatRoomId, userId);
+    // TODO : mute の方もバグってる？
+    const isOwner = await this.chatService.isOwner(
+      dto.chatRoomId,
+      dto.targetId,
+    );
     if (isOwner) {
       throw new CustomException('you can not restrict this user');
     }
