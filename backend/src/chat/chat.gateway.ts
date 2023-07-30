@@ -20,6 +20,7 @@ import {
   RejectChatInvitationDto,
   UpdateChatRoomDto,
   KickRoomMemberDto,
+  CreateDMDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -86,6 +87,32 @@ export class ChatGateway {
 
     this.server.JoinRoom(client, roomType.Chat, createdRoom.id);
     await this.sendJoinedRooms(userId);
+  }
+
+  @SubscribeMessage('createDM')
+  async createDM(client: Socket, dto: CreateDMDto) {
+    console.log('createDM', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
+
+    const dmExists = await this.chatService.dmExists(userId, dto.targetId);
+    if (dmExists) {
+      throw new CustomException('DM is already exists');
+    }
+
+    const createdDM = await this.chatService.createDM(userId, dto.targetId);
+
+    this.server.JoinRoom(client, roomType.Chat, createdDM.id);
+    await this.sendJoinedRooms(userId);
+
+    const targetSock = this.server.getSocket(dto.targetId);
+    if (targetSock) {
+      this.server.JoinRoom(targetSock, roomType.Chat, createdDM.id);
+      await this.sendJoinedRooms(dto.targetId);
+    }
   }
 
   @SubscribeMessage('joinChannel')
