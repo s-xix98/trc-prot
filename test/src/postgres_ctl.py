@@ -122,7 +122,7 @@ class PostgresController:
                 invitation["inviteeUserId"],
                 invitation["inviterUserId"],
             )
-            invitation_dic["chat_room_id"].append(
+            invitation_dic[chat_room_id].append(
                 ChatInvitation(
                     chat_room_id=chat_room_id,
                     invitee_user_id=invitee_user_id,
