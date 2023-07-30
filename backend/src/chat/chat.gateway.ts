@@ -122,9 +122,12 @@ export class ChatGateway {
       throw new CustomException('User is not found');
     }
 
-    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
-    if (!roomExists) {
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
       throw new CustomException('Room is not found');
+    }
+    if (room.isDM) {
+      throw new CustomException('DM is not joinable');
     }
 
     const restrictionExists = await this.chatService.userRestrictionExists(
@@ -306,9 +309,12 @@ export class ChatGateway {
       throw new CustomException('User is not found');
     }
 
-    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
-    if (!roomExists) {
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
       throw new CustomException('Room is not found');
+    }
+    if (room.isDM) {
+      throw new CustomException('DM can not be invited');
     }
 
     const roomMemberExists = await this.chatService.roomMemberExists(
@@ -410,9 +416,12 @@ export class ChatGateway {
       throw new CustomException('User is not found');
     }
 
-    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
-    if (!roomExists) {
+    const room = await this.chatService.findChannelById(dto.chatRoomId);
+    if (!room) {
       throw new CustomException('Room is not found');
+    }
+    if (room.isDM) {
+      throw new CustomException('DM can not be leaved');
     }
 
     await this.chatService.deleteRoomMember(dto.chatRoomId, userId);
