@@ -56,6 +56,7 @@ jobs:
           make build &
           make_build_pid=$(echo $!)
           pip install playwright && playwright install && playwright install-deps
+          pip install pandas psycopg2-binary
           echo wait ${make_build_pid} && wait ${make_build_pid}
           npm run start &
           timeout 30 bash -c 'while ! >/dev/tcp/localhost/3000; do sleep 3; done'

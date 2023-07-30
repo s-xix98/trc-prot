@@ -42,9 +42,7 @@ logger.addHandler(stream_handler)
 
 # rotating_file_handler
 LOG_FILE = "log/logger.log"
-FORMAT_FILE = (
-    "%(asctime)s %(levelname)s %(filename)s:%(funcName)s:%(lineno)s %(message)s"
-)
+FORMAT_FILE = "%(asctime)s %(levelname)s %(filename)s:%(funcName)s:%(lineno)s %(message)s"
 MAX_BYTES = 1000000
 rotating_file_handler = RotatingFileHandler(LOG_FILE, maxBytes=MAX_BYTES)
 rotating_file_handler.setFormatter(Formatter(FORMAT_FILE))
