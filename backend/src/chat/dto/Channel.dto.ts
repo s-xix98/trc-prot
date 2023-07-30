@@ -8,6 +8,10 @@ export class CreateChannelDto {
   isPrivate?: boolean;
 }
 
+export class CreateDMDto {
+  targetId: string;
+}
+
 export class UpdateRoomMemberRoleDto {
   role: 'ADMIN' | 'USER';
 }
