@@ -332,6 +332,7 @@ export class ChatService {
       select: {
         id: true,
         roomName: true,
+        isPrivate: true,
       },
       orderBy: {
         createdAt: 'desc',
