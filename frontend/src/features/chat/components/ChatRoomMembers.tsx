@@ -13,17 +13,27 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
+import { useMuteRoomMember } from '../api/muteRoomMember';
 
-const BanUserModal = ({
-  selectedChannel,
-  targetUser,
+const SliderModal = ({
+  title,
+  btnText,
+  onClickAct,
+  defaultVal,
+  stepVal,
+  minVal,
+  maxVal,
 }: {
-  selectedChannel: chatChannelDto;
-  targetUser: UserInfo;
+  title: string;
+  btnText: string;
+  onClickAct: (value: number) => void;
+  defaultVal: number;
+  stepVal: number;
+  minVal: number;
+  maxVal: number;
 }) => {
   const modal = useModal();
-  const [value, setValue] = useState<number>(30);
-  const banRoomMember = useBanRoomMember();
+  const [value, setValue] = useState<number>(defaultVal);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number);
@@ -32,10 +42,10 @@ const BanUserModal = ({
   return (
     <>
       {modal.modalIsOpen === false ? (
-        <button onClick={() => modal.openModal()}>Ban</button>
+        <button onClick={() => modal.openModal()}>{btnText}</button>
       ) : (
         <ModalView {...modal} height="250px" width="200px">
-          <h3>Set Ban Time</h3>
+          <h3>{title}</h3>
           <br />
           <p>{value} minute</p>
           <div style={{ margin: '10px' }}>
@@ -44,20 +54,70 @@ const BanUserModal = ({
               value={value}
               onChange={handleChange}
               valueLabelDisplay="auto"
-              step={10}
-              min={10}
-              max={300}
+              step={stepVal}
+              min={minVal}
+              max={maxVal}
             />
           </div>
-          <button
-            onClick={() => {
-              banRoomMember.emit(selectedChannel.id, targetUser.id, value);
-            }}
-          >
-            Ban
-          </button>
+          <button onClick={() => onClickAct(value)}>{btnText}</button>
         </ModalView>
       )}
+    </>
+  );
+};
+
+const BanUserModal = ({
+  selectedChannel,
+  targetUser,
+}: {
+  selectedChannel: chatChannelDto;
+  targetUser: UserInfo;
+}) => {
+  const banRoomMember = useBanRoomMember();
+
+  const onClickAct = (value: number) => {
+    banRoomMember.emit(selectedChannel.id, targetUser.id, value);
+  };
+
+  return (
+    <>
+      <SliderModal
+        title="Set Ban Time"
+        btnText="Ban"
+        onClickAct={onClickAct}
+        defaultVal={30}
+        stepVal={10}
+        minVal={10}
+        maxVal={300}
+      />
+    </>
+  );
+};
+
+const MuteUserModal = ({
+  selectedChannel,
+  targetUser,
+}: {
+  selectedChannel: chatChannelDto;
+  targetUser: UserInfo;
+}) => {
+  const muteRoomMember = useMuteRoomMember();
+
+  const onClickAct = (value: number) => {
+    muteRoomMember.emit(selectedChannel.id, targetUser.id, value);
+  };
+
+  return (
+    <>
+      <SliderModal
+        title="Set Mute Time"
+        btnText="Mute"
+        onClickAct={onClickAct}
+        defaultVal={30}
+        stepVal={10}
+        minVal={10}
+        maxVal={300}
+      />
     </>
   );
 };
@@ -101,6 +161,10 @@ export const ShowRoomUser = ({
             <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
             <div style={{ margin: 'auto 10px auto auto' }}>
               <BanUserModal
+                selectedChannel={selectedChannel}
+                targetUser={user}
+              />
+              <MuteUserModal
                 selectedChannel={selectedChannel}
                 targetUser={user}
               />
