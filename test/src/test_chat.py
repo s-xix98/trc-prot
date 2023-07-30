@@ -78,6 +78,13 @@ def test_chat_invite(test_name: str, page: Page, user: User) -> None:
 
     client.invite_chat_room("test-room", "piyo")
 
+    chat_room_invitation_lst = postgres_ctl.get_all_chat_room_invitation("test-room")
+    assert len(chat_room_invitation_lst) == 1
+    assert (
+        chat_room_invitation_lst[0].invitee_user_id
+        == postgres_ctl.get_all_user()["piyo"].user_id
+    )
+
 
 def leave_chat_room(test_name: str, page: Page, user: User) -> None:
     client = UserInteractionManager(test_name, user, page)
