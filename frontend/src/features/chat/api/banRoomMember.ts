@@ -6,11 +6,10 @@ export const useBanRoomMember = () => {
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (chatRoomId: string, targetId: string, banMinutes: number) => {
-
     const dto: RoomMemberRestrictionDto = {
       chatRoomId: chatRoomId,
       targetId: targetId,
-      duration: banMinutes ,
+      duration: banMinutes,
     };
 
     sessionSocketEmitter.emit('banRoomMember', dto);

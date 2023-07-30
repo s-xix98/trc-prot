@@ -6,7 +6,6 @@ export const useMuteRoomMember = () => {
   const sessionSocketEmitter = useSessionSocketEmitter();
 
   const emit = (chatRoomId: string, targetId: string, muteMinutes: number) => {
-
     const dto: RoomMemberRestrictionDto = {
       chatRoomId: chatRoomId,
       targetId: targetId,
