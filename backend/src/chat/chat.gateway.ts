@@ -339,6 +339,7 @@ export class ChatGateway {
       dto.chatRoomId,
     );
 
+    this.server.JoinRoom(client, roomType.Chat, dto.chatRoomId);
     await this.sendInvites(userId);
     await this.sendJoinedRooms(userId);
   }
