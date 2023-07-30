@@ -316,13 +316,10 @@ describe('ChatGateway', () => {
       user.socket.emit('joinChannel', joinChannelDto);
       await testService.sleep(100);
 
-      const endedAt = new Date();
-      endedAt.setHours(endedAt.getHours() + 1);
-
       const updateRoomMemberStateDto: RoomMemberRestrictionDto = {
         chatRoomId: room?.id || '',
         targetId: user.user.id,
-        endedAt: endedAt,
+        duration: 60,
       };
 
       owner.socket.emit('banRoomMember', updateRoomMemberStateDto);
@@ -335,7 +332,6 @@ describe('ChatGateway', () => {
       );
 
       expect(bannedMember?.userState).toEqual('BANNED');
-      expect(bannedMember?.endedAt).toEqual(endedAt);
       expect(bannedMember?.chatRoomId).toEqual(room?.id);
       expect(bannedMember?.userId).toEqual(user.user.id);
     });
