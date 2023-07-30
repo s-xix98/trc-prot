@@ -333,13 +333,20 @@ export class ChatService {
         id: true,
         roomName: true,
         isPrivate: true,
+        hashedPassword: true,
       },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    return joinedRooms;
+    return joinedRooms.map((room) => {
+      const { hashedPassword, ...rest } = room;
+      return {
+        ...rest,
+        hasPassword: hashedPassword !== null,
+      };
+    });
   }
 
   async upsertInvitation(
