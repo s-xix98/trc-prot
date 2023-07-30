@@ -143,7 +143,10 @@ class PostgresController:
         room_dic = self.get_all_chat_room()
         all_invitation_dic = self.get_all_chat_invitation()
 
+        print(all_invitation_dic, flush=True)
+
         chat_room_id = room_dic[room_name].chat_room_id
+        print(chat_room_id, flush=True)
         invitation_lst = all_invitation_dic.get(chat_room_id) or []
         return invitation_lst
 
