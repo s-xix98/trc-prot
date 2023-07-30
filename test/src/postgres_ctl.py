@@ -6,7 +6,8 @@ from typing import Any
 import pandas as pd
 import psycopg2
 
-from src.constants import (DB_TABLE_NAME_CHAT_ROOM, DB_TABLE_NAME_MESSAGE,
+from src.constants import (DB_TABLE_NAME_CHAT_INVITATION,
+                           DB_TABLE_NAME_CHAT_ROOM, DB_TABLE_NAME_MESSAGE,
                            DB_TABLE_NAME_USER, POSTGRES_DATABASE,
                            POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_PORT,
                            POSTGRES_USER)
@@ -35,6 +36,18 @@ class ChatRoomData:
         enforce_type(self.room_name, str)
         enforce_type(self.chat_room_id, str)
         enforce_type(self.is_private, bool)
+
+
+@dataclass
+class ChatInvitation:
+    chat_room_id: str
+    invitee_user_id: str
+    inviter_user_id: str
+
+    def __post_init__(self) -> None:
+        enforce_type(self.chat_room_id, str)
+        enforce_type(self.invitee_user_id, str)
+        enforce_type(self.inviter_user_id, str)
 
 
 @dataclass
@@ -106,6 +119,24 @@ class PostgresController:
             )
         return message_dic
 
+    def get_all_chat_invitation(self) -> dict[str, list[ChatInvitation]]:
+        invitation_dic: dict[str, list[ChatInvitation]] = defaultdict(list)
+
+        for invitation in self.get_all_table_data(DB_TABLE_NAME_CHAT_INVITATION):
+            chat_room_id, invitee_user_id, inviter_user_id = (
+                invitation["chatRoomId"],
+                invitation["inviteeUserId"],
+                invitation["inviterUserId"],
+            )
+            invitation_dic["chat_room_id"].append(
+                ChatInvitation(
+                    chat_room_id=chat_room_id,
+                    invitee_user_id=invitee_user_id,
+                    inviter_user_id=inviter_user_id,
+                )
+            )
+        return invitation_dic
+
     def get_all_chat_room_msg(self, room_name: str) -> list[MessageData]:
         room_dic = self.get_all_chat_room()
         all_msg_dic = self.get_all_message()
@@ -113,6 +144,14 @@ class PostgresController:
         chat_room_id = room_dic[room_name].chat_room_id
         msg_lst = all_msg_dic.get(chat_room_id) or []
         return msg_lst
+
+    def get_all_chat_room_invitation(self, room_name: str) -> list[ChatInvitation]:
+        room_dic = self.get_all_chat_room()
+        all_invitation_dic = self.get_all_chat_invitation()
+
+        chat_room_id = room_dic[room_name].chat_room_id
+        invitation_lst = all_invitation_dic.get(chat_room_id) or []
+        return invitation_lst
 
 
 postgres_ctl = PostgresController()
