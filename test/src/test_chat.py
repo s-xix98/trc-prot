@@ -1,3 +1,5 @@
+import time
+
 from playwright.sync_api import Page
 
 from src.playwright_runner import TEST_FUNC_TYPE
@@ -77,6 +79,8 @@ def test_chat_invite(test_name: str, page: Page, user: User) -> None:
     client.login()
 
     client.invite_chat_room("test-room", "piyo")
+
+    time.sleep(0.3)
 
     chat_room_invitation_lst = postgres_ctl.get_all_chat_room_invitation("test-room")
     assert len(chat_room_invitation_lst) == 1, "invitation_lst len is not 1"
