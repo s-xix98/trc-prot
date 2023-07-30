@@ -494,4 +494,18 @@ export class ChatService {
     }
     return false;
   }
+
+  async dmExists(userId: string, targetId: string) {
+    const dm = await this.prismaService.chatRoom.findMany({
+      where: {
+        AND: [
+          { roomMembers: { some: { userId: userId } } },
+          { roomMembers: { some: { userId: targetId } } },
+          { isDM: true },
+        ],
+      },
+    });
+
+    return dm.length > 0;
+  }
 }
