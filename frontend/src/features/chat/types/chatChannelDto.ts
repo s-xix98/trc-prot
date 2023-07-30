@@ -15,5 +15,5 @@ export type UpdateRoomMemberRoleDto = {
 export type RoomMemberRestrictionDto = {
   chatRoomId: string;
   targetId: string;
-  endedAt: Date;
+  duration: number;
 };
