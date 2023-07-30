@@ -144,6 +144,30 @@ export class ChatService {
     return createdRoom;
   }
 
+  async createDM(userId: string, targetId: string) {
+    const createdRoom = await this.prismaService.chatRoom.create({
+      data: {
+        roomName: 'DM',
+        isPrivate: true,
+        isDM: true,
+        roomMembers: {
+          create: [
+            {
+              userId: userId,
+              role: UserRole.USER,
+            },
+            {
+              userId: targetId,
+              role: UserRole.USER,
+            },
+          ],
+        },
+      },
+    });
+
+    return createdRoom;
+  }
+
   async upsertRoomMember(chatRoomId: string, userId: string, role: UserRole) {
     const roomMember = await this.prismaService.roomMember.upsert({
       where: {
