@@ -115,6 +115,9 @@ export class ChatService {
         isPrivate: {
           equals: false,
         },
+        isDM: {
+          equals: false,
+        },
       },
     });
 
