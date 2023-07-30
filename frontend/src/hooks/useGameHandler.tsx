@@ -1,4 +1,6 @@
 import { SnackbarKey, closeSnackbar, useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useSessionSocket } from '@/hooks/useSocket';
 import { UserInfoSchema } from '@/features/user/types/UserDto';
@@ -9,6 +11,20 @@ export const useGameHandler = () => {
   const acceptGameInvite = useAcceptGameInvite();
   const denyGameInvite = useDenyGameInvite();
   const { enqueueSnackbar } = useSnackbar();
+
+  const [isMatched, setMatched] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isMatched) {
+      router.push('/game');
+    }
+  }, [isMatched, router]);
+
+  useSessionSocket('matched', (enemyName: string) => {
+    console.log(enemyName);
+    setMatched(true);
+  });
 
   useSessionSocket('receive game-invitation', (data) => {
     const inviterUserInfo = UserInfoSchema.safeParse(data);
