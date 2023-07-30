@@ -17,6 +17,9 @@ export const useGameHandler = () => {
 
   useEffect(() => {
     if (isMatched) {
+      // TODO : 2回目以降動いてくれないので、設定
+      // Game Page への 遷移もうちょい、ちゃんする
+      setMatched(false);
       router.push('/game');
     }
   }, [isMatched, router]);
