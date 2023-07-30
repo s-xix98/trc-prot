@@ -280,6 +280,8 @@ export class ChatService {
     dto: RoomMemberRestrictionDto,
     state: 'BANNED' | 'MUTED',
   ) {
+    const endedAt = new Date(Date.now() + dto.duration * 1000 * 60);
+
     const memberState = await this.prismaService.userChatState.upsert({
       where: {
         chatRoomId_userId_userState: {
@@ -289,13 +291,13 @@ export class ChatService {
         },
       },
       update: {
-        endedAt: dto.endedAt,
+        endedAt: endedAt,
       },
       create: {
         chatRoomId: dto.chatRoomId,
         userId: dto.targetId,
         userState: state,
-        endedAt: dto.endedAt,
+        endedAt: endedAt,
       },
     });
 

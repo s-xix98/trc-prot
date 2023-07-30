@@ -15,7 +15,7 @@ export class UpdateRoomMemberRoleDto {
 export class RoomMemberRestrictionDto {
   chatRoomId: string;
   targetId: string;
-  endedAt: Date;
+  duration: number;
 }
 
 export class KickRoomMemberDto {
