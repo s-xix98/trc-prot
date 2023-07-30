@@ -358,6 +358,7 @@ export class ChatService {
         roomName: true,
         isPrivate: true,
         hashedPassword: true,
+        isDM: true,
       },
       orderBy: {
         createdAt: 'desc',
