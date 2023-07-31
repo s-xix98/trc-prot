@@ -2,7 +2,6 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@mui/material';
 
-import { useSessionSocket } from '@/hooks/useSocket';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { FormInput } from '@/components/Elements/Input/FormInput';
@@ -27,13 +26,6 @@ export const ChatChannelCreateModal = () => {
     closeModal();
     methods.reset();
   };
-
-  // TODO roomの情報が返ってきてらチャットリストの更新をする必要があるから
-  // chatの一番上の階層で一番上の階層で宣言するのがいいかも
-  // eslint-disable-next-line
-  useSessionSocket('createChannel', (createdRoom: any) => {
-    console.log(createdRoom);
-  });
 
   return (
     <>
