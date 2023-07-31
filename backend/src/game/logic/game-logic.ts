@@ -252,11 +252,11 @@ export class GameLogic {
         this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     }
 
-    if (newY <= canvas.yMin) {
-      newY = -newY;
+    if (newY <= this.area.yMin) {
+      newY = this.area.yMin - (newY - this.area.yMin);
       this.ball.angle *= -1;
-    } else if (newY >= canvas.yMax) {
-      newY = canvas.yMax - (newY - canvas.yMax);
+    } else if (newY >= this.area.yMax) {
+      newY = this.area.yMax - (newY - this.area.yMax);
       this.ball.angle *= -1;
     }
 
