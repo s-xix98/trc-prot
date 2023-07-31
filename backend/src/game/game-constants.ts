@@ -1,3 +1,4 @@
+import { GameOptionDto } from './dto/GameOptionDto';
 import { Ball, Paddle } from './types';
 
 export const canvas = {
@@ -39,4 +40,9 @@ const paddleConstants = {
   height: 0.25,
   width: 0.025,
   speed: 0.02,
+} as const;
+
+export const defaultGameOptions: GameOptionDto = {
+  ballSpeed: ballConstants.speed,
+  matchpoint: 3,
 } as const;
