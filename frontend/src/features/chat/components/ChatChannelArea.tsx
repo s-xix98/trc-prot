@@ -2,7 +2,6 @@ import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 
 import { chatChannelDto } from '../types/chatChannelDto';
-import { useJoinChannel } from '../api/joinChannel';
 
 import { ChatChannelCreateModal } from './ChatChannelCreateModal';
 import { ChannelSearchModal } from './ChannelSearchModal';
@@ -17,10 +16,7 @@ export const ChatChannelArea = ({
     React.SetStateAction<chatChannelDto | undefined>
   >;
 }) => {
-  const joinChannel = useJoinChannel();
-
   const handleClick = (channel: chatChannelDto) => {
-    joinChannel.emit(channel.id);
     setSelectedChannel(channel);
   };
 
