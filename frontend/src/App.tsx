@@ -71,9 +71,6 @@ function App() {
 
   const commandElemMap = new Map<string, JSX.Element>();
 
-  commandElemMap.set('a', <h1>A</h1>);
-  commandElemMap.set('b', <h2>B</h2>);
-  commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
   commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
