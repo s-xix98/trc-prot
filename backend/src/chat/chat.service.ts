@@ -150,6 +150,20 @@ export class ChatService {
   async createDM(userId: string, targetId: string) {
     return this.prismaService.$transaction(
       async (tx) => {
+        const dm = await tx.chatRoom.findMany({
+          where: {
+            AND: [
+              { roomMembers: { some: { userId: userId } } },
+              { roomMembers: { some: { userId: targetId } } },
+              { isDM: true },
+            ],
+          },
+        });
+
+        if (dm.length > 0) {
+          throw new CustomException('DM already exists');
+        }
+
         const createdRoom = await tx.chatRoom.create({
           data: {
             roomName: 'DM',
