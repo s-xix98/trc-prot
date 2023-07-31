@@ -16,6 +16,7 @@ import {
   CreateRightPaddle,
 } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
+import { GameOptionDto } from '../dto/GameOptionDto';
 
 import { keyActions, Keys } from './KeyAction';
 
@@ -27,8 +28,6 @@ type Player = {
   keyInputs: boolean[];
   score: number;
 };
-
-const MatchPoint = 3; // TODO 可変すにするかも
 
 const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
@@ -48,7 +47,7 @@ export interface GameRule {
 }
 
 export class BasicRule implements GameRule {
-  constructor(private readonly matchPoint = MatchPoint) {}
+  constructor(private readonly matchPoint: number) {}
 
   EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
     return this.CreateResultEvaluator()(p1, p2);
@@ -78,14 +77,16 @@ export class GameLogic {
   private ball: Ball;
   private intervalId: any;
   private readonly area: Rectangle;
+  private readonly rule: GameRule;
 
   constructor(
     p1: PlayerData,
     p2: PlayerData,
+    options: GameOptionDto,
     private readonly onShutdown: OnShutdownCallback,
-    private readonly rule: GameRule = new BasicRule(MatchPoint),
   ) {
     this.ball = this.CreateRandomBall();
+    this.ball.speed = options.ballSpeed;
     this.p1 = {
       socket: p1.client,
       userId: p1.data.id,
@@ -108,6 +109,7 @@ export class GameLogic {
       yMin: canvas.yMin + this.ball.radius,
       yMax: canvas.yMax - this.ball.radius,
     };
+    this.rule = new BasicRule(options.matchpoint);
   }
 
   RebindSocket(userId: string, socket: Socket) {
