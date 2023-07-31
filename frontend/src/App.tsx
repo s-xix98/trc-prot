@@ -67,8 +67,6 @@ function App() {
     console.log(inviter);
   });
 
-  //useSessionSocket()
-
   const commandElemMap = new Map<string, JSX.Element>();
 
   commandElemMap.set('g', <Game />);
