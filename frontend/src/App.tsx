@@ -63,9 +63,6 @@ function App() {
 
   useSessionSocket('connect', onConnect);
   useSessionSocket('disconnect', onDisconnect);
-  useSessionSocket('receive game-invitation', (inviter: UserInfo) => {
-    console.log(inviter);
-  });
 
   const commandElemMap = new Map<string, JSX.Element>();
 
