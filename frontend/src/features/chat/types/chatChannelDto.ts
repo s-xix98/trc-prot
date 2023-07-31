@@ -5,12 +5,16 @@ import { UserInfoSchema } from '@/features/user/types/UserDto';
 const UserRole = {
   OWNER: 'OWNER',
   ADMIN: 'ADMIN',
-  USER: 'USER'
+  USER: 'USER',
 };
 
 const roomMemberSchema = z.object({
   user: UserInfoSchema,
-  role: z.union([z.literal(UserRole.OWNER), z.literal(UserRole.ADMIN), z.literal(UserRole.USER)]),
+  role: z.union([
+    z.literal(UserRole.OWNER),
+    z.literal(UserRole.ADMIN),
+    z.literal(UserRole.USER),
+  ]),
 });
 
 export const chatChannelSchema = z.object({
