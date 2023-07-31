@@ -115,6 +115,9 @@ export class ChatService {
         isPrivate: {
           equals: false,
         },
+        isDM: {
+          equals: false,
+        },
       },
     });
 
@@ -138,6 +141,30 @@ export class ChatService {
           ? await bcrypt.hash(dto.password, 10)
           : undefined,
         isPrivate: dto.isPrivate,
+      },
+    });
+
+    return createdRoom;
+  }
+
+  async createDM(userId: string, targetId: string) {
+    const createdRoom = await this.prismaService.chatRoom.create({
+      data: {
+        roomName: 'DM',
+        isPrivate: true,
+        isDM: true,
+        roomMembers: {
+          create: [
+            {
+              userId: userId,
+              role: UserRole.USER,
+            },
+            {
+              userId: targetId,
+              role: UserRole.USER,
+            },
+          ],
+        },
       },
     });
 
@@ -336,6 +363,7 @@ export class ChatService {
         roomName: true,
         isPrivate: true,
         hashedPassword: true,
+        isDM: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -471,5 +499,19 @@ export class ChatService {
       return true;
     }
     return false;
+  }
+
+  async dmExists(userId: string, targetId: string) {
+    const dm = await this.prismaService.chatRoom.findMany({
+      where: {
+        AND: [
+          { roomMembers: { some: { userId: userId } } },
+          { roomMembers: { some: { userId: targetId } } },
+          { isDM: true },
+        ],
+      },
+    });
+
+    return dm.length > 0;
   }
 }

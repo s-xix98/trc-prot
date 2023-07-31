@@ -5,6 +5,7 @@ export const chatChannelSchema = z.object({
   roomName: z.string(),
   isPrivate: z.boolean().optional(),
   hasPassword: z.boolean().optional(),
+  isDM: z.boolean().optional(),
 });
 export type chatChannelDto = z.infer<typeof chatChannelSchema>;
 
