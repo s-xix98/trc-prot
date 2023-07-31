@@ -21,6 +21,7 @@ export type GameObjects = {
 };
 
 export type GameInitializer = {
+  enemyName: string;
   width: number;
   height: number;
 };
