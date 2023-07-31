@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Chat } from './features/chat/components/Chat';
 import { Game } from './features/game/Game';
 import { MainLayout } from './components/Layout/MainLayout';
-import { useSessionSocket, useSessionSocketEmitter } from './hooks/useSocket';
+import { useSessionSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { UserSearch } from './features/user/components/Search';
 import { Matching } from './features/game/Matching';
@@ -17,7 +17,6 @@ import { useModal } from './hooks/useModal';
 import { ModalView } from './components/Elements/Modal/ModalView';
 import { MatchHistory } from './features/game/components/MatchHistory';
 import { Ranking } from './features/game/components/Ranking';
-import { UserInfo } from './features/user/types/UserDto';
 
 const onConnect = () => {
   console.log('socket connect');
