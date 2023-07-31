@@ -218,7 +218,7 @@ export class GameLogic {
 
     const isLeftPaddleHitByBall = () => {
       return (
-        newX <= canvas.xMin &&
+        newX <= this.area.xMin + this.p1.paddle.width &&
         IsInRange(
           this.ball.y,
           this.p1.paddle.y,
@@ -229,7 +229,7 @@ export class GameLogic {
 
     const isRightPaddleHitByBall = () => {
       return (
-        newX >= canvas.xMax &&
+        newX >= this.area.xMax - this.p2.paddle.width &&
         IsInRange(
           this.ball.y,
           this.p2.paddle.y,
@@ -239,13 +239,15 @@ export class GameLogic {
     };
 
     if (isLeftPaddleHitByBall()) {
-      newX = -newX;
+      const xMin = this.area.xMin + this.p1.paddle.width;
+      newX = xMin - (newX - xMin);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed =
         this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     } else if (isRightPaddleHitByBall()) {
-      newX = canvas.xMax - (newX - canvas.xMax);
+      const xMax = this.area.xMax - this.p2.paddle.width;
+      newX = xMax - (newX - xMax);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed =
