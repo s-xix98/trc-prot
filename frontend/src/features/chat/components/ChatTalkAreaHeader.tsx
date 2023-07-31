@@ -198,6 +198,7 @@ export const ChatTalkAreaHeader = ({
           </div>
         </Container>
       </div>
+      <hr />
     </>
   );
 };
