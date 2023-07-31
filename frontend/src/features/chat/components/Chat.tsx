@@ -1,6 +1,7 @@
 'use client';
 
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
@@ -30,6 +31,12 @@ export const Chat = () => {
   const { currentUserInfo } = useCurrentUser();
   const [selectedChannel, setSelectedChannel] = useAtom(selectedChannelAtom);
   const { joinedRooms } = useCurrentUser();
+
+  useEffect(() => {
+    setSelectedChannel(
+      (prev) => joinedRooms.find((r) => r.id === prev?.id) || prev,
+    );
+  }, [joinedRooms, setSelectedChannel]);
 
   if (currentUserInfo === undefined) {
     return <PleaseLogin />;
