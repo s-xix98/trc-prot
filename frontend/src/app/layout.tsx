@@ -13,6 +13,7 @@ import { theme } from '@/lib/mui';
 import { useSessionSocket } from '@/hooks/useSocket';
 import { useLogout } from '@/features/user/api/userLogin';
 import { useCurrentUserStateUpdates } from '@/hooks/useCurrentUser';
+import { useGameHandler } from '@/hooks/useGameHandler';
 
 import StyledComponentsRegistry from '../lib/registry';
 
@@ -30,6 +31,7 @@ export const SessionHandler = ({ children }: { children: React.ReactNode }) => {
 
   useSession();
   useCurrentUserStateUpdates();
+  useGameHandler();
 
   useSessionSocket('error', (data) => {
     const resErrMsg = z.string().safeParse(data);

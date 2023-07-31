@@ -10,6 +10,7 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 import { FormInput } from '@/components/Elements/Input/FormInput';
 import { convertToBase64 } from '@/utils/base64';
+import { useInviteGame } from '@/features/game/api/inviteGame';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -215,6 +216,7 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const friendRequestSender = useFriendRequestSender();
   const blockRequestSender = useBlockRequestSender();
   const unblockRequestSender = useUnblockRequestSender();
+  const inviteGame = useInviteGame();
   const { isFriend, isBlockUser } = useFriendStatus();
 
   const sendFriendReq = () => {
@@ -243,6 +245,9 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
           sendBlockReq={sendBlockReq}
         />
       )}
+      {/* TODO : ブロックしてるユーザーにも表示する？ */}
+      <br />
+      <button onClick={() => inviteGame.emit(userInfo)}>Invite Game</button>
     </div>
   );
 };

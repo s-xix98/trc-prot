@@ -109,7 +109,13 @@ class Invitation {
   }
 
   getGameFactory({ src, dest }: { src: UserId; dest: UserId }) {
-    return this.factory.get({ src, dest });
+    // TODO : オブジェクトの比較は無理ぽ
+    for (const [key, val] of this.factory.entries()) {
+      if (key.src == src && key.dest == dest) {
+        return val;
+      }
+    }
+    // return this.factory.get({ src, dest });
   }
 
   set({ src, dest }: { src: UserId; dest: UserId }, gameFactory: GameFactory) {
