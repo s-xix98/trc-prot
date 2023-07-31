@@ -1,5 +1,13 @@
-import { IsBoolean, IsIn, IsNumber, IsOptional, IsString ,Length, Matches, Min } from "class-validator";
-
+import {
+  IsBoolean,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+  Min,
+} from 'class-validator';
 
 export class JoinChannelDto {
   @IsString()

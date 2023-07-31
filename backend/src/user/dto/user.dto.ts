@@ -1,5 +1,4 @@
-import { IsBase64, IsNotEmpty, IsOptional, IsString, Length, Matches, isNotEmpty } from "class-validator";
-
+import { IsOptional, IsString, Length, Matches } from 'class-validator';
 
 export class searchUserDto {
   searchWord: string;
