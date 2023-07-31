@@ -7,15 +7,9 @@ export const CreateGameObjects = (
 ): GameObjects => {
   const ball = CreateBall(gameDto.ball, scale);
 
-  const leftPaddle = CreatePaddle(
-    gameDto.leftPaddle,
-    scale,
-  );
+  const leftPaddle = CreatePaddle(gameDto.leftPaddle, scale);
 
-  const rightPaddle = CreatePaddle(
-    gameDto.rightPaddle,
-    scale,
-  );
+  const rightPaddle = CreatePaddle(gameDto.rightPaddle, scale);
 
   return {
     ball,
@@ -25,10 +19,7 @@ export const CreateGameObjects = (
   };
 };
 
-const CreateBall = (
-  ballDto: BallDto,
-  scale: number,
-): Ball => {
+const CreateBall = (ballDto: BallDto, scale: number): Ball => {
   return {
     x: ballDto.x * scale,
     y: ballDto.y * scale,
@@ -36,10 +27,7 @@ const CreateBall = (
   };
 };
 
-const CreatePaddle = (
-  paddleDto: PaddleDto,
-  scale: number,
-): Paddle => {
+const CreatePaddle = (paddleDto: PaddleDto, scale: number): Paddle => {
   return {
     x: paddleDto.x * scale,
     y: paddleDto.y * scale,
