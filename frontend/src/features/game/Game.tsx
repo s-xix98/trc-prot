@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Container } from '@/components/Layout/Container';
@@ -17,13 +17,20 @@ import {
   DrawResult,
   DrawScores,
 } from './Draw';
+import { GameInitializer } from './Types';
 
 const StyledCanvas = styled.canvas`
   border: 4px solid;
   color: black;
 `;
 
-const GameCanvas = () => {
+const GameCanvas = ({
+  width,
+  height,
+}: {
+  width: number;
+  height: number;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = 400;
   const canvasHeight = 400;
@@ -138,6 +145,14 @@ export const Game = () => {
 
   useKeyInput(keyPressHandler, keyReleaseHandler);
 
+  const [width, setWidth] = useState(1);
+  const [height, setHeight] = useState(1);
+
+  useSessionSocket('game init', (initializer: GameInitializer) => {
+    setWidth(initializer.width);
+    setHeight(initializer.height);
+  });
+
   useEffect(() => {
     sessionSocketEmitter.emit('start game');
   }, [sessionSocketEmitter]);
@@ -145,7 +160,10 @@ export const Game = () => {
   return (
     // TODO : 本来はいらない気がする、とりあえず適当にUI用
     <Container>
-      <GameCanvas />
+      <GameCanvas
+        width={width}
+        height={height}
+      />
     </Container>
   );
 };
