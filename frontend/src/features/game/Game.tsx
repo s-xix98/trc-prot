@@ -34,8 +34,8 @@ const GameCanvas = ({
   scale: number;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasWidth = 400;
-  const canvasHeight = 400;
+  const canvasWidth = width * scale;
+  const canvasHeight = height * scale;
   const canvasId = 'canvas';
 
   const DrawGameWithPlayerSide = (gameDto: GameDto, side: 'LEFT' | 'RIGHT') => {
@@ -44,7 +44,7 @@ const GameCanvas = ({
     if (!canvas || !ctx) {
       return;
     }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    const game = CreateGameObjects(gameDto, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
@@ -59,7 +59,7 @@ const GameCanvas = ({
     if (!canvas || !ctx) {
       return;
     }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    const game = CreateGameObjects(gameDto, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
@@ -90,7 +90,7 @@ const GameCanvas = ({
     if (!canvas || !ctx) {
       return;
     }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    const game = CreateGameObjects(gameDto, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
