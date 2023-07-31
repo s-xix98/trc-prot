@@ -27,9 +27,11 @@ const StyledCanvas = styled.canvas`
 const GameCanvas = ({
   width,
   height,
+  scale,
 }: {
   width: number;
   height: number;
+  scale: number;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = 400;
@@ -107,6 +109,8 @@ const GameCanvas = ({
   );
 };
 
+const CANVAS_SCALE = 400;
+
 export const Game = () => {
   const keyInputs: boolean[] = [];
 
@@ -163,6 +167,7 @@ export const Game = () => {
       <GameCanvas
         width={width}
         height={height}
+        scale={CANVAS_SCALE}
       />
     </Container>
   );
