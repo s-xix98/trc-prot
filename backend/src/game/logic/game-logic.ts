@@ -6,6 +6,7 @@ import {
   Paddle,
   PlayerData,
   PlayerResult,
+  Rectangle,
   ResultEvaluator,
 } from '../types';
 import {
@@ -76,6 +77,7 @@ export class GameLogic {
   private p2: Player;
   private ball: Ball;
   private intervalId: any;
+  private readonly area: Rectangle;
 
   constructor(
     p1: PlayerData,
@@ -99,6 +101,12 @@ export class GameLogic {
       paddle: CreateRightPaddle(),
       keyInputs: [],
       score: 0,
+    };
+    this.area = {
+      xMin: canvas.xMin + this.ball.radius,
+      xMax: canvas.xMax - this.ball.radius,
+      yMin: canvas.yMin + this.ball.radius,
+      yMax: canvas.yMax - this.ball.radius,
     };
   }
 
