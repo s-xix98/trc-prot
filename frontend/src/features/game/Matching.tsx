@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Container } from '@/components/Layout/Container';
 import { useSessionSocketEmitter, useSessionSocket } from '@/hooks/useSocket';
 
-import { Game } from './Game';
-
 export const Matching = () => {
-  const [isMatched, setMatched] = useState(false);
   const { currentUserInfo } = useCurrentUser();
   const sessionSocketEmitter = useSessionSocketEmitter();
 
-  useSessionSocket('matched', (enemyName: string) => {
-    console.log(enemyName);
-    setMatched(true);
-  });
   useSessionSocket('already playing', () => {
     console.log('already playing');
   });
@@ -35,13 +28,10 @@ export const Matching = () => {
   return (
     <Container flexDirection={'column'}>
       <div>
-        {isMatched && <Game />}
-        {!isMatched && (
-          <>
-            <button onClick={onClickAct}>button</button>
-            <h1> WAITING... </h1>
-          </>
-        )}
+        <>
+          <button onClick={onClickAct}>button</button>
+          <h1> WAITING... </h1>
+        </>
       </div>
     </Container>
   );
