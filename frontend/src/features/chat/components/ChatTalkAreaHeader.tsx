@@ -6,6 +6,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useModal } from '@/hooks/useModal';
@@ -117,6 +118,58 @@ const ShowPasswordState = ({
   );
 };
 
+const ShowRoomNameEditIcon = ({
+  selectedChannel,
+}: {
+  selectedChannel: chatChannelDto;
+}) => {
+  const modal = useModal();
+  const ChatRoomNameDtoSchema = z.object({ roomName: z.string().min(1) });
+  type ChatRoomNameDto = z.infer<typeof ChatRoomNameDtoSchema>;
+  const methods = useForm<ChatRoomNameDto>({
+    resolver: zodResolver(ChatRoomNameDtoSchema),
+    defaultValues: { roomName: '' },
+  });
+  const { updateChatRoomName } = useUpdateChatRoom();
+
+  const handleUpdateRoomName: SubmitHandler<ChatRoomNameDto> = (data) => {
+    updateChatRoomName(selectedChannel.id, data.roomName);
+    resetForm();
+    modal.closeModal();
+  };
+
+  const resetForm = () => {
+    methods.reset({ roomName: '' });
+  };
+
+  return (
+    <>
+      <ModalView {...modal} height="250px" width="200">
+        <p>Update Room Name</p>
+        <br />
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(handleUpdateRoomName)}>
+            <FormInput
+              name="roomName"
+              placeholder="new room name"
+              type="text"
+            />
+            <br />
+            <button type="submit">Set New Room Name</button>
+          </form>
+        </FormProvider>
+      </ModalView>
+      <IconButton
+        color="primary"
+        size="small"
+        onClick={() => modal.openModal()}
+      >
+        <EditIcon />
+      </IconButton>
+    </>
+  );
+};
+
 export const ChatTalkAreaHeader = ({
   selectedChannel,
 }: {
@@ -141,6 +194,7 @@ export const ChatTalkAreaHeader = ({
           <div style={{ margin: 'auto 10px auto auto' }}>
             <ShowPrivateState selectedChannel={selectedChannel} />
             <ShowPasswordState selectedChannel={selectedChannel} />
+            <ShowRoomNameEditIcon selectedChannel={selectedChannel} />
           </div>
         </Container>
       </div>
