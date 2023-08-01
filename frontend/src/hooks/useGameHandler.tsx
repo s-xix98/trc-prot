@@ -39,6 +39,7 @@ export const useGameHandler = () => {
     const acceptAct = (snackbarId: SnackbarKey) => {
       acceptGameInvite.emit(invitedGame.data.user);
       closeSnackbar(snackbarId);
+      router.refresh();
     };
     const denyAct = (snackbarId: SnackbarKey) => {
       denyGameInvite.emit(invitedGame.data.user);
