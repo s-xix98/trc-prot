@@ -118,6 +118,11 @@ export class GameGateway {
     this.gameRoom.getGame(userid)?.ReadyGame(client);
   }
 
+  @SubscribeMessage('is playing')
+  isPlaying(client: Socket, user: UserInfo) {
+    client.emit('is playing', this.gameRoom.isPlaying(user.id));
+  }
+
   @SubscribeMessage('invite game')
   async invite(client: Socket, useropt: UserGameOption) {
     const { user: dest, opt: options } = useropt;
