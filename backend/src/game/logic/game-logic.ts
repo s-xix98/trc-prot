@@ -146,6 +146,10 @@ export class GameLogic {
     return undefined;
   }
 
+  isStarted(): boolean {
+    return this.p1.isReady && this.p2.isReady;
+  }
+
   private StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {

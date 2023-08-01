@@ -97,7 +97,7 @@ export class GameRoom {
     return this.playingUsers.has(userId);
   }
 
-  getEnemyName(userId: UserId): UserId | undefined {
+  getEnemyId(userId: UserId): UserId | undefined {
     return this.getGame(userId)?.getEnemyId(userId);
   }
 }
