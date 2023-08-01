@@ -93,13 +93,24 @@ export class GameGateway {
   }
 
   @SubscribeMessage('start game')
-  StartGame(client: Socket) {
+  async StartGame(client: Socket) {
     console.log('start game');
     const userid = this.server.getUserId(client);
     if (userid === undefined) {
       return;
     }
+    const enemyId = this.gameRoom.getEnemyName(userid);
+    if (!enemyId) {
+      client.emit('error', 'enemy not found');
+      return;
+    }
+    const enemyInfo = await this.user.findOneById(enemyId);
+    if (!enemyInfo) {
+      client.emit('error', "enemy isn't exists");
+      return;
+    }
     client.emit('game init', {
+      enemyName: enemyInfo.username,
       width: canvas.xMax - canvas.xMin,
       height: canvas.yMax - canvas.yMin,
     });

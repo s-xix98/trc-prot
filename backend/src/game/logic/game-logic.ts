@@ -127,6 +127,15 @@ export class GameLogic {
     }
   }
 
+  getEnemyId(userId: string): string | undefined {
+    if (userId == this.p1.userId) {
+      return this.p2.userId;
+    } else if (userId == this.p2.userId) {
+      return this.p1.userId;
+    }
+    return undefined;
+  }
+
   private StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {

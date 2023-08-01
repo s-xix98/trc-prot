@@ -151,10 +151,13 @@ export const Game = () => {
 
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
+  const [enemyName, setEnemyName] = useState('');
 
   useSessionSocket('game init', (initializer: GameInitializer) => {
     setWidth(initializer.width);
     setHeight(initializer.height);
+    setEnemyName(initializer.enemyName);
+    console.log('一応使ってあげる', enemyName);
   });
 
   useEffect(() => {
