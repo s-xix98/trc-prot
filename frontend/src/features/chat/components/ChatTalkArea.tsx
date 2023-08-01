@@ -14,8 +14,12 @@ import { ChatTalkAreaHeader } from './ChatTalkAreaHeader';
 
 export const ChatTalkArea = ({
   selectedChannel,
+  setSelectedChannel,
 }: {
   selectedChannel: chatChannelDto;
+  setSelectedChannel: React.Dispatch<
+    React.SetStateAction<chatChannelDto | undefined>
+  >;
 }) => {
   // TODO : storybook が 引数設定してなくて、selectedChannel が undef でくるので一旦、`?` は必要ないはず
   const { chatHistMsgs, setChatHistMsgs } = useRoomHistory(selectedChannel?.id);
@@ -37,7 +41,10 @@ export const ChatTalkArea = ({
 
   return (
     <Container flexDirection={'column'}>
-      <ChatTalkAreaHeader selectedChannel={selectedChannel} />
+      <ChatTalkAreaHeader
+        selectedChannel={selectedChannel}
+        setSelectedChannel={setSelectedChannel}
+      />
       <ChatHistory
         chatHistMsgs={chatHistMsgs}
         scrollBottomRef={scrollBottomRef}

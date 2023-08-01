@@ -215,6 +215,7 @@ export class ChatGateway {
       this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
       await this.sendJoinedRooms(dto.targetId);
     }
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('muteRoomMember')
@@ -298,6 +299,7 @@ export class ChatGateway {
       this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
       await this.sendJoinedRooms(dto.targetId);
     }
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('inviteChatRoom')
