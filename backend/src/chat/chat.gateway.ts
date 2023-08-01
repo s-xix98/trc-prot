@@ -458,7 +458,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('updateChatRoomMemberRole')
-  async updateChatRoomMemberRole(client: Socket, dto:UpdateRoomMemberRoleDto ) {
+  async updateChatRoomMemberRole(client: Socket, dto: UpdateRoomMemberRoleDto) {
     console.log('updateChatRoomMemberRole', dto);
 
     const userId = this.server.getUserId(client);
@@ -480,7 +480,11 @@ export class ChatGateway {
       throw new CustomException('You can not change your role');
     }
 
-    await this.chatService.updateRoomMemberRole(dto.chatRoomId, dto.targetId, dto.role);
+    await this.chatService.updateRoomMemberRole(
+      dto.chatRoomId,
+      dto.targetId,
+      dto.role,
+    );
     await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 

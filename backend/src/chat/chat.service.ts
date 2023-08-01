@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ChatRoom, Prisma, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
@@ -7,11 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
 import { CustomException } from '../exceptions/custom.exception';
 
-import {
-  CreateChannelDto,
-  UpdateChatRoomDto,
-  UpdateRoomMemberRoleDto,
-} from './dto/Channel.dto';
+import { CreateChannelDto, UpdateChatRoomDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
