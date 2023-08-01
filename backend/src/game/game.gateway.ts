@@ -62,6 +62,17 @@ export class GameGateway {
     }
     this.matchingTable.clearWaitingUser(userId);
     this.gameRoom.deleteInvitations(userId);
+    const game = this.gameRoom.getGame(userId);
+    if (!game || game.isStarted()) {
+      return;
+    }
+    const enemyId = this.gameRoom.getEnemyId(userId);
+    if (!enemyId) {
+      return;
+    }
+    this.gameRoom.delete({ p1: userId, p2: enemyId });
+    const enemysock = this.server.getSocket(enemyId);
+    enemysock?.emit('error', 'enemy disconnected');
   }
 
   @SubscribeMessage('matchmake')
