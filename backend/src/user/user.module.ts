@@ -7,9 +7,10 @@ import { ChatModule } from '../chat/chat.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { UserGateway } from './user.gateway';
+import { GameModule } from '../game/game.module';
 
 @Module({
-  imports: [PrismaModule, WsocketModule, forwardRef(() => ChatModule)],
+  imports: [PrismaModule, WsocketModule, GameModule , forwardRef(() => ChatModule)],
   controllers: [UserController],
   providers: [UserService, UserGateway],
   exports: [UserService],

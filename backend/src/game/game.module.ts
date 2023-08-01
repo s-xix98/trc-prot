@@ -12,5 +12,6 @@ import { GameController } from './game.controller';
   imports: [PrismaModule, WsocketModule, UserModule],
   providers: [GameGateway, GameService],
   controllers: [GameController],
+  exports: [GameGateway],
 })
 export class GameModule {}

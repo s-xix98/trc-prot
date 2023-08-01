@@ -11,6 +11,7 @@ import { CustomException } from '../exceptions/custom.exception';
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
+import { GameGateway } from 'src/game/game.gateway';
 
 @WebSocketGateway({
   cors: {
@@ -25,6 +26,7 @@ export class UserGateway {
     private userService: UserService,
     private chatGateway: ChatGateway,
     private server: WsocketGateway,
+    private gameGateway: GameGateway,
   ) {}
 
   async handleConnection(client: Socket) {
