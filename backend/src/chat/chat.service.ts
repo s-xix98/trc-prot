@@ -296,21 +296,8 @@ export class ChatService {
   async updateRoomMemberRole(
     roomId: string,
     targetId: string,
-    userId: string,
-    dto: UpdateRoomMemberRoleDto,
+    role: 'USER' | 'ADMIN',
   ) {
-    const owner = await this.findRoomMember(roomId, userId);
-
-    if (owner === null || owner.role !== 'OWNER') {
-      throw new ForbiddenException('You are not owner');
-    }
-
-    const target = await this.findRoomMember(roomId, targetId);
-
-    if (target === null) {
-      throw new ForbiddenException('Target not found');
-    }
-
     return this.prismaService.roomMember.update({
       where: {
         userId_chatRoomId: {
@@ -319,7 +306,7 @@ export class ChatService {
         },
       },
       data: {
-        role: dto.role,
+        role: role,
       },
     });
   }
