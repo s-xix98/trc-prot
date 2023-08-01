@@ -13,6 +13,7 @@ import { convertToBase64 } from '@/utils/base64';
 import { useInviteGame } from '@/features/game/api/inviteGame';
 import { useModal } from '@/hooks/useModal';
 import { DM } from '@/features/chat/components/DM';
+import { MatchHistoryModal } from '@/features/game/components/MatchHistory';
 import { GameOptionDto } from '@/features/game/types/gameOptionDto';
 import { GameOptSetterModal } from '@/features/game/components/GameOpt';
 import { useCreateDM } from '@/features/chat/api/createDM';
@@ -174,6 +175,9 @@ const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       <br />
       <p>this is me</p>
       <br />
+      <MatchHistoryModal userInfo={userInfo} />
+      <br />
+      <br />
       <MyProfileUpdateForm />
     </div>
   );
@@ -269,6 +273,9 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       </button>
       {/* TODO : ブロックしてるユーザーにも表示する？ */}
       <br />
+      <GameOptSetterModal btnText="Invite Game" onClickAct={gameInviteAct} />
+      <br />
+      <MatchHistoryModal userInfo={userInfo} />
       <GameOptSetterModal btnText="Invite Game" onClickAct={gameInviteAct} />
     </div>
   );
