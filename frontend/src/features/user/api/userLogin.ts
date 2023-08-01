@@ -9,7 +9,6 @@ import { z } from 'zod';
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
 import { currentUserAtom, socketAtom } from '@/stores/jotai';
-import { selectedChannelAtom } from '@/stores/chatState';
 
 import { LoginDto, UserInfo, UserInfoSchema } from '../types/UserDto';
 
@@ -80,12 +79,10 @@ export const useLogout = () => {
   const router = useRouter();
   const [socket, setSocket] = useAtom(socketAtom);
   const [, setCurrentUser] = useAtom(currentUserAtom);
-  const [, setSelectedChannelAtom] = useAtom(selectedChannelAtom);
 
   const logout = () => {
     socket?.disconnect();
     setCurrentUser(undefined);
-    setSelectedChannelAtom(undefined);
     setSocket(undefined);
     tokenStorage.remove();
     router.push('/login');

@@ -1,5 +1,6 @@
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { chatChannelDto } from '../types/chatChannelDto';
 
@@ -16,8 +17,20 @@ export const ChatChannelArea = ({
     React.SetStateAction<chatChannelDto | undefined>
   >;
 }) => {
+  const { currentUserInfo } = useCurrentUser();
+
   const handleClick = (channel: chatChannelDto) => {
     setSelectedChannel(channel);
+  };
+
+  const getDisplayRoomName = (room: chatChannelDto) => {
+    if (room.isDM === true) {
+      const target = room.roomMembers?.find(
+        (roomMember) => roomMember.user.id !== currentUserInfo?.id,
+      );
+      return `DM ${target?.user.username}`;
+    }
+    return room.roomName;
   };
 
   return (
@@ -38,7 +51,7 @@ export const ChatChannelArea = ({
               onClick={() => handleClick(channel)}
               style={{ cursor: 'pointer' }}
             >
-              {channel.roomName}
+              {getDisplayRoomName(channel)}
             </p>
           ))}
         </ContainerItem>

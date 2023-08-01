@@ -1,12 +1,12 @@
 'use client';
 
-import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { selectedChannelAtom } from '@/stores/chatState';
+
+import { chatChannelDto } from '../types/chatChannelDto';
 
 import { ChatChannelArea } from './ChatChannelArea';
 import { ChatTalkArea } from './ChatTalkArea';
@@ -29,7 +29,7 @@ const ChooseRoom = () => {
 
 export const Chat = () => {
   const { currentUserInfo } = useCurrentUser();
-  const [selectedChannel, setSelectedChannel] = useAtom(selectedChannelAtom);
+  const [selectedChannel, setSelectedChannel] = useState<chatChannelDto>();
   const { joinedRooms } = useCurrentUser();
 
   useEffect(() => {
@@ -53,7 +53,10 @@ export const Chat = () => {
         {selectedChannel === undefined ? (
           <ChooseRoom />
         ) : (
-          <ChatTalkArea selectedChannel={selectedChannel} />
+          <ChatTalkArea
+            selectedChannel={selectedChannel}
+            setSelectedChannel={setSelectedChannel}
+          />
         )}
       </ContainerItem>
     </Container>

@@ -185,6 +185,8 @@ model MatchHistory {
   player2   User     @relation("player2", fields: [player2Id], references: [id])
   winner    User?    @relation("winner", fields: [winnerId], references: [id])
   createdAt DateTime @default(now())
+  p1Score   Int
+  p2Score   Int
 
   @@index([createdAt(sort: Desc)], name: "history_desc")
 }

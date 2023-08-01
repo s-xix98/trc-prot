@@ -16,6 +16,7 @@ import {
   CreateRightPaddle,
 } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
+import { GameOptionDto } from '../dto/GameOptionDto';
 
 import { keyActions, Keys } from './KeyAction';
 
@@ -27,8 +28,6 @@ type Player = {
   keyInputs: boolean[];
   score: number;
 };
-
-const MatchPoint = 3; // TODO 可変すにするかも
 
 const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
@@ -45,13 +44,21 @@ export interface GameRule {
   ): { winner: PlayerResult; loser: PlayerResult } | null;
   CreateResultEvaluator(): ResultEvaluator;
   isGameFinished(p1Score: number, p2Score: number): boolean;
+  getBaseBallSpeed(): number;
 }
 
 export class BasicRule implements GameRule {
-  constructor(private readonly matchPoint = MatchPoint) {}
+  constructor(
+    private readonly matchPoint: number,
+    private ballBaseSpeed: number,
+  ) {}
 
   EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
     return this.CreateResultEvaluator()(p1, p2);
+  }
+
+  getBaseBallSpeed(): number {
+    return this.ballBaseSpeed;
   }
 
   CreateResultEvaluator(): ResultEvaluator {
@@ -78,13 +85,15 @@ export class GameLogic {
   private ball: Ball;
   private intervalId: any;
   private readonly area: Rectangle;
+  private readonly rule: GameRule;
 
   constructor(
     p1: PlayerData,
     p2: PlayerData,
+    options: GameOptionDto,
     private readonly onShutdown: OnShutdownCallback,
-    private readonly rule: GameRule = new BasicRule(MatchPoint),
   ) {
+    this.rule = new BasicRule(options.matchpoint, options.ballSpeed / 200);
     this.ball = this.CreateRandomBall();
     this.p1 = {
       socket: p1.client,
@@ -144,6 +153,10 @@ export class GameLogic {
     return undefined;
   }
 
+  isStarted(): boolean {
+    return this.p1.isReady && this.p2.isReady;
+  }
+
   private StartGame() {
     console.log('start game loop');
     this.intervalId = setInterval(() => {
@@ -198,8 +211,9 @@ export class GameLogic {
 
   private CreateRandomBall(): Ball {
     const ball = CreateBall();
+    ball.speed = this.rule.getBaseBallSpeed();
     const random_angle =
-      Math.random() * ((Math.PI * 5) / 6) - (Math.PI * 5) / 12;
+      Math.random() * ((Math.PI * 2) / 3) - (Math.PI * 1) / 3;
     const p1_side = random_angle + Math.PI;
     const p2_side = random_angle;
     ball.angle = [p1_side, p2_side][getRandomInt(2)];

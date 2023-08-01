@@ -16,6 +16,7 @@ const roomMemberSchema = z.object({
     z.literal(UserRole.USER),
   ]),
 });
+export type roomMember = z.infer<typeof roomMemberSchema>;
 
 export const chatChannelSchema = z.object({
   id: z.string(),
