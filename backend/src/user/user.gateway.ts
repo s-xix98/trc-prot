@@ -1,18 +1,18 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UserState } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { ChatGateway } from '../chat/chat.gateway';
 import { CustomException } from '../exceptions/custom.exception';
+import { GameGateway } from '../game/game.gateway';
 
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { UserState } from '@prisma/client';
-import { GameGateway } from 'src/game/game.gateway';
 
 @WebSocketGateway({
   cors: {
