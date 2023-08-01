@@ -10,7 +10,7 @@ import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useModal } from '@/hooks/useModal';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
 
-import { chatChannelDto } from '../types/chatChannelDto';
+import { chatChannelDto, roomMember } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
 import { useMuteRoomMember } from '../api/muteRoomMember';
@@ -182,7 +182,7 @@ export const ShowChatRoomMembers = ({
   roomMembers,
 }: {
   selectedChannel: chatChannelDto;
-  roomMembers: UserInfo[];
+  roomMembers: roomMember[];
 }) => {
   const { selectingUser, modal, openUserProfileModal } = useUserProfileModal();
 
@@ -190,10 +190,10 @@ export const ShowChatRoomMembers = ({
     <>
       <UserProfileModal userInfo={selectingUser} {...modal} />
       <ContainerItem overflowY="scroll">
-        {roomMembers.map((user, idx) => (
+        {roomMembers.map((roomMember, idx) => (
           <ShowRoomUser
             key={idx}
-            user={user}
+            user={roomMember.user}
             selectedChannel={selectedChannel}
             openUserProfileModal={openUserProfileModal}
           />
