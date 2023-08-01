@@ -166,6 +166,32 @@ const SetAdminBtn = ({
   );
 };
 
+const ControlButtons = ({
+  selectedChannel,
+  roomMember,
+}: {
+  selectedChannel: chatChannelDto;
+  roomMember: roomMember;
+}) => {
+  return (
+    <div>
+      <SetAdminBtn
+        selectedChannel={selectedChannel}
+        targetUser={roomMember.user}
+      />
+      <BanUserModal
+        selectedChannel={selectedChannel}
+        targetUser={roomMember.user}
+      />
+      <MuteUserModal
+        selectedChannel={selectedChannel}
+        targetUser={roomMember.user}
+      />
+      <KickUserBtn selectedChannel={selectedChannel} user={roomMember.user} />
+    </div>
+  );
+};
+
 export const ShowRoomUser = ({
   roomMember,
   selectedChannel,
@@ -191,24 +217,10 @@ export const ShowRoomUser = ({
           <p onClick={() => openUserProfileModal(roomMember.user)}>
             {roomMember.role} - {roomMember.user.username}
           </p>
-          <div>
-            <SetAdminBtn
-              selectedChannel={selectedChannel}
-              targetUser={roomMember.user}
-            />
-            <BanUserModal
-              selectedChannel={selectedChannel}
-              targetUser={roomMember.user}
-            />
-            <MuteUserModal
-              selectedChannel={selectedChannel}
-              targetUser={roomMember.user}
-            />
-            <KickUserBtn
-              selectedChannel={selectedChannel}
-              user={roomMember.user}
-            />
-          </div>
+          <ControlButtons
+            selectedChannel={selectedChannel}
+            roomMember={roomMember}
+          />
           <br />
         </div>
       )}
