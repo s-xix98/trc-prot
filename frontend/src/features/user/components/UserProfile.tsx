@@ -13,6 +13,7 @@ import { convertToBase64 } from '@/utils/base64';
 import { useInviteGame } from '@/features/game/api/inviteGame';
 import { useModal } from '@/hooks/useModal';
 import { DM } from '@/features/chat/components/DM';
+import { useCreateDM } from '@/features/chat/api/createDM';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -221,6 +222,7 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const inviteGame = useInviteGame();
   const { isFriend, isBlockUser } = useFriendStatus();
   const dmModal = useModal();
+  const createDM = useCreateDM();
 
   const sendFriendReq = () => {
     friendRequestSender.emit(userInfo.id);
@@ -251,7 +253,14 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
           sendBlockReq={sendBlockReq}
         />
       )}
-      <button onClick={() => dmModal.openModal()}>DM</button>
+      <button
+        onClick={() => {
+          createDM.emit(userInfo.id);
+          dmModal.openModal();
+        }}
+      >
+        DM
+      </button>
       {/* TODO : ブロックしてるユーザーにも表示する？ */}
       <br />
       <button onClick={() => inviteGame.emit(userInfo)}>Invite Game</button>
