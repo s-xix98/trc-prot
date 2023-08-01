@@ -19,7 +19,8 @@ import { GameService } from './game.service';
 import { GameFactory } from './matching/types';
 import { MatchingTable } from './matching/matching-table';
 import { GameRoom } from './game-room';
-import { canvas } from './game-constants';
+import { canvas, defaultGameOptions } from './game-constants';
+import { GameOptionDto, UserGameOption } from './dto/GameOptionDto';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
@@ -118,7 +119,8 @@ export class GameGateway {
   }
 
   @SubscribeMessage('invite game')
-  async invite(client: Socket, dest: UserInfo) {
+  async invite(client: Socket, useropt: UserGameOption) {
+    const { user: dest, opt: options } = useropt;
     const srcId = this.server.extractUserIdFromToken(
       client.handshake.auth.token,
     );
@@ -133,13 +135,13 @@ export class GameGateway {
     }
     const { err } = this.gameRoom.invite(
       { src: src.id, dest: dest.id },
-      this.CreateGameFactory(),
+      this.CreateGameFactory(options),
     );
     if (err !== null) {
       client.emit('error', err);
       return;
     }
-    destSock.emit('receive game-invitation', src);
+    destSock.emit('receive game-invitation', { src, options });
   }
 
   @SubscribeMessage('accept game-invitation')
@@ -214,7 +216,9 @@ export class GameGateway {
     this.gameRoom.getGame(userid)?.HandleKeyRelease(client, key);
   }
 
-  private CreateGameFactory(): GameFactory {
+  private CreateGameFactory(
+    options: GameOptionDto = defaultGameOptions,
+  ): GameFactory {
     const gameFactory: GameFactory = (
       player1: PlayerData,
       player2: PlayerData,
@@ -231,7 +235,7 @@ export class GameGateway {
           .catch((e) => console.log(e));
       };
 
-      return new GameLogic(player1, player2, onShutdown);
+      return new GameLogic(player1, player2, options, onShutdown);
     };
 
     return gameFactory;
