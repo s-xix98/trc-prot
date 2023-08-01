@@ -113,7 +113,12 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    const enemyId = this.gameRoom.getEnemyId(userid);
+    const game = this.gameRoom.getGame(userid);
+    if (!game) {
+      client.emit('error', 'not player');
+      return;
+    }
+    const enemyId = game.getEnemyId(userid);
     if (!enemyId) {
       client.emit('error', 'enemy not found');
       return;
@@ -128,7 +133,7 @@ export class GameGateway {
       width: canvas.xMax - canvas.xMin,
       height: canvas.yMax - canvas.yMin,
     });
-    this.gameRoom.getGame(userid)?.ReadyGame(client);
+    game.ReadyGame(client);
   }
 
   @SubscribeMessage('is playing')
