@@ -79,6 +79,22 @@ export class UserGateway {
     }
   }
 
+  async updateUserState(userId: string, state: UserState) {
+    try {
+      const isPlaying = await this.gameGateway.isPlayingBy(userId);
+      // game中にonlineにならないように
+      if (isPlaying && state === 'ONLINE') {
+        return;
+      }
+
+      await this.userService.updateUserState(userId, state);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await this.broadcastFriends(userId);
+    }
+  }
+
   // TODO　エラー処理はしていない
   @SubscribeMessage('searchUser')
   async searchUser(client: Socket, dto: searchUserDto) {
