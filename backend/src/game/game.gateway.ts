@@ -100,7 +100,7 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    const enemyId = this.gameRoom.getEnemyName(userid);
+    const enemyId = this.gameRoom.getEnemyId(userid);
     if (!enemyId) {
       client.emit('error', 'enemy not found');
       return;
