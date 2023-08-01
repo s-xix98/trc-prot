@@ -134,6 +134,7 @@ export class GameGateway {
       height: canvas.yMax - canvas.yMin,
     });
     game.ReadyGame(client);
+    this.userG.updateUserState(userid, 'GAME');
   }
 
   @SubscribeMessage('is playing')
