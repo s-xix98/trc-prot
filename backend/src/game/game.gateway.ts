@@ -37,7 +37,7 @@ export class GameGateway {
     private userG: UserGateway,
   ) {}
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     console.log('game connection');
     if (!client.handshake.auth.token) {
       return;
@@ -48,7 +48,12 @@ export class GameGateway {
     if (!userId) {
       return;
     }
-    this.gameRoom.getGame(userId)?.RebindSocket(userId, client);
+    const game = this.gameRoom.getGame(userId);
+    if (!game) {
+      return;
+    }
+    game.RebindSocket(userId, client);
+    await this.userG.updateUserState(userId, 'GAME');
   }
 
   handleDisconnect(client: Socket) {
