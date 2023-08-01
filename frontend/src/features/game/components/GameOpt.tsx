@@ -16,7 +16,7 @@ export const GameOptSetterModal = ({
   const modal = useModal();
   const [gameOpt, setGameOpt] = useState<GameOptionDto>({
     ballSpeed: 1,
-    matchpoint: 3,
+    matchpoint: 11,
   });
 
   return (
@@ -83,7 +83,7 @@ export const GameOptSetter = ({
         valueLabelDisplay="auto"
         step={1}
         min={1}
-        max={10}
+        max={11}
       />
       <br />
       <button onClick={() => onClickAct(gameOpt)}>{btnText}</button>
