@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useCustomAxiosGetter } from '@/hooks/useSessionAxios';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { UserInfo } from '@/features/user/types/UserDto';
 
 import { MatchHistoryArrDto } from '../types/matchHistoryDto';
 import { MatchHistoryArrDtoSchema } from '../types/matchHistoryDto';
 
-export const useMatchHistory = () => {
+export const useMatchHistory = (userInfo: UserInfo) => {
   const [matchHistories, setMatchHistories] = useState<MatchHistoryArrDto>([]);
-  const { currentUserInfo } = useCurrentUser();
   const { customAxiosGetter } = useCustomAxiosGetter();
 
   const onSucessCallback = useCallback((r: MatchHistoryArrDto) => {
@@ -20,12 +19,12 @@ export const useMatchHistory = () => {
     customAxiosGetter(
       {
         uri: '/game/match-history',
-        params: { params: { userId: currentUserInfo?.id } },
+        params: { params: { userId: userInfo.id } },
       },
       MatchHistoryArrDtoSchema,
       onSucessCallback,
     );
-  }, [customAxiosGetter, onSucessCallback, currentUserInfo?.id]);
+  }, [customAxiosGetter, onSucessCallback, userInfo.id]);
 
   return { matchHistories };
 };
