@@ -182,14 +182,14 @@ export const ShowRoomUser = ({
       {currentUserInfo?.id === roomMember.user.id ? (
         <div>
           <p onClick={() => openUserProfileModal(roomMember.user)}>
-            {roomMember.user.username}
+            {roomMember.role} - {roomMember.user.username}
           </p>
           <br />
         </div>
       ) : (
         <div>
           <p onClick={() => openUserProfileModal(roomMember.user)}>
-            {roomMember.user.username}
+            {roomMember.role} - {roomMember.user.username}
           </p>
           <div>
             <SetAdminBtn
