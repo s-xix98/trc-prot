@@ -1,7 +1,6 @@
 import { Slider } from '@mui/material';
 import { useState } from 'react';
 
-import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { UserProfileModal } from '@/features/user/components/UserProfile';
 import { UserInfo } from '@/features/user/types/UserDto';
@@ -168,11 +167,11 @@ const SetAdminBtn = ({
 };
 
 export const ShowRoomUser = ({
-  user,
+  roomMember,
   selectedChannel,
   openUserProfileModal,
 }: {
-  user: UserInfo;
+  roomMember: roomMember;
   selectedChannel: chatChannelDto;
   openUserProfileModal: (userInfo: UserInfo) => void;
 }) => {
@@ -180,22 +179,35 @@ export const ShowRoomUser = ({
 
   return (
     <>
-      {currentUserInfo?.id === user.id ? (
+      {currentUserInfo?.id === roomMember.user.id ? (
         <div>
-          <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+          <p onClick={() => openUserProfileModal(roomMember.user)}>
+            {roomMember.user.username}
+          </p>
           <br />
         </div>
       ) : (
         <div>
-          <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+          <p onClick={() => openUserProfileModal(roomMember.user)}>
+            {roomMember.user.username}
+          </p>
           <div>
-            <SetAdminBtn selectedChannel={selectedChannel} targetUser={user} />
-            <BanUserModal selectedChannel={selectedChannel} targetUser={user} />
+            <SetAdminBtn
+              selectedChannel={selectedChannel}
+              targetUser={roomMember.user}
+            />
+            <BanUserModal
+              selectedChannel={selectedChannel}
+              targetUser={roomMember.user}
+            />
             <MuteUserModal
               selectedChannel={selectedChannel}
-              targetUser={user}
+              targetUser={roomMember.user}
             />
-            <KickUserBtn selectedChannel={selectedChannel} user={user} />
+            <KickUserBtn
+              selectedChannel={selectedChannel}
+              user={roomMember.user}
+            />
           </div>
           <br />
         </div>
@@ -220,7 +232,7 @@ export const ShowChatRoomMembers = ({
         {roomMembers.map((roomMember, idx) => (
           <ShowRoomUser
             key={idx}
-            user={roomMember.user}
+            roomMember={roomMember}
             selectedChannel={selectedChannel}
             openUserProfileModal={openUserProfileModal}
           />
