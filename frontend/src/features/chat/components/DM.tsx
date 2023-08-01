@@ -19,16 +19,21 @@ export const DM = ({ targetUserInfo }: { targetUserInfo: UserInfo }) => {
         r.isDM === true &&
         r.roomMembers?.some((r) => r.user.id === targetUserInfo.id),
     );
-    if (dm === undefined) {
-      createDM.emit(targetUserInfo.id);
-      return;
-    }
     setDM(dm);
-  }, [targetUserInfo, joinedRooms, createDM]);
+  }, [targetUserInfo, joinedRooms]);
 
   return (
     <>
       <h3>DM</h3>
+      {!dm && (
+        <button
+          onClick={() => {
+            createDM.emit(targetUserInfo.id);
+          }}
+        >
+          Create DM
+        </button>
+      )}
       {dm && <ChatTalkArea selectedChannel={dm} setSelectedChannel={setDM} />}
     </>
   );
