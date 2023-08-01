@@ -7,11 +7,7 @@ import { testUser } from '../test/types/test.types';
 import { AuthModule } from '../auth/auth.module';
 
 import { ChatService } from './chat.service';
-import {
-  CreateChannelDto,
-  JoinChannelDto,
-  UpdateRoomMemberRoleDto,
-} from './dto/Channel.dto';
+import { CreateChannelDto, JoinChannelDto } from './dto/Channel.dto';
 
 const USERNUM = 10;
 
@@ -61,15 +57,10 @@ describe('ChatService', () => {
 
       await chatService.JoinChannel(joinChannelDto, user.user.id);
 
-      const updateRoleDto: UpdateRoomMemberRoleDto = {
-        role: 'ADMIN',
-      };
-
       const updatedMember = await chatService.updateRoomMemberRole(
         room.id,
         user.user.id,
-        owner.user.id,
-        updateRoleDto,
+        'ADMIN',
       );
 
       expect(updatedMember.role).toEqual('ADMIN');
