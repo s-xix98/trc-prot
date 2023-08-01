@@ -56,7 +56,7 @@ export class GameGateway {
     await this.userG.updateUserState(userId, 'GAME');
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     console.log('game handleDisconnect');
     if (!client.handshake.auth.token) {
       return;
@@ -80,6 +80,7 @@ export class GameGateway {
     this.gameRoom.delete({ p1: userId, p2: enemyId });
     const enemysock = this.server.getSocket(enemyId);
     enemysock?.emit('error', 'enemy disconnected');
+    await this.updateUserStateOnGameEnd(enemyId);
   }
 
   @SubscribeMessage('matchmake')
