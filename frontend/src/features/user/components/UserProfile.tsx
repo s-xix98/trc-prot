@@ -4,6 +4,8 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Badge from '@mui/material/Badge';
+import Image from 'next/image';
+import { useState } from 'react';
 
 import { useCurrentUser, useFriendStatus } from '@/hooks/useCurrentUser';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
@@ -17,6 +19,7 @@ import { MatchHistoryModal } from '@/features/game/components/MatchHistory';
 import { GameOptionDto } from '@/features/game/types/gameOptionDto';
 import { GameOptSetterModal } from '@/features/game/components/GameOpt';
 import { useCreateDM } from '@/features/chat/api/createDM';
+import { useSessionAxios } from '@/hooks/useSessionAxios';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -165,6 +168,76 @@ const MyProfileUpdateForm = () => {
   );
 };
 
+const Set2FaModal = () => {
+  const [qrcode, setqrcode] = useState<string>('');
+  const [enable, setEnable] = useState<string>('');
+  const [isSuccess, setIsSuccess] = useState<boolean>();
+  const axios = useSessionAxios();
+
+  const modal = useModal();
+
+  const sendGenerate = () => {
+    axios
+      .get('/auth/2fa/generate')
+      .then((res) => {
+        console.log(res);
+        setqrcode(res.data.base64);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const sendEnable = () => {
+    const dto = {
+      twoFaCode: enable,
+    };
+    axios
+      .post('/auth/2fa/enable', dto)
+      .then((res) => {
+        setIsSuccess(true);
+        console.log(res);
+      })
+      .catch((err) => {
+        setIsSuccess(false);
+        console.log(err);
+      });
+  };
+
+  return (
+    <>
+      <ModalView {...modal}>
+        <p>Set 2fa</p>
+        <br />
+        {isSuccess === true && <p>OK!</p>}
+        {isSuccess === false && <p>Error!</p>}
+        {isSuccess === undefined && qrcode && (
+          <Image src={qrcode} alt="QR Code" width={200} height={200} />
+        )}
+        {isSuccess !== true && (
+          <>
+            <br />
+            <input
+              value={enable}
+              onChange={(event) => setEnable(event.target.value)}
+            />
+            <br />
+            <button onClick={sendEnable}>enable</button>
+          </>
+        )}
+      </ModalView>
+      <button
+        onClick={() => {
+          sendGenerate();
+          modal.openModal();
+        }}
+      >
+        set 2fa
+      </button>
+    </>
+  );
+};
+
 // TODO : 名前変更した時に modal の表示名変わるように, あんま良くないので、ちゃんとするかも
 const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const { currentUserInfo } = useCurrentUser();
@@ -179,6 +252,7 @@ const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       <br />
       <br />
       <MyProfileUpdateForm />
+      <Set2FaModal />
     </div>
   );
 };
