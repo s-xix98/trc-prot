@@ -20,7 +20,7 @@ import { GameFactory } from './matching/types';
 import { MatchingTable } from './matching/matching-table';
 import { GameRoom } from './game-room';
 import { canvas, defaultGameOptions } from './game-constants';
-import { GameOptionDto } from './dto/GameOptionDto';
+import { GameOptionDto, UserGameOption } from './dto/GameOptionDto';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
@@ -119,7 +119,8 @@ export class GameGateway {
   }
 
   @SubscribeMessage('invite game')
-  async invite(client: Socket, dest: UserInfo, options: GameOptionDto) {
+  async invite(client: Socket, useropt: UserGameOption) {
+    const { user: dest, opt: options } = useropt;
     const srcId = this.server.extractUserIdFromToken(
       client.handshake.auth.token,
     );
