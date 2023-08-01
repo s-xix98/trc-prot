@@ -181,27 +181,23 @@ export const ShowRoomUser = ({
   return (
     <>
       {currentUserInfo?.id === user.id ? (
-        <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+        <div>
+          <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+          <br />
+        </div>
       ) : (
         <div>
-          <Container>
-            <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
-            <div style={{ margin: 'auto 10px auto auto' }}>
-              <SetAdminBtn
-                selectedChannel={selectedChannel}
-                targetUser={user}
-              />
-              <BanUserModal
-                selectedChannel={selectedChannel}
-                targetUser={user}
-              />
-              <MuteUserModal
-                selectedChannel={selectedChannel}
-                targetUser={user}
-              />
-              <KickUserBtn selectedChannel={selectedChannel} user={user} />
-            </div>
-          </Container>
+          <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+          <div>
+            <SetAdminBtn selectedChannel={selectedChannel} targetUser={user} />
+            <BanUserModal selectedChannel={selectedChannel} targetUser={user} />
+            <MuteUserModal
+              selectedChannel={selectedChannel}
+              targetUser={user}
+            />
+            <KickUserBtn selectedChannel={selectedChannel} user={user} />
+          </div>
+          <br />
         </div>
       )}
     </>
