@@ -13,6 +13,8 @@ import { convertToBase64 } from '@/utils/base64';
 import { useInviteGame } from '@/features/game/api/inviteGame';
 import { useModal } from '@/hooks/useModal';
 import { DM } from '@/features/chat/components/DM';
+import { GameOptionDto } from '@/features/game/types/gameOptionDto';
+import { GameOptSetterModal } from '@/features/game/components/GameOpt';
 import { useCreateDM } from '@/features/chat/api/createDM';
 
 import { UserInfo } from '../types/UserDto';
@@ -236,6 +238,10 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
     unblockRequestSender.emit(userInfo.id);
   };
 
+  const gameInviteAct = (gameOpt: GameOptionDto) => {
+    inviteGame.emit(userInfo, gameOpt);
+  };
+
   return (
     <div>
       <ModalView {...dmModal} height="50%" width="30%">
@@ -263,7 +269,7 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       </button>
       {/* TODO : ブロックしてるユーザーにも表示する？ */}
       <br />
-      <button onClick={() => inviteGame.emit(userInfo)}>Invite Game</button>
+      <GameOptSetterModal btnText="Invite Game" onClickAct={gameInviteAct} />
     </div>
   );
 };

@@ -28,6 +28,8 @@ export class GameService {
           player1: { select: { id: true, username: true } },
           player2: { select: { id: true, username: true } },
           winner: { select: { id: true, username: true } },
+          p1Score: true,
+          p2Score: true,
           createdAt: true,
         },
         where: { OR: [{ player1Id: userId }, { player2Id: userId }] },
