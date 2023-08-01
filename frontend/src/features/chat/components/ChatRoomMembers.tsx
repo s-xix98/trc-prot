@@ -14,6 +14,7 @@ import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
 import { useMuteRoomMember } from '../api/muteRoomMember';
 import { useUpdateChatRoomMemberRole } from '../api/updateChatRoomMemberRole';
+import { useIsChannelOwnerOrAdmin } from '../api/roomMembers';
 
 const SliderModal = ({
   title,
@@ -173,6 +174,14 @@ const ControlButtons = ({
   selectedChannel: chatChannelDto;
   roomMember: roomMember;
 }) => {
+  const { isChannelOwnerOrAdmin } = useIsChannelOwnerOrAdmin(
+    selectedChannel.id,
+  );
+
+  if (isChannelOwnerOrAdmin() === false) {
+    return <></>;
+  }
+
   return (
     <div>
       <SetAdminBtn
