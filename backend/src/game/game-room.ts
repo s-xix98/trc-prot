@@ -96,6 +96,10 @@ export class GameRoom {
   isPlaying(userId: UserId): boolean {
     return this.playingUsers.has(userId);
   }
+
+  getEnemyName(userId: UserId): UserId | undefined {
+    return this.getGame(userId)?.getEnemyId(userId);
+  }
 }
 
 class Invitation {

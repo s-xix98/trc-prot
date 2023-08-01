@@ -19,6 +19,8 @@ import { GameService } from './game.service';
 import { GameFactory } from './matching/types';
 import { MatchingTable } from './matching/matching-table';
 import { GameRoom } from './game-room';
+import { canvas, defaultGameOptions } from './game-constants';
+import { GameOptionDto, UserGameOption } from './dto/GameOptionDto';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
@@ -92,17 +94,38 @@ export class GameGateway {
   }
 
   @SubscribeMessage('start game')
-  StartGame(client: Socket) {
+  async StartGame(client: Socket) {
     console.log('start game');
     const userid = this.server.getUserId(client);
     if (userid === undefined) {
       return;
     }
+    const enemyId = this.gameRoom.getEnemyName(userid);
+    if (!enemyId) {
+      client.emit('error', 'enemy not found');
+      return;
+    }
+    const enemyInfo = await this.user.findOneById(enemyId);
+    if (!enemyInfo) {
+      client.emit('error', "enemy isn't exists");
+      return;
+    }
+    client.emit('game init', {
+      enemyName: enemyInfo.username,
+      width: canvas.xMax - canvas.xMin,
+      height: canvas.yMax - canvas.yMin,
+    });
     this.gameRoom.getGame(userid)?.ReadyGame(client);
   }
 
+  @SubscribeMessage('is playing')
+  isPlaying(client: Socket, user: UserInfo) {
+    client.emit('is playing', this.gameRoom.isPlaying(user.id));
+  }
+
   @SubscribeMessage('invite game')
-  async invite(client: Socket, dest: UserInfo) {
+  async invite(client: Socket, useropt: UserGameOption) {
+    const { user: dest, opt: options } = useropt;
     const srcId = this.server.extractUserIdFromToken(
       client.handshake.auth.token,
     );
@@ -117,13 +140,13 @@ export class GameGateway {
     }
     const { err } = this.gameRoom.invite(
       { src: src.id, dest: dest.id },
-      this.CreateGameFactory(),
+      this.CreateGameFactory(options),
     );
     if (err !== null) {
       client.emit('error', err);
       return;
     }
-    destSock.emit('receive game-invitation', src);
+    destSock.emit('receive game-invitation', { src, options });
   }
 
   @SubscribeMessage('accept game-invitation')
@@ -198,7 +221,9 @@ export class GameGateway {
     this.gameRoom.getGame(userid)?.HandleKeyRelease(client, key);
   }
 
-  private CreateGameFactory(): GameFactory {
+  private CreateGameFactory(
+    options: GameOptionDto = defaultGameOptions,
+  ): GameFactory {
     const gameFactory: GameFactory = (
       player1: PlayerData,
       player2: PlayerData,
@@ -215,7 +240,7 @@ export class GameGateway {
           .catch((e) => console.log(e));
       };
 
-      return new GameLogic(player1, player2, onShutdown);
+      return new GameLogic(player1, player2, options, onShutdown);
     };
 
     return gameFactory;
