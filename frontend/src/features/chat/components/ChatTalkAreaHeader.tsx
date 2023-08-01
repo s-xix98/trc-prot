@@ -172,14 +172,21 @@ const ShowRoomNameEditIcon = ({
 
 export const ChatTalkAreaHeader = ({
   selectedChannel,
+  setSelectedChannel,
 }: {
   selectedChannel: chatChannelDto;
+  setSelectedChannel: React.Dispatch<
+    React.SetStateAction<chatChannelDto | undefined>
+  >;
 }) => {
   const modal = useModal();
   return (
     <>
       <ModalView {...modal} height="250px" width="200px">
-        <ChannelInfo selectedChannel={selectedChannel} />
+        <ChannelInfo
+          selectedChannel={selectedChannel}
+          setSelectedChannel={setSelectedChannel}
+        />
       </ModalView>
       <div>
         <Container>
