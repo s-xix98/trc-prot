@@ -134,6 +134,10 @@ export class GameGateway {
     client.emit('is playing', this.gameRoom.isPlaying(user.id));
   }
 
+  isPlayingBy(userId: string) {
+    return this.gameRoom.isPlaying(userId);
+  }
+
   @SubscribeMessage('invite game')
   async invite(client: Socket, useropt: UserGameOption) {
     const { user: dest, opt: options } = useropt;
