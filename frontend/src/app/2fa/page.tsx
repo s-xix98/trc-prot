@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 import { useSessionAxios } from '@/hooks/useSessionAxios';
 import { tokenStorage } from '@/utils/tokenStorage';
@@ -86,10 +86,33 @@ import { tokenStorage } from '@/utils/tokenStorage';
 //   );
 // }
 
-export default function Fa() {
+export default function TwoFa() {
+  const [auth, setAuth] = useState<string>('');
+  const router = useRouter();
+  const axios = useSessionAxios();
+
+  const sendAuth = () => {
+    const dto = {
+      twoFaCode: auth,
+    };
+
+    axios
+      .post('/auth/2fa/authentication', dto)
+      .then((res) => {
+        tokenStorage.set(res.data.jwt);
+        router.push('/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
-      <p>Fa</p>
+      <p>2Fa</p>
+      <br />
+      <input value={auth} onChange={(event) => setAuth(event.target.value)} />
+      <button onClick={sendAuth}>authentication</button>
     </>
-  )
+  );
 }
