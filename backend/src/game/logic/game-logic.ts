@@ -6,6 +6,7 @@ import {
   Paddle,
   PlayerData,
   PlayerResult,
+  Rectangle,
   ResultEvaluator,
 } from '../types';
 import {
@@ -76,6 +77,7 @@ export class GameLogic {
   private p2: Player;
   private ball: Ball;
   private intervalId: any;
+  private readonly area: Rectangle;
 
   constructor(
     p1: PlayerData,
@@ -99,6 +101,12 @@ export class GameLogic {
       paddle: CreateRightPaddle(),
       keyInputs: [],
       score: 0,
+    };
+    this.area = {
+      xMin: canvas.xMin + this.ball.radius,
+      xMax: canvas.xMax - this.ball.radius,
+      yMin: canvas.yMin + this.ball.radius,
+      yMax: canvas.yMax - this.ball.radius,
     };
   }
 
@@ -125,6 +133,15 @@ export class GameLogic {
       this.p2.socket.emit('game ready right', this.ConvertToGameDto());
       setTimeout(this.StartGame.bind(this), 2000);
     }
+  }
+
+  getEnemyId(userId: string): string | undefined {
+    if (userId == this.p1.userId) {
+      return this.p2.userId;
+    } else if (userId == this.p2.userId) {
+      return this.p1.userId;
+    }
+    return undefined;
   }
 
   private StartGame() {
@@ -201,7 +218,7 @@ export class GameLogic {
 
     const isLeftPaddleHitByBall = () => {
       return (
-        newX <= canvas.xMin &&
+        newX <= this.area.xMin + this.p1.paddle.width &&
         IsInRange(
           this.ball.y,
           this.p1.paddle.y,
@@ -212,7 +229,7 @@ export class GameLogic {
 
     const isRightPaddleHitByBall = () => {
       return (
-        newX >= canvas.xMax &&
+        newX >= this.area.xMax - this.p2.paddle.width &&
         IsInRange(
           this.ball.y,
           this.p2.paddle.y,
@@ -222,24 +239,26 @@ export class GameLogic {
     };
 
     if (isLeftPaddleHitByBall()) {
-      newX = -newX;
+      const xMin = this.area.xMin + this.p1.paddle.width;
+      newX = xMin - (newX - xMin);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed =
         this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     } else if (isRightPaddleHitByBall()) {
-      newX = canvas.xMax - (newX - canvas.xMax);
+      const xMax = this.area.xMax - this.p2.paddle.width;
+      newX = xMax - (newX - xMax);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed =
         this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     }
 
-    if (newY <= canvas.yMin) {
-      newY = -newY;
+    if (newY <= this.area.yMin) {
+      newY = this.area.yMin - (newY - this.area.yMin);
       this.ball.angle *= -1;
-    } else if (newY >= canvas.yMax) {
-      newY = canvas.yMax - (newY - canvas.yMax);
+    } else if (newY >= this.area.yMax) {
+      newY = this.area.yMax - (newY - this.area.yMax);
       this.ball.angle *= -1;
     }
 
