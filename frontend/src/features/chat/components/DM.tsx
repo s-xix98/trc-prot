@@ -29,7 +29,7 @@ export const DM = ({ targetUserInfo }: { targetUserInfo: UserInfo }) => {
   return (
     <>
       <h3>DM</h3>
-      {dm && <ChatTalkArea selectedChannel={dm} />}
+      {dm && <ChatTalkArea selectedChannel={dm} setSelectedChannel={setDM} />}
     </>
   );
 };

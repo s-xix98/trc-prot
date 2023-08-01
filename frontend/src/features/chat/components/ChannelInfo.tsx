@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import { useSetAtom } from 'jotai';
 
 import { Container } from '@/components/Layout/Container';
 import { useModal } from '@/hooks/useModal';
 import { ModalView } from '@/components/Elements/Modal/ModalView';
 import { useGetInviter, useChatRoomStatus } from '@/hooks/useCurrentUser';
-import { selectedChannelAtom } from '@/stores/chatState';
 import { Input } from '@/components/Elements/Input/Input';
 
 import { useRoomMembers } from '../api/roomMembers';
@@ -20,12 +18,15 @@ import { ShowChatRoomMembers } from './ChatRoomMembers';
 
 const ChannelInfoHeader = ({
   selectedChannel,
+  setSelectedChannel,
 }: {
   selectedChannel: chatChannelDto;
+  setSelectedChannel: React.Dispatch<
+    React.SetStateAction<chatChannelDto | undefined>
+  >;
 }) => {
   const modal = useModal();
   const leaveChatRoomEmitter = useLeaveChatRoom();
-  const setSelectedChannel = useSetAtom(selectedChannelAtom);
 
   return (
     <div>
@@ -52,14 +53,21 @@ const ChannelInfoHeader = ({
 
 export const JoinedChannelInfo = ({
   selectedChannel,
+  setSelectedChannel,
 }: {
   selectedChannel: chatChannelDto;
+  setSelectedChannel: React.Dispatch<
+    React.SetStateAction<chatChannelDto | undefined>
+  >;
 }) => {
   const { roomMembers } = useRoomMembers(selectedChannel.id);
 
   return (
     <Container flexDirection={'column'}>
-      <ChannelInfoHeader selectedChannel={selectedChannel} />
+      <ChannelInfoHeader
+        selectedChannel={selectedChannel}
+        setSelectedChannel={setSelectedChannel}
+      />
       <br />
       <ShowChatRoomMembers
         selectedChannel={selectedChannel}
@@ -152,15 +160,22 @@ const NotJoinedChannelInfo = ({
 
 export const ChannelInfo = ({
   selectedChannel,
+  setSelectedChannel,
 }: {
   selectedChannel: chatChannelDto;
+  setSelectedChannel: React.Dispatch<
+    React.SetStateAction<chatChannelDto | undefined>
+  >;
 }) => {
   const { isJoinedRoom } = useChatRoomStatus();
 
   return (
     <>
       {isJoinedRoom(selectedChannel) ? (
-        <JoinedChannelInfo selectedChannel={selectedChannel} />
+        <JoinedChannelInfo
+          selectedChannel={selectedChannel}
+          setSelectedChannel={setSelectedChannel}
+        />
       ) : (
         <NotJoinedChannelInfo selectedChannel={selectedChannel} />
       )}
@@ -170,10 +185,14 @@ export const ChannelInfo = ({
 
 export const ChannelInfoModal = ({
   selectedChannel,
+  setSelectedChannel,
   modalIsOpen,
   closeModal,
 }: {
   selectedChannel: chatChannelDto | undefined;
+  setSelectedChannel: React.Dispatch<
+    React.SetStateAction<chatChannelDto | undefined>
+  >;
   modalIsOpen: boolean;
   closeModal: () => void;
 }) => {
@@ -185,7 +204,12 @@ export const ChannelInfoModal = ({
       width="30%"
     >
       {!selectedChannel && <p>channel is not selecting</p>}
-      {selectedChannel && <ChannelInfo selectedChannel={selectedChannel} />}
+      {selectedChannel && (
+        <ChannelInfo
+          selectedChannel={selectedChannel}
+          setSelectedChannel={setSelectedChannel}
+        />
+      )}
     </ModalView>
   );
 };
@@ -200,7 +224,11 @@ export const ChannelListWithModal = ({
 
   return (
     <>
-      <ChannelInfoModal selectedChannel={selectingChannel} {...modal} />
+      <ChannelInfoModal
+        selectedChannel={selectingChannel}
+        setSelectedChannel={setSelectingChannel}
+        {...modal}
+      />
       {channelList.map((channel, idx) => (
         <p
           key={idx}
