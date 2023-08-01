@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ChatRoom, UserChatStateCode } from '@prisma/client';
+import { ChatRoom, Prisma, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
 
@@ -148,27 +148,48 @@ export class ChatService {
   }
 
   async createDM(userId: string, targetId: string) {
-    const createdRoom = await this.prismaService.chatRoom.create({
-      data: {
-        roomName: 'DM',
-        isPrivate: true,
-        isDM: true,
-        roomMembers: {
-          create: [
-            {
-              userId: userId,
-              role: UserRole.USER,
-            },
-            {
-              userId: targetId,
-              role: UserRole.USER,
-            },
-          ],
-        },
-      },
-    });
+    return this.prismaService.$transaction(
+      async (tx) => {
+        const dm = await tx.chatRoom.findMany({
+          where: {
+            AND: [
+              { roomMembers: { some: { userId: userId } } },
+              { roomMembers: { some: { userId: targetId } } },
+              { isDM: true },
+            ],
+          },
+        });
 
-    return createdRoom;
+        if (dm.length > 0) {
+          throw new CustomException('DM already exists');
+        }
+
+        const createdRoom = await tx.chatRoom.create({
+          data: {
+            roomName: 'DM',
+            isPrivate: true,
+            isDM: true,
+            roomMembers: {
+              create: [
+                {
+                  userId: userId,
+                  role: UserRole.USER,
+                },
+                {
+                  userId: targetId,
+                  role: UserRole.USER,
+                },
+              ],
+            },
+          },
+        });
+
+        return createdRoom;
+      },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      },
+    );
   }
 
   async upsertRoomMember(chatRoomId: string, userId: string, role: UserRole) {
@@ -350,7 +371,7 @@ export class ChatService {
   }
 
   async getJoinedRooms(userId: string) {
-    const joinedRooms = await this.prismaService.chatRoom.findMany({
+    const joinedRoomsWithMember = await this.prismaService.chatRoom.findMany({
       where: {
         roomMembers: {
           some: {
@@ -364,13 +385,25 @@ export class ChatService {
         isPrivate: true,
         hashedPassword: true,
         isDM: true,
+        roomMembers: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                base64Image: true,
+              },
+            },
+            role: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    return joinedRooms.map((room) => {
+    return joinedRoomsWithMember.map((room) => {
       const { hashedPassword, ...rest } = room;
       return {
         ...rest,
