@@ -10,11 +10,11 @@ import { TestModule } from '../test/test.module';
 import { AuthModule } from '../auth/auth.module';
 import { WsocketModule } from '../wsocket/wsocket.module';
 import { ChatModule } from '../chat/chat.module';
+import { GameModule } from '../game/game.module';
 
 import { UserGateway } from './user.gateway';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
-import { GameModule } from '../game/game.module';
 
 const USERNUM = 10;
 
