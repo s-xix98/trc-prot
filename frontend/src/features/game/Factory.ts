@@ -3,22 +3,13 @@ import { BallDto, GameDto, PaddleDto } from './dto/GameDto';
 
 export const CreateGameObjects = (
   gameDto: GameDto,
-  canvasWidth: number,
-  canvasHeight: number,
+  scale: number,
 ): GameObjects => {
-  const ball = CreateBall(gameDto.ball, canvasWidth, canvasHeight);
+  const ball = CreateBall(gameDto.ball, scale);
 
-  const leftPaddle = CreatePaddle(
-    gameDto.leftPaddle,
-    canvasWidth,
-    canvasHeight,
-  );
+  const leftPaddle = CreatePaddle(gameDto.leftPaddle, scale);
 
-  const rightPaddle = CreatePaddle(
-    gameDto.rightPaddle,
-    canvasWidth,
-    canvasHeight,
-  );
+  const rightPaddle = CreatePaddle(gameDto.rightPaddle, scale);
 
   return {
     ball,
@@ -28,27 +19,19 @@ export const CreateGameObjects = (
   };
 };
 
-const CreateBall = (
-  ballDto: BallDto,
-  canvasWidth: number,
-  canvasHeight: number,
-): Ball => {
+const CreateBall = (ballDto: BallDto, scale: number): Ball => {
   return {
-    x: ballDto.x * canvasWidth,
-    y: ballDto.y * canvasHeight,
-    radius: 10,
+    x: ballDto.x * scale,
+    y: ballDto.y * scale,
+    radius: ballDto.radius * scale,
   };
 };
 
-const CreatePaddle = (
-  paddleDto: PaddleDto,
-  canvasWidth: number,
-  canvasHeight: number,
-): Paddle => {
+const CreatePaddle = (paddleDto: PaddleDto, scale: number): Paddle => {
   return {
-    x: paddleDto.x * canvasWidth,
-    y: paddleDto.y * canvasHeight,
-    width: paddleDto.width * canvasWidth,
-    height: paddleDto.height * canvasHeight,
+    x: paddleDto.x * scale,
+    y: paddleDto.y * scale,
+    width: paddleDto.width * scale,
+    height: paddleDto.height * scale,
   };
 };
