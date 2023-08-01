@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { useSessionAxios } from '@/hooks/useSessionAxios';
 import { tokenStorage } from '@/utils/tokenStorage';
+import { useLogout } from '@/features/user/api/userLogin';
 
 // export default function Fa() {
 //   const [qrcode, setqrcode] = useState<string>('');
@@ -90,6 +91,7 @@ export default function TwoFa() {
   const [auth, setAuth] = useState<string>('');
   const router = useRouter();
   const axios = useSessionAxios();
+  const { logout } = useLogout();
 
   const sendAuth = () => {
     const dto = {
@@ -113,6 +115,14 @@ export default function TwoFa() {
       <br />
       <input value={auth} onChange={(event) => setAuth(event.target.value)} />
       <button onClick={sendAuth}>authentication</button>
+      <button
+        onClick={() => {
+          logout();
+          router.push('/login');
+        }}
+      >
+        logout
+      </button>
     </>
   );
 }
