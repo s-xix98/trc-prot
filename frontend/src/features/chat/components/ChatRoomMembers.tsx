@@ -14,6 +14,7 @@ import { chatChannelDto, roomMember } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
 import { useMuteRoomMember } from '../api/muteRoomMember';
+import { useUpdateChatRoomMemberRole } from '../api/updateChatRoomMemberRole';
 
 const SliderModal = ({
   title,
@@ -140,6 +141,32 @@ const KickUserBtn = ({
   );
 };
 
+const SetAdminBtn = ({
+  selectedChannel,
+  targetUser,
+}: {
+  selectedChannel: chatChannelDto;
+  targetUser: UserInfo;
+}) => {
+  const updateChatRoomMemberRole = useUpdateChatRoomMemberRole();
+
+  return (
+    <>
+      <button
+        onClick={() =>
+          updateChatRoomMemberRole.emit(
+            'ADMIN',
+            selectedChannel.id,
+            targetUser.id,
+          )
+        }
+      >
+        Set to Admin
+      </button>
+    </>
+  );
+};
+
 export const ShowRoomUser = ({
   user,
   selectedChannel,
@@ -160,6 +187,10 @@ export const ShowRoomUser = ({
           <Container>
             <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
             <div style={{ margin: 'auto 10px auto auto' }}>
+              <SetAdminBtn
+                selectedChannel={selectedChannel}
+                targetUser={user}
+              />
               <BanUserModal
                 selectedChannel={selectedChannel}
                 targetUser={user}
