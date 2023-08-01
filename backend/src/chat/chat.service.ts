@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ChatRoom, Prisma, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
@@ -7,11 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { UserInfo } from '../user/types/userInfo';
 import { CustomException } from '../exceptions/custom.exception';
 
-import {
-  CreateChannelDto,
-  UpdateChatRoomDto,
-  UpdateRoomMemberRoleDto,
-} from './dto/Channel.dto';
+import { CreateChannelDto, UpdateChatRoomDto } from './dto/Channel.dto';
 import { JoinChannelDto } from './dto/Channel.dto';
 import { RoomMemberRestrictionDto } from './dto/Channel.dto';
 import { MessageDto } from './dto/message.dto';
@@ -296,21 +292,8 @@ export class ChatService {
   async updateRoomMemberRole(
     roomId: string,
     targetId: string,
-    userId: string,
-    dto: UpdateRoomMemberRoleDto,
+    role: 'USER' | 'ADMIN',
   ) {
-    const owner = await this.findRoomMember(roomId, userId);
-
-    if (owner === null || owner.role !== 'OWNER') {
-      throw new ForbiddenException('You are not owner');
-    }
-
-    const target = await this.findRoomMember(roomId, targetId);
-
-    if (target === null) {
-      throw new ForbiddenException('Target not found');
-    }
-
     return this.prismaService.roomMember.update({
       where: {
         userId_chatRoomId: {
@@ -319,7 +302,7 @@ export class ChatService {
         },
       },
       data: {
-        role: dto.role,
+        role: role,
       },
     });
   }
