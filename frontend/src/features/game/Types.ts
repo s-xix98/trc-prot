@@ -19,3 +19,9 @@ export type GameObjects = {
   rightPaddle: Paddle;
   scores: Scores;
 };
+
+export type GameInitializer = {
+  enemyName: string;
+  width: number;
+  height: number;
+};

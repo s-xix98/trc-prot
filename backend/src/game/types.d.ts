@@ -5,6 +5,7 @@ import { UserInfo } from './dto/UserDto';
 export type Ball = {
   x: number;
   y: number;
+  radius: number;
   speed: number;
   angle: number;
 };
@@ -36,3 +37,10 @@ export type ResultEvaluator = (
   p1: PlayerResult,
   p2: PlayerResult,
 ) => { winner: PlayerResult; loser: PlayerResult } | null;
+
+export type Rectangle = {
+  xMin: number;
+  xMax: number;
+  yMin: number;
+  yMax: number;
+};

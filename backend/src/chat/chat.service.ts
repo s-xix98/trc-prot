@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ChatRoom, UserChatStateCode } from '@prisma/client';
+import { ChatRoom, Prisma, UserChatStateCode } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
 
@@ -148,27 +148,48 @@ export class ChatService {
   }
 
   async createDM(userId: string, targetId: string) {
-    const createdRoom = await this.prismaService.chatRoom.create({
-      data: {
-        roomName: 'DM',
-        isPrivate: true,
-        isDM: true,
-        roomMembers: {
-          create: [
-            {
-              userId: userId,
-              role: UserRole.USER,
-            },
-            {
-              userId: targetId,
-              role: UserRole.USER,
-            },
-          ],
-        },
-      },
-    });
+    return this.prismaService.$transaction(
+      async (tx) => {
+        const dm = await tx.chatRoom.findMany({
+          where: {
+            AND: [
+              { roomMembers: { some: { userId: userId } } },
+              { roomMembers: { some: { userId: targetId } } },
+              { isDM: true },
+            ],
+          },
+        });
 
-    return createdRoom;
+        if (dm.length > 0) {
+          throw new CustomException('DM already exists');
+        }
+
+        const createdRoom = await tx.chatRoom.create({
+          data: {
+            roomName: 'DM',
+            isPrivate: true,
+            isDM: true,
+            roomMembers: {
+              create: [
+                {
+                  userId: userId,
+                  role: UserRole.USER,
+                },
+                {
+                  userId: targetId,
+                  role: UserRole.USER,
+                },
+              ],
+            },
+          },
+        });
+
+        return createdRoom;
+      },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      },
+    );
   }
 
   async upsertRoomMember(chatRoomId: string, userId: string, role: UserRole) {
