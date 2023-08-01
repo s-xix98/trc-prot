@@ -1,8 +1,8 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { UseFilters } from '@nestjs/common';
-import { UserGateway } from '../user/user.gateway';
+import { Inject, UseFilters, forwardRef } from '@nestjs/common';
 
+import { UserGateway } from '../user/user.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserService } from '../user/user.service';
@@ -34,6 +34,7 @@ export class GameGateway {
     private gameService: GameService,
     private server: WsocketGateway,
     private user: UserService,
+    @Inject(forwardRef(() => UserGateway))
     private userG: UserGateway,
   ) {}
 
