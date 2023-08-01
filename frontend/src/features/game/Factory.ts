@@ -23,7 +23,7 @@ const CreateBall = (ballDto: BallDto, scale: number): Ball => {
   return {
     x: ballDto.x * scale,
     y: ballDto.y * scale,
-    radius: 10,
+    radius: ballDto.radius * scale,
   };
 };
 
