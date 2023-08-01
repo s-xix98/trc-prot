@@ -13,6 +13,7 @@ import { convertToBase64 } from '@/utils/base64';
 import { useInviteGame } from '@/features/game/api/inviteGame';
 import { useModal } from '@/hooks/useModal';
 import { DM } from '@/features/chat/components/DM';
+import { MatchHistoryModal } from '@/features/game/components/MatchHistory';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -171,6 +172,9 @@ const MyProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       <br />
       <p>this is me</p>
       <br />
+      <MatchHistoryModal userInfo={userInfo} />
+      <br />
+      <br />
       <MyProfileUpdateForm />
     </div>
   );
@@ -255,6 +259,8 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       {/* TODO : ブロックしてるユーザーにも表示する？ */}
       <br />
       <button onClick={() => inviteGame.emit(userInfo)}>Invite Game</button>
+      <br />
+      <MatchHistoryModal userInfo={userInfo} />
     </div>
   );
 };
