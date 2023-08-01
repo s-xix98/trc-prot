@@ -29,7 +29,7 @@ export const Matching = () => {
     <Container flexDirection={'column'}>
       <div>
         <>
-          <button onClick={onClickAct}>button</button>
+          <button onClick={onClickAct}>matchmake</button>
           <h1> WAITING... </h1>
         </>
       </div>
