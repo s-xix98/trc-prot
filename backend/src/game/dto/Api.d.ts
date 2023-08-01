@@ -4,6 +4,8 @@ export type MatchHistory = {
   player1: UserInfo;
   player2: UserInfo;
   winner: UserInfo | null;
+  p1Score: number;
+  p2Score: number;
   createdAt: Date;
 };
 
