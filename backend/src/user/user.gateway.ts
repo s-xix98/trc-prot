@@ -1,6 +1,6 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
@@ -18,6 +18,7 @@ import { UserService } from './user.service';
   },
 })
 @UseFilters(new WsExceptionsFilter())
+@UsePipes(new ValidationPipe())
 export class UserGateway {
   constructor(
     private prisma: PrismaService,

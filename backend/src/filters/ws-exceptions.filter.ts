@@ -1,4 +1,4 @@
-import { Catch, ArgumentsHost } from '@nestjs/common';
+import { Catch, ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { BaseWsExceptionFilter } from '@nestjs/websockets';
 
 import { CustomException } from '../exceptions/custom.exception';
@@ -11,6 +11,10 @@ export class WsExceptionsFilter extends BaseWsExceptionFilter {
     console.log('error', exception);
 
     const client = host.switchToWs().getClient();
+    if (exception instanceof BadRequestException) {
+      client.emit('error', 'validation error');
+      return;
+    }
 
     if (exception instanceof CustomException) {
       client.emit('error', exception.message);
