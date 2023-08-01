@@ -169,7 +169,17 @@ export class AuthService {
     };
   }
 
-  async generateTwoFaSecret(user: UserInfo): Promise<QRCode> {
+  async generateTwoFaSecret(userInfo: UserInfo): Promise<QRCode> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userInfo.id },
+    });
+    if (!user) {
+      throw new Error('user not found');
+    }
+    if (user.isTwoFaEnabled) {
+      throw new ForbiddenException('2fa is already enabled');
+    }
+
     const serviceName = 'trc';
     const secret = authenticator.generateSecret();
     const otpAuthUrl = authenticator.keyuri(user.username, serviceName, secret);
