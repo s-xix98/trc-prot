@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 
 import { PrismaModule } from '../prisma/prisma.module';
 import { UserModule } from '../user/user.module';
@@ -9,7 +9,7 @@ import { GameService } from './game.service';
 import { GameController } from './game.controller';
 
 @Module({
-  imports: [PrismaModule, WsocketModule, UserModule],
+  imports: [PrismaModule, WsocketModule, forwardRef(() => UserModule)],
   providers: [GameGateway, GameService],
   controllers: [GameController],
   exports: [GameGateway],
