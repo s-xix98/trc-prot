@@ -11,6 +11,7 @@ import { CustomException } from '../exceptions/custom.exception';
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
 import { UserService } from './user.service';
+import { UserState } from '@prisma/client';
 import { GameGateway } from 'src/game/game.gateway';
 
 @WebSocketGateway({
@@ -49,7 +50,6 @@ export class UserGateway {
       }
 
       await this.userService.updateUserState(userId, 'ONLINE');
-      await this.broadcastFriends(userId);
 
       await this.sendBlockUsers(userId);
       await this.sendFriends(userId);
@@ -72,8 +72,7 @@ export class UserGateway {
     }
 
     try {
-      await this.userService.updateUserState(userId, 'OFFLINE');
-      await this.broadcastFriends(userId);
+      await this.updateUserState(userId, 'OFFLINE');
     } catch (error) {
       console.log(error);
     }
