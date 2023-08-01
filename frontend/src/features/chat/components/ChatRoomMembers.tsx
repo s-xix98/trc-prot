@@ -1,7 +1,6 @@
 import { Slider } from '@mui/material';
 import { useState } from 'react';
 
-import { Container } from '@/components/Layout/Container';
 import { ContainerItem } from '@/components/Layout/ContainerItem';
 import { UserProfileModal } from '@/features/user/components/UserProfile';
 import { UserInfo } from '@/features/user/types/UserDto';
@@ -14,6 +13,8 @@ import { chatChannelDto, roomMember } from '../types/chatChannelDto';
 import { useKickRoomMember } from '../api/kickRoomMember';
 import { useBanRoomMember } from '../api/banRoomMember';
 import { useMuteRoomMember } from '../api/muteRoomMember';
+import { useUpdateChatRoomMemberRole } from '../api/updateChatRoomMemberRole';
+import { useIsChannelOwnerOrAdmin } from '../api/roomMembers';
 
 const SliderModal = ({
   title,
@@ -140,12 +141,72 @@ const KickUserBtn = ({
   );
 };
 
+const SetAdminBtn = ({
+  selectedChannel,
+  targetUser,
+}: {
+  selectedChannel: chatChannelDto;
+  targetUser: UserInfo;
+}) => {
+  const updateChatRoomMemberRole = useUpdateChatRoomMemberRole();
+
+  return (
+    <>
+      <button
+        onClick={() =>
+          updateChatRoomMemberRole.emit(
+            'ADMIN',
+            selectedChannel.id,
+            targetUser.id,
+          )
+        }
+      >
+        Set to Admin
+      </button>
+    </>
+  );
+};
+
+const ControlButtons = ({
+  selectedChannel,
+  roomMember,
+}: {
+  selectedChannel: chatChannelDto;
+  roomMember: roomMember;
+}) => {
+  const { isChannelOwnerOrAdmin } = useIsChannelOwnerOrAdmin(
+    selectedChannel.id,
+  );
+
+  if (isChannelOwnerOrAdmin() === false) {
+    return <></>;
+  }
+
+  return (
+    <div>
+      <SetAdminBtn
+        selectedChannel={selectedChannel}
+        targetUser={roomMember.user}
+      />
+      <BanUserModal
+        selectedChannel={selectedChannel}
+        targetUser={roomMember.user}
+      />
+      <MuteUserModal
+        selectedChannel={selectedChannel}
+        targetUser={roomMember.user}
+      />
+      <KickUserBtn selectedChannel={selectedChannel} user={roomMember.user} />
+    </div>
+  );
+};
+
 export const ShowRoomUser = ({
-  user,
+  roomMember,
   selectedChannel,
   openUserProfileModal,
 }: {
-  user: UserInfo;
+  roomMember: roomMember;
   selectedChannel: chatChannelDto;
   openUserProfileModal: (userInfo: UserInfo) => void;
 }) => {
@@ -153,24 +214,23 @@ export const ShowRoomUser = ({
 
   return (
     <>
-      {currentUserInfo?.id === user.id ? (
-        <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
+      {currentUserInfo?.id === roomMember.user.id ? (
+        <div>
+          <p onClick={() => openUserProfileModal(roomMember.user)}>
+            {roomMember.role} - {roomMember.user.username}
+          </p>
+          <br />
+        </div>
       ) : (
         <div>
-          <Container>
-            <p onClick={() => openUserProfileModal(user)}>{user.username}</p>
-            <div style={{ margin: 'auto 10px auto auto' }}>
-              <BanUserModal
-                selectedChannel={selectedChannel}
-                targetUser={user}
-              />
-              <MuteUserModal
-                selectedChannel={selectedChannel}
-                targetUser={user}
-              />
-              <KickUserBtn selectedChannel={selectedChannel} user={user} />
-            </div>
-          </Container>
+          <p onClick={() => openUserProfileModal(roomMember.user)}>
+            {roomMember.role} - {roomMember.user.username}
+          </p>
+          <ControlButtons
+            selectedChannel={selectedChannel}
+            roomMember={roomMember}
+          />
+          <br />
         </div>
       )}
     </>
@@ -193,7 +253,7 @@ export const ShowChatRoomMembers = ({
         {roomMembers.map((roomMember, idx) => (
           <ShowRoomUser
             key={idx}
-            user={roomMember.user}
+            roomMember={roomMember}
             selectedChannel={selectedChannel}
             openUserProfileModal={openUserProfileModal}
           />
