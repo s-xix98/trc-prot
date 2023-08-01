@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/navigation';
 
 import { Container } from '@/components/Layout/Container';
 import { useSessionSocketEmitter, useSessionSocket } from '@/hooks/useSocket';
@@ -18,6 +19,7 @@ import {
   DrawScores,
 } from './Draw';
 import { GameInitializer } from './Types';
+import { useIsPlaying } from './api/isPlaying';
 
 const StyledCanvas = styled.canvas`
   border: 4px solid;
@@ -112,9 +114,26 @@ const GameCanvas = ({
 const CANVAS_SCALE = 400;
 
 export const Game = () => {
+  const [isPlaying, setIsPlaying] = useState<boolean>();
   const keyInputs: boolean[] = [];
+  const router = useRouter();
+  const isPlayingCheckSender = useIsPlaying();
 
   const sessionSocketEmitter = useSessionSocketEmitter();
+
+  useEffect(() => {
+    isPlayingCheckSender.emit();
+  }, [isPlayingCheckSender]);
+
+  useEffect(() => {
+    if (isPlaying === false) {
+      router.push('/');
+    }
+  }, [isPlaying, router, isPlayingCheckSender]);
+
+  useSessionSocket('is playing', (isPlaying: boolean) => {
+    setIsPlaying(isPlaying);
+  });
 
   // [1] Edge (16 and earlier) and Firefox (36 and earlier) use "Left", "Right", "Up", and "Down" instead of "ArrowLeft", "ArrowRight", "ArrowUp", and "ArrowDown".
   const keyPressHandler = (e: KeyboardEvent) => {
