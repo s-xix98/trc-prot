@@ -14,7 +14,7 @@ export class JoinChannelDto {
   chatRoomId: string;
 
   @IsOptional()
-  @Length(3, 30)
+  @Length(0, 30)
   @IsString()
   password?: string;
 }
