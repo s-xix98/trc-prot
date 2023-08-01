@@ -15,7 +15,7 @@ import { Blocks } from './features/user/components/Blocks';
 import { FriendRequests } from './features/user/components/FriendRequests';
 import { useModal } from './hooks/useModal';
 import { ModalView } from './components/Elements/Modal/ModalView';
-import { MatchHistory } from './features/game/components/MatchHistory';
+import { MyMatchHistory } from './features/game/components/MatchHistory';
 import { Ranking } from './features/game/components/Ranking';
 
 const onConnect = () => {
@@ -68,7 +68,7 @@ function App() {
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
   commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
-  commandElemMap.set('./history', <MatchHistory />);
+  commandElemMap.set('./history', <MyMatchHistory />);
   commandElemMap.set('./ranking', <Ranking />);
   commandElemMap.set('./game', <Game />);
   commandElemMap.set('./chat', <Chat />);

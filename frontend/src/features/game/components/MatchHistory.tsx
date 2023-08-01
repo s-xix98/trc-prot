@@ -1,6 +1,7 @@
 import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 import { UserProfileModal } from '@/features/user/components/UserProfile';
 import { UserInfo } from '@/features/user/types/UserDto';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { useMatchHistory } from '../api/useMatchHistory';
 import { MatchHistoryDto } from '../types/matchHistoryDto';
@@ -38,8 +39,8 @@ const ShowMatchResult = ({
   );
 };
 
-export const MatchHistory = () => {
-  const { matchHistories } = useMatchHistory();
+export const MatchHistory = ({ userInfo }: { userInfo: UserInfo }) => {
+  const { matchHistories } = useMatchHistory(userInfo);
   const { selectingUser, modal, openUserProfileModal } = useUserProfileModal();
 
   return (
@@ -54,6 +55,17 @@ export const MatchHistory = () => {
           openUserProfileModal={openUserProfileModal}
         />
       ))}
+    </>
+  );
+};
+
+export const MyMatchHistory = () => {
+  const { currentUserInfo } = useCurrentUser();
+
+  return (
+    <>
+      {!currentUserInfo && <p>User not selected</p>}
+      {currentUserInfo && <MatchHistory userInfo={currentUserInfo} />}
     </>
   );
 };
