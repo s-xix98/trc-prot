@@ -11,10 +11,12 @@ import { LoginForm } from '@/features/user/components/LoginForm';
 import { SignUpForm } from '@/features/user/components/SignUpForm';
 import { AuthLogin } from '@/features/user/components/AuthLogin';
 import { BACKEND } from '@/constants';
+import { useReceiveAuthRedirect } from '@/features/user/api/authRedirect';
 
 // TODO : UI 改善する
 export default function Login() {
   useRedirectToHome();
+  useReceiveAuthRedirect();
 
   const [isLogin, setValue] = useState(0);
 
