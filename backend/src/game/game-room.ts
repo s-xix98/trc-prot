@@ -141,7 +141,12 @@ class Invitation {
   delete({ src, dest }: { src: UserId; dest: UserId }) {
     this.srcs.get(src)?.delete(dest);
     this.dests.get(dest)?.delete(src);
-    this.factory.delete({ src, dest });
+    for (const key of this.factory.keys()) {
+      if (key.src == src && key.dest == dest) {
+        this.factory.delete(key);
+        break;
+      }
+    }
   }
 
   deleteMany(userid: UserId) {

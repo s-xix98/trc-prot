@@ -157,7 +157,11 @@ export class GameGateway {
       client.emit('error', err);
       return;
     }
-    destSock.emit('receive game-invitation', { src, options });
+    const dto: UserGameOption = {
+      user: src,
+      opt: options,
+    };
+    destSock.emit('receive game-invitation', dto);
   }
 
   @SubscribeMessage('accept game-invitation')
