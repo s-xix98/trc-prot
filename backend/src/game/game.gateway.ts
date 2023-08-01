@@ -1,6 +1,7 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { UseFilters } from '@nestjs/common';
+import { UserGateway } from 'src/user/user.gateway';
 
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
@@ -33,6 +34,7 @@ export class GameGateway {
     private gameService: GameService,
     private server: WsocketGateway,
     private user: UserService,
+    private userG: UserGateway,
   ) {}
 
   handleConnection(client: Socket) {
