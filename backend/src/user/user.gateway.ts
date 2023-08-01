@@ -283,6 +283,7 @@ export class UserGateway {
       this.broadcastBlockers(userId),
       this.broadcastSentRequests(userId),
       this.chatGateway.broadcastMessagesToJoinedRooms(userId),
+      this.chatGateway.broadcastJoinedRooms(userId),
     ]);
   }
 
