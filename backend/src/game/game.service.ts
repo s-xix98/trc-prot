@@ -60,19 +60,14 @@ export class GameService {
           this.UpdateRating(players.winner.userId, 1, tx),
           this.UpdateRating(players.loser.userId, -1, tx),
           this.UpdateMatchHistory(
-            p1Result.userId,
-            p2Result.userId,
+            p1Result,
+            p2Result,
             players.winner.userId,
             tx,
           ),
         ]);
       } else {
-        await this.UpdateMatchHistory(
-          p1Result.userId,
-          p2Result.userId,
-          undefined,
-          tx,
-        );
+        await this.UpdateMatchHistory(p1Result, p2Result, undefined, tx);
       }
     });
   }
@@ -91,14 +86,20 @@ export class GameService {
   }
 
   private async UpdateMatchHistory(
-    userId1: string,
-    userId2: string,
+    p1Result: PlayerResult,
+    p2Result: PlayerResult,
     winnerId?: string,
     prisma?: PrsimaClientTx,
   ) {
     const pricla = prisma || this.prismaService;
     await pricla.matchHistory.create({
-      data: { player1Id: userId1, player2Id: userId2, winnerId: winnerId },
+      data: {
+        player1Id: p1Result.userId,
+        player2Id: p2Result.userId,
+        winnerId: winnerId,
+        p1Score: p1Result.score,
+        p2Score: p2Result.score,
+      },
     });
   }
 }
