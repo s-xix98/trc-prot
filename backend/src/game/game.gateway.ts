@@ -266,4 +266,12 @@ export class GameGateway {
 
     return gameFactory;
   }
+
+  private async updateUserStateOnGameEnd(userid: string) {
+    const isOffline = !this.server.getSocket(userid);
+    if (isOffline) {
+      return;
+    }
+    await this.userG.updateUserState(userid, 'ONLINE');
+  }
 }
