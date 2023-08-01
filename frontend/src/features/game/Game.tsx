@@ -166,8 +166,11 @@ export const Game = () => {
 
   return (
     // TODO : 本来はいらない気がする、とりあえず適当にUI用
-    <Container>
-      <GameCanvas width={width} height={height} scale={CANVAS_SCALE} />
-    </Container>
+    <>
+      <Container>
+        <GameCanvas width={width} height={height} scale={CANVAS_SCALE} />
+      </Container>
+      <p style={{ textAlign: 'center' }}>use ArrowUp, and ArrowDown key</p>
+    </>
   );
 };
