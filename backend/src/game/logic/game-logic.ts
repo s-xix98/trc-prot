@@ -6,6 +6,7 @@ import {
   Paddle,
   PlayerData,
   PlayerResult,
+  Rectangle,
   ResultEvaluator,
 } from '../types';
 import {
@@ -15,6 +16,7 @@ import {
   CreateRightPaddle,
 } from '../game-constants';
 import { GameDto } from '../dto/GameDto';
+import { GameOptionDto } from '../dto/GameOptionDto';
 
 import { keyActions, Keys } from './KeyAction';
 
@@ -26,8 +28,6 @@ type Player = {
   keyInputs: boolean[];
   score: number;
 };
-
-const MatchPoint = 3; // TODO 可変すにするかも
 
 const IsInRange = (pos: number, start: number, end: number) => {
   return start < pos && pos < end;
@@ -44,13 +44,21 @@ export interface GameRule {
   ): { winner: PlayerResult; loser: PlayerResult } | null;
   CreateResultEvaluator(): ResultEvaluator;
   isGameFinished(p1Score: number, p2Score: number): boolean;
+  getBaseBallSpeed(): number;
 }
 
 export class BasicRule implements GameRule {
-  constructor(private readonly matchPoint = MatchPoint) {}
+  constructor(
+    private readonly matchPoint: number,
+    private ballBaseSpeed: number,
+  ) {}
 
   EvaluateGameResult(p1: PlayerResult, p2: PlayerResult) {
     return this.CreateResultEvaluator()(p1, p2);
+  }
+
+  getBaseBallSpeed(): number {
+    return this.ballBaseSpeed;
   }
 
   CreateResultEvaluator(): ResultEvaluator {
@@ -76,13 +84,16 @@ export class GameLogic {
   private p2: Player;
   private ball: Ball;
   private intervalId: any;
+  private readonly area: Rectangle;
+  private readonly rule: GameRule;
 
   constructor(
     p1: PlayerData,
     p2: PlayerData,
+    options: GameOptionDto,
     private readonly onShutdown: OnShutdownCallback,
-    private readonly rule: GameRule = new BasicRule(MatchPoint),
   ) {
+    this.rule = new BasicRule(options.matchpoint, options.ballSpeed / 200);
     this.ball = this.CreateRandomBall();
     this.p1 = {
       socket: p1.client,
@@ -99,6 +110,12 @@ export class GameLogic {
       paddle: CreateRightPaddle(),
       keyInputs: [],
       score: 0,
+    };
+    this.area = {
+      xMin: canvas.xMin + this.ball.radius,
+      xMax: canvas.xMax - this.ball.radius,
+      yMin: canvas.yMin + this.ball.radius,
+      yMax: canvas.yMax - this.ball.radius,
     };
   }
 
@@ -134,6 +151,10 @@ export class GameLogic {
       return this.p1.userId;
     }
     return undefined;
+  }
+
+  isStarted(): boolean {
+    return this.p1.isReady && this.p2.isReady;
   }
 
   private StartGame() {
@@ -190,8 +211,9 @@ export class GameLogic {
 
   private CreateRandomBall(): Ball {
     const ball = CreateBall();
+    ball.speed = this.rule.getBaseBallSpeed();
     const random_angle =
-      Math.random() * ((Math.PI * 5) / 6) - (Math.PI * 5) / 12;
+      Math.random() * ((Math.PI * 2) / 3) - (Math.PI * 1) / 3;
     const p1_side = random_angle + Math.PI;
     const p2_side = random_angle;
     ball.angle = [p1_side, p2_side][getRandomInt(2)];
@@ -210,7 +232,7 @@ export class GameLogic {
 
     const isLeftPaddleHitByBall = () => {
       return (
-        newX <= canvas.xMin &&
+        newX <= this.area.xMin + this.p1.paddle.width &&
         IsInRange(
           this.ball.y,
           this.p1.paddle.y,
@@ -221,7 +243,7 @@ export class GameLogic {
 
     const isRightPaddleHitByBall = () => {
       return (
-        newX >= canvas.xMax &&
+        newX >= this.area.xMax - this.p2.paddle.width &&
         IsInRange(
           this.ball.y,
           this.p2.paddle.y,
@@ -231,24 +253,26 @@ export class GameLogic {
     };
 
     if (isLeftPaddleHitByBall()) {
-      newX = -newX;
+      const xMin = this.area.xMin + this.p1.paddle.width;
+      newX = xMin - (newX - xMin);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed =
         this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     } else if (isRightPaddleHitByBall()) {
-      newX = canvas.xMax - (newX - canvas.xMax);
+      const xMax = this.area.xMax - this.p2.paddle.width;
+      newX = xMax - (newX - xMax);
       this.ball.angle = this.ball.angle * -1 + Math.PI;
       this.ball.angle *= Math.random() * 0.1 + 0.95;
       this.ball.speed =
         this.ball.speed > 0.5 ? this.ball.speed : this.ball.speed * 1.05;
     }
 
-    if (newY <= canvas.yMin) {
-      newY = -newY;
+    if (newY <= this.area.yMin) {
+      newY = this.area.yMin - (newY - this.area.yMin);
       this.ball.angle *= -1;
-    } else if (newY >= canvas.yMax) {
-      newY = canvas.yMax - (newY - canvas.yMax);
+    } else if (newY >= this.area.yMax) {
+      newY = this.area.yMax - (newY - this.area.yMax);
       this.ball.angle *= -1;
     }
 

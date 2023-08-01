@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Chat } from './features/chat/components/Chat';
 import { Game } from './features/game/Game';
 import { MainLayout } from './components/Layout/MainLayout';
-import { useSessionSocket, useSessionSocketEmitter } from './hooks/useSocket';
+import { useSessionSocket } from './hooks/useSocket';
 import { Terminal } from './features/terminal/Terminal';
 import { UserSearch } from './features/user/components/Search';
 import { Matching } from './features/game/Matching';
@@ -17,7 +17,6 @@ import { useModal } from './hooks/useModal';
 import { ModalView } from './components/Elements/Modal/ModalView';
 import { MatchHistory } from './features/game/components/MatchHistory';
 import { Ranking } from './features/game/components/Ranking';
-import { UserInfo } from './features/user/types/UserDto';
 
 const onConnect = () => {
   console.log('socket connect');
@@ -57,61 +56,15 @@ const Launcher = ({
   );
 };
 
-const Test = () => {
-  const { joinedRooms, friends } = useCurrentUser();
-  const socket = useSessionSocketEmitter();
-  const [n, setn] = useState(0);
-
-  const inviteButton = () => {
-    socket.emit('inviteChatRoom', {
-      chatRoomId: joinedRooms[0].id,
-      targetId: friends[0].id,
-    });
-  };
-
-  const leaveButton = () => {
-    socket.emit('leaveChatRoom', {
-      chatRoomId: joinedRooms[0].id,
-    });
-  };
-
-  const updateProfileButton = () => {
-    socket.emit('updateProfile', { username: `test1${n}` });
-    setn(n + 1);
-  };
-
-  useSessionSocket('receiveInviteChatRoom', (data) => {
-    console.log('receive invite sitayo');
-    console.log(data);
-  });
-
-  return (
-    <>
-      test
-      <button onClick={inviteButton}> invite </button>
-      <button onClick={leaveButton}> leave </button>
-      <button onClick={updateProfileButton}> updateProfile </button>
-    </>
-  );
-};
-
 function App() {
   // TODO : 消す、login ページに飛ぶ前に、ページ見えちゃうの嫌なので一旦
   const { currentUserInfo } = useCurrentUser();
 
   useSessionSocket('connect', onConnect);
   useSessionSocket('disconnect', onDisconnect);
-  useSessionSocket('receive game-invitation', (inviter: UserInfo) => {
-    console.log(inviter);
-  });
-
-  //useSessionSocket()
 
   const commandElemMap = new Map<string, JSX.Element>();
 
-  commandElemMap.set('a', <h1>A</h1>);
-  commandElemMap.set('b', <h2>B</h2>);
-  commandElemMap.set('c', <h3>c</h3>);
   commandElemMap.set('g', <Game />);
   commandElemMap.set('m', <Matching />);
   commandElemMap.set('./help', <h3>質問の背景を教えてください。</h3>);
@@ -123,7 +76,6 @@ function App() {
   commandElemMap.set('./friends', <Friends />);
   commandElemMap.set('./friendsReq', <FriendRequests />);
   commandElemMap.set('./blocks', <Blocks />);
-  commandElemMap.set('./test', <Test />);
 
   // TODO : 消す or もうちょいちゃんと作る
   const forLauncherCommandElemMap = new Map(commandElemMap);

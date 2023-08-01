@@ -1,6 +1,6 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { roomType } from '../wsocket/utils';
@@ -30,6 +30,7 @@ import { ChatService } from './chat.service';
   },
 })
 @UseFilters(new WsExceptionsFilter())
+@UsePipes(new ValidationPipe())
 export class ChatGateway {
   constructor(
     private prisma: PrismaService,
@@ -215,6 +216,7 @@ export class ChatGateway {
       this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
       await this.sendJoinedRooms(dto.targetId);
     }
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('muteRoomMember')
@@ -298,6 +300,7 @@ export class ChatGateway {
       this.server.LeaveRoom(targetSock, roomType.Chat, dto.chatRoomId);
       await this.sendJoinedRooms(dto.targetId);
     }
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('inviteChatRoom')

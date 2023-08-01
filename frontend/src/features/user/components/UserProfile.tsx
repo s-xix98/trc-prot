@@ -11,6 +11,9 @@ import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 import { FormInput } from '@/components/Elements/Input/FormInput';
 import { convertToBase64 } from '@/utils/base64';
 import { useInviteGame } from '@/features/game/api/inviteGame';
+import { useModal } from '@/hooks/useModal';
+import { DM } from '@/features/chat/components/DM';
+import { useCreateDM } from '@/features/chat/api/createDM';
 
 import { UserInfo } from '../types/UserDto';
 import { useFriendRequestSender } from '../api/friendRequestSender';
@@ -218,6 +221,8 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
   const unblockRequestSender = useUnblockRequestSender();
   const inviteGame = useInviteGame();
   const { isFriend, isBlockUser } = useFriendStatus();
+  const dmModal = useModal();
+  const createDM = useCreateDM();
 
   const sendFriendReq = () => {
     friendRequestSender.emit(userInfo.id);
@@ -233,6 +238,9 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
 
   return (
     <div>
+      <ModalView {...dmModal} height="50%" width="30%">
+        <DM targetUserInfo={userInfo} />
+      </ModalView>
       <ShowIcon userInfo={userInfo} />
       <br />
       {isFriend(userInfo) && <FriendUserDetails sendBlockReq={sendBlockReq} />}
@@ -245,6 +253,14 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
           sendBlockReq={sendBlockReq}
         />
       )}
+      <button
+        onClick={() => {
+          createDM.emit(userInfo.id);
+          dmModal.openModal();
+        }}
+      >
+        DM
+      </button>
       {/* TODO : ブロックしてるユーザーにも表示する？ */}
       <br />
       <button onClick={() => inviteGame.emit(userInfo)}>Invite Game</button>
