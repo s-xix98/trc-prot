@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useSessionSocket } from '@/hooks/useSocket';
-import { UserInfoSchema } from '@/features/user/types/UserDto';
 import { useAcceptGameInvite } from '@/features/game/api/acceptGameInvite';
 import { useDenyGameInvite } from '@/features/game/api/denyGameInvite';
+import { UserGameOptionSchema } from '@/features/game/types/gameOptionDto';
 
 export const useGameHandler = () => {
   const acceptGameInvite = useAcceptGameInvite();
@@ -30,23 +30,24 @@ export const useGameHandler = () => {
   });
 
   useSessionSocket('receive game-invitation', (data) => {
-    const inviterUserInfo = UserInfoSchema.safeParse(data);
-    if (inviterUserInfo.success == false) {
+    const invitedGame = UserGameOptionSchema.safeParse(data);
+    if (invitedGame.success == false) {
       console.log('Error : receive game-invitation');
       return;
     }
 
     const acceptAct = (snackbarId: SnackbarKey) => {
-      acceptGameInvite.emit(inviterUserInfo.data);
+      acceptGameInvite.emit(invitedGame.data.user);
       closeSnackbar(snackbarId);
     };
     const denyAct = (snackbarId: SnackbarKey) => {
-      denyGameInvite.emit(inviterUserInfo.data);
+      denyGameInvite.emit(invitedGame.data.user);
       closeSnackbar(snackbarId);
     };
 
     enqueueSnackbar(
-      `receive game-invitation from ${inviterUserInfo.data.username}`,
+      `receive game-invitation from ${invitedGame.data.user.username}\n
+      matchpoint : ${invitedGame.data.opt.matchpoint}, ballSpeed: ${invitedGame.data.opt.ballSpeed}`,
       {
         action: (snackbarId) => (
           <>
