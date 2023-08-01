@@ -1,7 +1,8 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { UseFilters } from '@nestjs/common';
+import { Inject, UseFilters, forwardRef } from '@nestjs/common';
 
+import { UserGateway } from '../user/user.gateway';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { UserService } from '../user/user.service';
@@ -33,9 +34,11 @@ export class GameGateway {
     private gameService: GameService,
     private server: WsocketGateway,
     private user: UserService,
+    @Inject(forwardRef(() => UserGateway))
+    private userG: UserGateway,
   ) {}
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     console.log('game connection');
     if (!client.handshake.auth.token) {
       return;
@@ -46,10 +49,15 @@ export class GameGateway {
     if (!userId) {
       return;
     }
-    this.gameRoom.getGame(userId)?.RebindSocket(userId, client);
+    const game = this.gameRoom.getGame(userId);
+    if (!game) {
+      return;
+    }
+    game.RebindSocket(userId, client);
+    await this.userG.updateUserState(userId, 'GAME');
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     console.log('game handleDisconnect');
     if (!client.handshake.auth.token) {
       return;
@@ -73,6 +81,7 @@ export class GameGateway {
     this.gameRoom.delete({ p1: userId, p2: enemyId });
     const enemysock = this.server.getSocket(enemyId);
     enemysock?.emit('error', 'enemy disconnected');
+    await this.updateUserStateOnGameEnd(enemyId);
   }
 
   @SubscribeMessage('matchmake')
@@ -111,7 +120,12 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
-    const enemyId = this.gameRoom.getEnemyId(userid);
+    const game = this.gameRoom.getGame(userid);
+    if (!game) {
+      client.emit('error', 'not player');
+      return;
+    }
+    const enemyId = game.getEnemyId(userid);
     if (!enemyId) {
       client.emit('error', 'enemy not found');
       return;
@@ -126,7 +140,8 @@ export class GameGateway {
       width: canvas.xMax - canvas.xMin,
       height: canvas.yMax - canvas.yMin,
     });
-    this.gameRoom.getGame(userid)?.ReadyGame(client);
+    game.ReadyGame(client);
+    this.userG.updateUserState(userid, 'GAME');
   }
 
   @SubscribeMessage('is playing')
@@ -254,6 +269,12 @@ export class GameGateway {
       ) => {
         console.log('onshutdown');
         this.gameRoom.delete({ p1: p1Result.userId, p2: p2Result.userId });
+        await this.updateUserStateOnGameEnd(p1Result.userId).catch((e) =>
+          console.log(e),
+        );
+        await this.updateUserStateOnGameEnd(p2Result.userId).catch((e) =>
+          console.log(e),
+        );
         await this.gameService
           .saveGameResult(p1Result, p2Result, resultEvaluator)
           .catch((e) => console.log(e));
@@ -263,5 +284,13 @@ export class GameGateway {
     };
 
     return gameFactory;
+  }
+
+  private async updateUserStateOnGameEnd(userid: string) {
+    const isOffline = !this.server.getSocket(userid);
+    if (isOffline) {
+      return;
+    }
+    await this.userG.updateUserState(userid, 'ONLINE');
   }
 }

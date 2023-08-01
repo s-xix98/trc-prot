@@ -1,6 +1,12 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Inject,
+  UseFilters,
+  UsePipes,
+  ValidationPipe,
+  forwardRef,
+} from '@nestjs/common';
 import { UserState } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
@@ -27,6 +33,7 @@ export class UserGateway {
     private userService: UserService,
     private chatGateway: ChatGateway,
     private server: WsocketGateway,
+    @Inject(forwardRef(() => GameGateway))
     private gameGateway: GameGateway,
   ) {}
 
