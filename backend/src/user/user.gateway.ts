@@ -1,12 +1,14 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UserState } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { WsExceptionsFilter } from '../filters/ws-exceptions.filter';
 import { WsocketGateway } from '../wsocket/wsocket.gateway';
 import { ChatGateway } from '../chat/chat.gateway';
 import { CustomException } from '../exceptions/custom.exception';
+import { GameGateway } from '../game/game.gateway';
 
 import { UserProfileDto, searchUserDto } from './dto/user.dto';
 import { friendshipDto } from './dto/friendship.dto';
@@ -25,6 +27,7 @@ export class UserGateway {
     private userService: UserService,
     private chatGateway: ChatGateway,
     private server: WsocketGateway,
+    private gameGateway: GameGateway,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -47,7 +50,6 @@ export class UserGateway {
       }
 
       await this.userService.updateUserState(userId, 'ONLINE');
-      await this.broadcastFriends(userId);
 
       await this.sendBlockUsers(userId);
       await this.sendFriends(userId);
@@ -70,10 +72,25 @@ export class UserGateway {
     }
 
     try {
-      await this.userService.updateUserState(userId, 'OFFLINE');
-      await this.broadcastFriends(userId);
+      await this.updateUserState(userId, 'OFFLINE');
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async updateUserState(userId: string, state: UserState) {
+    try {
+      const isPlaying = await this.gameGateway.isPlayingBy(userId);
+      // game中にonlineにならないように
+      if (isPlaying && state === 'ONLINE') {
+        return;
+      }
+
+      await this.userService.updateUserState(userId, state);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await this.broadcastFriends(userId);
     }
   }
 
