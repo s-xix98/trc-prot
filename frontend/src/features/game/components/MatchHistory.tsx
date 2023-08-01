@@ -5,6 +5,8 @@ import { useCurrentUser } from '@/hooks/useCurrentUser';
 
 import { useMatchHistory } from '../api/useMatchHistory';
 import { MatchHistoryDto } from '../types/matchHistoryDto';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
+import { useModal } from '@/hooks/useModal';
 
 const ShowMatchResult = ({
   result,
@@ -39,6 +41,18 @@ const ShowMatchResult = ({
   );
 };
 
+export const MatchHistoryModal = ({ userInfo }: { userInfo: UserInfo }) => {
+  const modal = useModal();
+
+  return (
+    <>
+      <ModalView {...modal}>
+        <MatchHistory userInfo={userInfo} />
+      </ModalView>
+      <button onClick={() => modal.openModal()}>Match History</button>
+    </>
+  );
+};
 export const MatchHistory = ({ userInfo }: { userInfo: UserInfo }) => {
   const { matchHistories } = useMatchHistory(userInfo);
   const { selectingUser, modal, openUserProfileModal } = useUserProfileModal();
