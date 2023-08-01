@@ -86,7 +86,7 @@ export class GameLogic {
     private readonly onShutdown: OnShutdownCallback,
   ) {
     this.ball = this.CreateRandomBall();
-    this.ball.speed = options.ballSpeed;
+    this.ball.speed = options.ballSpeed / 200;
     this.p1 = {
       socket: p1.client,
       userId: p1.data.id,
