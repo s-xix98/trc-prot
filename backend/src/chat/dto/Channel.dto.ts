@@ -42,6 +42,12 @@ export class CreateDMDto {
 export class UpdateRoomMemberRoleDto {
   @IsIn(['ADMIN', 'USER'])
   role: 'ADMIN' | 'USER';
+
+  @IsString()
+  chatRoomId: string;
+
+  @IsString()
+  targetId: string;
 }
 
 export class RoomMemberRestrictionDto {
