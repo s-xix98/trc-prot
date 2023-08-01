@@ -44,5 +44,5 @@ const paddleConstants = {
 
 export const defaultGameOptions: GameOptionDto = {
   ballSpeed: 1,
-  matchpoint: 3,
+  matchpoint: 11,
 } as const;

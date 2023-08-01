@@ -18,6 +18,10 @@ export const useSession = () => {
   const { currentUserInfo } = useCurrentUser();
 
   useEffect(() => {
+    if (pathname === '/2fa') {
+      return;
+    }
+
     // tokenStorage がない時は、/login に飛ぶはずなので、
     // /user/me に api 投げるまでもない
     if (tokenStorage.get() === null) {
