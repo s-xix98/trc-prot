@@ -11,4 +11,11 @@ export default meta;
 
 type Story = StoryObj<typeof GameOptSetter>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+  args: {
+    gameOpt: {
+      ballSpeed: 1,
+      matchpoint: 3,
+    },
+  },
+};
