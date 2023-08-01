@@ -5,6 +5,7 @@ import { io } from 'socket.io-client';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import { z } from 'zod';
+import jwtDecode from 'jwt-decode';
 
 import { tokenStorage } from '@/utils/tokenStorage';
 import { accessToken } from '@/app/login/types/accessToken';
@@ -18,11 +19,22 @@ import {
 } from '../../../hooks/useSessionAxios';
 import { BACKEND } from '../../../constants';
 
+interface MyToken {
+  name: string;
+  exp: number;
+
+  userId: string;
+  username: string;
+  isTwoFaEnabled: boolean;
+  isTwoFactorAuthenticated: boolean;
+}
+
 export const useLogin = () => {
   const setCurrentUser = useSetAtom(currentUserAtom);
   const { customAxiosGetter } = useCustomAxiosGetter();
   const setSocket = useSetAtom(socketAtom);
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const automaticLogin = useCallback(() => {
     const onSucessCallback = (userInfo: UserInfo) => {
@@ -37,8 +49,20 @@ export const useLogin = () => {
       setSocket(io(BACKEND, { auth: { token: tokenStorage.get() } }));
     };
 
+    const token = tokenStorage.get();
+    if (token) {
+      const decoded = jwtDecode<MyToken>(token);
+      const require2Fa =
+        decoded.isTwoFaEnabled == true &&
+        decoded.isTwoFactorAuthenticated == false;
+      if (require2Fa) {
+        router.push('/2fa');
+        return;
+      }
+    }
+
     customAxiosGetter({ uri: '/user/me' }, UserInfoSchema, onSucessCallback);
-  }, [customAxiosGetter, setCurrentUser, setSocket]);
+  }, [customAxiosGetter, setCurrentUser, setSocket, router]);
 
   const manualLogin = (email: string, pass: string) => {
     const loginDto: LoginDto = { email: email, hashedPassword: pass };
