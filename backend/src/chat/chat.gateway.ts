@@ -21,6 +21,7 @@ import {
   UpdateChatRoomDto,
   KickRoomMemberDto,
   CreateDMDto,
+  UpdateRoomMemberRoleDto,
 } from './dto/Channel.dto';
 import { ChatService } from './chat.service';
 
@@ -453,6 +454,33 @@ export class ChatGateway {
     }
 
     await this.chatService.updateChatRoom(dto);
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
+  }
+
+  @SubscribeMessage('updateChatRoomMemberRole')
+  async updateChatRoomMemberRole(client: Socket, dto:UpdateRoomMemberRoleDto ) {
+    console.log('updateChatRoomMemberRole', dto);
+
+    const userId = this.server.getUserId(client);
+    if (!userId) {
+      throw new CustomException('User is not found');
+    }
+
+    const roomExists = await this.chatService.roomExists(dto.chatRoomId);
+    if (!roomExists) {
+      throw new CustomException('Room is not found');
+    }
+
+    const isOwner = await this.chatService.isOwner(dto.chatRoomId, userId);
+    if (!isOwner) {
+      throw new CustomException('You are not owner');
+    }
+
+    if (userId === dto.targetId) {
+      throw new CustomException('You can not change your role');
+    }
+
+    await this.chatService.updateRoomMemberRole(dto.chatRoomId, dto.targetId, dto.role);
     await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
