@@ -256,6 +256,12 @@ export class GameGateway {
       ) => {
         console.log('onshutdown');
         this.gameRoom.delete({ p1: p1Result.userId, p2: p2Result.userId });
+        await this.updateUserStateOnGameEnd(p1Result.userId).catch((e) =>
+          console.log(e),
+        );
+        await this.updateUserStateOnGameEnd(p2Result.userId).catch((e) =>
+          console.log(e),
+        );
         await this.gameService
           .saveGameResult(p1Result, p2Result, resultEvaluator)
           .catch((e) => console.log(e));
