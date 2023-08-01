@@ -19,6 +19,7 @@ import { GameService } from './game.service';
 import { GameFactory } from './matching/types';
 import { MatchingTable } from './matching/matching-table';
 import { GameRoom } from './game-room';
+import { canvas } from './game-constants';
 
 @WebSocketGateway()
 @UseFilters(new WsExceptionsFilter())
@@ -98,6 +99,10 @@ export class GameGateway {
     if (userid === undefined) {
       return;
     }
+    client.emit('game init', {
+      width: canvas.xMax - canvas.xMin,
+      height: canvas.yMax - canvas.yMin,
+    });
     this.gameRoom.getGame(userid)?.ReadyGame(client);
   }
 

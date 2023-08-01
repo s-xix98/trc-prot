@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Container } from '@/components/Layout/Container';
@@ -17,16 +17,25 @@ import {
   DrawResult,
   DrawScores,
 } from './Draw';
+import { GameInitializer } from './Types';
 
 const StyledCanvas = styled.canvas`
   border: 4px solid;
   color: black;
 `;
 
-const GameCanvas = () => {
+const GameCanvas = ({
+  width,
+  height,
+  scale,
+}: {
+  width: number;
+  height: number;
+  scale: number;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasWidth = 400;
-  const canvasHeight = 400;
+  const canvasWidth = width * scale;
+  const canvasHeight = height * scale;
   const canvasId = 'canvas';
 
   const DrawGameWithPlayerSide = (gameDto: GameDto, side: 'LEFT' | 'RIGHT') => {
@@ -35,7 +44,7 @@ const GameCanvas = () => {
     if (!canvas || !ctx) {
       return;
     }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    const game = CreateGameObjects(gameDto, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
@@ -50,7 +59,7 @@ const GameCanvas = () => {
     if (!canvas || !ctx) {
       return;
     }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    const game = CreateGameObjects(gameDto, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
@@ -81,7 +90,7 @@ const GameCanvas = () => {
     if (!canvas || !ctx) {
       return;
     }
-    const game = CreateGameObjects(gameDto, canvasWidth, canvasHeight);
+    const game = CreateGameObjects(gameDto, scale);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     DrawCenterLine(ctx, canvas.width, canvas.height);
     DrawScores(ctx, game.scores, canvas.width, canvas.height);
@@ -99,6 +108,8 @@ const GameCanvas = () => {
     ></StyledCanvas>
   );
 };
+
+const CANVAS_SCALE = 400;
 
 export const Game = () => {
   const keyInputs: boolean[] = [];
@@ -138,6 +149,14 @@ export const Game = () => {
 
   useKeyInput(keyPressHandler, keyReleaseHandler);
 
+  const [width, setWidth] = useState(1);
+  const [height, setHeight] = useState(1);
+
+  useSessionSocket('game init', (initializer: GameInitializer) => {
+    setWidth(initializer.width);
+    setHeight(initializer.height);
+  });
+
   useEffect(() => {
     sessionSocketEmitter.emit('start game');
   }, [sessionSocketEmitter]);
@@ -145,7 +164,7 @@ export const Game = () => {
   return (
     // TODO : 本来はいらない気がする、とりあえず適当にUI用
     <Container>
-      <GameCanvas />
+      <GameCanvas width={width} height={height} scale={CANVAS_SCALE} />
     </Container>
   );
 };
