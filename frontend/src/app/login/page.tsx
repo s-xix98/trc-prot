@@ -42,8 +42,15 @@ export default function Login() {
       <br />
       {isLogin === 0 && <LoginForm />}
       {isLogin === 1 && <SignUpForm />}
-      {isLogin === 2 && <AuthLogin displayName={"42"} redirectUrl={BACKEND + "/auth/42"} />}
-      {isLogin === 3 && <AuthLogin displayName={"google"} redirectUrl={BACKEND + "/auth/google"}/>}
+      {isLogin === 2 && (
+        <AuthLogin displayName={'42'} redirectUrl={BACKEND + '/auth/42'} />
+      )}
+      {isLogin === 3 && (
+        <AuthLogin
+          displayName={'google'}
+          redirectUrl={BACKEND + '/auth/google'}
+        />
+      )}
     </MainLayout>
   );
 }

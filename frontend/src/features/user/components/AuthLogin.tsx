@@ -1,20 +1,17 @@
 export const AuthLogin = ({
-  displayName,  
+  displayName,
   redirectUrl,
-}:{
-  displayName: string,
-  redirectUrl: string,
+}: {
+  displayName: string;
+  redirectUrl: string;
 }) => {
-
   const handleButtonClick = () => {
     window.location.href = redirectUrl;
   };
 
   return (
     <>
-      <button onClick={handleButtonClick}>
-        {displayName}
-      </button>
+      <button onClick={handleButtonClick}>{displayName}</button>
     </>
-    );
+  );
 };
