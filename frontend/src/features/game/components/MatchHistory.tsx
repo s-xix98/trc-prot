@@ -2,11 +2,11 @@ import { useUserProfileModal } from '@/hooks/useUserProfileModal';
 import { UserProfileModal } from '@/features/user/components/UserProfile';
 import { UserInfo } from '@/features/user/types/UserDto';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { ModalView } from '@/components/Elements/Modal/ModalView';
+import { useModal } from '@/hooks/useModal';
 
 import { useMatchHistory } from '../api/useMatchHistory';
 import { MatchHistoryDto } from '../types/matchHistoryDto';
-import { ModalView } from '@/components/Elements/Modal/ModalView';
-import { useModal } from '@/hooks/useModal';
 
 const ShowMatchResult = ({
   result,
