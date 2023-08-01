@@ -371,7 +371,7 @@ export class ChatService {
   }
 
   async getJoinedRooms(userId: string) {
-    const joinedRooms = await this.prismaService.chatRoom.findMany({
+    const joinedRoomsWithMember = await this.prismaService.chatRoom.findMany({
       where: {
         roomMembers: {
           some: {
@@ -385,13 +385,25 @@ export class ChatService {
         isPrivate: true,
         hashedPassword: true,
         isDM: true,
+        roomMembers: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                base64Image: true,
+              },
+            },
+            role: true,
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    return joinedRooms.map((room) => {
+    return joinedRoomsWithMember.map((room) => {
       const { hashedPassword, ...rest } = room;
       return {
         ...rest,
