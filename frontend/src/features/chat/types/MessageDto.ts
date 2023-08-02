@@ -25,3 +25,11 @@ export const sendMessageDtoSchema = z.object({
   chatRoomId: z.string(),
 });
 export type sendMessageDto = z.infer<typeof sendMessageDtoSchema>;
+
+export const UpdateHandleMessageDtoSchema = z.object({
+  roomId: z.string(),
+  msgs: handleMessageDtoSchema.array(),
+});
+export type UpdateHandleMessageDto = z.infer<
+  typeof UpdateHandleMessageDtoSchema
+>;

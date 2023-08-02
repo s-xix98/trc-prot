@@ -4,7 +4,7 @@ import { Container } from '@/components/Layout/Container';
 import { useSessionSocket } from '@/hooks/useSocket';
 import { useScroll } from '@/hooks/useScroll';
 
-import { handleMessageDto } from '../types/MessageDto';
+import { UpdateHandleMessageDto } from '../types/MessageDto';
 import { chatChannelDto } from '../types/chatChannelDto';
 import { useRoomHistory } from '../api/roomHistory';
 
@@ -26,9 +26,12 @@ export const ChatTalkArea = ({
 
   const { scrollBottomRef, handleScroll } = useScroll(chatHistMsgs);
 
-  const onMessage = (data: handleMessageDto[]) => {
+  const onMessage = (data: UpdateHandleMessageDto) => {
+    if (data.roomId !== selectedChannel.id) {
+      return;
+    }
     handleScroll();
-    setChatHistMsgs(data);
+    setChatHistMsgs(data.msgs);
   };
 
   useSessionSocket('receiveMessage', onMessage);
