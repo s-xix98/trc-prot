@@ -56,7 +56,7 @@ export class UserGateway {
         return;
       }
 
-      await this.userService.updateUserState(userId, 'ONLINE');
+      await this.updateUserState(userId, 'ONLINE');
 
       await this.sendBlockUsers(userId);
       await this.sendFriends(userId);
