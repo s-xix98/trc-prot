@@ -513,7 +513,9 @@ export class ChatGateway {
 
   private async broadcastRoomMessageHistory(roomId: string) {
     const msgs = await this.chatService.getChannelHistoryById(roomId);
-    this.server.to(roomType.Chat, roomId).emit('receiveMessage', msgs);
+    this.server
+      .to(roomType.Chat, roomId)
+      .emit('receiveMessage', { roomId: roomId, msgs: msgs });
   }
 
   private async sendJoinedRooms(userId: string) {

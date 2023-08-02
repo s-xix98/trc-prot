@@ -11,4 +11,11 @@ export default meta;
 
 type Story = StoryObj<typeof MatchHistory>;
 
-export const Basic: Story = {};
+export const Basic: Story = {
+  args: {
+    userInfo: {
+      id: 'xxx',
+      username: 'name',
+    },
+  },
+};
