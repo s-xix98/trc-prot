@@ -350,7 +350,6 @@ const OtherProfile = ({ userInfo }: { userInfo: UserInfo }) => {
       <GameOptSetterModal btnText="Invite Game" onClickAct={gameInviteAct} />
       <br />
       <MatchHistoryModal userInfo={userInfo} />
-      <GameOptSetterModal btnText="Invite Game" onClickAct={gameInviteAct} />
     </div>
   );
 };
