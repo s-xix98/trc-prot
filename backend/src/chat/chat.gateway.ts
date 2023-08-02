@@ -145,7 +145,7 @@ export class ChatGateway {
 
     this.server.JoinRoom(client, roomType.Chat, addedUser.chatRoomId);
 
-    await this.sendJoinedRooms(addedUser.userId);
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('sendMessage')
@@ -386,6 +386,7 @@ export class ChatGateway {
     this.server.JoinRoom(client, roomType.Chat, dto.chatRoomId);
     await this.sendInvites(userId);
     await this.sendJoinedRooms(userId);
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('rejectChatInvitation')
@@ -431,7 +432,7 @@ export class ChatGateway {
     await this.chatService.deleteRoomMember(dto.chatRoomId, userId);
 
     this.server.LeaveRoom(client, roomType.Chat, dto.chatRoomId);
-    await this.sendJoinedRooms(userId);
+    await this.broadcastRoomsToMembers(dto.chatRoomId);
   }
 
   @SubscribeMessage('updateChatRoom')
